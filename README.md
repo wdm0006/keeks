@@ -15,6 +15,11 @@ Currently includes a few concepts:
  Criterion. The idea is that given a set of opportunities with odds and expected probabilities of winning, we can produce
  a nice set of bets to make with whatever cash is available in our bank.
 
+Implemented strategies:
+
+ * KellyCriterion: makes many bets fractionally that maximize growth
+ * AllOnBest: bets the max bettable value on the bet expected to be most likely to win, regardless of odds
+ * AllOnBestExpectedValue: bets the max bettable value on the bet with the highest expected value
 
 Related Projects
 ================

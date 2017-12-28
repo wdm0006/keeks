@@ -1,11 +1,10 @@
 from keeks.opportunity import Opportunity
 from keeks.bankroll import BankRoll
-from keeks.strategies import KellyCriterion
-from keeks.strategies import AllOnBest
+from keeks.strategies import *
+
+from keeks import strategies
 
 __all__ = [
     "Opportunity",
-    "BankRoll",
-    "KellyCriterion",
-    "AllOnBest"
-]
+    "BankRoll"
+] + strategies.__all__
