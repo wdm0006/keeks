@@ -1,10 +1,14 @@
-from keeks.strategies.simple import AllOnBest, AllOnBestExpectedValue
+from keeks.strategies.simple import AllOnBest, AllOnBestExpectedValue, Momentum, AllOnMostMomentum
 from keeks.strategies.kelly import KellyCriterion
+from keeks.strategies.ensemble import Blended
 
 __author__ = 'willmcginnis'
 
 __all__ = [
+    'Blended',
     'AllOnBestExpectedValue',
     'AllOnBest',
-    'KellyCriterion'
+    'Momentum',
+    'KellyCriterion',
+    'AllOnMostMomentum'
 ]

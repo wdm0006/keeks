@@ -1,5 +1,4 @@
 from keeks.strategies.base import BaseStrategy
-import cvxpy as cvx
 
 __author__ = 'willmcginnis'
 
@@ -15,11 +14,11 @@ class KellyCriterion(BaseStrategy):
         bets = {}
         for opp in opps:
             if opp.b == 0:
-                bets[opp.label] = 0
+                bets[opp] = 0
             else:
                 allo = ((opp.probability * opp.b) - (1 - opp.probability)) / opp.b
                 if allo > 0:
-                    bets[opp.label] = allo
+                    bets[opp] = allo
 
         # now if the sum of all allocations is less than 1, then we are good to go else we scale them all down to 1
         scale = sum([v for k, v in bets.items()])
@@ -38,4 +37,4 @@ class KellyCriterion(BaseStrategy):
                         break
                 bets = out
 
-        return {k: round(v * self.bankroll.bettable_funds, 2) for k, v in bets.items()}
+        return self.filter_dual_sided({k: round(v * self.bankroll.bettable_funds, 2) for k, v in bets.items()})
