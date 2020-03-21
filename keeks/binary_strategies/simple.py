@@ -16,10 +16,15 @@ class NaiveStrategy(BaseStrategy):
         self.loss = loss
         self.transaction_cost = transaction_cost
 
+
     def evaluate(self, probability):
         E = (self.payoff * probability) - (self.loss * (1 - probability)) - self.transaction_cost
+        E_neg = (self.payoff * (1 - probability)) - (self.loss * probability) - self.transaction_cost
+
         if E > 0:
             return 1.0
+        elif E_neg > 0:
+            return -1.0
         else:
-            return 0
+            return 0.0
 
