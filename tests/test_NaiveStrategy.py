@@ -1,5 +1,8 @@
 import unittest
-from keeks import NaiveStrategy
+from keeks.binary_strategies.simple import NaiveStrategy
+from keeks.simulators.repeated_binary import RepeatedBinarySimulator
+from keeks.bankroll import BankRoll
+from keeks.utils import RuinException
 import random
 
 random.seed(42)
@@ -20,19 +23,15 @@ class TestNaiveStrategy(unittest.TestCase):
         self.assertEqual(portion, -1)
 
     def test_Simulation(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(RuinException):
             payoff = 1
             loss = 1
             transaction_cost = 0.01
             win_probability = 0.6
-            wealth = [1_000_000]
+            bankroll = BankRoll(initial_funds=1_000_000, max_draw_down=1, percent_bettable=1)
+            simulator = RepeatedBinarySimulator(payoff, loss, transaction_cost, win_probability, trials=1000)
             strategy = NaiveStrategy(payoff=payoff, loss=loss, transaction_cost=transaction_cost)
-            for trial in range(1000):
-                proportion = strategy.evaluate(win_probability)
-                if random.random() < win_probability:
-                    wealth.append(wealth[-1] - transaction_cost + (payoff * wealth[-1] * proportion))
-                else:
-                    wealth.append(wealth[-1] - transaction_cost - (loss * wealth[-1] * proportion))
-                if wealth[-1] < 0:
-                    raise ValueError('Bankrupt')
-                print('betting proportion: %s, wealth: %s' % (proportion, wealth[-1]))
+
+            simulator.evaluate_strategy(strategy, bankroll)
+
+            print(bankroll.total_funds)

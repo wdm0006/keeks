@@ -1,0 +1,2 @@
+class RuinException(Exception):
+    pass

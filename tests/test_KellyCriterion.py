@@ -1,8 +1,11 @@
 import unittest
-from keeks import KellyCriterion
+from keeks.binary_strategies.kelly import KellyCriterion
+from keeks.simulators.repeated_binary import RepeatedBinarySimulator
+from keeks.bankroll import BankRoll
 import random
 
 random.seed(42)
+
 
 class TestKellyCriterion(unittest.TestCase):
     def test_EvenOdds(self):
@@ -30,17 +33,9 @@ class TestKellyCriterion(unittest.TestCase):
         loss = 1
         transaction_cost = 0.01
         win_probability = 0.6
-        wealth = [1_000_000]
+        bankroll = BankRoll(initial_funds=1_000_000, max_draw_down=1, percent_bettable=1)
+        simulator = RepeatedBinarySimulator(payoff, loss, transaction_cost, win_probability, trials=1000)
         strategy = KellyCriterion(payoff=payoff, loss=loss, transaction_cost=transaction_cost)
-        for trial in range(1000):
-            proportion = strategy.evaluate(win_probability)
-            if random.random() < win_probability:
-                wealth.append(wealth[-1] - transaction_cost + (payoff * wealth[-1] * proportion))
-            else:
-                wealth.append(wealth[-1] - transaction_cost - (loss * wealth[-1] * proportion))
-
-            if wealth[-1] < 0:
-                raise Exception('Bankrupt')
-
-            print('betting proportion: %s, wealth: %s' % (proportion, wealth[-1]))
+        simulator.evaluate_strategy(strategy, bankroll)
+        self.assertGreater(bankroll.total_funds, 1_000_000)
 

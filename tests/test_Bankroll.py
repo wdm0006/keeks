@@ -1,5 +1,6 @@
 import unittest
-from keeks import BankRoll
+from keeks.bankroll import BankRoll
+from keeks.utils import RuinException
 
 
 class TestBankroll(unittest.TestCase):
@@ -31,5 +32,5 @@ class TestBankroll(unittest.TestCase):
 
     def test_Drawdown_Limit(self):
         br = BankRoll(initial_funds=1000, percent_bettable=0.5, max_draw_down=0.3)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(RuinException):
             br.withdraw(500)
