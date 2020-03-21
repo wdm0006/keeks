@@ -19,4 +19,4 @@ class BankRoll:
     def withdraw(self, amt):
         self._bank -= amt
         if amt > self.max_draw_down * self.total_funds:
-            raise Exception('You lost too much money buddy, slow down.')
+            raise ValueError('You lost too much money buddy, slow down.')
