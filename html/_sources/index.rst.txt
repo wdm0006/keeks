@@ -3,13 +3,24 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to keeks's documentation!
-=================================
+Keeks
+=====
+
+A python library for bankroll allocation strategies.
+
+Installation
+------------
+
+TODO
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   getting_started
+   strategies
+   simulators
+   bankroll
 
 
 Indices and tables
