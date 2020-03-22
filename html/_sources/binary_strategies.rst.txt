@@ -9,3 +9,6 @@ loss if they lose, and a transaction cost regardless. Bets are not continuous, t
 
 .. autoclass:: keeks.binary_strategies.kelly.KellyCriterion
     :members:
+
+.. autoclass:: keeks.binary_strategies.kelly.FractionalKellyCriterion
+    :members:
