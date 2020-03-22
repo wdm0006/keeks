@@ -27,7 +27,8 @@ class BankRoll:
 
     def withdraw(self, amt):
         self._bank -= amt
-        if amt > self.max_draw_down * self.total_funds:
-            raise RuinException('You lost too much money buddy, slow down.')
+        if self.max_draw_down:
+            if amt > self.max_draw_down * self.total_funds:
+                raise RuinException('You lost too much money buddy, slow down.')
 
         self.update_history()
