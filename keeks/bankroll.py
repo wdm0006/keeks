@@ -1,4 +1,5 @@
 from keeks.utils import RuinException
+import matplotlib.pyplot as plt
 
 
 class BankRoll:
@@ -32,3 +33,11 @@ class BankRoll:
                 raise RuinException('You lost too much money buddy, slow down.')
 
         self.update_history()
+
+    def plot_history(self, fname=None):
+        plt.figure()
+        plt.plot(list(range(len(self.history))), self.history, fmt='bo-')
+        if fname:
+            plt.savefig(fname)
+        else:
+            plt.show()
