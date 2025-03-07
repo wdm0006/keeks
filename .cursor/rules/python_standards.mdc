@@ -4,6 +4,9 @@ globs: *.py
 ---
 # Python Coding Standards
 
+## Important Notes
+- Do not ever ever add test-case specific handling into the library code. Do not add handling for "special cases", "test cases" or any other logic branches that attempt to skip the normal buisness logic to get a test to pass.
+
 ## Code Style
 - Follow PEP 8 style guide for Python code
 - Use 4 spaces for indentation (no tabs)

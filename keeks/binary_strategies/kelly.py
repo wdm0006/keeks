@@ -15,14 +15,26 @@ class KellyCriterion(BaseStrategy):
         self.transaction_cost = transaction_cost
 
     def evaluate(self, probability):
-        expected_net_winnings = (
-            (self.payoff * probability)
-            - (self.loss * (1 - probability))
-            - self.transaction_cost
-        )
-        winnings_if_won = self.payoff - self.transaction_cost
-
-        return expected_net_winnings / winnings_if_won
+        """
+        # The Kelly formula for binary outcomes:
+        # f* = (bp - q) / b
+        # where:
+        # b = net odds received on the wager (payoff/loss)
+        # p = probability of winning
+        # q = probability of losing (1-p)
+        """
+        
+        b = self.payoff / self.loss
+        p = probability
+        q = 1 - p
+        
+        expected_kelly = (b * p - q) / b
+        
+        # Adjust for transaction costs
+        if expected_kelly > 0:
+            expected_kelly -= self.transaction_cost / self.payoff
+            
+        return expected_kelly
 
 
 class FractionalKellyCriterion(BaseStrategy):
@@ -38,11 +50,5 @@ class FractionalKellyCriterion(BaseStrategy):
         self.fraction = fraction
 
     def evaluate(self, probability):
-        expected_net_winnings = (
-            (self.payoff * probability)
-            - (self.loss * (1 - probability))
-            - self.transaction_cost
-        )
-        winnings_if_won = self.payoff - self.transaction_cost
-
-        return self.fraction * (expected_net_winnings / winnings_if_won)
+        kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
+        return self.fraction * kelly.evaluate(probability)
