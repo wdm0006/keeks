@@ -1,4 +1,5 @@
 import random
+
 import pytest
 
 from keeks.bankroll import BankRoll
@@ -32,9 +33,7 @@ def test_simulation():
     probability = 0.45
     trials = 1_000
 
-    bankroll = BankRoll(
-        initial_funds=1000, percent_bettable=1, max_draw_down=0.3
-    )
+    bankroll = BankRoll(initial_funds=1000, percent_bettable=1, max_draw_down=0.3)
     strategy = NaiveStrategy(payoff, loss, transaction_cost)
     simulator = RepeatedBinarySimulator(
         payoff=payoff,
@@ -43,6 +42,6 @@ def test_simulation():
         probability=probability,
         trials=trials,
     )
-    
+
     with pytest.raises(RuinError):
         simulator.evaluate_strategy(strategy, bankroll)

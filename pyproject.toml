@@ -63,7 +63,7 @@ target-version = "py38"
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I", "N", "UP", "C4", "SIM", "ARG"]
-ignore = []
+ignore = ["E501"]  # Ignore line length errors
 
 [tool.ruff.lint.isort]
 known-first-party = ["keeks"]
@@ -72,6 +72,7 @@ known-first-party = ["keeks"]
 quote-style = "double"
 indent-style = "space"
 line-ending = "auto"
+docstring-code-line-length = 88
 
 [tool.tox]
 legacy_tox_ini = """

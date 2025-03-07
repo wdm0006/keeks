@@ -1,4 +1,5 @@
 import random
+
 import pytest
 
 from keeks.bankroll import BankRoll
@@ -98,7 +99,7 @@ def test_simulation_random():
 
     random.seed(42)
     simulator_kelly.evaluate_strategy(strategy_kelly, bankroll_kelly)
-    
+
     random.seed(42)
     simulator_naive.evaluate_strategy(strategy_naive, bankroll_naive)
 
@@ -159,10 +160,10 @@ def test_simulation_random_uncertain():
 
     random.seed(42)
     simulator_kelly.evaluate_strategy(strategy_kelly, bankroll_kelly)
-    
+
     random.seed(42)
     simulator_naive.evaluate_strategy(strategy_naive, bankroll_naive)
-    
+
     random.seed(42)
     simulator_fractional_kelly.evaluate_strategy(
         strategy_fractional_kelly, bankroll_fractional_kelly
