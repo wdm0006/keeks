@@ -3,7 +3,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+uv.lock
 # C extensions
 *.so
 .idea
@@ -21,6 +21,7 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -59,3 +60,18 @@ docs/_build/
 target/
 
 # Created by .ignore support plugin (hsz.mobi)
+
+# Testing
+.pytest_cache/
+
+# Virtual environments
+venv/
+ENV/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store

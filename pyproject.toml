@@ -1,0 +1,97 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "keeks"
+version = "0.1.0"
+description = "A python library for bankroll allocation strategies"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Keeks Contributors"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+dependencies = [
+    "numpy",
+    "matplotlib",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/wdm0006/keeks"
+"Bug Tracker" = "https://github.com/wdm0006/keeks/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "sphinx",
+    "sphinx_rtd_theme",
+    "flake8",
+    "wheel",
+    "ruff",
+    "tox",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["keeks"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "--cov=keeks --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["keeks"]
+omit = ["tests/*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "N", "UP", "C4", "SIM", "ARG"]
+ignore = ["E501"]  # Ignore line length errors
+
+[tool.ruff.lint.isort]
+known-first-party = ["keeks"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-line-length = 88
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py38, py39, py310, py311
+isolated_build = True
+skip_missing_interpreters = True
+
+[testenv]
+deps =
+    pytest
+    pytest-cov
+commands =
+    pytest {posargs:tests} --cov=keeks --cov-report=term-missing
+
+[gh-actions]
+python =
+    3.8: py38
+    3.9: py39
+    3.10: py310
+    3.11: py311
+""" 
