@@ -1,9 +1,12 @@
-from keeks.utils import RuinException
 import matplotlib.pyplot as plt
+
+from keeks.utils import RuinError
 
 
 class BankRoll:
-    def __init__(self, initial_funds=0.0, percent_bettable=1.0, max_draw_down=0.3, verbose=0):
+    def __init__(
+        self, initial_funds=0.0, percent_bettable=1.0, max_draw_down=0.3, verbose=0
+    ):
         self._bank = initial_funds
         self.percent_bettable = percent_bettable
         self.max_draw_down = max_draw_down
@@ -28,15 +31,14 @@ class BankRoll:
 
     def withdraw(self, amt):
         self._bank -= amt
-        if self.max_draw_down:
-            if amt > self.max_draw_down * self.total_funds:
-                raise RuinException('You lost too much money buddy, slow down.')
+        if self.max_draw_down and amt > self.max_draw_down * self.total_funds:
+            raise RuinError("You lost too much money buddy, slow down.")
 
         self.update_history()
 
     def plot_history(self, fname=None):
         plt.figure()
-        plt.plot(list(range(len(self.history))), self.history, fmt='bo-')
+        plt.plot(list(range(len(self.history))), self.history, fmt="bo-")
         if fname:
             plt.savefig(fname)
         else:

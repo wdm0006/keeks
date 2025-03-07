@@ -13,7 +13,12 @@ class RepeatedBinarySimulator:
         for _ in range(self.trials):
             proportion = strategy.evaluate(self.probability)
             if random.random() < self.probability:
-                amt = (self.payoff * bankroll.bettable_funds * proportion) - self.transaction_costs
+                amt = (
+                    self.payoff * bankroll.bettable_funds * proportion
+                ) - self.transaction_costs
                 bankroll.deposit(amt)
             else:
-                bankroll.withdraw((self.loss * bankroll.bettable_funds * proportion) - self.transaction_costs)
+                bankroll.withdraw(
+                    (self.loss * bankroll.bettable_funds * proportion)
+                    - self.transaction_costs
+                )

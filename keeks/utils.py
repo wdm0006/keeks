@@ -1,2 +1,2 @@
-class RuinException(Exception):
+class RuinError(Exception):
     pass

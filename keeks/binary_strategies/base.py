@@ -1,6 +1,6 @@
 import abc
 
-__author__ = 'willmcginnis'
+__author__ = "willmcginnis"
 
 
 class BaseStrategy(abc.ABC):

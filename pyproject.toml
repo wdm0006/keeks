@@ -59,10 +59,13 @@ omit = ["tests/*"]
 [tool.ruff]
 line-length = 88
 target-version = "py38"
-select = ["E", "F", "B", "I", "N", "UP", "ANN", "C4", "SIM", "ARG"]
-ignore = ["ANN101", "ANN401"]
 
-[tool.ruff.isort]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "N", "UP", "C4", "SIM", "ARG"]
+ignore = []
+
+[tool.ruff.lint.isort]
 known-first-party = ["keeks"]
 
 [tool.ruff.format]

@@ -1,5 +1,6 @@
-import numpy as np
 import random
+
+import numpy as np
 
 
 class RandomBinarySimulator:
@@ -15,7 +16,12 @@ class RandomBinarySimulator:
             probability = np.random.normal(0.5, self.stdev, 1)[0]
             proportion = strategy.evaluate(probability)
             if random.random() < probability:
-                amt = (self.payoff * bankroll.bettable_funds * proportion) - self.transaction_costs
+                amt = (
+                    self.payoff * bankroll.bettable_funds * proportion
+                ) - self.transaction_costs
                 bankroll.deposit(amt)
             else:
-                bankroll.withdraw((self.loss * bankroll.bettable_funds * proportion) - self.transaction_costs)
+                bankroll.withdraw(
+                    (self.loss * bankroll.bettable_funds * proportion)
+                    - self.transaction_costs
+                )
