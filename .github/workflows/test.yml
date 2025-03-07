@@ -8,14 +8,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
     
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set up Python
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'  # Use the latest Python for running tox
+        python-version: ${{ matrix.python-version }}
         
     - name: Install uv
       run: |
@@ -30,5 +33,6 @@ jobs:
       run: |
         uv pip install -e ".[dev]"
         
-    - name: Run tests with tox
-      run: uv run tox 
+    - name: Run tests with pytest
+      run: |
+        uv run pytest tests --cov=keeks --cov-report=term-missing 
