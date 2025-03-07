@@ -1,0 +1,133 @@
+---
+description: Overview of the pygeohash project
+globs: 
+---
+# Keeks Project Overview
+
+## Introduction
+
+Keeks is a Python library for simulating and evaluating betting strategies, with a focus on bankroll management and risk assessment. The project provides tools for modeling different betting scenarios, implementing various betting strategies, and analyzing their performance over time.
+
+## Core Components
+
+### Bankroll Management
+
+The `BankRoll` class in `keeks/bankroll.py` is the central component for tracking funds:
+- Manages a user's available funds
+- Tracks deposit and withdrawal history
+- Implements safety features like maximum drawdown limits
+- Provides visualization of bankroll history
+
+### Betting Strategies
+
+Located in `keeks/binary_strategies/`, the library offers several strategy implementations:
+
+1. **Base Strategy** (`base.py`): Abstract base class that all strategies inherit from
+2. **Kelly Criterion** (`kelly.py`): Implements the Kelly formula for optimal bet sizing
+   - `KellyCriterion`: Standard Kelly formula implementation
+   - `FractionalKellyCriterion`: Modified Kelly that bets a fraction of the recommended amount
+3. **Naive Strategy** (`simple.py`): A simple strategy that bets the full amount when expected value is positive
+
+### Simulators
+
+Located in `keeks/simulators/`, these components run betting simulations:
+
+1. **RandomBinarySimulator**: Simulates betting on events with normally distributed probabilities
+2. **RandomUncertainBinarySimulator**: Similar to RandomBinarySimulator but adds uncertainty to the actual outcome
+3. **RepeatedBinarySimulator**: Simulates betting on events with a fixed probability
+
+### Utilities
+
+The `utils.py` file contains helper functions and custom exceptions like `RuinException` which is raised when a user loses too much money according to their maximum drawdown settings.
+
+## How It Works
+
+1. **Setup**: Create a `BankRoll` instance with initial funds and risk parameters
+2. **Strategy Selection**: Choose and configure a betting strategy (e.g., Kelly Criterion)
+3. **Simulation**: Run a simulator to evaluate the strategy's performance over multiple trials
+4. **Analysis**: Analyze the results, including bankroll history and final balance
+
+## Example Usage
+
+```python
+from keeks.bankroll import BankRoll
+from keeks.binary_strategies import KellyCriterion
+from keeks.simulators.repeated_binary import RepeatedBinarySimulator
+
+# Initialize bankroll with $1000
+bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+
+# Create a Kelly Criterion strategy
+# Parameters: payoff=1.0, loss=1.0, transaction_cost=0.01
+strategy = KellyCriterion(1.0, 1.0, 0.01)
+
+# Create a simulator with 55% win probability
+simulator = RepeatedBinarySimulator(
+    payoff=1.0, 
+    loss=1.0, 
+    transaction_costs=0.01, 
+    probability=0.55, 
+    trials=1000
+)
+
+# Run the simulation
+simulator.evaluate_strategy(strategy, bankroll)
+
+# Visualize results
+bankroll.plot_history()
+```
+
+## Project Structure
+
+```
+keeks/
+├── __init__.py
+├── bankroll.py           # Bankroll management
+├── utils.py              # Utility functions and exceptions
+├── binary_strategies/    # Strategy implementations
+│   ├── __init__.py
+│   ├── base.py           # Abstract base strategy
+│   ├── kelly.py          # Kelly Criterion implementations
+│   └── simple.py         # Simple betting strategies
+└── simulators/           # Simulation engines
+    ├── __init__.py
+    ├── random_binary.py
+    ├── random_uncertain_binary.py
+    └── repeated_binary.py
+```
+
+## Makefile Commands
+
+While the Makefile wasn't provided in the repository files, typical commands for a Python project would include:
+
+- `make install`: Install the package
+- `make install-dev`: Install the package with development dependencies
+- `make test`: Run the test suite
+- `make lint`: Run linting tools (like flake8, pylint)
+- `make format`: Format code (using tools like black, isort)
+- `make docs`: Build documentation
+- `make clean`: Remove build artifacts and temporary files
+- `make coverage`: Run tests with coverage reporting
+- `make benchmark`: Run performance benchmarks
+
+## Getting Started
+
+To get started with Keeks:
+
+1. Install the package: `pip install keeks`
+2. Import the necessary components
+3. Create a bankroll instance
+4. Select and configure a betting strategy
+5. Run simulations to evaluate strategy performance
+6. Analyze the results using the built-in visualization tools
+
+## Project Goals
+
+Keeks aims to:
+1. Provide a framework for testing and comparing different betting strategies
+2. Help users understand bankroll management principles
+3. Simulate real-world betting scenarios with various levels of uncertainty
+4. Visualize the long-term effects of different betting approaches
+5. Implement established mathematical models for optimal bet sizing
+
+The project is particularly useful for those interested in quantitative finance, sports betting, or any domain where strategic risk management is important.
