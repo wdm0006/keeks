@@ -9,7 +9,7 @@ Welcome to Keeks
 Keeks is a specialized Python library for optimal bankroll allocation and betting strategies, with a focus on the Kelly Criterion and its variants.
 
 What is Keeks?
--------------
+--------------
 
 Keeks provides tools for implementing and testing various betting and investment strategies. It includes:
 
@@ -20,7 +20,7 @@ Keeks provides tools for implementing and testing various betting and investment
 Whether you're a sports bettor, a financial trader, or a researcher in decision theory, Keeks provides the tools to make more informed decisions about capital allocation.
 
 Why Use Keeks?
--------------
+--------------
 
 - **Mathematically sound**: Based on proven mathematical principles like the Kelly Criterion
 - **Risk management**: Built-in protection against ruin with configurable drawdown limits
@@ -38,7 +38,7 @@ Installation
    pip install keeks
 
 Quick Example
-------------
+-------------
 
 .. code-block:: python
 
@@ -67,8 +67,24 @@ Quick Example
    # Plot the results
    bankroll.plot_history()
 
+Available Strategies
+--------------------
+
+Keeks implements various bankroll allocation strategies:
+
+- **Kelly Criterion**: The mathematically optimal strategy for maximizing the logarithm of wealth
+- **Fractional Kelly**: A more conservative version of Kelly that reduces volatility
+- **Drawdown-Adjusted Kelly**: A Kelly variant that adjusts bet sizing based on risk tolerance
+- **OptimalF (Ralph Vince)**: Strategy that maximizes geometric growth rate
+- **Fixed Fraction**: Simple strategy that bets a constant percentage of the bankroll
+- **CPPI (Constant Proportion Portfolio Insurance)**: Strategy that protects a floor value while allowing upside exposure
+- **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
+- **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
+
+Each strategy offers different tradeoffs between risk and reward, allowing you to select the approach that best matches your investment goals and risk tolerance.
+
 Applications
------------
+------------
 
 Keeks can be applied to various domains:
 
@@ -79,7 +95,7 @@ Keeks can be applied to various domains:
 - **Education**: Learn about probability, statistics, and risk management
 
 Development
-----------
+-----------
 
 The source code for Keeks is hosted on GitHub:
 
@@ -90,7 +106,7 @@ The source code for Keeks is hosted on GitHub:
    pip install -e ".[dev]"
 
 References
----------
+----------
 
 - `A New Interpretation of Information Rate <http://www.herrold.com/brokerage/kelly.pdf>`_ - The original Kelly Criterion paper
 - `Fortune's Formula <https://www.amazon.com/Fortunes-Formula-Scientific-Betting-Casinos/dp/0809045990>`_ - The untold story of the scientific betting system that beat the casinos and Wall Street
