@@ -62,6 +62,24 @@ simulator.evaluate_strategy(strategy, bankroll)
 bankroll.plot_history()
 ```
 
+## Examples
+
+### St. Petersburg Paradox Simulation
+
+The St. Petersburg paradox is a theoretical game with infinite expected value but finite practical outcomes. Our example compares all binary strategies using a simplified binary model with favorable odds.
+
+```python
+python -m examples.st_petersburg_comparison
+```
+
+The example simulates various strategies under favorable betting conditions and visualizes the results:
+
+![St. Petersburg Paradox Strategy Comparison](examples/output/st_petersburg_strategies_comparison.png)
+
+*This chart shows the distribution of final bankrolls across different betting strategies after multiple simulations. Notice how Optimal-F and Kelly Criterion achieved the highest returns but with greater volatility, while more conservative strategies like Quarter Kelly had more consistent (but lower) returns.*
+
+For more examples, check the [examples directory](examples/).
+
 ## Key Features
 
 ### Bankroll Management
@@ -87,7 +105,32 @@ Keeks implements several betting strategies:
    fractional_kelly = FractionalKellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01, fraction=0.5)
    ```
 
-3. **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
+3. **Drawdown-Adjusted Kelly**: A Kelly variant that adjusts bet sizing based on risk tolerance
+   ```python
+   drawdown_kelly = DrawdownAdjustedKelly(payoff=1.0, loss=1.0, transaction_cost=0.01, max_acceptable_drawdown=0.2)
+   ```
+
+4. **OptimalF (Ralph Vince)**: Strategy that maximizes geometric growth rate
+   ```python
+   optimal_f = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.55, max_risk_fraction=0.2)
+   ```
+
+5. **Fixed Fraction**: Simple strategy that bets a constant percentage of the bankroll
+   ```python
+   fixed_fraction = FixedFractionStrategy(fraction=0.05, min_probability=0.5)
+   ```
+
+6. **CPPI (Constant Proportion Portfolio Insurance)**: Strategy that protects a floor value while allowing upside exposure
+   ```python
+   cppi = CPPIStrategy(floor_fraction=0.5, multiplier=2.0, initial_bankroll=1000.0)
+   ```
+
+7. **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
+   ```python
+   dynamic = DynamicBankrollManagement(base_fraction=0.1, payoff=1.0, loss=1.0, window_size=10)
+   ```
+
+8. **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
    ```python
    naive = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.01)
    ```
