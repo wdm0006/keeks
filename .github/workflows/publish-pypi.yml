@@ -23,10 +23,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install uv
       
+      - name: Setup virtual environment
+        run: |
+          uv venv
+          echo "VIRTUAL_ENV=$(pwd)/.venv" >> $GITHUB_ENV
+          echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
+      
       - name: Install dependencies
         run: |
-          uv pip install --system -e ".[dev]"
-          uv pip install --system build
+          uv pip install -e ".[dev]"
+          uv pip install build
       
       - name: Build source distribution
         run: |
@@ -40,7 +46,10 @@ jobs:
           # Build only the source distribution
           python -m build --sdist
       
-      - name: Publish package distributions to PyPI
+      - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          # Remove the password line after the first successful publish
+          # to switch to trusted publishing for subsequent releases
