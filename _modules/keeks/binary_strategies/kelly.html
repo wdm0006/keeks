@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keeks.binary_strategies.kelly &mdash; keeks 0.0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=e3a6060d"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            keeks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">keeks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">keeks.binary_strategies.kelly</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for keeks.binary_strategies.kelly</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;willmcginnis&quot;</span>
+
+
+<div class="viewcode-block" id="KellyCriterion">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">KellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of the Kelly Criterion for binary betting.</span>
+
+<span class="sd">    The Kelly Criterion is a formula for bet sizing that maximizes the expected</span>
+<span class="sd">    logarithm of wealth. It calculates the optimal fraction of the bankroll to</span>
+<span class="sd">    bet based on the probability of winning and the payoff odds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoff : float</span>
+<span class="sd">        The amount won per unit bet on a successful outcome.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">    transaction_cost : float</span>
+<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+
+<div class="viewcode-block" id="KellyCriterion.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the optimal bet size using the Kelly Criterion.</span>
+
+<span class="sd">        The Kelly formula for binary outcomes:</span>
+<span class="sd">        f* = (bp - q) / b</span>
+<span class="sd">        where:</span>
+<span class="sd">        - b = net odds received on the wager (payoff/loss)</span>
+<span class="sd">        - p = probability of winning</span>
+<span class="sd">        - q = probability of losing (1-p)</span>
+
+<span class="sd">        The formula is adjusted to account for transaction costs.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The optimal proportion of the bankroll to bet, adjusted for transaction costs.</span>
+<span class="sd">            Returns a negative value if the expected value is negative.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">probability</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
+
+        <span class="n">expected_kelly</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">p</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span> <span class="o">/</span> <span class="n">b</span>
+
+        <span class="c1"># Adjust for transaction costs</span>
+        <span class="k">if</span> <span class="n">expected_kelly</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">expected_kelly</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span>
+
+        <span class="k">return</span> <span class="n">expected_kelly</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FractionalKellyCriterion">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FractionalKellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of the Fractional Kelly Criterion for binary betting.</span>
+
+<span class="sd">    The Fractional Kelly Criterion applies a fraction to the full Kelly bet size,</span>
+<span class="sd">    which can reduce volatility at the expense of long-term growth rate.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoff : float</span>
+<span class="sd">        The amount won per unit bet on a successful outcome.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">    transaction_cost : float</span>
+<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">    fraction : float</span>
+<span class="sd">        The fraction of the full Kelly bet to use (typically between 0 and 1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">fraction</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span>
+
+<div class="viewcode-block" id="FractionalKellyCriterion.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the fractional Kelly bet size.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DrawdownAdjustedKelly">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DrawdownAdjustedKelly</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Drawdown-Adjusted Kelly Criterion for binary betting.</span>
+<span class="sd">    </span>
+<span class="sd">    This variant of the Kelly Criterion adjusts the bet size based on the user&#39;s</span>
+<span class="sd">    maximum acceptable drawdown, effectively managing risk more conservatively</span>
+<span class="sd">    than the standard Kelly approach.</span>
+<span class="sd">    </span>
+<span class="sd">    The adjustment is based on the relationship between drawdown and bet size</span>
+<span class="sd">    as described in risk management literature. The formula approximates the</span>
+<span class="sd">    relationship between maximum drawdown and the fraction of Kelly to use.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoff : float</span>
+<span class="sd">        The amount won per unit bet on a successful outcome.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">    transaction_cost : float</span>
+<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">    max_acceptable_drawdown : float</span>
+<span class="sd">        The maximum drawdown the investor is willing to tolerate,</span>
+<span class="sd">        expressed as a fraction between 0 and 1 (e.g., 0.2 for 20%).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">max_acceptable_drawdown</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the DrawdownAdjustedKelly strategy.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        payoff : float</span>
+<span class="sd">            The amount won per unit bet on a successful outcome.</span>
+<span class="sd">        loss : float</span>
+<span class="sd">            The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">        transaction_cost : float</span>
+<span class="sd">            The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">        max_acceptable_drawdown : float</span>
+<span class="sd">            The maximum drawdown the investor is willing to tolerate,</span>
+<span class="sd">            expressed as a fraction between 0 and 1 (e.g., 0.2 for 20%).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">max_acceptable_drawdown</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Maximum acceptable drawdown must be between 0 and 1&quot;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">=</span> <span class="n">max_acceptable_drawdown</span>
+        
+<div class="viewcode-block" id="DrawdownAdjustedKelly.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the drawdown-adjusted Kelly bet size.</span>
+<span class="sd">        </span>
+<span class="sd">        The adjustment is an approximation based on the relationship between</span>
+<span class="sd">        bet size and expected drawdown in repeated betting scenarios.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The drawdown-adjusted proportion of the bankroll to bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calculate the standard Kelly bet size</span>
+        <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
+        <span class="n">full_kelly</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        
+        <span class="c1"># Adjust the Kelly fraction based on maximum acceptable drawdown</span>
+        <span class="c1"># This is a simplified approximation of the relationship</span>
+        <span class="c1"># Various research suggests specific formulas, but a common</span>
+        <span class="c1"># conservative approach is to scale Kelly by max drawdown / 0.5</span>
+        <span class="c1"># (since full Kelly has an expected drawdown of around 50%)</span>
+        <span class="n">drawdown_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">/</span> <span class="mf">0.5</span><span class="p">)</span>
+        
+        <span class="c1"># Apply the drawdown adjustment</span>
+        <span class="k">return</span> <span class="n">drawdown_factor</span> <span class="o">*</span> <span class="n">full_kelly</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="OptimalF">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.OptimalF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OptimalF</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of Ralph Vince&#39;s Optimal f for binary betting.</span>
+<span class="sd">    </span>
+<span class="sd">    Optimal f is a strategy that aims to maximize the geometric growth rate</span>
+<span class="sd">    of a bankroll over time. It&#39;s similar to the Kelly Criterion but can be</span>
+<span class="sd">    more adaptable to certain scenarios and often less aggressive in its allocations.</span>
+<span class="sd">    </span>
+<span class="sd">    The strategy uses past or simulated performance data to find the fraction</span>
+<span class="sd">    that would have maximized growth, then applies that fraction to future bets.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoff : float</span>
+<span class="sd">        The amount won per unit bet on a successful outcome.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">    transaction_cost : float</span>
+<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">    win_rate : float</span>
+<span class="sd">        The historical or expected win rate (between 0 and 1).</span>
+<span class="sd">    max_risk_fraction : float, default=0.2</span>
+<span class="sd">        The maximum fraction of bankroll that can be risked on a single bet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">win_rate</span><span class="p">,</span> <span class="n">max_risk_fraction</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the OptimalF strategy.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        payoff : float</span>
+<span class="sd">            The amount won per unit bet on a successful outcome.</span>
+<span class="sd">        loss : float</span>
+<span class="sd">            The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">        transaction_cost : float</span>
+<span class="sd">            The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">        win_rate : float</span>
+<span class="sd">            The historical or expected win rate (between 0 and 1).</span>
+<span class="sd">        max_risk_fraction : float, default=0.2</span>
+<span class="sd">            The maximum fraction of bankroll that can be risked on a single bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">win_rate</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Win rate must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">max_risk_fraction</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Maximum risk fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">win_rate</span> <span class="o">=</span> <span class="n">win_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_risk_fraction</span> <span class="o">=</span> <span class="n">max_risk_fraction</span>
+        
+<div class="viewcode-block" id="OptimalF.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.OptimalF.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the optimal f bet size based on win rate and payoff ratio.</span>
+<span class="sd">        </span>
+<span class="sd">        This implementation uses a simplified approach to Optimal f, where</span>
+<span class="sd">        we calculate it as (expected_win_rate * payoff - expected_loss_rate) / payoff.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The optimal proportion of the bankroll to bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Use the provided probability to adjust our expectations</span>
+        <span class="c1"># If no specific edge is known, the win_rate will be used directly</span>
+        <span class="n">adjusted_win_rate</span> <span class="o">=</span> <span class="n">probability</span> <span class="k">if</span> <span class="n">probability</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">win_rate</span>
+        
+        <span class="c1"># Calculate expected loss rate</span>
+        <span class="n">expected_loss_rate</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">adjusted_win_rate</span>
+        
+        <span class="c1"># Calculate the risk-to-reward ratio</span>
+        <span class="n">reward_to_risk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span>
+        
+        <span class="c1"># Calculate optimal f - basic form: (W * R - L) / R</span>
+        <span class="c1"># where W = win rate, L = loss rate, R = reward-to-risk ratio</span>
+        <span class="n">optimal_f</span> <span class="o">=</span> <span class="p">(</span><span class="n">adjusted_win_rate</span> <span class="o">*</span> <span class="n">reward_to_risk</span> <span class="o">-</span> <span class="n">expected_loss_rate</span><span class="p">)</span> <span class="o">/</span> <span class="n">reward_to_risk</span>
+        
+        <span class="c1"># Adjust for transaction costs</span>
+        <span class="k">if</span> <span class="n">optimal_f</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">optimal_f</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span>
+        
+        <span class="c1"># Cap at our maximum risk fraction</span>
+        <span class="n">optimal_f</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">optimal_f</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_risk_fraction</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">optimal_f</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Will McGinnis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

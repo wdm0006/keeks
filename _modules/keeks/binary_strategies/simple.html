@@ -1,0 +1,572 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keeks.binary_strategies.simple &mdash; keeks 0.0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=e3a6060d"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            keeks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">keeks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">keeks.binary_strategies.simple</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for keeks.binary_strategies.simple</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;willmcginnis&quot;</span>
+
+
+<div class="viewcode-block" id="NaiveStrategy">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NaiveStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A simple binary betting strategy that bets the full amount when expected value is positive.</span>
+
+<span class="sd">    This strategy uses a naive approach where it bets the maximum allowed amount</span>
+<span class="sd">    if the expected value is positive, and nothing if the expected value is negative.</span>
+<span class="sd">    It can also bet against an outcome if the inverse bet has positive expected value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoff : float</span>
+<span class="sd">        The amount won per unit bet on a successful outcome.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">    transaction_cost : float</span>
+<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the NaiveStrategy with payoff, loss, and transaction cost parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        payoff : float</span>
+<span class="sd">            The amount won per unit bet on a successful outcome.</span>
+<span class="sd">        loss : float</span>
+<span class="sd">            The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">        transaction_cost : float</span>
+<span class="sd">            The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+
+<div class="viewcode-block" id="NaiveStrategy.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate whether to bet based on expected value calculation.</span>
+
+<span class="sd">        Calculates the expected value of the bet and returns:</span>
+<span class="sd">        - 1.0 if betting on the outcome has positive expected value</span>
+<span class="sd">        - -1.0 if betting against the outcome has positive expected value</span>
+<span class="sd">        - 0.0 if neither bet has positive expected value</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Either 1.0 (bet full amount), -1.0 (bet against), or 0.0 (no bet).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">expected_value</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">*</span> <span class="n">probability</span><span class="p">)</span>
+            <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span><span class="p">))</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span>
+        <span class="p">)</span>
+        <span class="n">expected_value_neg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span><span class="p">))</span>
+            <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">*</span> <span class="n">probability</span><span class="p">)</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">expected_value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">elif</span> <span class="n">expected_value_neg</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FixedFractionStrategy">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FixedFractionStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A simple strategy that bets a fixed percentage of the bankroll.</span>
+<span class="sd">    </span>
+<span class="sd">    This strategy ignores probabilities and odds completely, and simply</span>
+<span class="sd">    wagers a fixed fraction of the bankroll. It can be used as a baseline</span>
+<span class="sd">    for comparison or as a simple approach for risk management.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fraction : float</span>
+<span class="sd">        The fixed fraction of the bankroll to bet (between 0 and 1).</span>
+<span class="sd">    min_probability : float, default=0.5</span>
+<span class="sd">        The minimum probability required to place a bet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">min_probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the FixedFractionStrategy.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fraction : float</span>
+<span class="sd">            The fixed fraction of the bankroll to bet (between 0 and 1).</span>
+<span class="sd">        min_probability : float, default=0.5</span>
+<span class="sd">            The minimum probability required to place a bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">fraction</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum probability must be between 0 and 1&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
+    
+<div class="viewcode-block" id="FixedFractionStrategy.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the fixed fraction if the probability meets the minimum threshold.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The fixed fraction if probability &gt;= min_probability, otherwise 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">probability</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CPPIStrategy">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CPPIStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constant Proportion Portfolio Insurance (CPPI) strategy for bankroll allocation.</span>
+<span class="sd">    </span>
+<span class="sd">    CPPI is a dynamic strategy that allocates funds based on a cushion value</span>
+<span class="sd">    above a fixed floor. The strategy aims to maintain a minimum amount of capital</span>
+<span class="sd">    (the floor) while allowing for upside participation through risky bets.</span>
+<span class="sd">    </span>
+<span class="sd">    The amount to bet is calculated as: multiplier * (current_bankroll - floor)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    floor_fraction : float</span>
+<span class="sd">        The fraction of the initial bankroll to protect as the floor (between 0 and 1).</span>
+<span class="sd">    multiplier : float</span>
+<span class="sd">        The leverage multiplier applied to the cushion (typically between 1 and 5).</span>
+<span class="sd">    initial_bankroll : float</span>
+<span class="sd">        The starting bankroll amount to calculate the initial floor.</span>
+<span class="sd">    min_probability : float, default=0.5</span>
+<span class="sd">        The minimum probability required to place a bet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">floor_fraction</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">,</span> <span class="n">initial_bankroll</span><span class="p">,</span> <span class="n">min_probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the CPPI strategy.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        floor_fraction : float</span>
+<span class="sd">            The fraction of the initial bankroll to protect as the floor (between 0 and 1).</span>
+<span class="sd">        multiplier : float</span>
+<span class="sd">            The leverage multiplier applied to the cushion (typically between 1 and 5).</span>
+<span class="sd">        initial_bankroll : float</span>
+<span class="sd">            The starting bankroll amount to calculate the initial floor.</span>
+<span class="sd">        min_probability : float, default=0.5</span>
+<span class="sd">            The minimum probability required to place a bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">floor_fraction</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Floor fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">multiplier</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Multiplier must be greater than 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">initial_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Initial bankroll must be greater than 0&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">floor_fraction</span> <span class="o">=</span> <span class="n">floor_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">multiplier</span> <span class="o">=</span> <span class="n">multiplier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">floor</span> <span class="o">=</span> <span class="n">floor_fraction</span> <span class="o">*</span> <span class="n">initial_bankroll</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">initial_bankroll</span>
+    
+<div class="viewcode-block" id="CPPIStrategy.update_bankroll">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_bankroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_bankroll</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the current bankroll value to calculate future allocations.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_bankroll : float</span>
+<span class="sd">            The current value of the bankroll.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">new_bankroll</span></div>
+
+    
+<div class="viewcode-block" id="CPPIStrategy.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the CPPI bet size based on the cushion above the floor.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The proportion of the current bankroll to bet, or 0 if below</span>
+<span class="sd">            the minimum probability threshold.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        
+        <span class="c1"># Calculate the cushion (amount above the floor)</span>
+        <span class="n">cushion</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">floor</span><span class="p">)</span>
+        
+        <span class="c1"># Calculate the exposure (amount to bet)</span>
+        <span class="n">exposure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiplier</span> <span class="o">*</span> <span class="n">cushion</span>
+        
+        <span class="c1"># Convert to a proportion of the current bankroll</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        
+        <span class="n">proportion</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">exposure</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">proportion</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DynamicBankrollManagement">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DynamicBankrollManagement</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dynamic Bankroll Management strategy that adapts bet sizing based on recent performance.</span>
+<span class="sd">    </span>
+<span class="sd">    This strategy adjusts the bet size based on:</span>
+<span class="sd">    1. Recent win/loss streak</span>
+<span class="sd">    2. Volatility of recent returns</span>
+<span class="sd">    3. Current drawdown from peak</span>
+<span class="sd">    </span>
+<span class="sd">    The strategy becomes more conservative during losing streaks, high volatility,</span>
+<span class="sd">    or significant drawdowns, and more aggressive during winning streaks, low</span>
+<span class="sd">    volatility, and when near equity peaks.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base_fraction : float</span>
+<span class="sd">        The baseline fraction of bankroll to bet (between 0 and 1).</span>
+<span class="sd">    payoff : float</span>
+<span class="sd">        The amount won per unit bet on a successful outcome.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">    window_size : int, default=10</span>
+<span class="sd">        The number of recent bets to consider for performance evaluation.</span>
+<span class="sd">    max_fraction : float, default=0.25</span>
+<span class="sd">        The maximum fraction of bankroll that can be bet.</span>
+<span class="sd">    min_fraction : float, default=0.01</span>
+<span class="sd">        The minimum fraction of bankroll that will be bet if a bet is placed.</span>
+<span class="sd">    min_probability : float, default=0.5</span>
+<span class="sd">        The minimum probability required to place a bet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">base_fraction</span><span class="p">,</span> 
+        <span class="n">payoff</span><span class="p">,</span> 
+        <span class="n">loss</span><span class="p">,</span> 
+        <span class="n">window_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">max_fraction</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> 
+        <span class="n">min_fraction</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">min_probability</span><span class="o">=</span><span class="mf">0.5</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the DynamicBankrollManagement strategy.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base_fraction : float</span>
+<span class="sd">            The baseline fraction of bankroll to bet (between 0 and 1).</span>
+<span class="sd">        payoff : float</span>
+<span class="sd">            The amount won per unit bet on a successful outcome.</span>
+<span class="sd">        loss : float</span>
+<span class="sd">            The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">        window_size : int, default=10</span>
+<span class="sd">            The number of recent bets to consider for performance evaluation.</span>
+<span class="sd">        max_fraction : float, default=0.25</span>
+<span class="sd">            The maximum fraction of bankroll that can be bet.</span>
+<span class="sd">        min_fraction : float, default=0.01</span>
+<span class="sd">            The minimum fraction of bankroll that will be bet if a bet is placed.</span>
+<span class="sd">        min_probability : float, default=0.5</span>
+<span class="sd">            The minimum probability required to place a bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">base_fraction</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Base fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">min_fraction</span> <span class="o">&lt;=</span> <span class="n">max_fraction</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Min fraction must be &lt;= max fraction, both between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">window_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Window size must be positive&quot;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_fraction</span> <span class="o">=</span> <span class="n">base_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_fraction</span> <span class="o">=</span> <span class="n">max_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_fraction</span> <span class="o">=</span> <span class="n">min_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
+        
+        <span class="c1"># Performance tracking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_history</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># 1 for win, -1 for loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">returns_history</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Percentage returns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="o">=</span> <span class="mf">1.0</span>   <span class="c1"># Start at 1.0 (will be updated)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">=</span> <span class="mf">1.0</span>
+        
+<div class="viewcode-block" id="DynamicBankrollManagement.record_result">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">won</span><span class="p">,</span> <span class="n">return_pct</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Record the result of a bet to update the strategy&#39;s state.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        won : bool</span>
+<span class="sd">            Whether the bet was won (True) or lost (False).</span>
+<span class="sd">        return_pct : float</span>
+<span class="sd">            The return as a percentage of the bankroll.</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll value after the bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">won</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">returns_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">return_pct</span><span class="p">)</span>
+        
+        <span class="c1"># Trim history to window size</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results_history</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">returns_history</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            
+        <span class="c1"># Update bankroll tracking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">current_bankroll</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="DynamicBankrollManagement.get_streak_factor">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_streak_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate a factor based on recent win/loss streak.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A multiplier that increases with winning streaks and</span>
+<span class="sd">            decreases with losing streaks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_history</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+            
+        <span class="c1"># Count consecutive results of the same sign</span>
+        <span class="n">streak</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current_sign</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results_history</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results_history</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">current_sign</span><span class="p">:</span>
+                <span class="n">streak</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+                
+        <span class="c1"># Convert streak to a factor</span>
+        <span class="k">if</span> <span class="n">current_sign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Winning streak</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">streak</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Losing streak</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">streak</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="DynamicBankrollManagement.get_volatility_factor">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_volatility_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate a factor based on recent return volatility.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A multiplier that decreases as volatility increases.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">returns_history</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+            
+        <span class="c1"># Calculate standard deviation of returns</span>
+        <span class="n">std_dev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">returns_history</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">returns_history</span> <span class="k">else</span> <span class="mi">0</span>
+        
+        <span class="c1"># Convert to a factor (higher volatility = lower factor)</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">std_dev</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)))</span></div>
+
+    
+<div class="viewcode-block" id="DynamicBankrollManagement.get_drawdown_factor">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_drawdown_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate a factor based on current drawdown from peak.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            A multiplier that decreases as drawdown increases.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span><span class="p">:</span>
+            <span class="c1"># Update peak when current bankroll is higher</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+            
+        <span class="c1"># Calculate current drawdown percentage</span>
+        <span class="n">drawdown_pct</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span><span class="p">)</span>
+        
+        <span class="c1"># Convert to a factor (higher drawdown = lower factor)</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">drawdown_pct</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span></div>
+
+    
+<div class="viewcode-block" id="DynamicBankrollManagement.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the dynamic bet size based on recent performance metrics.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probability : float</span>
+<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The dynamically adjusted proportion of the bankroll to bet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+            
+        <span class="c1"># Calculate adjustment factors</span>
+        <span class="n">streak_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_streak_factor</span><span class="p">()</span>
+        <span class="n">volatility_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_volatility_factor</span><span class="p">()</span>
+        <span class="n">drawdown_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_drawdown_factor</span><span class="p">()</span>
+        
+        <span class="c1"># Apply all factors to the base fraction</span>
+        <span class="n">adjusted_fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_fraction</span> <span class="o">*</span> <span class="n">streak_factor</span> <span class="o">*</span> <span class="n">volatility_factor</span> <span class="o">*</span> <span class="n">drawdown_factor</span>
+        
+        <span class="c1"># Ensure result is within bounds</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_fraction</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_fraction</span><span class="p">,</span> <span class="n">adjusted_fraction</span><span class="p">))</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Will McGinnis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
