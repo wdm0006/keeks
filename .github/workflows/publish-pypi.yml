@@ -50,6 +50,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          # Remove the password line after the first successful publish
-          # to switch to trusted publishing for subsequent releases
