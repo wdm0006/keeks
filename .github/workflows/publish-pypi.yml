@@ -25,8 +25,8 @@ jobs:
       
       - name: Install dependencies
         run: |
-          uv pip install -e ".[dev]"
-          uv pip install build
+          uv pip install --system -e ".[dev]"
+          uv pip install --system build
       
       - name: Build source distribution
         run: |
