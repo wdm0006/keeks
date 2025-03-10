@@ -1,0 +1,634 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binary Strategies &mdash; keeks 0.0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c1dcd045"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Simulators" href="simulators.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            keeks
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Binary Strategies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#base-strategy">Base Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy"><code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#naive-strategy">Naive Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.simple.NaiveStrategy"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.NaiveStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fixed-fraction-strategy">Fixed Fraction Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.simple.FixedFractionStrategy"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cppi-strategy">CPPI Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.simple.CPPIStrategy"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.CPPIStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.update_bankroll()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-bankroll-management">Dynamic Bankroll Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.simple.DynamicBankrollManagement"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_drawdown_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_streak_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_volatility_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.record_result()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#kelly-criterion">Kelly Criterion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.kelly.KellyCriterion"><code class="docutils literal notranslate"><span class="pre">KellyCriterion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.kelly.KellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">KellyCriterion.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fractional-kelly-criterion">Fractional Kelly Criterion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.kelly.FractionalKellyCriterion"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#drawdown-adjusted-kelly">Drawdown-Adjusted Kelly</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.kelly.DrawdownAdjustedKelly"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optimalf">OptimalF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#keeks.binary_strategies.kelly.OptimalF"><code class="docutils literal notranslate"><span class="pre">OptimalF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#keeks.binary_strategies.kelly.OptimalF.evaluate"><code class="docutils literal notranslate"><span class="pre">OptimalF.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">keeks</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Binary Strategies</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/binary_strategies.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="binary-strategies">
+<h1>Binary Strategies<a class="headerlink" href="#binary-strategies" title="Permalink to this heading"></a></h1>
+<p>Binary strategies are strategies that reason about singular binary bets. These bets have some payoff if they win, some
+loss if they lose, and a transaction cost regardless. Bets are not continuous, they either win or lose.</p>
+<section id="base-strategy">
+<h2>Base Strategy<a class="headerlink" href="#base-strategy" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.base.BaseStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.base.</span></span><span class="sig-name descname"><span class="pre">BaseStrategy</span></span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Abstract base class for all binary betting strategies.</p>
+<p>This class defines the interface that all binary betting strategies must implement.
+Concrete strategy implementations should inherit from this class and implement
+the evaluate method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.base.BaseStrategy.evaluate">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate the strategy for a given probability of success.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The proportion of the bankroll to bet, where:
+- Positive values indicate a bet on success
+- Negative values indicate a bet against success (if supported)
+- Zero indicates no bet</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="naive-strategy">
+<h2>Naive Strategy<a class="headerlink" href="#naive-strategy" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.NaiveStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.simple.</span></span><span class="sig-name descname"><span class="pre">NaiveStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_cost</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#NaiveStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.NaiveStrategy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>A simple binary betting strategy that bets the full amount when expected value is positive.</p>
+<p>This strategy uses a naive approach where it bets the maximum allowed amount
+if the expected value is positive, and nothing if the expected value is negative.
+It can also bet against an outcome if the inverse bet has positive expected value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.NaiveStrategy.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#NaiveStrategy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.NaiveStrategy.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate whether to bet based on expected value calculation.</p>
+<p>Calculates the expected value of the bet and returns:
+- 1.0 if betting on the outcome has positive expected value
+- -1.0 if betting against the outcome has positive expected value
+- 0.0 if neither bet has positive expected value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Either 1.0 (bet full amount), -1.0 (bet against), or 0.0 (no bet).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="fixed-fraction-strategy">
+<h2>Fixed Fraction Strategy<a class="headerlink" href="#fixed-fraction-strategy" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.FixedFractionStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.simple.</span></span><span class="sig-name descname"><span class="pre">FixedFractionStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_probability</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#FixedFractionStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.FixedFractionStrategy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>A simple strategy that bets a fixed percentage of the bankroll.</p>
+<p>This strategy ignores probabilities and odds completely, and simply
+wagers a fixed fraction of the bankroll. It can be used as a baseline
+for comparison or as a simple approach for risk management.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fixed fraction of the bankroll to bet (between 0 and 1).</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.FixedFractionStrategy.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#FixedFractionStrategy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Return the fixed fraction if the probability meets the minimum threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The fixed fraction if probability &gt;= min_probability, otherwise 0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="cppi-strategy">
+<h2>CPPI Strategy<a class="headerlink" href="#cppi-strategy" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.CPPIStrategy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.simple.</span></span><span class="sig-name descname"><span class="pre">CPPIStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">floor_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_bankroll</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_probability</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#CPPIStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.CPPIStrategy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>Constant Proportion Portfolio Insurance (CPPI) strategy for bankroll allocation.</p>
+<p>CPPI is a dynamic strategy that allocates funds based on a cushion value
+above a fixed floor. The strategy aims to maintain a minimum amount of capital
+(the floor) while allowing for upside participation through risky bets.</p>
+<p>The amount to bet is calculated as: multiplier * (current_bankroll - floor)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>floor_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fraction of the initial bankroll to protect as the floor (between 0 and 1).</p></li>
+<li><p><strong>multiplier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The leverage multiplier applied to the cushion (typically between 1 and 5).</p></li>
+<li><p><strong>initial_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The starting bankroll amount to calculate the initial floor.</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.CPPIStrategy.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#CPPIStrategy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.CPPIStrategy.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the CPPI bet size based on the cushion above the floor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The proportion of the current bankroll to bet, or 0 if below
+the minimum probability threshold.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.CPPIStrategy.update_bankroll">
+<span class="sig-name descname"><span class="pre">update_bankroll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_bankroll</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#CPPIStrategy.update_bankroll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll" title="Permalink to this definition"></a></dt>
+<dd><p>Update the current bankroll value to calculate future allocations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The current value of the bankroll.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="dynamic-bankroll-management">
+<h2>Dynamic Bankroll Management<a class="headerlink" href="#dynamic-bankroll-management" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.DynamicBankrollManagement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.simple.</span></span><span class="sig-name descname"><span class="pre">DynamicBankrollManagement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_probability</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#DynamicBankrollManagement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.DynamicBankrollManagement" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>Dynamic Bankroll Management strategy that adapts bet sizing based on recent performance.</p>
+<p>This strategy adjusts the bet size based on:
+1. Recent win/loss streak
+2. Volatility of recent returns
+3. Current drawdown from peak</p>
+<p>The strategy becomes more conservative during losing streaks, high volatility,
+or significant drawdowns, and more aggressive during winning streaks, low
+volatility, and when near equity peaks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The baseline fraction of bankroll to bet (between 0 and 1).</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=10</em>) – The number of recent bets to consider for performance evaluation.</p></li>
+<li><p><strong>max_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=0.25</em>) – The maximum fraction of bankroll that can be bet.</p></li>
+<li><p><strong>min_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=0.01</em>) – The minimum fraction of bankroll that will be bet if a bet is placed.</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#DynamicBankrollManagement.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the dynamic bet size based on recent performance metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The dynamically adjusted proportion of the bankroll to bet.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor">
+<span class="sig-name descname"><span class="pre">get_drawdown_factor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#DynamicBankrollManagement.get_drawdown_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate a factor based on current drawdown from peak.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A multiplier that decreases as drawdown increases.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor">
+<span class="sig-name descname"><span class="pre">get_streak_factor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#DynamicBankrollManagement.get_streak_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate a factor based on recent win/loss streak.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A multiplier that increases with winning streaks and
+decreases with losing streaks.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor">
+<span class="sig-name descname"><span class="pre">get_volatility_factor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#DynamicBankrollManagement.get_volatility_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate a factor based on recent return volatility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A multiplier that decreases as volatility increases.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.simple.DynamicBankrollManagement.record_result">
+<span class="sig-name descname"><span class="pre">record_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">won</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_pct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_bankroll</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/simple.html#DynamicBankrollManagement.record_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result" title="Permalink to this definition"></a></dt>
+<dd><p>Record the result of a bet to update the strategy’s state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>won</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether the bet was won (True) or lost (False).</p></li>
+<li><p><strong>return_pct</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The return as a percentage of the bankroll.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The current bankroll value after the bet.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="kelly-criterion">
+<h2>Kelly Criterion<a class="headerlink" href="#kelly-criterion" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.KellyCriterion">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.kelly.</span></span><span class="sig-name descname"><span class="pre">KellyCriterion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_cost</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#KellyCriterion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.KellyCriterion" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>Implementation of the Kelly Criterion for binary betting.</p>
+<p>The Kelly Criterion is a formula for bet sizing that maximizes the expected
+logarithm of wealth. It calculates the optimal fraction of the bankroll to
+bet based on the probability of winning and the payoff odds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.KellyCriterion.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#KellyCriterion.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.KellyCriterion.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the optimal bet size using the Kelly Criterion.</p>
+<p>The Kelly formula for binary outcomes:
+f* = (bp - q) / b
+where:
+- b = net odds received on the wager (payoff/loss)
+- p = probability of winning
+- q = probability of losing (1-p)</p>
+<p>The formula is adjusted to account for transaction costs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimal proportion of the bankroll to bet, adjusted for transaction costs.
+Returns a negative value if the expected value is negative.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="fractional-kelly-criterion">
+<h2>Fractional Kelly Criterion<a class="headerlink" href="#fractional-kelly-criterion" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.FractionalKellyCriterion">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.kelly.</span></span><span class="sig-name descname"><span class="pre">FractionalKellyCriterion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_cost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#FractionalKellyCriterion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.FractionalKellyCriterion" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>Implementation of the Fractional Kelly Criterion for binary betting.</p>
+<p>The Fractional Kelly Criterion applies a fraction to the full Kelly bet size,
+which can reduce volatility at the expense of long-term growth rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fraction of the full Kelly bet to use (typically between 0 and 1).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#FractionalKellyCriterion.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the fractional Kelly bet size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="drawdown-adjusted-kelly">
+<h2>Drawdown-Adjusted Kelly<a class="headerlink" href="#drawdown-adjusted-kelly" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.DrawdownAdjustedKelly">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.kelly.</span></span><span class="sig-name descname"><span class="pre">DrawdownAdjustedKelly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_cost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_acceptable_drawdown</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#DrawdownAdjustedKelly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.DrawdownAdjustedKelly" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>Drawdown-Adjusted Kelly Criterion for binary betting.</p>
+<p>This variant of the Kelly Criterion adjusts the bet size based on the user’s
+maximum acceptable drawdown, effectively managing risk more conservatively
+than the standard Kelly approach.</p>
+<p>The adjustment is based on the relationship between drawdown and bet size
+as described in risk management literature. The formula approximates the
+relationship between maximum drawdown and the fraction of Kelly to use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>max_acceptable_drawdown</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The maximum drawdown the investor is willing to tolerate,
+expressed as a fraction between 0 and 1 (e.g., 0.2 for 20%).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#DrawdownAdjustedKelly.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the drawdown-adjusted Kelly bet size.</p>
+<p>The adjustment is an approximation based on the relationship between
+bet size and expected drawdown in repeated betting scenarios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The drawdown-adjusted proportion of the bankroll to bet.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="optimalf">
+<h2>OptimalF<a class="headerlink" href="#optimalf" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.OptimalF">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.kelly.</span></span><span class="sig-name descname"><span class="pre">OptimalF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_cost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_risk_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#OptimalF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.OptimalF" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a></p>
+<p>Implementation of Ralph Vince’s Optimal f for binary betting.</p>
+<p>Optimal f is a strategy that aims to maximize the geometric growth rate
+of a bankroll over time. It’s similar to the Kelly Criterion but can be
+more adaptable to certain scenarios and often less aggressive in its allocations.</p>
+<p>The strategy uses past or simulated performance data to find the fraction
+that would have maximized growth, then applies that fraction to future bets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>win_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The historical or expected win rate (between 0 and 1).</p></li>
+<li><p><strong>max_risk_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=0.2</em>) – The maximum fraction of bankroll that can be risked on a single bet.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.binary_strategies.kelly.OptimalF.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/kelly.html#OptimalF.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.kelly.OptimalF.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the optimal f bet size based on win rate and payoff ratio.</p>
+<p>This implementation uses a simplified approach to Optimal f, where
+we calculate it as (expected_win_rate * payoff - expected_loss_rate) / payoff.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The optimal proportion of the bankroll to bet.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulators.html" class="btn btn-neutral float-right" title="Simulators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Will McGinnis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
