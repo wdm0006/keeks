@@ -1,4 +1,4 @@
-name: "Master Docs Publication"
+name: "Docs Publication"
 on:
   push:
     branches: [ master ]
