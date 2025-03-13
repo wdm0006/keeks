@@ -5,9 +5,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>keeks.utils &mdash; keeks 0.0.2 documentation</title>
+  <title>keeks.utils &mdash; Keeks</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/dark_mode_css/general.css?v=c0a7eb24" />
+      <link rel="stylesheet" type="text/css" href="../../_static/dark_mode_css/dark.css?v=70edf1c7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
@@ -15,6 +17,8 @@
       <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c1dcd045"></script>
       <script src="../../_static/doctools.js?v=888ff710"></script>
       <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
+      <script src="../../_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search"  style="background: #1a1a1a" >
 
           
           
@@ -41,18 +45,127 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../binary_strategies.html">Binary Strategies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../simulators.html">Simulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../bankroll.html">Bankroll</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started.html#using-different-strategies">Using Different Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started.html#using-different-simulators">Using Different Simulators</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../binary_strategies.html">Binary Strategies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#base-strategy">Base Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy"><code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#naive-strategy">Naive Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#fixed-fraction-strategy">Fixed Fraction Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#cppi-strategy">CPPI Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.update_bankroll()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#dynamic-bankroll-management">Dynamic Bankroll Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_drawdown_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_streak_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_volatility_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.record_result()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#kelly-criterion">Kelly Criterion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion"><code class="docutils literal notranslate"><span class="pre">KellyCriterion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">KellyCriterion.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#fractional-kelly-criterion">Fractional Kelly Criterion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#drawdown-adjusted-kelly">Drawdown-Adjusted Kelly</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../binary_strategies.html#optimalf">OptimalF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.OptimalF"><code class="docutils literal notranslate"><span class="pre">OptimalF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../binary_strategies.html#keeks.binary_strategies.kelly.OptimalF.evaluate"><code class="docutils literal notranslate"><span class="pre">OptimalF.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulators.html">Simulators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../simulators.html#repeated-binary-simulator">Repeated Binary Simulator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../simulators.html#keeks.simulators.repeated_binary.RepeatedBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RepeatedBinarySimulator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../simulators.html#keeks.simulators.repeated_binary.RepeatedBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RepeatedBinarySimulator.evaluate_strategy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulators.html#random-binary-simulator">Random Binary Simulator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../simulators.html#keeks.simulators.random_binary.RandomBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RandomBinarySimulator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../simulators.html#keeks.simulators.random_binary.RandomBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RandomBinarySimulator.evaluate_strategy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulators.html#random-uncertain-binary-simulator">Random Uncertain Binary Simulator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RandomUncertainBinarySimulator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RandomUncertainBinarySimulator.evaluate_strategy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../bankroll.html">Bankroll</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../bankroll.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../utils.html#keeks.utils.RuinError"><code class="docutils literal notranslate"><span class="pre">RuinError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils.html#exceptions">Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../utils.html#id0"><code class="docutils literal notranslate"><span class="pre">RuinError</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1a1a1a" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">keeks</a>
       </nav>
