@@ -49,6 +49,7 @@ extensions = [
     "sphinx.ext.viewcode",  # Add links to highlighted source code
     "sphinx.ext.intersphinx",  # Link to other project's documentation
     "sphinx.ext.autosummary",  # Generate summary tables
+    "sphinx_rtd_dark_mode",  # Add dark mode support
 ]
 
 # Configure autodoc
@@ -97,7 +98,25 @@ exclude_patterns = []
 #
 html_theme = "sphinx_rtd_theme"
 
+# Theme options
+html_theme_options = {
+    # Header style to match mcginniscommawill.com
+    "style_nav_header_background": "#1a1a1a",
+    # Default options for RTD theme
+    "collapse_navigation": False,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
+    "includehidden": True,
+    "titles_only": False,
+}
+
+# Default to dark mode
+default_dark_mode = True
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# Set the title of the documentation
+html_title = "Keeks"

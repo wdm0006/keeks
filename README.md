@@ -4,6 +4,8 @@
 
 A Python library for optimal bankroll allocation and betting strategies, with a focus on the Kelly Criterion and its variants.
 
+Full documentation at [keeks.mcginniscommawill.com](https://keeks.mcginniscommawill.com).
+
 ## What is Keeks?
 
 Keeks is a specialized Python library designed to help you implement and test various betting and investment strategies. It provides tools for:
