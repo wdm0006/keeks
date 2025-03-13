@@ -1,6 +1,7 @@
 sphinx>=4.0.0
 sphinx_rtd_theme>=1.0.0
 sphinx_rtd_dark_mode
+sphinxcontrib-googleanalytics
 matplotlib>=3.5.0
 numpy>=1.20.0
 pandas>=1.5.0

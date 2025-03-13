@@ -50,7 +50,12 @@ extensions = [
     "sphinx.ext.intersphinx",  # Link to other project's documentation
     "sphinx.ext.autosummary",  # Generate summary tables
     "sphinx_rtd_dark_mode",  # Add dark mode support
+    "sphinxcontrib.googleanalytics",  # Google Analytics support
 ]
+
+# Configure Google Analytics
+googleanalytics_id = 'G-Z43R9PWW0B'
+googleanalytics_enabled = True
 
 # Configure autodoc
 autodoc_default_options = {
@@ -110,8 +115,9 @@ html_theme_options = {
     "titles_only": False,
 }
 
-# Default to dark mode
+# Default to dark mode and force it to always be dark
 default_dark_mode = True
+force_dark_mode = True  # This will force dark mode to always be on
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
