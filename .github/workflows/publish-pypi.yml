@@ -6,40 +6,8 @@ on:
       - 'v*'
 
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
-      - name: Install cibuildwheel
-        run: pip install cibuildwheel
-      
-      - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_SKIP: "pp* *-musllinux*"  # Skip PyPy and musllinux
-          CIBW_ARCHS_MACOS: "x86_64 arm64"  # Build for Intel and Apple Silicon on macOS
-      
-      - uses: actions/upload-artifact@v4
-        with:
-          name: wheels-${{ matrix.os }}
-          path: ./wheelhouse/*.whl
-          retention-days: 5
-          compression-level: 6
-          if-no-files-found: error
-
-  build_sdist:
-    name: Build source distribution
+  build_wheels_and_sdist:
+    name: Build distributions
     runs-on: ubuntu-latest
     
     steps:
@@ -63,7 +31,7 @@ jobs:
         run: |
           uv pip install build
       
-      - name: Build source distribution
+      - name: Clean build artifacts
         run: |
           # Clean the build directories first
           rm -fr build/
@@ -75,23 +43,23 @@ jobs:
           find . -name '*.pyo' -exec rm -f {} +
           find . -name '*~' -exec rm -f {} +
           find . -name '__pycache__' -exec rm -fr {} +
-          
-          # Build only the source distribution
-          uv run python -m build --sdist
-          mkdir -p wheelhouse
-          cp dist/*.tar.gz wheelhouse/
+      
+      - name: Build distributions
+        run: |
+          # Build both wheel and sdist
+          uv run python -m build
       
       - uses: actions/upload-artifact@v4
         with:
-          name: sdist
-          path: ./wheelhouse/*.tar.gz
+          name: distributions
+          path: ./dist/*
           retention-days: 5
           compression-level: 6
           if-no-files-found: error
 
   publish:
     name: Publish to PyPI
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels_and_sdist]
     runs-on: ubuntu-latest
     permissions:
       # IMPORTANT: this permission is mandatory for Trusted Publishing
@@ -100,16 +68,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          name: distributions
           path: dist
-          merge-multiple: true
       
-      - name: Move distribution files to dist directory
+      - name: List distribution files
         run: |
-          mkdir -p dist_flat
-          find dist -type f \( -name "*.whl" -o -name "*.tar.gz" \) -exec cp {} dist_flat/ \;
-          ls -la dist_flat/
+          ls -la dist/
       
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: dist_flat/
+          packages-dir: dist/
