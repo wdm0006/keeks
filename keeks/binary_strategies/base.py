@@ -12,22 +12,73 @@ class BaseStrategy(abc.ABC):
     the evaluate method.
     """
 
-    @abc.abstractmethod
-    def evaluate(self, probability):
+    def __init__(self, payoff: float, loss: float, transaction_cost: float = 0):
         """
-        Evaluate the strategy for a given probability of success.
+        Initialize the strategy.
 
         Parameters
         ----------
-        probability : float
-            The probability of a successful outcome, typically between 0 and 1.
+        payoff : float
+            The payoff multiplier for winning.
+        loss : float
+            The loss multiplier for losing.
+        transaction_cost : float, optional
+            The transaction cost as a fraction of the bet, by default 0.
+
+        Raises
+        ------
+        ValueError
+            If payoff is not positive, loss is negative, or loss + transaction_cost is not positive.
+        """
+        if payoff <= 0:
+            raise ValueError("Payoff must be greater than 0")
+        if loss < 0:
+            raise ValueError("Loss must be non-negative")
+        if transaction_cost < 0:
+            raise ValueError("Transaction cost must be non-negative")
+        if loss + transaction_cost <= 0:
+            raise ValueError(
+                "Total cost (loss + transaction_cost) must be greater than 0"
+            )
+
+        self.payoff = payoff
+        self.loss = loss
+        self.transaction_cost = transaction_cost
+
+    def get_max_safe_bet(self, current_bankroll: float) -> float:
+        """
+        Calculate the maximum safe bet size based on current bankroll.
+
+        Parameters
+        ----------
+        current_bankroll : float
+            The current bankroll to use for calculations.
 
         Returns
         -------
         float
-            The proportion of the bankroll to bet, where:
-            - Positive values indicate a bet on success
-            - Negative values indicate a bet against success (if supported)
-            - Zero indicates no bet
+            The maximum safe bet size as a proportion of bankroll.
+        """
+        # Calculate maximum bet that won't result in negative bankroll
+        # after accounting for loss multiplier and transaction costs
+        max_bet = current_bankroll / (self.loss + self.transaction_cost)
+        return min(1.0, max_bet / current_bankroll)
+
+    @abc.abstractmethod
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
+        """
+        Evaluate the strategy for a given probability.
+
+        Parameters
+        ----------
+        probability : float
+            The probability of winning.
+        current_bankroll : float
+            The current bankroll to use for calculations.
+
+        Returns
+        -------
+        float
+            The proportion of the bankroll to bet.
         """
         pass

@@ -14,18 +14,28 @@ This module provides various strategies for binary betting scenarios, including:
 All strategies implement the BaseStrategy interface.
 """
 
-from keeks.binary_strategies.kelly import KellyCriterion, FractionalKellyCriterion, DrawdownAdjustedKelly, OptimalF
-from keeks.binary_strategies.simple import NaiveStrategy, FixedFractionStrategy, CPPIStrategy, DynamicBankrollManagement
+from keeks.binary_strategies.kelly import (
+    DrawdownAdjustedKelly,
+    FractionalKellyCriterion,
+    KellyCriterion,
+)
+from keeks.binary_strategies.simple import (
+    CPPIStrategy,
+    DynamicBankrollManagement,
+    FixedFractionStrategy,
+    NaiveStrategy,
+    OptimalF,
+)
 
 __author__ = "willmcginnis"
 
 __all__ = [
-    "KellyCriterion", 
-    "FractionalKellyCriterion", 
+    "KellyCriterion",
+    "FractionalKellyCriterion",
     "DrawdownAdjustedKelly",
     "OptimalF",
-    "NaiveStrategy", 
-    "FixedFractionStrategy", 
+    "NaiveStrategy",
+    "FixedFractionStrategy",
     "CPPIStrategy",
-    "DynamicBankrollManagement"
+    "DynamicBankrollManagement",
 ]

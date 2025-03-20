@@ -49,7 +49,13 @@ class RepeatedBinarySimulator:
             The bankroll object is updated in-place with the results of the simulation.
         """
         for _ in range(self.trials):
-            proportion = strategy.evaluate(self.probability)
+            # Update the strategy's internal state with current bankroll if supported
+            if hasattr(strategy, "update_bankroll"):
+                strategy.update_bankroll(bankroll.total_funds)
+
+            # Get the proportion to bet
+            proportion = strategy.evaluate(self.probability, bankroll.total_funds)
+
             if random.random() < self.probability:
                 amt = (
                     self.payoff * bankroll.bettable_funds * proportion
