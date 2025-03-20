@@ -23,7 +23,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c1dcd045"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b1f64a84"></script>
       <script src="../../../_static/doctools.js?v=888ff710"></script>
       <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
       <script src="../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -65,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#base-strategy">Base Strategy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy"><code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.evaluate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.get_max_safe_bet()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -95,6 +96,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.evaluate()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_drawdown_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_probability_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_probability_factor()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_streak_factor()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_volatility_factor()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.record_result()</span></code></a></li>
@@ -124,8 +126,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#optimalf">OptimalF</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.OptimalF"><code class="docutils literal notranslate"><span class="pre">OptimalF</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.OptimalF.evaluate"><code class="docutils literal notranslate"><span class="pre">OptimalF.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF"><code class="docutils literal notranslate"><span class="pre">OptimalF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.evaluate"><code class="docutils literal notranslate"><span class="pre">OptimalF.evaluate()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -263,7 +265,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">):</span>
             <span class="n">probability</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">proportion</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+            <span class="n">proportion</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
                 <span class="o">&lt;</span> <span class="n">probability</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
