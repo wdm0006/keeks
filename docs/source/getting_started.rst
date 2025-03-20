@@ -74,7 +74,7 @@ Keeks provides several betting strategies:
    
    .. code-block:: python
    
-      from keeks.binary_strategies import OptimalF
+      from keeks.binary_strategies.simple import OptimalF
       strategy = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.55)
    
 5. **Fixed Fraction**: Simple strategy that bets a constant percentage
