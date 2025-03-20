@@ -23,10 +23,10 @@ import os
 import sys
 
 # Add the project root directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 # Now import the version
-from version import __version__ # noqa
+from version import __version__  # noqa
 
 # -- Project information -----------------------------------------------------
 
@@ -54,7 +54,7 @@ extensions = [
 ]
 
 # Configure Google Analytics
-googleanalytics_id = 'G-Z43R9PWW0B'
+googleanalytics_id = "G-Z43R9PWW0B"
 googleanalytics_enabled = True
 
 # Configure autodoc

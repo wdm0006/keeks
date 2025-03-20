@@ -81,7 +81,6 @@ class BankRoll:
             The amount to deposit into the bankroll.
         """
         self._bank += amt
-
         self.update_history()
 
     def withdraw(self, amt):
@@ -105,6 +104,56 @@ class BankRoll:
         if self.max_draw_down and amt > self.max_draw_down * self.total_funds:
             raise RuinError("You lost too much money buddy, slow down.")
 
+        self.update_history()
+
+    def bet(self, amount):
+        """
+        Place a bet with the specified amount.
+
+        Parameters
+        ----------
+        amount : float
+            The amount to bet.
+
+        Raises
+        ------
+        ValueError
+            If the bet amount exceeds the bettable funds.
+        """
+        if amount > self.bettable_funds:
+            raise ValueError("Bet amount exceeds bettable funds")
+        self._bank -= amount
+        self.update_history()
+
+    def add_funds(self, amount):
+        """
+        Add funds to the bankroll after a winning bet.
+
+        Parameters
+        ----------
+        amount : float
+            The amount to add to the bankroll.
+        """
+        self._bank += amount
+        self.update_history()
+
+    def remove_funds(self, amount):
+        """
+        Remove funds from the bankroll after a losing bet.
+
+        Parameters
+        ----------
+        amount : float
+            The amount to remove from the bankroll.
+
+        Raises
+        ------
+        RuinError
+            If the removal would exceed the maximum allowed drawdown.
+        """
+        if self.max_draw_down and amount > self.max_draw_down * self.total_funds:
+            raise RuinError("You lost too much money buddy, slow down.")
+        self._bank -= amount
         self.update_history()
 
     def plot_history(self, fname=None):

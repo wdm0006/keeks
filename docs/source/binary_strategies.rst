@@ -71,7 +71,7 @@ Drawdown-Adjusted Kelly
 OptimalF
 --------
 
-.. autoclass:: keeks.binary_strategies.kelly.OptimalF
+.. autoclass:: keeks.binary_strategies.simple.OptimalF
     :members:
     :undoc-members:
     :show-inheritance:

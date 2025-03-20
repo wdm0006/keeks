@@ -66,7 +66,7 @@ class RandomUncertainBinarySimulator:
         """
         for _ in range(self.trials):
             probability = np.random.normal(0.5, self.stdev, 1)[0]
-            proportion = strategy.evaluate(probability)
+            proportion = strategy.evaluate(probability, bankroll.total_funds)
             if (
                 random.random()
                 < probability + np.random.normal(0, self.uncertainty_stdev, 1)[0]

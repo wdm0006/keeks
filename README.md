@@ -114,6 +114,7 @@ Keeks implements several betting strategies:
 
 4. **OptimalF (Ralph Vince)**: Strategy that maximizes geometric growth rate
    ```python
+   from keeks.binary_strategies.simple import OptimalF
    optimal_f = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.55, max_risk_fraction=0.2)
    ```
 

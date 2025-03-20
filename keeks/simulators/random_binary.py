@@ -53,7 +53,7 @@ class RandomBinarySimulator:
         """
         for _ in range(self.trials):
             probability = np.random.normal(0.5, self.stdev, 1)[0]
-            proportion = strategy.evaluate(probability)
+            proportion = strategy.evaluate(probability, bankroll.total_funds)
             if random.random() < probability:
                 amt = (
                     self.payoff * bankroll.bettable_funds * proportion

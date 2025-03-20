@@ -1,4 +1,4 @@
-.PHONY: help setup install install-dev test test-cov lint format clean build docs lint-fix test-all
+.PHONY: help setup install install-dev test test-cov lint format clean build docs lint-fix test-all examples
 
 # Default target
 help:
@@ -15,6 +15,7 @@ help:
 	@echo "  make clean        - Clean build artifacts"
 	@echo "  make build        - Build package distributions"
 	@echo "  make docs         - Build documentation"
+	@echo "  make examples     - Run example scripts"
 	
 # Setup development environment
 setup:
@@ -87,5 +88,9 @@ docs:
 # Run tests on all supported Python versions
 test-all:
 	uv run tox 
+
+# Run example scripts
+examples:
+	uv run python examples/st_petersburg_comparison.py
 
 all: clean test docs 
