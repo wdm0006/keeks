@@ -50,7 +50,8 @@ class RandomUncertainBinarySimulator:
 
         For each trial, a random probability is generated, the strategy is evaluated
         with this probability, but the actual outcome is determined by the probability
-        plus a random uncertainty factor.
+        plus a random uncertainty factor. The simulation stops early if the bankroll
+        is depleted (bankruptcy).
 
         Parameters
         ----------
@@ -65,18 +66,25 @@ class RandomUncertainBinarySimulator:
             The bankroll object is updated in-place with the results of the simulation.
         """
         for _ in range(self.trials):
+            # Stop if bankrupt
+            if bankroll.total_funds <= 0:
+                break
+
             probability = np.random.normal(0.5, self.stdev, 1)[0]
             proportion = strategy.evaluate(probability, bankroll.total_funds)
-            if (
-                random.random()
-                < probability + np.random.normal(0, self.uncertainty_stdev, 1)[0]
-            ):
-                amt = (
-                    self.payoff * bankroll.bettable_funds * proportion
-                ) - self.transaction_costs
-                bankroll.deposit(amt)
-            else:
-                bankroll.withdraw(
-                    (self.loss * bankroll.bettable_funds * proportion)
-                    - self.transaction_costs
-                )
+
+            # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
+            if proportion > 0:
+                if (
+                    random.random()
+                    < probability + np.random.normal(0, self.uncertainty_stdev, 1)[0]
+                ):
+                    amt = (
+                        self.payoff * bankroll.bettable_funds * proportion
+                    ) - self.transaction_costs
+                    bankroll.deposit(amt)
+                else:
+                    bankroll.withdraw(
+                        (self.loss * bankroll.bettable_funds * proportion)
+                        + self.transaction_costs
+                    )

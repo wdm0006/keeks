@@ -133,10 +133,39 @@ Keeks implements several betting strategies:
    dynamic = DynamicBankrollManagement(base_fraction=0.1, payoff=1.0, loss=1.0, window_size=10)
    ```
 
-8. **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
+8. **Merton Share (CRRA Utility)**: Based on Merton's portfolio problem with constant relative risk aversion
+   ```python
+   from keeks.binary_strategies.simple import MertonShare
+   merton = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.01, risk_aversion=2.0)
+   ```
+
+9. **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
    ```python
    naive = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.01)
    ```
+
+### Utility Functions
+
+For one-time decision problems (e.g., "What should I pay for this opportunity?"), keeks provides CRRA utility functions:
+
+```python
+from keeks.utils import find_indifference_price
+
+# Calculate maximum price you'd pay for a gamble
+# Example: St. Petersburg paradox
+outcomes = [2**n for n in range(1, 31)]
+probabilities = [(0.5)**n for n in range(1, 31)]
+
+max_price = find_indifference_price(
+    outcomes=outcomes,
+    probabilities=probabilities,
+    current_wealth=10000,
+    risk_aversion=2.0  # 1.0=Kelly, 2.0=moderate, 5.0=conservative
+)
+# Returns: ~$12.80 despite infinite expected value!
+```
+
+See [examples/st_petersburg_paradox.py](examples/st_petersburg_paradox.py) for a complete demonstration.
 
 ### Simulators
 

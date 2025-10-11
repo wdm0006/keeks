@@ -9,6 +9,7 @@ This module provides various strategies for binary betting scenarios, including:
 - Fixed Fraction: Simple strategy that bets a constant percentage
 - CPPI: Constant Proportion Portfolio Insurance for preserving capital
 - Dynamic Bankroll Management: Adaptive allocation based on recent performance
+- Merton Share: Based on Merton's portfolio problem with CRRA utility
 - Naive Strategy: Simple strategy that bets full amount when expected value is positive
 
 All strategies implement the BaseStrategy interface.
@@ -23,6 +24,7 @@ from keeks.binary_strategies.simple import (
     CPPIStrategy,
     DynamicBankrollManagement,
     FixedFractionStrategy,
+    MertonShare,
     NaiveStrategy,
     OptimalF,
 )
@@ -38,4 +40,5 @@ __all__ = [
     "FixedFractionStrategy",
     "CPPIStrategy",
     "DynamicBankrollManagement",
+    "MertonShare",
 ]

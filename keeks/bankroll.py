@@ -88,7 +88,7 @@ class BankRoll:
         Remove funds from the bankroll.
 
         This method enforces the max_draw_down limit if set, raising a RuinError
-        if the withdrawal would exceed the allowed drawdown.
+        if the withdrawal would exceed the allowed drawdown or cause bankruptcy.
 
         Parameters
         ----------
@@ -98,12 +98,19 @@ class BankRoll:
         Raises
         ------
         RuinError
-            If the withdrawal would exceed the maximum allowed drawdown.
+            If the withdrawal would exceed the maximum allowed drawdown or
+            cause the bankroll to go negative (bankruptcy).
         """
-        self._bank -= amt
-        if self.max_draw_down and amt > self.max_draw_down * self.total_funds:
+        # Check if withdrawal would cause bankruptcy
+        if self._bank - amt < 0:
+            raise RuinError("Insufficient funds for withdrawal (would cause bankruptcy)")
+
+        # Check drawdown limit if set
+        if self.max_draw_down and amt > self.max_draw_down * self._bank:
             raise RuinError("You lost too much money buddy, slow down.")
 
+        # Only withdraw if checks pass
+        self._bank -= amt
         self.update_history()
 
     def bet(self, amount):
@@ -149,10 +156,18 @@ class BankRoll:
         Raises
         ------
         RuinError
-            If the removal would exceed the maximum allowed drawdown.
+            If the removal would exceed the maximum allowed drawdown or
+            cause the bankroll to go negative (bankruptcy).
         """
-        if self.max_draw_down and amount > self.max_draw_down * self.total_funds:
+        # Check if removal would cause bankruptcy
+        if self._bank - amount < 0:
+            raise RuinError("Insufficient funds for removal (would cause bankruptcy)")
+
+        # Check drawdown limit if set
+        if self.max_draw_down and amount > self.max_draw_down * self._bank:
             raise RuinError("You lost too much money buddy, slow down.")
+
+        # Only remove if checks pass
         self._bank -= amount
         self.update_history()
 
