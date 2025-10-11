@@ -94,6 +94,48 @@ class KellyCriterion(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, kelly_fraction), self.get_max_safe_bet(current_bankroll))
 
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        Kelly Criterion is derived from log utility maximization (CRRA with γ=1.0),
+        so this uses log utility to find the indifference price.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble
+        probabilities : array-like
+            The probability of each outcome (must sum to ≤ 1)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance for binary search
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay for the gamble
+
+        Notes
+        -----
+        Kelly Criterion maximizes E[log(wealth)], which corresponds to
+        CRRA utility with risk aversion γ=1.0 (log utility).
+        """
+        from keeks.utils import find_indifference_price
+
+        return find_indifference_price(
+            outcomes=outcomes,
+            probabilities=probabilities,
+            current_wealth=current_wealth,
+            risk_aversion=1.0,  # Kelly uses log utility (γ=1)
+            tolerance=tolerance,
+            max_search_fraction=max_search_fraction
+        )
+
 
 class FractionalKellyCriterion(BaseStrategy):
     """
@@ -139,6 +181,48 @@ class FractionalKellyCriterion(BaseStrategy):
         """
         kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
         return self.fraction * kelly.evaluate(probability, current_bankroll)
+
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        Fractional Kelly is more conservative than full Kelly, so we scale down
+        the entry price proportionally. This assumes the fraction reflects
+        increased risk aversion beyond log utility.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble
+        probabilities : array-like
+            The probability of each outcome (must sum to ≤ 1)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance for binary search
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay for the gamble
+
+        Notes
+        -----
+        Fractional Kelly (e.g., Half Kelly) is more conservative than full Kelly.
+        We scale the entry price by the fraction, which is a reasonable
+        approximation though not derived from first principles.
+        """
+        # Get full Kelly price
+        kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
+        kelly_price = kelly.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth, tolerance, max_search_fraction
+        )
+
+        # Scale by the fraction (more conservative)
+        return self.fraction * kelly_price
 
 
 class DrawdownAdjustedKelly(BaseStrategy):
@@ -225,3 +309,45 @@ class DrawdownAdjustedKelly(BaseStrategy):
 
         # Ensure we never bet more than would result in negative bankroll
         return min(adjusted_kelly, self.get_max_safe_bet(current_bankroll))
+
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        Drawdown-Adjusted Kelly scales down Kelly based on drawdown tolerance.
+        We apply the same scaling factor to the entry price.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble
+        probabilities : array-like
+            The probability of each outcome (must sum to ≤ 1)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance for binary search
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay for the gamble
+
+        Notes
+        -----
+        Uses the same drawdown adjustment factor as the betting strategy:
+        drawdown_factor = min(1.0, max_acceptable_drawdown / 0.5)
+        """
+        # Get full Kelly price
+        kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
+        kelly_price = kelly.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth, tolerance, max_search_fraction
+        )
+
+        # Apply the same drawdown adjustment used in evaluate()
+        drawdown_factor = min(1.0, self.max_acceptable_drawdown / 0.5)
+
+        return drawdown_factor * kelly_price

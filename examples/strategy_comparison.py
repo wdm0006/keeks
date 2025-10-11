@@ -1,13 +1,11 @@
 """
-St. Petersburg Paradox Simulation using Binary Strategies
+Strategy Comparison with Favorable Odds
 
-This example demonstrates a simplified version of the St. Petersburg paradox
-using the keeks library. The St. Petersburg paradox involves a game with potentially
-infinite expected value, but finite practical outcomes.
+This example compares different bankroll management strategies using favorable
+binary betting scenarios. It simulates repeated bets with a 55% win probability
+and 1.1x payoff to evaluate how different strategies perform.
 
-Instead of implementing the classical version (which would require a custom simulator),
-we use a simplified binary model with favorable odds to compare different bankroll
-management strategies.
+Note: For a true St. Petersburg paradox simulation, see st_petersburg_paradox.py
 """
 
 import matplotlib
@@ -30,21 +28,30 @@ from keeks.binary_strategies.simple import (
     CPPIStrategy,
     DynamicBankrollManagement,
     FixedFractionStrategy,
+    MertonShare,
     NaiveStrategy,
     OptimalF,
 )
 from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 from keeks.utils import RuinError
 
-# Define St. Petersburg-like parameters
-# Using favorable odds to simulate the high expected value of St. Petersburg
+# Define simulation parameters - REALISTIC MARGINAL EDGE SCENARIO
+# These parameters reflect a bettor with a VERY SMALL edge - most realistic scenario
+# Most profitable bettors operate in this range, and bankroll management is critical
 INITIAL_BANKROLL = 1000.0
-PAYOFF = 1.1  # Win 1.1x your bet (reduced from 2.0 for more realism)
+PAYOFF = 0.95  # Win 0.95x your bet (typical -110 to -105 odds after line shopping)
 LOSS = 1.0  # Lose your entire bet
-TRANS_COST = 0.01  # Small transaction cost
-PROBABILITY = 0.55  # 55% chance of winning (slightly favorable)
-NUM_TRIALS = 100  # Reduced number of betting rounds
-NUM_SIMULATIONS = 30  # Run multiple simulations to see distribution
+TRANS_COST = 0.01  # 1% transaction cost (more realistic including all fees)
+PROBABILITY = 0.52  # 52% win rate (slight edge - very achievable but marginal)
+NUM_TRIALS = 5000  # Number of betting rounds per simulation (realistic season)
+NUM_SIMULATIONS = 500  # Run multiple simulations to see distribution
+
+# Expected Value: 52% × (0.95 - 0.01) - 48% × (1.0 + 0.01) = 0.40% per bet
+# This tiny 0.4% edge means:
+# - Kelly fraction is only ~0.4% of bankroll
+# - Variance dominates over small sample sizes
+# - Ruin is a REAL possibility without good bankroll management
+# - This is the reality for most profitable bettors!
 
 
 def run_strategy_simulation(strategy_class, strategy_name, strategy_params=None):
@@ -77,13 +84,20 @@ def run_strategy_simulation(strategy_class, strategy_name, strategy_params=None)
             # Record the final bankroll
             final_bankroll = bankroll.total_funds
 
-            # Cap the final bankroll at a reasonable maximum to avoid overflow
-            final_bankroll = min(final_bankroll, 1e9)
-            max_bankroll = max(max_bankroll, final_bankroll)
-
-            results.append(final_bankroll)
+            # Check if ruin occurred (bankrupt or stopped early)
+            went_bankrupt = (
+                final_bankroll == 0 or len(bankroll.history) < NUM_TRIALS + 1
+            )
+            if went_bankrupt:
+                ruin_count += 1
+                results.append(0.0)  # Record as complete loss
+            else:
+                # Cap the final bankroll at a reasonable maximum to avoid overflow
+                final_bankroll = min(final_bankroll, 1e9)
+                max_bankroll = max(max_bankroll, final_bankroll)
+                results.append(final_bankroll)
         except RuinError:
-            # If ruin occurs, record a final bankroll of 0
+            # If ruin occurs via exception, record a final bankroll of 0
             results.append(0.0)
             ruin_count += 1
         except Exception as e:
@@ -213,6 +227,36 @@ def main():
                 "min_fraction": 0.01,
             },
         },
+        {
+            "class": MertonShare,
+            "name": "Merton (γ=1.0)",
+            "params": {
+                "payoff": PAYOFF,
+                "loss": LOSS,
+                "transaction_cost": TRANS_COST,
+                "risk_aversion": 1.0,  # Low risk aversion (aggressive)
+            },
+        },
+        {
+            "class": MertonShare,
+            "name": "Merton (γ=2.0)",
+            "params": {
+                "payoff": PAYOFF,
+                "loss": LOSS,
+                "transaction_cost": TRANS_COST,
+                "risk_aversion": 2.0,  # Moderate risk aversion (typical)
+            },
+        },
+        {
+            "class": MertonShare,
+            "name": "Merton (γ=5.0)",
+            "params": {
+                "payoff": PAYOFF,
+                "loss": LOSS,
+                "transaction_cost": TRANS_COST,
+                "risk_aversion": 5.0,  # High risk aversion (conservative)
+            },
+        },
     ]
 
     # Run simulations for each strategy
@@ -226,8 +270,8 @@ def main():
         results.append(result)
         print(f"  Mean final bankroll: ${result['mean']:.2f}")
 
-    # Sort results by mean performance
-    results.sort(key=lambda x: x["mean"], reverse=True)
+    # Sort results by median performance (more robust to outliers and ruin)
+    results.sort(key=lambda x: x["median"], reverse=True)
 
     # Create results table
     results_table = pd.DataFrame(
@@ -246,7 +290,10 @@ def main():
     )
 
     print("\nStrategy Comparison Results:")
+    print("(Sorted by MEDIAN - more robust to outliers than mean)")
     print(results_table.to_string(index=False))
+    print("\nNote: With high ruin rates, mean is misleading (pulled up by rare survivors).")
+    print("      Median shows what a TYPICAL bettor would experience.")
 
     # Plot the distribution of final bankrolls for each strategy
     plt.figure(figsize=(12, 8))
@@ -281,10 +328,10 @@ def main():
 
     # Save the figure and table
     plt.savefig(
-        os.path.join(output_dir, "st_petersburg_strategies_comparison.png"), dpi=300
+        os.path.join(output_dir, "strategy_comparison.png"), dpi=300
     )
     results_table.to_csv(
-        os.path.join(output_dir, "st_petersburg_strategies_comparison.csv"), index=False
+        os.path.join(output_dir, "strategy_comparison.csv"), index=False
     )
 
     print(f"\nResults saved to {output_dir}")

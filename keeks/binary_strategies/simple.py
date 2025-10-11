@@ -76,6 +76,52 @@ class NaiveStrategy(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, bet_size), self.get_max_safe_bet(current_bankroll))
 
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        Naive strategy is risk-neutral and simply pays the expected value.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble
+        probabilities : array-like
+            The probability of each outcome (must sum to ≤ 1)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance (unused, kept for API consistency)
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound (ignored in this method)
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay (the expected value)
+
+        Notes
+        -----
+        Naive strategy is risk-neutral: willing to pay exactly the expected value.
+        This is the classic "expected value maximizer" that doesn't account for risk.
+        """
+        import numpy as np
+
+        # Suppress unused parameter warning - kept for API consistency
+        _ = tolerance
+
+        outcomes = np.array(outcomes)
+        probabilities = np.array(probabilities)
+
+        # Calculate expected value
+        expected_value = np.sum(probabilities * outcomes)
+
+        # For naive strategy, willing to pay expected value
+        # This can be infinite (e.g., St. Petersburg paradox)
+        # We cap at current_wealth for practical reasons
+        return min(current_wealth, max(0.0, expected_value))
+
 
 class FixedFractionStrategy(BaseStrategy):
     """
@@ -146,6 +192,43 @@ class FixedFractionStrategy(BaseStrategy):
             return min(self.fraction, self.get_max_safe_bet(current_bankroll))
         else:
             return 0.0
+
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        Fixed fraction strategy simply pays a fixed fraction of current wealth.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble (unused)
+        probabilities : array-like
+            The probability of each outcome (unused)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance (unused, kept for API consistency)
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay (fixed fraction of wealth)
+
+        Notes
+        -----
+        Fixed fraction strategy doesn't analyze the gamble - it simply
+        commits a fixed fraction of wealth regardless of the opportunity.
+        This is a mechanical rule-based approach, not optimization-based.
+        """
+        # Suppress unused parameter warnings - kept for API consistency
+        _ = outcomes, probabilities, tolerance
+
+        # Pay the fixed fraction of current wealth
+        return min(self.fraction * current_wealth, max_search_fraction * current_wealth)
 
 
 class CPPIStrategy(BaseStrategy):
@@ -245,8 +328,10 @@ class CPPIStrategy(BaseStrategy):
             1 - probability
         ) * (self.loss + self.transaction_cost)
 
-        # If expected value is negative or too close to zero, don't bet
-        if expected_value <= 0.01:  # Require at least 1% edge after transaction costs
+        # If expected value is negative, don't bet
+        # Note: We allow small positive edges (even < 1%) for realistic scenarios
+        # Professional bettors often operate with 0.5-2% edges
+        if expected_value <= 0:
             return 0.0
 
         # Calculate the cushion (amount above the floor)
@@ -280,6 +365,54 @@ class CPPIStrategy(BaseStrategy):
             proportion = min(proportion, max_floor_bet, max_safe_bet)
 
         return max(0, proportion)
+
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        CPPI protects a floor value, so entry price is based on the cushion
+        above the floor, scaled by the multiplier.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble (unused in basic calculation)
+        probabilities : array-like
+            The probability of each outcome (unused in basic calculation)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance (unused, kept for API consistency)
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay (based on cushion above floor)
+
+        Notes
+        -----
+        CPPI maintains a floor value and bets a multiple of the cushion.
+        For entry price, we apply the same logic: pay multiplier × cushion,
+        but never more than the cushion itself (to maintain floor).
+        """
+        # Suppress unused parameter warnings
+        _ = outcomes, probabilities, tolerance
+
+        # Update internal state with current wealth
+        self.update_bankroll(current_wealth)
+
+        # Calculate cushion above floor
+        cushion = max(0, current_wealth - self.floor)
+
+        # Pay up to multiplier × cushion, but capped at the cushion itself
+        # (can't pay more than cushion without violating floor)
+        max_price = min(self.multiplier * cushion, cushion)
+
+        # Also respect max_search_fraction
+        return min(max_price, max_search_fraction * current_wealth)
 
 
 class DynamicBankrollManagement(BaseStrategy):
@@ -451,6 +584,44 @@ class DynamicBankrollManagement(BaseStrategy):
         # Ensure bet size is within bounds
         return max(self.min_fraction, min(self.max_fraction, bet_size))
 
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        Dynamic strategy adjusts based on history, but for a one-time decision
+        with no history, we use the base fraction.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble (unused)
+        probabilities : array-like
+            The probability of each outcome (unused)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance (unused, kept for API consistency)
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay (base fraction of wealth)
+
+        Notes
+        -----
+        Dynamic strategy normally adjusts based on recent performance history.
+        For a one-time decision with no history, we fall back to the base_fraction.
+        This represents a neutral starting point before dynamic adjustments.
+        """
+        # Suppress unused parameter warnings
+        _ = outcomes, probabilities, tolerance
+
+        # Use base fraction since we have no history for a one-time decision
+        return min(self.base_fraction * current_wealth, max_search_fraction * current_wealth)
+
 
 class OptimalF(BaseStrategy):
     """
@@ -546,3 +717,226 @@ class OptimalF(BaseStrategy):
 
         # Ensure we never bet more than would result in negative bankroll
         return min(optimal_f, self.get_max_safe_bet(current_bankroll))
+
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        Optimal F maximizes geometric growth (like Kelly), so we use log utility.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble
+        probabilities : array-like
+            The probability of each outcome (must sum to ≤ 1)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance for binary search
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay for the gamble
+
+        Notes
+        -----
+        Optimal F, like Kelly Criterion, aims to maximize geometric growth,
+        which corresponds to log utility (γ=1.0).
+        """
+        from keeks.utils import find_indifference_price
+
+        return find_indifference_price(
+            outcomes=outcomes,
+            probabilities=probabilities,
+            current_wealth=current_wealth,
+            risk_aversion=1.0,  # Optimal F uses log utility like Kelly
+            tolerance=tolerance,
+            max_search_fraction=max_search_fraction
+        )
+
+
+class MertonShare(BaseStrategy):
+    """
+    Implementation of the Merton Share strategy using CRRA utility.
+
+    This strategy is based on Robert Merton's portfolio optimization problem
+    with Constant Relative Risk Aversion (CRRA) utility. The optimal fraction
+    to invest is proportional to the expected excess return divided by the
+    product of risk aversion and variance.
+
+    The formula is: f* = μ / (γ × σ²)
+
+    Where:
+    - f* is the optimal fraction of wealth to invest
+    - μ is the expected excess return (return above risk-free rate)
+    - γ (gamma) is the coefficient of relative risk aversion
+    - σ² (sigma squared) is the variance of returns
+
+    For binary betting, we adapt this by:
+    - Expected return is calculated from probability and payoff/loss ratios
+    - Variance is estimated from the binary outcome distribution
+    - Transaction costs are incorporated into the expected return
+
+    Parameters
+    ----------
+    payoff : float
+        The amount won per unit bet on a successful outcome.
+    loss : float
+        The amount lost per unit bet on an unsuccessful outcome.
+    transaction_cost : float
+        The fixed cost per transaction, regardless of outcome.
+    risk_aversion : float, default=2.0
+        The coefficient of relative risk aversion (γ). Common values:
+        - 1.0: Low risk aversion
+        - 2.0: Moderate risk aversion (most common empirical estimate)
+        - 3.0-5.0: High risk aversion
+    min_probability : float, default=0.5
+        The minimum probability required to place a bet.
+    max_fraction : float, default=1.0
+        The maximum fraction of bankroll to bet (safety cap).
+
+    References
+    ----------
+    .. [1] Merton, R. C. (1969). "Lifetime Portfolio Selection under Uncertainty:
+           The Continuous-Time Case". The Review of Economics and Statistics.
+    .. [2] https://elmwealth.com/merton-share-derivations/
+    """
+
+    def __init__(
+        self,
+        payoff,
+        loss,
+        transaction_cost,
+        risk_aversion=2.0,
+        min_probability=0.5,
+        max_fraction=1.0,
+    ):
+        """
+        Initialize the MertonShare strategy.
+
+        Parameters
+        ----------
+        payoff : float
+            The amount won per unit bet on a successful outcome.
+        loss : float
+            The amount lost per unit bet on an unsuccessful outcome.
+        transaction_cost : float
+            The fixed cost per transaction, regardless of outcome.
+        risk_aversion : float, default=2.0
+            The coefficient of relative risk aversion.
+        min_probability : float, default=0.5
+            The minimum probability required to place a bet.
+        max_fraction : float, default=1.0
+            The maximum fraction of bankroll to bet.
+        """
+        if risk_aversion <= 0:
+            raise ValueError("Risk aversion must be greater than 0")
+        if not 0 <= min_probability <= 1:
+            raise ValueError("Minimum probability must be between 0 and 1")
+        if not 0 < max_fraction <= 1:
+            raise ValueError("Maximum fraction must be between 0 and 1")
+
+        super().__init__(payoff, loss, transaction_cost)
+        self.risk_aversion = risk_aversion
+        self.min_probability = min_probability
+        self.max_fraction = max_fraction
+
+    def evaluate(self, probability, current_bankroll):
+        """
+        Calculate the Merton Share bet size using CRRA utility.
+
+        Parameters
+        ----------
+        probability : float
+            The probability of a successful outcome, typically between 0 and 1.
+        current_bankroll : float
+            The current bankroll amount.
+
+        Returns
+        -------
+        float
+            The optimal proportion of the bankroll to bet based on Merton's formula.
+        """
+        if probability < self.min_probability:
+            return 0.0
+
+        # Calculate expected return accounting for transaction costs
+        # Expected return = p * (payoff - tc) - (1-p) * (loss + tc)
+        expected_return = probability * (
+            self.payoff - self.transaction_cost
+        ) - (1 - probability) * (self.loss + self.transaction_cost)
+
+        # Don't bet if expected return is non-positive
+        if expected_return <= 0:
+            return 0.0
+
+        # Calculate variance of returns for a binary outcome
+        # For a binary bet: Var(R) = p * (payoff)^2 + (1-p) * (-loss)^2 - E[R]^2
+        # We use gross returns (before transaction costs) for variance calculation
+        mean_squared_return = (
+            probability * (self.payoff**2) + (1 - probability) * (self.loss**2)
+        )
+        variance = mean_squared_return - (
+            probability * self.payoff - (1 - probability) * self.loss
+        ) ** 2
+
+        # Avoid division by zero
+        if variance <= 0:
+            return 0.0
+
+        # Apply Merton's formula: f* = μ / (γ × σ²)
+        merton_fraction = expected_return / (self.risk_aversion * variance)
+
+        # Apply safety constraints
+        merton_fraction = max(0.0, min(merton_fraction, self.max_fraction))
+
+        # Ensure we never bet more than would result in negative bankroll
+        return min(merton_fraction, self.get_max_safe_bet(current_bankroll))
+
+    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
+                                  tolerance=0.01, max_search_fraction=0.5):
+        """
+        Calculate maximum price willing to pay for a one-time gamble.
+
+        MertonShare is derived from CRRA utility maximization with the
+        risk_aversion parameter (γ) that was set during initialization.
+
+        Parameters
+        ----------
+        outcomes : array-like
+            The possible payoffs from the gamble
+        probabilities : array-like
+            The probability of each outcome (must sum to ≤ 1)
+        current_wealth : float
+            Current wealth before the gamble
+        tolerance : float, default=0.01
+            Convergence tolerance for binary search
+        max_search_fraction : float, default=0.5
+            Maximum fraction of wealth to consider as upper bound
+
+        Returns
+        -------
+        float
+            Maximum price willing to pay for the gamble
+
+        Notes
+        -----
+        Uses the risk_aversion (γ) parameter set during initialization.
+        For γ=1.0, this is equivalent to Kelly Criterion (log utility).
+        Higher γ values indicate more risk aversion and lower willing payments.
+        """
+        from keeks.utils import find_indifference_price
+
+        return find_indifference_price(
+            outcomes=outcomes,
+            probabilities=probabilities,
+            current_wealth=current_wealth,
+            risk_aversion=self.risk_aversion,  # Use the strategy's γ parameter
+            tolerance=tolerance,
+            max_search_fraction=max_search_fraction
+        )

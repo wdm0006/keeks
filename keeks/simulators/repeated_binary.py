@@ -34,7 +34,8 @@ class RepeatedBinarySimulator:
         Evaluate a betting strategy over multiple trials with fixed probability.
 
         For each trial, the strategy is evaluated with the fixed probability,
-        and the bankroll is updated based on the outcome.
+        and the bankroll is updated based on the outcome. The simulation stops
+        early if the bankroll is depleted (bankruptcy).
 
         Parameters
         ----------
@@ -49,6 +50,10 @@ class RepeatedBinarySimulator:
             The bankroll object is updated in-place with the results of the simulation.
         """
         for _ in range(self.trials):
+            # Stop if bankrupt
+            if bankroll.total_funds <= 0:
+                break
+
             # Update the strategy's internal state with current bankroll if supported
             if hasattr(strategy, "update_bankroll"):
                 strategy.update_bankroll(bankroll.total_funds)
@@ -56,13 +61,15 @@ class RepeatedBinarySimulator:
             # Get the proportion to bet
             proportion = strategy.evaluate(self.probability, bankroll.total_funds)
 
-            if random.random() < self.probability:
-                amt = (
-                    self.payoff * bankroll.bettable_funds * proportion
-                ) - self.transaction_costs
-                bankroll.deposit(amt)
-            else:
-                bankroll.withdraw(
-                    (self.loss * bankroll.bettable_funds * proportion)
-                    - self.transaction_costs
-                )
+            # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
+            if proportion > 0:
+                if random.random() < self.probability:
+                    amt = (
+                        self.payoff * bankroll.bettable_funds * proportion
+                    ) - self.transaction_costs
+                    bankroll.deposit(amt)
+                else:
+                    bankroll.withdraw(
+                        (self.loss * bankroll.bettable_funds * proportion)
+                        + self.transaction_costs
+                    )

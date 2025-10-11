@@ -75,3 +75,11 @@ OptimalF
     :members:
     :undoc-members:
     :show-inheritance:
+
+Merton Share
+------------
+
+.. autoclass:: keeks.binary_strategies.simple.MertonShare
+    :members:
+    :undoc-members:
+    :show-inheritance:

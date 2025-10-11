@@ -91,6 +91,6 @@ test-all:
 
 # Run example scripts
 examples:
-	uv run python examples/st_petersburg_comparison.py
+	uv run python examples/strategy_comparison.py
 
 all: clean test docs 
