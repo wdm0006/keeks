@@ -183,7 +183,7 @@ class BankRoll:
             If provided, saves the plot to the specified filename instead of displaying it.
         """
         plt.figure()
-        plt.plot(list(range(len(self.history))), self.history, fmt="bo-")
+        plt.plot(list(range(len(self.history))), self.history, "bo-")
         if fname:
             plt.savefig(fname)
         else:
