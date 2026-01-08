@@ -49,7 +49,6 @@ extensions = [
     "sphinx.ext.viewcode",  # Add links to highlighted source code
     "sphinx.ext.intersphinx",  # Link to other project's documentation
     "sphinx.ext.autosummary",  # Generate summary tables
-    "sphinx_rtd_dark_mode",  # Add dark mode support
     "sphinxcontrib.googleanalytics",  # Google Analytics support
 ]
 
@@ -101,28 +100,43 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "wabi_sphinx_theme"
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = "wabi_sphinx_theme.pygments_style.WabiStyle"
 
 # Theme options
 html_theme_options = {
-    # Header style to match mcginniscommawill.com
-    "style_nav_header_background": "#1a1a1a",
-    # Default options for RTD theme
-    "collapse_navigation": False,
-    "sticky_navigation": True,
-    "navigation_depth": 4,
-    "includehidden": True,
-    "titles_only": False,
+    "site_title": "McGinnis, Will",
+    "site_url": "https://mcginniscommawill.com",
+    "docs_base_url": "https://keeks.mcginniscommawill.com",
+    "nav_links": [
+        {"label": "Guides", "url": "https://mcginniscommawill.com/guides/"},
+        {"label": "Topics", "url": "https://mcginniscommawill.com/topics/"},
+        {"label": "Blog", "url": "https://mcginniscommawill.com/posts/"},
+        {"label": "About", "url": "https://mcginniscommawill.com/about/"},
+        {"label": "Free Coffee", "url": "https://mcginniscommawill.com/coffee/"},
+        {"label": "OSS", "url": "https://mcginniscommawill.com/oss/"},
+    ],
+    "nav_show_docs_link": True,
+    "nav_docs_label": "Docs",
+    "show_breadcrumbs": True,
+    "show_home_breadcrumb": True,
+    "twitter_site": "@willmcginniser",
 }
-
-# Default to dark mode and force it to always be dark
-default_dark_mode = True
-force_dark_mode = True  # This will force dark mode to always be on
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    "custom.css",
+]
+
+html_extra_path = ["CNAME"]
 
 # Set the title of the documentation
 html_title = "Keeks"
