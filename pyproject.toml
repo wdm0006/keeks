@@ -38,8 +38,6 @@ dev = [
     "pytest",
     "pytest-cov",
     "sphinx",
-    "sphinx_rtd_theme",
-    "sphinx_rtd_dark_mode",
     "sphinxcontrib-googleanalytics",
     "flake8",
     "wheel",
