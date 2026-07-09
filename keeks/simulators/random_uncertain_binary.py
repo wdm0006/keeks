@@ -2,6 +2,8 @@ import random
 
 import numpy as np
 
+from keeks.utils import RuinError
+
 
 class RandomUncertainBinarySimulator:
     """
@@ -75,16 +77,21 @@ class RandomUncertainBinarySimulator:
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
             if proportion > 0:
-                if (
-                    random.random()
-                    < probability + np.random.normal(0, self.uncertainty_stdev, 1)[0]
-                ):
-                    amt = (
-                        self.payoff * bankroll.bettable_funds * proportion
-                    ) - self.transaction_costs
-                    bankroll.deposit(amt)
-                else:
-                    bankroll.withdraw(
-                        (self.loss * bankroll.bettable_funds * proportion)
-                        + self.transaction_costs
-                    )
+                try:
+                    if (
+                        random.random()
+                        < probability
+                        + np.random.normal(0, self.uncertainty_stdev, 1)[0]
+                    ):
+                        amt = (
+                            self.payoff * bankroll.bettable_funds * proportion
+                        ) - self.transaction_costs
+                        bankroll.deposit(amt)
+                    else:
+                        bankroll.withdraw(
+                            (self.loss * bankroll.bettable_funds * proportion)
+                            + self.transaction_costs
+                        )
+                except RuinError:
+                    # Losing bet exceeded the drawdown limit; stop gracefully
+                    break

@@ -136,10 +136,8 @@ def test_no_negative_values_in_history():
         trials=100
     )
 
-    try:
-        simulator.evaluate_strategy(strategy, bankroll)
-    except RuinError:
-        pass  # Expected if we hit bankruptcy
+    # Simulators stop gracefully on RuinError, so no exception should escape
+    simulator.evaluate_strategy(strategy, bankroll)
 
     # Check that no value in history is negative
     assert all(value >= 0 for value in bankroll.history)
