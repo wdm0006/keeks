@@ -324,6 +324,55 @@ def test_min_max_bounds():
     assert strategy.evaluate(0.6, 1000) >= strategy.min_fraction
 
 
+def test_below_min_probability_returns_zero():
+    """Test that no bet is placed when probability is below min_probability."""
+    strategy = DynamicBankrollManagement(
+        base_fraction=0.1,
+        payoff=1,
+        loss=1,
+        transaction_cost=0,
+    )
+
+    # Default min_probability is 0.5; a losing 0.2 probability must not bet.
+    assert strategy.evaluate(0.2, 1000) == 0.0
+
+    # A custom threshold is respected.
+    strategy = DynamicBankrollManagement(
+        base_fraction=0.1, payoff=1, loss=1, transaction_cost=0, min_probability=0.7
+    )
+    assert strategy.evaluate(0.6, 1000) == 0.0
+    assert strategy.evaluate(0.75, 1000) > 0.0
+
+
+def test_invalid_min_probability():
+    """Test that an out-of-range min_probability raises a ValueError."""
+    with pytest.raises(ValueError, match="Minimum probability must be between 0 and 1"):
+        DynamicBankrollManagement(
+            base_fraction=0.1,
+            payoff=1,
+            loss=1,
+            transaction_cost=0,
+            min_probability=1.5,
+        )
+
+
+def test_respects_max_safe_bet():
+    """Test that the bet never exceeds the ruin-safe fraction with a high loss."""
+    # With a large loss multiplier the safe bet is small (1 / (loss + cost)).
+    strategy = DynamicBankrollManagement(
+        base_fraction=0.5,
+        payoff=1,
+        loss=10,
+        transaction_cost=0,
+        max_fraction=1.0,
+        min_fraction=0.05,
+    )
+
+    max_safe = strategy.get_max_safe_bet(1000)
+    # min_fraction (0.05) exceeds max_safe (1/10 = 0.1)? No; ensure clamp holds.
+    assert strategy.evaluate(0.6, 1000) <= max_safe
+
+
 def test_window_size_limiting():
     """Test that history is limited to the window size."""
     window_size = 3
