@@ -441,6 +441,9 @@ class DynamicBankrollManagement(BaseStrategy):
         The maximum fraction of bankroll that can be bet.
     min_fraction : float, default=0.05
         The minimum fraction of bankroll to bet.
+    min_probability : float, default=0.5
+        The minimum probability required to place a bet. Below this the
+        strategy returns 0.0 (no bet).
     """
 
     def __init__(
@@ -452,6 +455,7 @@ class DynamicBankrollManagement(BaseStrategy):
         window_size=10,
         max_fraction=0.2,
         min_fraction=0.05,
+        min_probability=0.5,
     ):
         """
         Initialize the DynamicBankrollManagement strategy.
@@ -464,12 +468,15 @@ class DynamicBankrollManagement(BaseStrategy):
             raise ValueError(
                 "Min fraction must be between 0 and max fraction, and max fraction must be between 0 and 1"
             )
+        if not 0 <= min_probability <= 1:
+            raise ValueError("Minimum probability must be between 0 and 1")
 
         super().__init__(payoff, loss, transaction_cost)
         self.base_fraction = base_fraction
         self.window_size = window_size
         self.max_fraction = max_fraction
         self.min_fraction = min_fraction
+        self.min_probability = min_probability
         self.results = []
         self.initial_bankroll = None
         self.current_bankroll = None
@@ -560,6 +567,10 @@ class DynamicBankrollManagement(BaseStrategy):
         float
             The proportion of the current bankroll to bet.
         """
+        # Don't bet on sub-threshold probabilities
+        if probability < self.min_probability:
+            return 0.0
+
         # Initialize or update bankroll tracking
         if self.initial_bankroll is None:
             self.initial_bankroll = current_bankroll
@@ -581,8 +592,11 @@ class DynamicBankrollManagement(BaseStrategy):
         # Calculate adjusted bet size
         bet_size = self.base_fraction * combined_factor
 
-        # Ensure bet size is within bounds
-        return max(self.min_fraction, min(self.max_fraction, bet_size))
+        # Ensure bet size is within min/max bounds
+        bet_size = max(self.min_fraction, min(self.max_fraction, bet_size))
+
+        # Never exceed the ruin-safe fraction
+        return min(bet_size, self.get_max_safe_bet(current_bankroll))
 
     def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
                                   tolerance=0.01, max_search_fraction=0.5):
