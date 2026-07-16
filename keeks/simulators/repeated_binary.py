@@ -65,17 +65,22 @@ class RepeatedBinarySimulator:
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
             if proportion > 0:
+                current_bankroll = bankroll.total_funds
+                bet_amount = bankroll.bettable_funds * proportion
                 try:
-                    if random.random() < self.probability:
-                        amt = (
-                            self.payoff * bankroll.bettable_funds * proportion
-                        ) - self.transaction_costs
+                    won = random.random() < self.probability
+                    if won:
+                        amt = (self.payoff * bet_amount) - self.transaction_costs
                         bankroll.deposit(amt)
+                        return_pct = amt / current_bankroll
                     else:
-                        bankroll.withdraw(
-                            (self.loss * bankroll.bettable_funds * proportion)
-                            + self.transaction_costs
-                        )
+                        amt = (self.loss * bet_amount) + self.transaction_costs
+                        bankroll.withdraw(amt)
+                        return_pct = -amt / current_bankroll
                 except RuinError:
                     # Losing bet exceeded the drawdown limit; stop gracefully
                     break
+
+                record_result = getattr(strategy, "record_result", None)
+                if callable(record_result):
+                    record_result(won, return_pct)
