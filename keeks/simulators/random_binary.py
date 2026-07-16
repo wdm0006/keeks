@@ -25,6 +25,7 @@ class RandomBinarySimulator:
         The number of betting trials to simulate.
     stdev : float, default=0.1
         The standard deviation of the normal distribution used to generate probabilities.
+        Samples are clamped to [0.0, 1.0].
     """
 
     def __init__(self, payoff, loss, transaction_costs, trials=1000, stdev=0.1):
@@ -59,7 +60,8 @@ class RandomBinarySimulator:
             if bankroll.total_funds <= 0:
                 break
 
-            probability = np.random.normal(0.5, self.stdev, 1)[0]
+            # Normal samples are unbounded; only [0, 1] values are probabilities.
+            probability = min(1.0, max(0.0, np.random.normal(0.5, self.stdev, 1)[0]))
             proportion = strategy.evaluate(probability, bankroll.total_funds)
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
