@@ -87,14 +87,17 @@ class RandomUncertainBinarySimulator:
                     )
                     if won:
                         amt = (self.payoff * bet_amount) - self.transaction_costs
-                        bankroll.deposit(amt)
+                        if amt >= 0:
+                            bankroll.deposit(amt)
+                        else:
+                            bankroll.withdraw(abs(amt))
                         return_pct = amt / current_bankroll
                     else:
                         amt = (self.loss * bet_amount) + self.transaction_costs
                         bankroll.withdraw(amt)
                         return_pct = -amt / current_bankroll
                 except RuinError:
-                    # Losing bet exceeded the drawdown limit; stop gracefully
+                    # Settlement exceeded a bankroll safeguard; stop gracefully
                     break
 
                 record_result = getattr(strategy, "record_result", None)
