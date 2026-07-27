@@ -50,11 +50,11 @@ strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
 
 # Create a simulator with a fixed probability
 simulator = RepeatedBinarySimulator(
-    payoff=1.0, 
-    loss=1.0, 
-    transaction_costs=0.01, 
+    payoff=1.0,
+    loss=1.0,
+    transaction_costs=0.01,
     probability=0.55,  # 55% chance of winning
-    trials=1000
+    trials=1000,
 )
 
 # Run the simulation
@@ -104,18 +104,25 @@ Keeks implements several betting strategies:
 
 2. **Fractional Kelly**: A more conservative version of Kelly that reduces volatility
    ```python
-   fractional_kelly = FractionalKellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01, fraction=0.5)
+   fractional_kelly = FractionalKellyCriterion(
+       payoff=1.0, loss=1.0, transaction_cost=0.01, fraction=0.5
+   )
    ```
 
 3. **Drawdown-Adjusted Kelly**: A Kelly variant that adjusts bet sizing based on risk tolerance
    ```python
-   drawdown_kelly = DrawdownAdjustedKelly(payoff=1.0, loss=1.0, transaction_cost=0.01, max_acceptable_drawdown=0.2)
+   drawdown_kelly = DrawdownAdjustedKelly(
+       payoff=1.0, loss=1.0, transaction_cost=0.01, max_acceptable_drawdown=0.2
+   )
    ```
 
 4. **OptimalF (Ralph Vince)**: Strategy that maximizes geometric growth rate
    ```python
    from keeks.binary_strategies.simple import OptimalF
-   optimal_f = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.55, max_risk_fraction=0.2)
+
+   optimal_f = OptimalF(
+       payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.55, max_risk_fraction=0.2
+   )
    ```
 
 5. **Fixed Fraction**: Simple strategy that bets a constant percentage of the bankroll
@@ -130,12 +137,15 @@ Keeks implements several betting strategies:
 
 7. **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
    ```python
-   dynamic = DynamicBankrollManagement(base_fraction=0.1, payoff=1.0, loss=1.0, window_size=10)
+   dynamic = DynamicBankrollManagement(
+       base_fraction=0.1, payoff=1.0, loss=1.0, window_size=10
+   )
    ```
 
 8. **Merton Share (CRRA Utility)**: Based on Merton's portfolio problem with constant relative risk aversion
    ```python
    from keeks.binary_strategies.simple import MertonShare
+
    merton = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.01, risk_aversion=2.0)
    ```
 
@@ -154,13 +164,13 @@ from keeks.utils import find_indifference_price
 # Calculate maximum price you'd pay for a gamble
 # Example: St. Petersburg paradox
 outcomes = [2**n for n in range(1, 31)]
-probabilities = [(0.5)**n for n in range(1, 31)]
+probabilities = [(0.5) ** n for n in range(1, 31)]
 
 max_price = find_indifference_price(
     outcomes=outcomes,
     probabilities=probabilities,
     current_wealth=10000,
-    risk_aversion=2.0  # 1.0=Kelly, 2.0=moderate, 5.0=conservative
+    risk_aversion=2.0,  # 1.0=Kelly, 2.0=moderate, 5.0=conservative
 )
 # Returns: ~$12.80 despite infinite expected value!
 ```

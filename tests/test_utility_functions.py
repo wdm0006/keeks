@@ -95,8 +95,9 @@ class TestExpectedUtility:
         entry_price = 10
         risk_aversion = 2.0
 
-        result = expected_utility(outcomes, probabilities, current_wealth,
-                                 entry_price, risk_aversion)
+        result = expected_utility(
+            outcomes, probabilities, current_wealth, entry_price, risk_aversion
+        )
 
         # Should equal utility of final wealth
         final_wealth = current_wealth - entry_price + 100
@@ -111,8 +112,9 @@ class TestExpectedUtility:
         entry_price = 0
         risk_aversion = 1.0
 
-        result = expected_utility(outcomes, probabilities, current_wealth,
-                                 entry_price, risk_aversion)
+        result = expected_utility(
+            outcomes, probabilities, current_wealth, entry_price, risk_aversion
+        )
 
         # Manual calculation
         u1 = crra_utility(1000 + 100, risk_aversion)
@@ -130,8 +132,9 @@ class TestExpectedUtility:
         risk_aversion = 2.0
 
         # Expected utility from taking the bet
-        eu_bet = expected_utility(outcomes, probabilities, current_wealth,
-                                 entry_price, risk_aversion)
+        eu_bet = expected_utility(
+            outcomes, probabilities, current_wealth, entry_price, risk_aversion
+        )
 
         # Expected utility from not betting
         eu_no_bet = crra_utility(current_wealth, risk_aversion)
@@ -150,8 +153,9 @@ class TestFindIndifferencePrice:
         current_wealth = 1000
         risk_aversion = 1.0
 
-        max_price = find_indifference_price(outcomes, probabilities,
-                                           current_wealth, risk_aversion)
+        max_price = find_indifference_price(
+            outcomes, probabilities, current_wealth, risk_aversion
+        )
 
         # For a fair coin flip (EV=0), should be willing to pay very little
         # (but not exactly zero due to utility curvature)
@@ -165,8 +169,9 @@ class TestFindIndifferencePrice:
         current_wealth = 1000
         risk_aversion = 2.0
 
-        max_price = find_indifference_price(outcomes, probabilities,
-                                           current_wealth, risk_aversion)
+        max_price = find_indifference_price(
+            outcomes, probabilities, current_wealth, risk_aversion
+        )
 
         # Should be willing to pay something for positive EV
         assert max_price > 0
@@ -181,12 +186,14 @@ class TestFindIndifferencePrice:
         current_wealth = 10000
 
         # Low risk aversion
-        price_low_gamma = find_indifference_price(outcomes, probabilities,
-                                                 current_wealth, risk_aversion=1.0)
+        price_low_gamma = find_indifference_price(
+            outcomes, probabilities, current_wealth, risk_aversion=1.0
+        )
 
         # High risk aversion
-        price_high_gamma = find_indifference_price(outcomes, probabilities,
-                                                  current_wealth, risk_aversion=3.0)
+        price_high_gamma = find_indifference_price(
+            outcomes, probabilities, current_wealth, risk_aversion=3.0
+        )
 
         # Higher risk aversion should lead to lower willing payment
         assert price_high_gamma < price_low_gamma
@@ -198,12 +205,14 @@ class TestFindIndifferencePrice:
         risk_aversion = 2.0
 
         # Poor agent
-        price_poor = find_indifference_price(outcomes, probabilities,
-                                            current_wealth=5000, risk_aversion=risk_aversion)
+        price_poor = find_indifference_price(
+            outcomes, probabilities, current_wealth=5000, risk_aversion=risk_aversion
+        )
 
         # Rich agent
-        price_rich = find_indifference_price(outcomes, probabilities,
-                                            current_wealth=50000, risk_aversion=risk_aversion)
+        price_rich = find_indifference_price(
+            outcomes, probabilities, current_wealth=50000, risk_aversion=risk_aversion
+        )
 
         # Wealthier agent should be willing to pay more in absolute terms
         assert price_rich > price_poor
@@ -213,13 +222,14 @@ class TestFindIndifferencePrice:
         # Generate St. Petersburg outcomes
         max_flips = 20
         outcomes = [2**n for n in range(1, max_flips + 1)]
-        probabilities = [(0.5)**n for n in range(1, max_flips + 1)]
+        probabilities = [(0.5) ** n for n in range(1, max_flips + 1)]
 
         current_wealth = 10000
         risk_aversion = 2.0
 
-        max_price = find_indifference_price(outcomes, probabilities,
-                                           current_wealth, risk_aversion)
+        max_price = find_indifference_price(
+            outcomes, probabilities, current_wealth, risk_aversion
+        )
 
         # Despite infinite expected value, should give finite price
         assert max_price > 0
@@ -235,14 +245,14 @@ class TestFindIndifferencePrice:
         risk_aversion = 2.0
 
         # High tolerance (less precise)
-        price_high_tol = find_indifference_price(outcomes, probabilities,
-                                                current_wealth, risk_aversion,
-                                                tolerance=1.0)
+        price_high_tol = find_indifference_price(
+            outcomes, probabilities, current_wealth, risk_aversion, tolerance=1.0
+        )
 
         # Low tolerance (more precise)
-        price_low_tol = find_indifference_price(outcomes, probabilities,
-                                               current_wealth, risk_aversion,
-                                               tolerance=0.001)
+        price_low_tol = find_indifference_price(
+            outcomes, probabilities, current_wealth, risk_aversion, tolerance=0.001
+        )
 
         # Should be close but not exactly equal
         assert price_high_tol == pytest.approx(price_low_tol, abs=1.5)
@@ -255,9 +265,13 @@ class TestFindIndifferencePrice:
         risk_aversion = 1.0
         max_search_fraction = 0.3
 
-        max_price = find_indifference_price(outcomes, probabilities,
-                                           current_wealth, risk_aversion,
-                                           max_search_fraction=max_search_fraction)
+        max_price = find_indifference_price(
+            outcomes,
+            probabilities,
+            current_wealth,
+            risk_aversion,
+            max_search_fraction=max_search_fraction,
+        )
 
         # Should not exceed 30% of wealth
         assert max_price <= current_wealth * max_search_fraction

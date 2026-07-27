@@ -103,7 +103,9 @@ class BankRoll:
         """
         # Check if withdrawal would cause bankruptcy
         if self._bank - amt < 0:
-            raise RuinError("Insufficient funds for withdrawal (would cause bankruptcy)")
+            raise RuinError(
+                "Insufficient funds for withdrawal (would cause bankruptcy)"
+            )
 
         # Check drawdown limit if set
         if self.max_draw_down and amt > self.max_draw_down * self._bank:
