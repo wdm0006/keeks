@@ -93,8 +93,14 @@ class KellyCriterion(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, kelly_fraction), self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -132,7 +138,7 @@ class KellyCriterion(BaseStrategy):
             current_wealth=current_wealth,
             risk_aversion=1.0,  # Kelly uses log utility (γ=1)
             tolerance=tolerance,
-            max_search_fraction=max_search_fraction
+            max_search_fraction=max_search_fraction,
         )
 
 
@@ -181,8 +187,14 @@ class FractionalKellyCriterion(BaseStrategy):
         kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
         return self.fraction * kelly.evaluate(probability, current_bankroll)
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -309,8 +321,14 @@ class DrawdownAdjustedKelly(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(adjusted_kelly, self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 

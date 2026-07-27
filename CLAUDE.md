@@ -126,8 +126,7 @@ The library follows a four-component architecture:
 bankroll = BankRoll(initial_funds=1000, percent_bettable=0.5, max_draw_down=0.3)
 strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
 simulator = RepeatedBinarySimulator(
-    payoff=1.0, loss=1.0, transaction_costs=0.01,
-    probability=0.55, trials=1000
+    payoff=1.0, loss=1.0, transaction_costs=0.01, probability=0.55, trials=1000
 )
 simulator.evaluate_strategy(strategy, bankroll)
 ```
@@ -159,7 +158,7 @@ strategy = MertonShare(
     transaction_cost=0.01,
     risk_aversion=2.0,  # Higher values = more conservative
     min_probability=0.5,
-    max_fraction=1.0
+    max_fraction=1.0,
 )
 
 # MertonShare is typically more conservative than Kelly Criterion
@@ -174,14 +173,14 @@ from keeks.utils import find_indifference_price
 # St. Petersburg paradox example: what would you pay to play?
 # Generate outcomes and probabilities for St. Petersburg game
 outcomes = [2**n for n in range(1, 31)]  # Payouts: $2, $4, $8, ..., $2^30
-probabilities = [(0.5)**n for n in range(1, 31)]  # Probs: 0.5, 0.25, 0.125, ...
+probabilities = [(0.5) ** n for n in range(1, 31)]  # Probs: 0.5, 0.25, 0.125, ...
 
 max_price = find_indifference_price(
     outcomes=outcomes,
     probabilities=probabilities,
     current_wealth=10000,
     risk_aversion=2.0,  # Moderate risk aversion
-    tolerance=0.01
+    tolerance=0.01,
 )
 
 print(f"Maximum willing to pay: ${max_price:.2f}")

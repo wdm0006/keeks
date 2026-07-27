@@ -8,7 +8,10 @@ entry prices for one-time gambles using reasonable approaches.
 import pytest
 
 from keeks.binary_strategies import KellyCriterion
-from keeks.binary_strategies.kelly import DrawdownAdjustedKelly, FractionalKellyCriterion
+from keeks.binary_strategies.kelly import (
+    DrawdownAdjustedKelly,
+    FractionalKellyCriterion,
+)
 from keeks.binary_strategies.simple import (
     CPPIStrategy,
     DynamicBankrollManagement,
@@ -31,9 +34,7 @@ class TestKellyCriterionEntryPrice:
         probabilities = [0.5, 0.5]
 
         max_price = strategy.calculate_max_entry_price(
-            outcomes=outcomes,
-            probabilities=probabilities,
-            current_wealth=1000
+            outcomes=outcomes, probabilities=probabilities, current_wealth=1000
         )
 
         # For fair bet, should pay very little
@@ -49,9 +50,7 @@ class TestKellyCriterionEntryPrice:
         probabilities = [0.6, 0.4]
 
         max_price = strategy.calculate_max_entry_price(
-            outcomes=outcomes,
-            probabilities=probabilities,
-            current_wealth=5000
+            outcomes=outcomes, probabilities=probabilities, current_wealth=5000
         )
 
         # Should be willing to pay something positive
@@ -66,12 +65,10 @@ class TestKellyCriterionEntryPrice:
         # St. Petersburg outcomes
         max_flips = 20
         outcomes = [2**n for n in range(1, max_flips + 1)]
-        probabilities = [(0.5)**n for n in range(1, max_flips + 1)]
+        probabilities = [(0.5) ** n for n in range(1, max_flips + 1)]
 
         max_price = strategy.calculate_max_entry_price(
-            outcomes=outcomes,
-            probabilities=probabilities,
-            current_wealth=10000
+            outcomes=outcomes, probabilities=probabilities, current_wealth=10000
         )
 
         # Should be finite despite infinite EV
@@ -86,15 +83,11 @@ class TestKellyCriterionEntryPrice:
         probabilities = [0.5, 0.5]
 
         price_poor = strategy.calculate_max_entry_price(
-            outcomes=outcomes,
-            probabilities=probabilities,
-            current_wealth=5000
+            outcomes=outcomes, probabilities=probabilities, current_wealth=5000
         )
 
         price_rich = strategy.calculate_max_entry_price(
-            outcomes=outcomes,
-            probabilities=probabilities,
-            current_wealth=50000
+            outcomes=outcomes, probabilities=probabilities, current_wealth=50000
         )
 
         # Wealthier agent should pay more in absolute terms
@@ -114,9 +107,7 @@ class TestMertonShareEntryPrice:
         probabilities = [0.6, 0.4]
 
         max_price = strategy.calculate_max_entry_price(
-            outcomes=outcomes,
-            probabilities=probabilities,
-            current_wealth=5000
+            outcomes=outcomes, probabilities=probabilities, current_wealth=5000
         )
 
         # Should be willing to pay something positive
@@ -172,7 +163,7 @@ class TestMertonShareEntryPrice:
         """Test St. Petersburg paradox with different risk aversions."""
         max_flips = 20
         outcomes = [2**n for n in range(1, max_flips + 1)]
-        probabilities = [(0.5)**n for n in range(1, max_flips + 1)]
+        probabilities = [(0.5) ** n for n in range(1, max_flips + 1)]
         current_wealth = 10000
 
         prices = {}
@@ -201,12 +192,16 @@ class TestOtherStrategiesEntryPrice:
         current_wealth = 5000
 
         kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
-        kelly_price = kelly.calculate_max_entry_price(outcomes, probabilities, current_wealth)
+        kelly_price = kelly.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth
+        )
 
         half_kelly = FractionalKellyCriterion(
             payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.5
         )
-        half_kelly_price = half_kelly.calculate_max_entry_price(outcomes, probabilities, current_wealth)
+        half_kelly_price = half_kelly.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth
+        )
 
         # Half Kelly should pay approximately half of Kelly
         assert half_kelly_price == pytest.approx(0.5 * kelly_price, rel=0.01)
@@ -218,12 +213,16 @@ class TestOtherStrategiesEntryPrice:
         current_wealth = 5000
 
         kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
-        kelly_price = kelly.calculate_max_entry_price(outcomes, probabilities, current_wealth)
+        kelly_price = kelly.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth
+        )
 
         drawdown_kelly = DrawdownAdjustedKelly(
             payoff=1.0, loss=1.0, transaction_cost=0.0, max_acceptable_drawdown=0.2
         )
-        drawdown_price = drawdown_kelly.calculate_max_entry_price(outcomes, probabilities, current_wealth)
+        drawdown_price = drawdown_kelly.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth
+        )
 
         # Drawdown adjusted should pay less than full Kelly
         assert drawdown_price < kelly_price
@@ -231,9 +230,7 @@ class TestOtherStrategiesEntryPrice:
 
     def test_optimal_f_uses_log_utility(self):
         """Test that OptimalF uses log utility (like Kelly)."""
-        strategy = OptimalF(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, win_rate=0.55
-        )
+        strategy = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.0, win_rate=0.55)
 
         outcomes = [100, -50]
         probabilities = [0.6, 0.4]
@@ -263,6 +260,27 @@ class TestOtherStrategiesEntryPrice:
         expected_value = 40.0
         assert max_price == pytest.approx(expected_value)
 
+    def test_naive_respects_max_search_fraction(self):
+        """Test that NaiveStrategy caps expected value at the wealth fraction."""
+        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0)
+
+        # Expected value ($10,000) far exceeds the search bound
+        outcomes = [10000]
+        probabilities = [1.0]
+        current_wealth = 1000
+
+        assert strategy.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth
+        ) == pytest.approx(0.5 * current_wealth)
+
+        assert strategy.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth, max_search_fraction=0.3
+        ) == pytest.approx(0.3 * current_wealth)
+
+        assert strategy.calculate_max_entry_price(
+            outcomes, probabilities, current_wealth, max_search_fraction=1.0
+        ) == pytest.approx(current_wealth)
+
     def test_fixed_fraction_uses_fraction(self):
         """Test that FixedFractionStrategy pays a fixed fraction of wealth."""
         strategy = FixedFractionStrategy(
@@ -288,7 +306,7 @@ class TestOtherStrategiesEntryPrice:
             transaction_cost=0.0,
             floor_fraction=0.5,
             multiplier=2.0,
-            initial_bankroll=1000
+            initial_bankroll=1000,
         )
 
         outcomes = [100, -50]
@@ -311,7 +329,7 @@ class TestOtherStrategiesEntryPrice:
             loss=1.0,
             transaction_cost=0.0,
             base_fraction=0.1,
-            window_size=10
+            window_size=10,
         )
 
         outcomes = [100, -50]

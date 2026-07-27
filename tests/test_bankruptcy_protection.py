@@ -46,7 +46,9 @@ def test_exact_withdrawal_works():
 def test_simulator_stops_at_bankruptcy():
     """Test that simulator stops when bankroll hits zero."""
     import random
+
     from keeks.binary_strategies.simple import FixedFractionStrategy
+
     random.seed(999)  # Seed that causes early bankruptcy
 
     bankroll = BankRoll(initial_funds=100, max_draw_down=None)
@@ -56,7 +58,7 @@ def test_simulator_stops_at_bankruptcy():
         payoff=1.0,
         loss=1.0,
         transaction_cost=0.0,
-        min_probability=0.0  # Bet even with bad odds
+        min_probability=0.0,  # Bet even with bad odds
     )
 
     simulator = RepeatedBinarySimulator(
@@ -64,7 +66,7 @@ def test_simulator_stops_at_bankruptcy():
         loss=1.0,
         transaction_costs=0.0,
         probability=0.3,  # Bad odds
-        trials=1000
+        trials=1000,
     )
 
     simulator.evaluate_strategy(strategy, bankroll)
@@ -123,6 +125,7 @@ def test_transaction_cost_correctly_increases_loss():
 def test_no_negative_values_in_history():
     """Test that bankroll history never contains negative values."""
     import random
+
     random.seed(42)
 
     bankroll = BankRoll(initial_funds=50, max_draw_down=None)
@@ -133,7 +136,7 @@ def test_no_negative_values_in_history():
         loss=1.0,
         transaction_costs=0.0,
         probability=0.4,  # Negative expectation
-        trials=100
+        trials=100,
     )
 
     # Simulators stop gracefully on RuinError, so no exception should escape

@@ -64,8 +64,14 @@ class BaseStrategy(abc.ABC):
         max_bet = current_bankroll / (self.loss + self.transaction_cost)
         return min(1.0, max_bet / current_bankroll)
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 

@@ -70,9 +70,7 @@ def test_transaction_costs():
     strategy_with_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.05)
 
     # Transaction costs should reduce bet size
-    assert strategy_with_cost.evaluate(0.6, 1000) < strategy_no_cost.evaluate(
-        0.6, 1000
-    )
+    assert strategy_with_cost.evaluate(0.6, 1000) < strategy_no_cost.evaluate(0.6, 1000)
 
     # With large transaction costs that make betting unprofitable
     strategy_large_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.5)
@@ -106,9 +104,7 @@ def test_invalid_parameters():
 
     # Min probability must be between 0 and 1
     with pytest.raises(ValueError, match="Minimum probability must be between 0 and 1"):
-        MertonShare(
-            payoff=1.0, loss=1.0, transaction_cost=0, min_probability=1.5
-        )
+        MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, min_probability=1.5)
 
     # Max fraction must be between 0 and 1
     with pytest.raises(ValueError, match="Maximum fraction must be between 0 and 1"):
@@ -155,9 +151,7 @@ def test_one_probability():
 
 def test_even_odds():
     """Test with even odds (1:1 payoff)."""
-    strategy = MertonShare(
-        payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.0
-    )
+    strategy = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.0)
     current_bankroll = 1000
 
     # 60% chance of winning
@@ -176,9 +170,7 @@ def test_even_odds():
 
 def test_favorable_odds():
     """Test with favorable payoff ratio."""
-    strategy = MertonShare(
-        payoff=2.0, loss=1.0, transaction_cost=0, risk_aversion=2.0
-    )
+    strategy = MertonShare(payoff=2.0, loss=1.0, transaction_cost=0, risk_aversion=2.0)
     current_bankroll = 1000
 
     # 60% chance of winning with 2:1 payoff
@@ -233,7 +225,9 @@ def test_comparison_with_different_risk_aversions():
     results = {}
     for gamma in [1.0, 2.0, 3.0, 5.0]:
         random.seed(42)  # Reset seed for fair comparison
-        bankroll = BankRoll(initial_funds=1000, percent_bettable=1.0, max_draw_down=None)
+        bankroll = BankRoll(
+            initial_funds=1000, percent_bettable=1.0, max_draw_down=None
+        )
         strategy = MertonShare(
             payoff=payoff,
             loss=loss,
