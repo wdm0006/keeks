@@ -48,13 +48,17 @@ class KellyCriterion(BaseStrategy):
         Calculate the optimal Kelly bet size.
 
         The Kelly Criterion formula is:
-        f* = (bp - q) / b
+        f* = p / l - q / a
 
         where:
         f* = fraction of current bankroll to bet
-        b = net odds received on the bet (payoff/loss)
+        a = payoff after transaction costs
+        l = loss including transaction costs
         p = probability of winning
         q = probability of losing (1 - p)
+
+        Unlike the classic formula, which assumes the entire stake is lost, this
+        formula explicitly accounts for the loss multiplier used by this library.
 
         Parameters
         ----------
@@ -71,9 +75,6 @@ class KellyCriterion(BaseStrategy):
         if probability < self.min_probability:
             return 0.0
 
-        # Calculate net odds
-        self.payoff / self.loss
-
         # Calculate probability of losing
         q = 1 - probability
 
@@ -86,10 +87,8 @@ class KellyCriterion(BaseStrategy):
         if adjusted_payoff <= 0 or adjusted_loss <= 0:
             return 0.0  # If transaction costs make the bet unprofitable
 
-        adjusted_b = adjusted_payoff / adjusted_loss
-
-        # Calculate Kelly fraction with adjusted odds
-        kelly_fraction = (adjusted_b * probability - q) / adjusted_b
+        # Calculate Kelly fraction with adjusted payoff and loss
+        kelly_fraction = probability / adjusted_loss - q / adjusted_payoff
 
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, kelly_fraction), self.get_max_safe_bet(current_bankroll))
