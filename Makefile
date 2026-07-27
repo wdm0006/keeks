@@ -20,7 +20,7 @@ help:
 # Setup development environment
 setup:
 	pip install uv
-	uv venv --python=3.8
+	uv venv --python=3.12
 
 # Install the package
 install:
@@ -93,4 +93,4 @@ test-all:
 examples:
 	uv run python examples/strategy_comparison.py
 
-all: clean test docs 
+all: clean test docs

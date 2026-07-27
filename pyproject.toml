@@ -7,7 +7,7 @@ name = "keeks"
 version = "0.3.0"
 description = "A python library for bankroll allocation strategies"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "Keeks Contributors"}
@@ -17,10 +17,10 @@ classifiers = [
     "Intended Audience :: Financial and Insurance Industry",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Office/Business :: Financial :: Investment",
 ]
 dependencies = [
@@ -59,7 +59,7 @@ omit = ["tests/*"]
 
 [tool.ruff]
 line-length = 88
-target-version = "py38"
+target-version = "py310"
 
 
 [tool.ruff.lint]
@@ -78,7 +78,7 @@ docstring-code-line-length = 88
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py38, py39, py310, py311
+envlist = py310, py311, py312, py313
 isolated_build = True
 skip_missing_interpreters = True
 
@@ -91,8 +91,8 @@ commands =
 
 [gh-actions]
 python =
-    3.8: py38
-    3.9: py39
     3.10: py310
     3.11: py311
-""" 
+    3.12: py312
+    3.13: py313
+"""
