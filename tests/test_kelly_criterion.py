@@ -1,9 +1,10 @@
 import random
 
+import numpy as np
 import pytest
 
 from keeks.bankroll import BankRoll
-from keeks.binary_strategies import KellyCriterion
+from keeks.binary_strategies import DrawdownAdjustedKelly, KellyCriterion
 from keeks.binary_strategies.kelly import FractionalKellyCriterion
 from keeks.binary_strategies.simple import NaiveStrategy
 from keeks.simulators.random_binary import RandomBinarySimulator
@@ -171,10 +172,58 @@ def test_known_cases():
     strategy_with_cost = KellyCriterion(payoff=2, loss=1, transaction_cost=0.1)
 
     # 60% chance of winning with 2:1 payoff and transaction costs
-    # Expected formula: adjusted_payoff = 1.9, adjusted_loss = 1.1
-    # b = 1.9/1.1 = 1.727, f* = (1.727*0.6 - 0.4)/1.727 = (1.036 - 0.4)/1.727 = 0.368
+    # f* = 0.6 / 1.1 - 0.4 / 1.9 = 0.3349
     assert strategy_with_cost.evaluate(0.6, current_bankroll) == pytest.approx(
-        0.368, abs=0.001
+        0.3349, abs=0.001
+    )
+
+
+@pytest.mark.parametrize(
+    ("probability", "payoff", "loss", "transaction_cost"),
+    [
+        (0.60, 2.0, 1.0, 0.0),
+        (0.60, 2.0, 0.5, 0.0),
+        (0.55, 1.0, 0.5, 0.0),
+        (0.60, 2.0, 1.0, 0.1),
+        (0.60, 1.0, 1.0, 0.01),
+    ],
+)
+def test_matches_numeric_expected_log_growth_maximum(
+    probability, payoff, loss, transaction_cost
+):
+    strategy = KellyCriterion(payoff, loss, transaction_cost)
+    max_safe_bet = strategy.get_max_safe_bet(1000)
+    fractions = np.linspace(0, max_safe_bet, 100_001)
+    adjusted_payoff = payoff - transaction_cost
+    adjusted_loss = loss + transaction_cost
+    with np.errstate(divide="ignore"):
+        expected_log_growth = probability * np.log1p(fractions * adjusted_payoff) + (
+            1 - probability
+        ) * np.log1p(-fractions * adjusted_loss)
+    numeric_optimum = fractions[np.argmax(expected_log_growth)]
+
+    assert strategy.evaluate(probability, 1000) == pytest.approx(
+        numeric_optimum, abs=1e-3
+    )
+
+
+def test_kelly_variants_scale_corrected_non_unit_loss_fraction():
+    probability = 0.55
+    payoff = 1.0
+    loss = 0.5
+    transaction_cost = 0.0
+    full_kelly = KellyCriterion(payoff, loss, transaction_cost).evaluate(
+        probability, 1000
+    )
+
+    fractional = FractionalKellyCriterion(payoff, loss, transaction_cost, fraction=0.5)
+    drawdown_adjusted = DrawdownAdjustedKelly(
+        payoff, loss, transaction_cost, max_acceptable_drawdown=0.2
+    )
+
+    assert fractional.evaluate(probability, 1000) == pytest.approx(full_kelly * 0.5)
+    assert drawdown_adjusted.evaluate(probability, 1000) == pytest.approx(
+        full_kelly * 0.4
     )
 
 
