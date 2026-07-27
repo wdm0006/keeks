@@ -76,8 +76,14 @@ class NaiveStrategy(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, bet_size), self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -94,17 +100,21 @@ class NaiveStrategy(BaseStrategy):
         tolerance : float, default=0.01
             Convergence tolerance (unused, kept for API consistency)
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound (ignored in this method)
+            Maximum fraction of wealth to consider as upper bound
 
         Returns
         -------
         float
-            Maximum price willing to pay (the expected value)
+            Maximum price willing to pay (the expected value, bounded above by
+            ``current_wealth * max_search_fraction``)
 
         Notes
         -----
         Naive strategy is risk-neutral: willing to pay exactly the expected value.
         This is the classic "expected value maximizer" that doesn't account for risk.
+        The expected value can be unbounded (e.g. the St. Petersburg paradox), so the
+        result is capped the same way every other strategy caps it. Pass
+        ``max_search_fraction=1.0`` to allow paying the entire bankroll.
         """
         import numpy as np
 
@@ -117,10 +127,10 @@ class NaiveStrategy(BaseStrategy):
         # Calculate expected value
         expected_value = np.sum(probabilities * outcomes)
 
-        # For naive strategy, willing to pay expected value
-        # This can be infinite (e.g., St. Petersburg paradox)
-        # We cap at current_wealth for practical reasons
-        return min(current_wealth, max(0.0, expected_value))
+        # For naive strategy, willing to pay expected value, which can be unbounded
+        # (e.g., St. Petersburg paradox); respect the same wealth-fraction cap the
+        # other strategies apply
+        return min(current_wealth * max_search_fraction, max(0.0, expected_value))
 
 
 class FixedFractionStrategy(BaseStrategy):
@@ -193,8 +203,14 @@ class FixedFractionStrategy(BaseStrategy):
         else:
             return 0.0
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -366,8 +382,14 @@ class CPPIStrategy(BaseStrategy):
 
         return max(0, proportion)
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -598,8 +620,14 @@ class DynamicBankrollManagement(BaseStrategy):
         # Never exceed the ruin-safe fraction
         return min(bet_size, self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -634,7 +662,9 @@ class DynamicBankrollManagement(BaseStrategy):
         _ = outcomes, probabilities, tolerance
 
         # Use base fraction since we have no history for a one-time decision
-        return min(self.base_fraction * current_wealth, max_search_fraction * current_wealth)
+        return min(
+            self.base_fraction * current_wealth, max_search_fraction * current_wealth
+        )
 
 
 class OptimalF(BaseStrategy):
@@ -732,8 +762,14 @@ class OptimalF(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(optimal_f, self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -770,7 +806,7 @@ class OptimalF(BaseStrategy):
             current_wealth=current_wealth,
             risk_aversion=1.0,  # Optimal F uses log utility like Kelly
             tolerance=tolerance,
-            max_search_fraction=max_search_fraction
+            max_search_fraction=max_search_fraction,
         )
 
 
@@ -881,9 +917,9 @@ class MertonShare(BaseStrategy):
 
         # Calculate expected return accounting for transaction costs
         # Expected return = p * (payoff - tc) - (1-p) * (loss + tc)
-        expected_return = probability * (
-            self.payoff - self.transaction_cost
-        ) - (1 - probability) * (self.loss + self.transaction_cost)
+        expected_return = probability * (self.payoff - self.transaction_cost) - (
+            1 - probability
+        ) * (self.loss + self.transaction_cost)
 
         # Don't bet if expected return is non-positive
         if expected_return <= 0:
@@ -892,12 +928,13 @@ class MertonShare(BaseStrategy):
         # Calculate variance of returns for a binary outcome
         # For a binary bet: Var(R) = p * (payoff)^2 + (1-p) * (-loss)^2 - E[R]^2
         # We use gross returns (before transaction costs) for variance calculation
-        mean_squared_return = (
-            probability * (self.payoff**2) + (1 - probability) * (self.loss**2)
+        mean_squared_return = probability * (self.payoff**2) + (1 - probability) * (
+            self.loss**2
         )
-        variance = mean_squared_return - (
-            probability * self.payoff - (1 - probability) * self.loss
-        ) ** 2
+        variance = (
+            mean_squared_return
+            - (probability * self.payoff - (1 - probability) * self.loss) ** 2
+        )
 
         # Avoid division by zero
         if variance <= 0:
@@ -912,8 +949,14 @@ class MertonShare(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(merton_fraction, self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -952,5 +995,5 @@ class MertonShare(BaseStrategy):
             current_wealth=current_wealth,
             risk_aversion=self.risk_aversion,  # Use the strategy's γ parameter
             tolerance=tolerance,
-            max_search_fraction=max_search_fraction
+            max_search_fraction=max_search_fraction,
         )
