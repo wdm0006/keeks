@@ -25,9 +25,11 @@ class RandomUncertainBinarySimulator:
         The number of betting trials to simulate.
     stdev : float, default=0.1
         The standard deviation of the normal distribution used to generate probabilities.
+        Samples are clamped to [0.0, 1.0].
     uncertainty_stdev : float, default=0.05
         The standard deviation of the normal distribution used to add uncertainty
-        to the actual outcome probability.
+        to the actual outcome probability. The resulting outcome probability is
+        clamped to [0.0, 1.0].
     """
 
     def __init__(
@@ -72,19 +74,23 @@ class RandomUncertainBinarySimulator:
             if bankroll.total_funds <= 0:
                 break
 
-            probability = np.random.normal(0.5, self.stdev, 1)[0]
+            # Normal samples are unbounded; only [0, 1] values are probabilities.
+            probability = min(1.0, max(0.0, np.random.normal(0.5, self.stdev, 1)[0]))
             proportion = strategy.evaluate(probability, bankroll.total_funds)
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
             if proportion > 0:
                 current_bankroll = bankroll.total_funds
                 bet_amount = bankroll.bettable_funds * proportion
+                outcome_probability = min(
+                    1.0,
+                    max(
+                        0.0,
+                        probability + np.random.normal(0, self.uncertainty_stdev, 1)[0],
+                    ),
+                )
                 try:
-                    won = (
-                        random.random()
-                        < probability
-                        + np.random.normal(0, self.uncertainty_stdev, 1)[0]
-                    )
+                    won = random.random() < outcome_probability
                     if won:
                         amt = (self.payoff * bet_amount) - self.transaction_costs
                         if amt >= 0:
