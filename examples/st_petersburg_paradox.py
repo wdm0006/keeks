@@ -15,6 +15,7 @@ to play one round of the St. Petersburg game at various wealth levels.
 import os
 
 import matplotlib
+
 matplotlib.use("Agg")  # Use non-interactive backend
 
 import matplotlib.pyplot as plt
@@ -22,9 +23,11 @@ import numpy as np
 import pandas as pd
 
 from keeks.binary_strategies import KellyCriterion
-from keeks.binary_strategies.kelly import DrawdownAdjustedKelly, FractionalKellyCriterion
+from keeks.binary_strategies.kelly import (
+    DrawdownAdjustedKelly,
+    FractionalKellyCriterion,
+)
 from keeks.binary_strategies.simple import (
-    CPPIStrategy,
     DynamicBankrollManagement,
     FixedFractionStrategy,
     MertonShare,
@@ -55,7 +58,7 @@ def get_st_petersburg_outcomes(max_flips=30):
 
     for n in range(1, max_flips + 1):
         prob = (0.5) ** n  # Probability of exactly n flips
-        payout = 2.0 ** n    # Payout is 2^n (use 2.0 to keep as float)
+        payout = 2.0**n  # Payout is 2^n (use 2.0 to keep as float)
         outcomes.append(payout)
         probabilities.append(prob)
 
@@ -86,9 +89,7 @@ def main():
     # Create strategy instances - all 9 strategies!
     strategies = {
         # Utility-based strategies
-        "Kelly": KellyCriterion(
-            payoff=1.0, loss=1.0, transaction_cost=0.0
-        ),
+        "Kelly": KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0),
         "Half Kelly": FractionalKellyCriterion(
             payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.5
         ),
@@ -105,14 +106,16 @@ def main():
             payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=5.0
         ),
         # Rule-based strategies
-        "Naive": NaiveStrategy(
-            payoff=1.0, loss=1.0, transaction_cost=0.0
-        ),
+        "Naive": NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0),
         "Fixed 5%": FixedFractionStrategy(
             payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.05
         ),
         "Dynamic 10%": DynamicBankrollManagement(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, base_fraction=0.1, window_size=10
+            payoff=1.0,
+            loss=1.0,
+            transaction_cost=0.0,
+            base_fraction=0.1,
+            window_size=10,
         ),
     }
 
@@ -134,9 +137,7 @@ def main():
         for strategy_name, strategy in strategies.items():
             # Use the strategy's calculate_max_entry_price method
             max_price = strategy.calculate_max_entry_price(
-                outcomes=outcomes,
-                probabilities=probabilities,
-                current_wealth=bankroll
+                outcomes=outcomes, probabilities=probabilities, current_wealth=bankroll
             )
             row[f"{strategy_name}"] = max_price
             row[f"{strategy_name} (%BR)"] = (max_price / bankroll) * 100
@@ -156,7 +157,7 @@ def main():
     df_prices = df_results[price_cols].copy()
 
     # Format prices as currency
-    for col in strategies.keys():
+    for col in strategies:
         df_prices[col] = df_results[col].apply(lambda x: f"${x:.2f}")
 
     print(df_prices.to_string(index=False))
@@ -175,43 +176,57 @@ def main():
 
     # Define colors for different strategy types
     colors = {
-        'Kelly': '#1f77b4',
-        'Half Kelly': '#aec7e8',
-        'Drawdown Kelly': '#7fbfe8',
-        'Optimal F': '#4a90c4',
-        'Merton (γ=2.0)': '#ff7f0e',
-        'Merton (γ=5.0)': '#ffbb78',
-        'Naive': '#2ca02c',
-        'Fixed 5%': '#d62728',
-        'Dynamic 10%': '#9467bd',
+        "Kelly": "#1f77b4",
+        "Half Kelly": "#aec7e8",
+        "Drawdown Kelly": "#7fbfe8",
+        "Optimal F": "#4a90c4",
+        "Merton (γ=2.0)": "#ff7f0e",
+        "Merton (γ=5.0)": "#ffbb78",
+        "Naive": "#2ca02c",
+        "Fixed 5%": "#d62728",
+        "Dynamic 10%": "#9467bd",
     }
 
     # Plot bars for each strategy
     for i, strategy_name in enumerate(strategies.keys()):
         prices = [all_results[j][strategy_name] for j in range(len(bankrolls))]
         offset = (i - n_strategies / 2 + 0.5) * width
-        ax.bar(x + offset, prices, width, label=strategy_name,
-               color=colors.get(strategy_name, f'C{i}'))
+        ax.bar(
+            x + offset,
+            prices,
+            width,
+            label=strategy_name,
+            color=colors.get(strategy_name, f"C{i}"),
+        )
 
-    ax.set_xlabel('Bankroll Level', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Maximum Entry Price ($, log scale)', fontsize=12, fontweight='bold')
-    ax.set_title('St. Petersburg Paradox: Maximum Entry Price by Strategy\n' +
-                 '(Despite Infinite Expected Value, Agents Pay Finite Amounts)',
-                 fontsize=14, fontweight='bold', pad=20)
+    ax.set_xlabel("Bankroll Level", fontsize=12, fontweight="bold")
+    ax.set_ylabel("Maximum Entry Price ($, log scale)", fontsize=12, fontweight="bold")
+    ax.set_title(
+        "St. Petersburg Paradox: Maximum Entry Price by Strategy\n"
+        + "(Despite Infinite Expected Value, Agents Pay Finite Amounts)",
+        fontsize=14,
+        fontweight="bold",
+        pad=20,
+    )
     ax.set_xticks(x)
     ax.set_xticklabels(bankroll_labels, rotation=0)
-    ax.set_yscale('log')
-    ax.legend(loc='upper left', fontsize=9, ncol=2)
-    ax.grid(axis='y', alpha=0.3, linestyle='--', which='both')
+    ax.set_yscale("log")
+    ax.legend(loc="upper left", fontsize=9, ncol=2)
+    ax.grid(axis="y", alpha=0.3, linestyle="--", which="both")
 
     # Add annotation
-    ax.text(0.98, 0.02,
-            'Utility-based strategies (Kelly, Merton, Optimal F) analyze risk\n' +
-            'Rule-based strategies (Fixed, Dynamic) apply mechanical rules\n' +
-            'Naive pays expected value ($1,000 for 1k flips), capped at wealth',
-            transform=ax.transAxes, fontsize=9,
-            verticalalignment='bottom', horizontalalignment='right',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
+    ax.text(
+        0.98,
+        0.02,
+        "Utility-based strategies (Kelly, Merton, Optimal F) analyze risk\n"
+        + "Rule-based strategies (Fixed, Dynamic) apply mechanical rules\n"
+        + "Naive pays expected value ($1,000 for 1k flips), capped at 50% of wealth",
+        transform=ax.transAxes,
+        fontsize=9,
+        verticalalignment="bottom",
+        horizontalalignment="right",
+        bbox={"boxstyle": "round", "facecolor": "wheat", "alpha": 0.3},
+    )
 
     plt.tight_layout()
 
@@ -221,14 +236,14 @@ def main():
 
     # Save figure
     fig_path = os.path.join(output_dir, "st_petersburg_paradox.png")
-    plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.savefig(fig_path, dpi=300, bbox_inches="tight")
     print(f"\n✓ Chart saved to: {fig_path}")
 
     # Save CSV with better formatting
     csv_data = []
     for result in all_results:
         row = {"Bankroll": result["Bankroll"]}
-        for strategy_name in strategies.keys():
+        for strategy_name in strategies:
             row[f"{strategy_name} ($)"] = f"${result[strategy_name]:.2f}"
             row[f"{strategy_name} (%)"] = f"{result[f'{strategy_name} (%BR)']:.3f}%"
         csv_data.append(row)
@@ -237,7 +252,6 @@ def main():
     csv_path = os.path.join(output_dir, "st_petersburg_paradox.csv")
     df_csv.to_csv(csv_path, index=False)
     print(f"✓ Data saved to: {csv_path}")
-
 
 
 if __name__ == "__main__":

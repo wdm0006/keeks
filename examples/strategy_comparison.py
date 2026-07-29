@@ -292,7 +292,9 @@ def main():
     print("\nStrategy Comparison Results:")
     print("(Sorted by MEDIAN - more robust to outliers than mean)")
     print(results_table.to_string(index=False))
-    print("\nNote: With high ruin rates, mean is misleading (pulled up by rare survivors).")
+    print(
+        "\nNote: With high ruin rates, mean is misleading (pulled up by rare survivors)."
+    )
     print("      Median shows what a TYPICAL bettor would experience.")
 
     # Plot the distribution of final bankrolls for each strategy
@@ -327,9 +329,7 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
 
     # Save the figure and table
-    plt.savefig(
-        os.path.join(output_dir, "strategy_comparison.png"), dpi=300
-    )
+    plt.savefig(os.path.join(output_dir, "strategy_comparison.png"), dpi=300)
     results_table.to_csv(
         os.path.join(output_dir, "strategy_comparison.csv"), index=False
     )

@@ -48,13 +48,17 @@ class KellyCriterion(BaseStrategy):
         Calculate the optimal Kelly bet size.
 
         The Kelly Criterion formula is:
-        f* = (bp - q) / b
+        f* = p / l - q / a
 
         where:
         f* = fraction of current bankroll to bet
-        b = net odds received on the bet (payoff/loss)
+        a = payoff after transaction costs
+        l = loss including transaction costs
         p = probability of winning
         q = probability of losing (1 - p)
+
+        Unlike the classic formula, which assumes the entire stake is lost, this
+        formula explicitly accounts for the loss multiplier used by this library.
 
         Parameters
         ----------
@@ -71,9 +75,6 @@ class KellyCriterion(BaseStrategy):
         if probability < self.min_probability:
             return 0.0
 
-        # Calculate net odds
-        self.payoff / self.loss
-
         # Calculate probability of losing
         q = 1 - probability
 
@@ -86,16 +87,20 @@ class KellyCriterion(BaseStrategy):
         if adjusted_payoff <= 0 or adjusted_loss <= 0:
             return 0.0  # If transaction costs make the bet unprofitable
 
-        adjusted_b = adjusted_payoff / adjusted_loss
-
-        # Calculate Kelly fraction with adjusted odds
-        kelly_fraction = (adjusted_b * probability - q) / adjusted_b
+        # Calculate Kelly fraction with adjusted payoff and loss
+        kelly_fraction = probability / adjusted_loss - q / adjusted_payoff
 
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, kelly_fraction), self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -133,7 +138,7 @@ class KellyCriterion(BaseStrategy):
             current_wealth=current_wealth,
             risk_aversion=1.0,  # Kelly uses log utility (γ=1)
             tolerance=tolerance,
-            max_search_fraction=max_search_fraction
+            max_search_fraction=max_search_fraction,
         )
 
 
@@ -182,8 +187,14 @@ class FractionalKellyCriterion(BaseStrategy):
         kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
         return self.fraction * kelly.evaluate(probability, current_bankroll)
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -310,8 +321,14 @@ class DrawdownAdjustedKelly(BaseStrategy):
         # Ensure we never bet more than would result in negative bankroll
         return min(adjusted_kelly, self.get_max_safe_bet(current_bankroll))
 
-    def calculate_max_entry_price(self, outcomes, probabilities, current_wealth,
-                                  tolerance=0.01, max_search_fraction=0.5):
+    def calculate_max_entry_price(
+        self,
+        outcomes,
+        probabilities,
+        current_wealth,
+        tolerance=0.01,
+        max_search_fraction=0.5,
+    ):
         """
         Calculate maximum price willing to pay for a one-time gamble.
 

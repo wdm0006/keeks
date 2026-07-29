@@ -42,15 +42,29 @@ def crra_utility(wealth, risk_aversion=1.0):
     """
     if risk_aversion == 1.0:
         if np.any(wealth <= 0):
-            return -np.inf if np.isscalar(wealth) else np.where(wealth <= 0, -np.inf, np.log(wealth))
+            return (
+                -np.inf
+                if np.isscalar(wealth)
+                else np.where(wealth <= 0, -np.inf, np.log(wealth))
+            )
         return np.log(wealth)
     else:
         if np.any(wealth <= 0):
-            return -np.inf if np.isscalar(wealth) else np.where(wealth <= 0, -np.inf, (wealth ** (1 - risk_aversion)) / (1 - risk_aversion))
+            return (
+                -np.inf
+                if np.isscalar(wealth)
+                else np.where(
+                    wealth <= 0,
+                    -np.inf,
+                    (wealth ** (1 - risk_aversion)) / (1 - risk_aversion),
+                )
+            )
         return (wealth ** (1 - risk_aversion)) / (1 - risk_aversion)
 
 
-def expected_utility(outcomes, probabilities, current_wealth, entry_price, risk_aversion=1.0):
+def expected_utility(
+    outcomes, probabilities, current_wealth, entry_price, risk_aversion=1.0
+):
     """
     Calculate expected utility of a gamble.
 
@@ -85,8 +99,14 @@ def expected_utility(outcomes, probabilities, current_wealth, entry_price, risk_
     return np.sum(probabilities * utilities)
 
 
-def find_indifference_price(outcomes, probabilities, current_wealth, risk_aversion=1.0,
-                           tolerance=0.01, max_search_fraction=0.5):
+def find_indifference_price(
+    outcomes,
+    probabilities,
+    current_wealth,
+    risk_aversion=1.0,
+    tolerance=0.01,
+    max_search_fraction=0.5,
+):
     """
     Find maximum price willing to pay for a gamble using binary search.
 
@@ -133,8 +153,9 @@ def find_indifference_price(outcomes, probabilities, current_wealth, risk_aversi
         mid = (low + high) / 2
 
         # Calculate expected utility at this price
-        exp_util = expected_utility(outcomes, probabilities, current_wealth,
-                                   mid, risk_aversion)
+        exp_util = expected_utility(
+            outcomes, probabilities, current_wealth, mid, risk_aversion
+        )
 
         if exp_util > current_utility:
             # Willing to pay more
