@@ -116,13 +116,12 @@ class NaiveStrategy(BaseStrategy):
         result is capped the same way every other strategy caps it. Pass
         ``max_search_fraction=1.0`` to allow paying the entire bankroll.
         """
-        import numpy as np
+        from keeks.utils import _normalize_gamble
 
         # Suppress unused parameter warning - kept for API consistency
         _ = tolerance
 
-        outcomes = np.array(outcomes)
-        probabilities = np.array(probabilities)
+        outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
 
         # Calculate expected value
         expected_value = np.sum(probabilities * outcomes)
@@ -240,8 +239,10 @@ class FixedFractionStrategy(BaseStrategy):
         commits a fixed fraction of wealth regardless of the opportunity.
         This is a mechanical rule-based approach, not optimization-based.
         """
-        # Suppress unused parameter warnings - kept for API consistency
-        _ = outcomes, probabilities, tolerance
+        from keeks.utils import _normalize_gamble
+
+        _normalize_gamble(outcomes, probabilities)
+        _ = tolerance
 
         # Pay the fixed fraction of current wealth
         return min(self.fraction * current_wealth, max_search_fraction * current_wealth)
@@ -420,8 +421,10 @@ class CPPIStrategy(BaseStrategy):
         For entry price, we apply the same logic: pay multiplier × cushion,
         but never more than the cushion itself (to maintain floor).
         """
-        # Suppress unused parameter warnings
-        _ = outcomes, probabilities, tolerance
+        from keeks.utils import _normalize_gamble
+
+        _normalize_gamble(outcomes, probabilities)
+        _ = tolerance
 
         # Update internal state with current wealth
         self.update_bankroll(current_wealth)
@@ -658,8 +661,10 @@ class DynamicBankrollManagement(BaseStrategy):
         For a one-time decision with no history, we fall back to the base_fraction.
         This represents a neutral starting point before dynamic adjustments.
         """
-        # Suppress unused parameter warnings
-        _ = outcomes, probabilities, tolerance
+        from keeks.utils import _normalize_gamble
+
+        _normalize_gamble(outcomes, probabilities)
+        _ = tolerance
 
         # Use base fraction since we have no history for a one-time decision
         return min(

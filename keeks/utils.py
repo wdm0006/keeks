@@ -1,5 +1,7 @@
 import numpy as np
 
+PROBABILITY_SUM_TOLERANCE = 1e-12
+
 
 class RuinError(Exception):
     """
@@ -62,6 +64,46 @@ def crra_utility(wealth, risk_aversion=1.0):
         return (wealth ** (1 - risk_aversion)) / (1 - risk_aversion)
 
 
+def _normalize_gamble(outcomes, probabilities):
+    """Validate a gamble and add its implicit zero-payout outcome."""
+    try:
+        outcomes = np.asarray(outcomes, dtype=float)
+        probabilities = np.asarray(probabilities, dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Outcomes and probabilities must be finite sequences") from exc
+
+    if outcomes.ndim != 1 or probabilities.ndim != 1:
+        raise ValueError("Outcomes and probabilities must be one-dimensional")
+    if outcomes.size == 0 or probabilities.size == 0:
+        raise ValueError("Outcomes and probabilities must be non-empty")
+    if outcomes.size != probabilities.size:
+        raise ValueError("Outcomes and probabilities must have equal length")
+    if not np.all(np.isfinite(outcomes)) or not np.all(np.isfinite(probabilities)):
+        raise ValueError("Outcomes and probabilities must contain only finite values")
+    if np.any(probabilities < 0):
+        raise ValueError("Probabilities must be nonnegative")
+
+    total_probability = probabilities.sum()
+    if total_probability > 1 + PROBABILITY_SUM_TOLERANCE:
+        raise ValueError("Probabilities must sum to no more than one")
+    if total_probability > 1:
+        probabilities = probabilities / total_probability
+        total_probability = 1.0
+    if total_probability < 1:
+        outcomes = np.append(outcomes, 0.0)
+        probabilities = np.append(probabilities, 1.0 - total_probability)
+
+    return outcomes, probabilities
+
+
+def _expected_utility(
+    outcomes, probabilities, current_wealth, entry_price, risk_aversion
+):
+    final_wealth = current_wealth - entry_price + outcomes
+    utilities = crra_utility(final_wealth, risk_aversion)
+    return np.sum(probabilities * utilities)
+
+
 def expected_utility(
     outcomes, probabilities, current_wealth, entry_price, risk_aversion=1.0
 ):
@@ -73,7 +115,9 @@ def expected_utility(
     outcomes : array-like
         The possible payoffs from the gamble
     probabilities : array-like
-        The probability of each outcome (must sum to ≤ 1)
+        The probability of each outcome (must sum to no more than 1, within
+        ``PROBABILITY_SUM_TOLERANCE``). Any omitted mass is treated as a
+        zero-payout outcome.
     current_wealth : float
         Current wealth before the gamble
     entry_price : float
@@ -86,17 +130,10 @@ def expected_utility(
     float
         The expected utility from participating in the gamble
     """
-    outcomes = np.array(outcomes)
-    probabilities = np.array(probabilities)
-
-    # Final wealth for each outcome = current wealth - entry price + payout
-    final_wealth = current_wealth - entry_price + outcomes
-
-    # Calculate utility for each outcome
-    utilities = crra_utility(final_wealth, risk_aversion)
-
-    # Return expected utility
-    return np.sum(probabilities * utilities)
+    outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
+    return _expected_utility(
+        outcomes, probabilities, current_wealth, entry_price, risk_aversion
+    )
 
 
 def find_indifference_price(
@@ -118,7 +155,9 @@ def find_indifference_price(
     outcomes : array-like
         The possible payoffs from the gamble
     probabilities : array-like
-        The probability of each outcome (must sum to ≤ 1)
+        The probability of each outcome (must sum to no more than 1, within
+        ``PROBABILITY_SUM_TOLERANCE``). Any omitted mass is treated as a
+        zero-payout outcome.
     current_wealth : float
         Current wealth before the gamble
     risk_aversion : float, default=1.0
@@ -142,6 +181,8 @@ def find_indifference_price(
     ...                                      current_wealth=1000, risk_aversion=2.0)
     >>> print(f"Willing to pay: ${max_price:.2f}")
     """
+    outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
+
     # Current utility without participating
     current_utility = crra_utility(current_wealth, risk_aversion)
 
@@ -153,7 +194,7 @@ def find_indifference_price(
         mid = (low + high) / 2
 
         # Calculate expected utility at this price
-        exp_util = expected_utility(
+        exp_util = _expected_utility(
             outcomes, probabilities, current_wealth, mid, risk_aversion
         )
 

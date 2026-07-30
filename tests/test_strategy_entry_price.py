@@ -382,3 +382,17 @@ class TestEntryPriceParameters:
 
         # Should not exceed 30% of wealth
         assert max_price <= current_wealth * 0.3
+
+    @pytest.mark.parametrize(
+        "strategy",
+        [
+            KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0),
+            NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0),
+            FixedFractionStrategy(
+                fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.0
+            ),
+        ],
+    )
+    def test_invalid_gamble_raises_value_error_for_strategy_delegates(self, strategy):
+        with pytest.raises(ValueError):
+            strategy.calculate_max_entry_price([100], [1.1], 1000)
