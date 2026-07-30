@@ -1,3 +1,5 @@
+import math
+
 import matplotlib.pyplot as plt
 
 from keeks.utils import RuinError
@@ -32,11 +34,31 @@ class BankRoll:
     def __init__(
         self, initial_funds=0.0, percent_bettable=1.0, max_draw_down=0.3, verbose=0
     ):
+        self._validate_nonnegative_finite(initial_funds, "initial_funds")
+        self._validate_unit_interval(percent_bettable, "percent_bettable")
+        if max_draw_down is not None:
+            self._validate_unit_interval(max_draw_down, "max_draw_down")
+
         self._bank = initial_funds
         self.percent_bettable = percent_bettable
         self.max_draw_down = max_draw_down
         self.verbose = verbose
         self.history = [initial_funds]
+
+    @staticmethod
+    def _validate_nonnegative_finite(amount, name):
+        try:
+            valid = math.isfinite(amount) and amount >= 0
+        except TypeError:
+            valid = False
+        if not valid:
+            raise ValueError(f"{name} must be a finite, nonnegative number")
+
+    @classmethod
+    def _validate_unit_interval(cls, value, name):
+        cls._validate_nonnegative_finite(value, name)
+        if value > 1:
+            raise ValueError(f"{name} must be between 0 and 1")
 
     def update_history(self):
         """
@@ -80,6 +102,7 @@ class BankRoll:
         amt : float
             The amount to deposit into the bankroll.
         """
+        self._validate_nonnegative_finite(amt, "amt")
         self._bank += amt
         self.update_history()
 
@@ -101,6 +124,8 @@ class BankRoll:
             If the withdrawal would exceed the maximum allowed drawdown or
             cause the bankroll to go negative (bankruptcy).
         """
+        self._validate_nonnegative_finite(amt, "amt")
+
         # Check if withdrawal would cause bankruptcy
         if self._bank - amt < 0:
             raise RuinError(
@@ -108,7 +133,7 @@ class BankRoll:
             )
 
         # Check drawdown limit if set
-        if self.max_draw_down and amt > self.max_draw_down * self._bank:
+        if self.max_draw_down is not None and amt > self.max_draw_down * self._bank:
             raise RuinError("You lost too much money buddy, slow down.")
 
         # Only withdraw if checks pass
@@ -129,6 +154,7 @@ class BankRoll:
         ValueError
             If the bet amount exceeds the bettable funds.
         """
+        self._validate_nonnegative_finite(amount, "amount")
         if amount > self.bettable_funds:
             raise ValueError("Bet amount exceeds bettable funds")
         self._bank -= amount
@@ -143,6 +169,7 @@ class BankRoll:
         amount : float
             The amount to add to the bankroll.
         """
+        self._validate_nonnegative_finite(amount, "amount")
         self._bank += amount
         self.update_history()
 
@@ -161,12 +188,14 @@ class BankRoll:
             If the removal would exceed the maximum allowed drawdown or
             cause the bankroll to go negative (bankruptcy).
         """
+        self._validate_nonnegative_finite(amount, "amount")
+
         # Check if removal would cause bankruptcy
         if self._bank - amount < 0:
             raise RuinError("Insufficient funds for removal (would cause bankruptcy)")
 
         # Check drawdown limit if set
-        if self.max_draw_down and amount > self.max_draw_down * self._bank:
+        if self.max_draw_down is not None and amount > self.max_draw_down * self._bank:
             raise RuinError("You lost too much money buddy, slow down.")
 
         # Only remove if checks pass
