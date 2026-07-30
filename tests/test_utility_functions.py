@@ -7,7 +7,12 @@ These tests verify the CRRA utility functions and indifference price calculation
 import numpy as np
 import pytest
 
-from keeks.utils import crra_utility, expected_utility, find_indifference_price
+from keeks.utils import (
+    PROBABILITY_SUM_TOLERANCE,
+    crra_utility,
+    expected_utility,
+    find_indifference_price,
+)
 
 
 class TestCRRAUtility:
@@ -142,6 +147,41 @@ class TestExpectedUtility:
         # Positive EV bet should have higher expected utility
         assert eu_bet > eu_no_bet
 
+    def test_implicit_zero_payout_matches_explicit_outcome(self):
+        implicit = expected_utility([100], [0.5], 1000, 25)
+        explicit = expected_utility([100, 0], [0.5, 0.5], 1000, 25)
+
+        assert implicit == pytest.approx(explicit)
+
+    @pytest.mark.parametrize(
+        ("outcomes", "probabilities"),
+        [
+            ([], []),
+            ([[100]], [[1.0]]),
+            ([100, 0], [1.0]),
+            ([np.nan], [1.0]),
+            ([np.inf], [1.0]),
+            ([100], [np.nan]),
+            ([100], [np.inf]),
+            ([100], [-0.1]),
+            ([100, 0], [0.6, 0.5]),
+            (["not-a-number"], [1.0]),
+        ],
+    )
+    def test_invalid_gamble_raises_value_error(self, outcomes, probabilities):
+        with pytest.raises(ValueError):
+            expected_utility(outcomes, probabilities, 1000, 0)
+
+    def test_probability_sum_tolerance_is_accepted(self):
+        result = expected_utility(
+            [100, 0],
+            [0.5, 0.5 + PROBABILITY_SUM_TOLERANCE],
+            1000,
+            0,
+        )
+
+        assert np.isfinite(result)
+
 
 class TestFindIndifferencePrice:
     """Tests for indifference price calculation."""
@@ -275,3 +315,21 @@ class TestFindIndifferencePrice:
 
         # Should not exceed 30% of wealth
         assert max_price <= current_wealth * max_search_fraction
+
+    def test_implicit_zero_payout_matches_explicit_outcome(self):
+        implicit = find_indifference_price([100], [0.5], 1000)
+        explicit = find_indifference_price([100, 0], [0.5, 0.5], 1000)
+
+        assert implicit == pytest.approx(explicit)
+
+    @pytest.mark.parametrize(
+        ("outcomes", "probabilities"),
+        [
+            ([100], [1.01]),
+            ([100], [np.nan]),
+            ([np.inf], [1.0]),
+        ],
+    )
+    def test_invalid_gamble_raises_value_error(self, outcomes, probabilities):
+        with pytest.raises(ValueError):
+            find_indifference_price(outcomes, probabilities, 1000)
