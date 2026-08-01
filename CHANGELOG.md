@@ -1,3 +1,18 @@
+v0.4.0
+======
+
+**Changed:**
+ * Dynamic bankroll management now skips bets below its configurable minimum probability, respects the maximum safe bet, and adapts from settled simulator outcomes
+ * Python 3.10 is now the minimum supported version, with support extended through Python 3.13
+
+**Critical Bug Fixes:**
+ * Corrected Kelly-family bet sizing when using an explicit loss multiplier
+ * Added finite, nonnegative validation for bankroll configuration and transactions, and made zero drawdown enforce a true zero-loss limit
+ * Accounted for omitted probability mass as a zero-payout outcome in expected utility and indifference pricing, while rejecting malformed probability distributions
+ * Clamped random simulator probabilities to valid bounds and stopped simulations cleanly when bankroll safeguards reject a settlement
+ * Routed fee-dominated wins through bankroll withdrawal safeguards instead of depositing a negative amount
+ * Corrected bankroll history plotting for current Matplotlib versions
+
 v0.3.0
 ======
 
