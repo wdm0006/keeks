@@ -563,6 +563,9 @@ class DynamicBankrollManagement(BaseStrategy):
         """Calculate the adjustment factor based on current drawdown."""
         if self.current_bankroll is None or self.peak_bankroll is None:
             return 1.0
+        if self.peak_bankroll <= 0:
+            # No positive peak to measure a drawdown against.
+            return 1.0
 
         drawdown = 1.0 - (self.current_bankroll / self.peak_bankroll)
         return max(0.5, 1.0 - drawdown)

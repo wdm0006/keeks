@@ -57,12 +57,21 @@ class BaseStrategy(abc.ABC):
         Returns
         -------
         float
-            The maximum safe bet size as a proportion of bankroll.
+            The maximum safe bet size as a proportion of bankroll. Zero when
+            there is nothing left to stake (``current_bankroll <= 0``).
+
+        Notes
+        -----
+        The maximum stake that cannot drive the bankroll negative is
+        ``current_bankroll / (loss + transaction_cost)``; expressed as a
+        proportion of the bankroll the bankroll term cancels, so for a positive
+        bankroll this is exactly ``min(1.0, 1 / (loss + transaction_cost))``.
+        A non-positive bankroll has no safe stake at all, so the answer there is
+        ``0.0``.
         """
-        # Calculate maximum bet that won't result in negative bankroll
-        # after accounting for loss multiplier and transaction costs
-        max_bet = current_bankroll / (self.loss + self.transaction_cost)
-        return min(1.0, max_bet / current_bankroll)
+        if current_bankroll <= 0:
+            return 0.0
+        return min(1.0, 1.0 / (self.loss + self.transaction_cost))
 
     def calculate_max_entry_price(
         self,
