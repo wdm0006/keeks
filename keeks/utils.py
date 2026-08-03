@@ -1,6 +1,10 @@
+import math
+
 import numpy as np
 
 PROBABILITY_SUM_TOLERANCE = 1e-12
+
+_UNSET = object()
 
 
 class RuinError(Exception):
@@ -96,6 +100,46 @@ def _normalize_gamble(outcomes, probabilities):
     return outcomes, probabilities
 
 
+def _require_finite(value, name):
+    """Coerce ``value`` to a finite float or raise ``ValueError``."""
+    try:
+        value = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be a finite number") from exc
+    if not math.isfinite(value):
+        raise ValueError(f"{name} must be a finite number")
+    return value
+
+
+def _validate_entry_price_scalars(
+    current_wealth, tolerance, max_search_fraction, risk_aversion=_UNSET
+):
+    """
+    Validate the scalar controls shared by every entry-price calculation.
+
+    ``current_wealth`` and ``tolerance`` must be finite and positive,
+    ``max_search_fraction`` must be finite and nonnegative (values above 1.0 are
+    allowed), and ``risk_aversion`` — when the caller has one — must be finite
+    and positive.
+
+    Raises
+    ------
+    ValueError
+        If any control is outside its accepted range.
+    """
+    if _require_finite(current_wealth, "Current wealth") <= 0:
+        raise ValueError("Current wealth must be greater than 0")
+    if _require_finite(tolerance, "Tolerance") <= 0:
+        raise ValueError("Tolerance must be greater than 0")
+    if _require_finite(max_search_fraction, "Maximum search fraction") < 0:
+        raise ValueError("Maximum search fraction must be non-negative")
+    if (
+        risk_aversion is not _UNSET
+        and _require_finite(risk_aversion, "Risk aversion") <= 0
+    ):
+        raise ValueError("Risk aversion must be greater than 0")
+
+
 def _expected_utility(
     outcomes, probabilities, current_wealth, entry_price, risk_aversion
 ):
@@ -159,18 +203,28 @@ def find_indifference_price(
         ``PROBABILITY_SUM_TOLERANCE``). Any omitted mass is treated as a
         zero-payout outcome.
     current_wealth : float
-        Current wealth before the gamble
+        Current wealth before the gamble. Must be finite and greater than 0.
     risk_aversion : float, default=1.0
-        Coefficient of relative risk aversion (γ)
+        Coefficient of relative risk aversion (γ). Must be finite and greater
+        than 0.
     tolerance : float, default=0.01
-        Convergence tolerance for binary search
+        Convergence tolerance for binary search. Must be finite and greater
+        than 0.
     max_search_fraction : float, default=0.5
-        Maximum fraction of wealth to consider as upper bound
+        Maximum fraction of wealth to consider as upper bound. Must be finite
+        and non-negative; values above 1.0 are allowed and search beyond
+        current wealth.
 
     Returns
     -------
     float
         Maximum price willing to pay for the gamble
+
+    Raises
+    ------
+    ValueError
+        If the gamble arrays are malformed, or if any scalar control falls
+        outside the ranges documented above.
 
     Examples
     --------
@@ -182,6 +236,9 @@ def find_indifference_price(
     >>> print(f"Willing to pay: ${max_price:.2f}")
     """
     outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
+    _validate_entry_price_scalars(
+        current_wealth, tolerance, max_search_fraction, risk_aversion=risk_aversion
+    )
 
     # Current utility without participating
     current_utility = crra_utility(current_wealth, risk_aversion)
