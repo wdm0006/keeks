@@ -28,7 +28,7 @@ INVALID_SEARCH_FRACTION = [-0.01, -1.0, math.nan, math.inf, -math.inf]
 INVALID_RISK_AVERSION = [0.0, -1.0, math.nan, math.inf, -math.inf]
 
 
-def _call_with_deadline(call, timeout=10.0):
+def _call_with_deadline(call, timeout=5.0):
     """Run ``call`` on a worker thread, failing the test if it never returns.
 
     ``tolerance=0`` and a non-finite ``current_wealth`` both used to spin the
