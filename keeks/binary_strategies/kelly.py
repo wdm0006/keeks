@@ -114,16 +114,24 @@ class KellyCriterion(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (must sum to ≤ 1)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance for binary search
+            Convergence tolerance for binary search. Must be finite and greater
+            than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay for the gamble
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----
@@ -209,16 +217,24 @@ class FractionalKellyCriterion(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (must sum to ≤ 1)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance for binary search
+            Convergence tolerance for binary search. Must be finite and greater
+            than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay for the gamble
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----
@@ -342,16 +358,24 @@ class DrawdownAdjustedKelly(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (must sum to ≤ 1)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance for binary search
+            Convergence tolerance for binary search. Must be finite and greater
+            than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay for the gamble
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----

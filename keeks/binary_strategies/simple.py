@@ -96,17 +96,25 @@ class NaiveStrategy(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (must sum to ≤ 1)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance (unused, kept for API consistency)
+            Convergence tolerance (unused, kept for API consistency). Must
+            still be finite and greater than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay (the expected value, bounded above by
             ``current_wealth * max_search_fraction``)
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----
@@ -116,12 +124,10 @@ class NaiveStrategy(BaseStrategy):
         result is capped the same way every other strategy caps it. Pass
         ``max_search_fraction=1.0`` to allow paying the entire bankroll.
         """
-        from keeks.utils import _normalize_gamble
-
-        # Suppress unused parameter warning - kept for API consistency
-        _ = tolerance
+        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
 
         outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
+        _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
         # Calculate expected value
         expected_value = np.sum(probabilities * outcomes)
@@ -222,16 +228,24 @@ class FixedFractionStrategy(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (unused)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance (unused, kept for API consistency)
+            Convergence tolerance (unused, kept for API consistency). Must
+            still be finite and greater than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay (fixed fraction of wealth)
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----
@@ -239,10 +253,10 @@ class FixedFractionStrategy(BaseStrategy):
         commits a fixed fraction of wealth regardless of the opportunity.
         This is a mechanical rule-based approach, not optimization-based.
         """
-        from keeks.utils import _normalize_gamble
+        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
 
         _normalize_gamble(outcomes, probabilities)
-        _ = tolerance
+        _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
         # Pay the fixed fraction of current wealth
         return min(self.fraction * current_wealth, max_search_fraction * current_wealth)
@@ -404,16 +418,25 @@ class CPPIStrategy(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (unused in basic calculation)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance (unused, kept for API consistency)
+            Convergence tolerance (unused, kept for API consistency). Must
+            still be finite and greater than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay (based on cushion above floor)
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above. Validation happens before any
+            internal bankroll or floor state is updated.
 
         Notes
         -----
@@ -421,10 +444,10 @@ class CPPIStrategy(BaseStrategy):
         For entry price, we apply the same logic: pay multiplier × cushion,
         but never more than the cushion itself (to maintain floor).
         """
-        from keeks.utils import _normalize_gamble
+        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
 
         _normalize_gamble(outcomes, probabilities)
-        _ = tolerance
+        _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
         # Update internal state with current wealth
         self.update_bankroll(current_wealth)
@@ -647,16 +670,24 @@ class DynamicBankrollManagement(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (unused)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance (unused, kept for API consistency)
+            Convergence tolerance (unused, kept for API consistency). Must
+            still be finite and greater than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay (base fraction of wealth)
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----
@@ -664,10 +695,10 @@ class DynamicBankrollManagement(BaseStrategy):
         For a one-time decision with no history, we fall back to the base_fraction.
         This represents a neutral starting point before dynamic adjustments.
         """
-        from keeks.utils import _normalize_gamble
+        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
 
         _normalize_gamble(outcomes, probabilities)
-        _ = tolerance
+        _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
         # Use base fraction since we have no history for a one-time decision
         return min(
@@ -789,16 +820,24 @@ class OptimalF(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (must sum to ≤ 1)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance for binary search
+            Convergence tolerance for binary search. Must be finite and greater
+            than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay for the gamble
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----
@@ -977,16 +1016,24 @@ class MertonShare(BaseStrategy):
         probabilities : array-like
             The probability of each outcome (must sum to ≤ 1)
         current_wealth : float
-            Current wealth before the gamble
+            Current wealth before the gamble. Must be finite and greater than 0.
         tolerance : float, default=0.01
-            Convergence tolerance for binary search
+            Convergence tolerance for binary search. Must be finite and greater
+            than 0.
         max_search_fraction : float, default=0.5
-            Maximum fraction of wealth to consider as upper bound
+            Maximum fraction of wealth to consider as upper bound. Must be
+            finite and non-negative; values above 1.0 are allowed.
 
         Returns
         -------
         float
             Maximum price willing to pay for the gamble
+
+        Raises
+        ------
+        ValueError
+            If the gamble arrays are malformed, or if any scalar control falls
+            outside the ranges documented above.
 
         Notes
         -----
