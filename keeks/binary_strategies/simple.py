@@ -734,7 +734,8 @@ class OptimalF(BaseStrategy):
         Parameters
         ----------
         probability : float
-            The probability of a successful outcome, typically between 0 and 1.
+            The probability of a successful outcome, used to decide whether to bet.
+            Probabilities below 0.5 return zero; bet sizing uses ``win_rate``.
         current_bankroll : float
             The current bankroll amount.
 
@@ -746,9 +747,7 @@ class OptimalF(BaseStrategy):
         if probability < 0.5:  # Use 0.5 as default minimum probability
             return 0.0
 
-        # Use the provided probability to adjust our expectations
-        # If no specific edge is known, the win_rate will be used directly
-        adjusted_win_rate = probability if probability > 0 else self.win_rate
+        adjusted_win_rate = self.win_rate
         adjusted_loss_rate = 1 - adjusted_win_rate
 
         # Calculate the risk-to-reward ratio (R-multiple)

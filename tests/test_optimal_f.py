@@ -35,6 +35,33 @@ def test_min_probability_threshold():
     assert strategy.evaluate(0.4, 1000) == pytest.approx(0.0)
 
 
+def test_win_rate_controls_bet_size():
+    """Test that historical win rate, not trial probability, controls sizing."""
+    conservative = OptimalF(
+        win_rate=0.55, payoff=2, loss=1, transaction_cost=0, max_risk_fraction=1
+    )
+    aggressive = OptimalF(
+        win_rate=0.7, payoff=2, loss=1, transaction_cost=0, max_risk_fraction=1
+    )
+
+    assert conservative.evaluate(0.8, 1000) == pytest.approx(0.325)
+    assert aggressive.evaluate(0.8, 1000) == pytest.approx(0.55)
+
+
+@pytest.mark.parametrize("win_rate", [0.0, 0.5, 1.0])
+def test_probability_gate_applies_regardless_of_win_rate(win_rate):
+    """Test that trial probability remains the bet/no-bet gate."""
+    strategy = OptimalF(
+        win_rate=win_rate,
+        payoff=2,
+        loss=1,
+        transaction_cost=0,
+        max_risk_fraction=1,
+    )
+
+    assert strategy.evaluate(0.49, 1000) == 0.0
+
+
 def test_payoff_ratio_effect():
     """Test how different payoff ratios affect the optimal bet size."""
     # Low payoff ratio (conservative)
@@ -147,19 +174,18 @@ def test_transaction_costs():
 
 def test_max_safe_bet():
     """Test that the strategy respects the maximum safe bet limit."""
-    strategy = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0.01, max_risk_fraction=0.2
+    risk_capped = OptimalF(
+        win_rate=0.9, payoff=10, loss=1, transaction_cost=0, max_risk_fraction=0.2
     )
+    assert risk_capped.evaluate(0.6, 1000) == pytest.approx(0.2)
 
-    # Test with a very small bankroll where max safe bet would be less than optimal f
-    small_bankroll = 10
-    bet_size = strategy.evaluate(0.6, small_bankroll)
-    assert bet_size <= strategy.get_max_safe_bet(small_bankroll)
-
-    # Test with a larger bankroll where optimal f is the limiting factor
-    large_bankroll = 1000
-    bet_size = strategy.evaluate(0.6, large_bankroll)
-    assert bet_size <= strategy.max_risk_fraction
+    safety_capped = OptimalF(
+        win_rate=0.9, payoff=10, loss=4, transaction_cost=0, max_risk_fraction=1
+    )
+    assert safety_capped.evaluate(0.6, 1000) == pytest.approx(0.25)
+    assert safety_capped.evaluate(0.6, 1000) == pytest.approx(
+        safety_capped.get_max_safe_bet(1000)
+    )
 
 
 def test_ralph_vince_formula():

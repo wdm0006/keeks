@@ -1,3 +1,9 @@
+v0.5.0
+======
+
+**Changed:**
+ * OptimalF now uses its historical or expected win rate for bet sizing while retaining the per-trial probability gate
+
 v0.4.0
 ======
 

@@ -192,7 +192,7 @@ print(f"Maximum willing to pay: ${max_price:.2f}")
 
 ## Project-Specific Notes
 
-- **Version**: Managed in `pyproject.toml` (currently 0.4.0)
+- **Version**: Managed in `pyproject.toml` (currently 0.5.0)
 - **Python Support**: 3.10, 3.11, 3.12, 3.13
 - **Documentation site**: [keeks.mcginniscommawill.com](https://keeks.mcginniscommawill.com)
 - **Educational focus**: Library includes disclaimer about educational use only
