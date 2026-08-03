@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+**Added:**
+ * Deterministic nine-strategy risk benchmark (`benchmarks/strategy_benchmark.py`, `make benchmark`) with committed CSV and chart artifacts and a documentation page covering growth, drawdown, percentile bands and early stops across edge, cost, estimate-error and drawdown-cap scenarios
+
 v0.5.0
 ======
 

@@ -122,6 +122,7 @@ Contents
    :caption: Contents:
 
    getting_started
+   strategy_benchmark
    binary_strategies
    simulators
    bankroll
