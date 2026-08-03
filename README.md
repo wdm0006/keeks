@@ -6,6 +6,11 @@ A Python library for optimal bankroll allocation and betting strategies, with a 
 
 Full documentation at [keeks.mcginniscommawill.com](https://keeks.mcginniscommawill.com).
 
+**[Nine-strategy risk benchmark](https://keeks.mcginniscommawill.com/strategy_benchmark.html)** — what growth, drawdown and
+early-stop behaviour each shipped strategy actually produces under identical, seeded assumptions,
+and how that changes with edge, cost, probability-estimate error and the bankroll's loss cap.
+Regenerate every number with `uv run python benchmarks/strategy_benchmark.py`.
+
 ## What is Keeks?
 
 Keeks is a specialized Python library designed to help you implement and test various betting and investment strategies. It provides tools for:

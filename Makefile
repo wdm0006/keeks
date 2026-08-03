@@ -1,4 +1,4 @@
-.PHONY: help setup install install-dev test test-cov lint format clean build docs lint-fix test-all examples
+.PHONY: help setup install install-dev test test-cov lint format clean build docs lint-fix test-all examples benchmark
 
 # Default target
 help:
@@ -16,6 +16,7 @@ help:
 	@echo "  make build        - Build package distributions"
 	@echo "  make docs         - Build documentation"
 	@echo "  make examples     - Run example scripts"
+	@echo "  make benchmark    - Regenerate the published strategy benchmark"
 	
 # Setup development environment
 setup:
@@ -92,5 +93,9 @@ test-all:
 # Run example scripts
 examples:
 	uv run python examples/strategy_comparison.py
+
+# Regenerate the published strategy benchmark (CSV + charts)
+benchmark:
+	uv run python benchmarks/strategy_benchmark.py
 
 all: clean test docs
