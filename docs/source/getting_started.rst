@@ -82,14 +82,27 @@ Keeks provides several betting strategies:
    .. code-block:: python
    
       from keeks.binary_strategies import FixedFractionStrategy
-      strategy = FixedFractionStrategy(fraction=0.05, min_probability=0.5)
+      strategy = FixedFractionStrategy(
+          fraction=0.05,
+          payoff=1.0,
+          loss=1.0,
+          transaction_cost=0.01,
+          min_probability=0.5,
+      )
    
 6. **CPPI**: Constant Proportion Portfolio Insurance for capital preservation
    
    .. code-block:: python
    
       from keeks.binary_strategies import CPPIStrategy
-      strategy = CPPIStrategy(floor_fraction=0.5, multiplier=2.0, initial_bankroll=1000.0)
+      strategy = CPPIStrategy(
+          floor_fraction=0.5,
+          multiplier=2.0,
+          initial_bankroll=1000.0,
+          payoff=1.0,
+          loss=1.0,
+          transaction_cost=0.01,
+      )
       
       # Remember to update the CPPI strategy with the current bankroll value
       # before each evaluation
@@ -100,10 +113,12 @@ Keeks provides several betting strategies:
    .. code-block:: python
    
       from keeks.binary_strategies import DynamicBankrollManagement
-      strategy = DynamicBankrollManagement(base_fraction=0.1, payoff=1.0, loss=1.0)
-      
+      strategy = DynamicBankrollManagement(
+          base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01
+      )
+
       # After each bet, update the strategy with the result
-      strategy.record_result(won=True, return_pct=0.05, current_bankroll=1050.0)
+      strategy.record_result(won=True, return_pct=0.05)
    
 8. **Naive Strategy**: Simple strategy that bets full amount when expected value is positive
    
