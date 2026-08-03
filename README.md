@@ -127,18 +127,27 @@ Keeks implements several betting strategies:
 
 5. **Fixed Fraction**: Simple strategy that bets a constant percentage of the bankroll
    ```python
-   fixed_fraction = FixedFractionStrategy(fraction=0.05, min_probability=0.5)
+   fixed_fraction = FixedFractionStrategy(
+       fraction=0.05, payoff=1.0, loss=1.0, transaction_cost=0.01, min_probability=0.5
+   )
    ```
 
 6. **CPPI (Constant Proportion Portfolio Insurance)**: Strategy that protects a floor value while allowing upside exposure
    ```python
-   cppi = CPPIStrategy(floor_fraction=0.5, multiplier=2.0, initial_bankroll=1000.0)
+   cppi = CPPIStrategy(
+       floor_fraction=0.5,
+       multiplier=2.0,
+       initial_bankroll=1000.0,
+       payoff=1.0,
+       loss=1.0,
+       transaction_cost=0.01,
+   )
    ```
 
 7. **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
    ```python
    dynamic = DynamicBankrollManagement(
-       base_fraction=0.1, payoff=1.0, loss=1.0, window_size=10
+       base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01, window_size=10
    )
    ```
 
