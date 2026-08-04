@@ -1,4 +1,5 @@
 import math
+import operator
 
 import numpy as np
 
@@ -138,6 +139,61 @@ def _validate_entry_price_scalars(
         and _require_finite(risk_aversion, "Risk aversion") <= 0
     ):
         raise ValueError("Risk aversion must be greater than 0")
+
+
+def _validate_simulator_controls(payoff, loss, transaction_costs, trials):
+    """
+    Validate the controls shared by every simulator constructor.
+
+    ``payoff`` must be finite and positive, ``loss`` and the flat
+    ``transaction_costs`` fee must be finite and nonnegative, and ``trials`` must
+    be a nonnegative integer.
+
+    Returns
+    -------
+    tuple
+        The validated ``(payoff, loss, transaction_costs, trials)``, with the
+        numeric controls coerced to ``float``.
+
+    Raises
+    ------
+    ValueError
+        If any control is outside its accepted range.
+    """
+    payoff = _require_finite(payoff, "Payoff")
+    if payoff <= 0:
+        raise ValueError("Payoff must be greater than 0")
+    loss = _require_finite(loss, "Loss")
+    if loss < 0:
+        raise ValueError("Loss must be non-negative")
+    transaction_costs = _require_finite(transaction_costs, "Transaction costs")
+    if transaction_costs < 0:
+        raise ValueError("Transaction costs must be non-negative")
+
+    try:
+        trials = operator.index(trials)
+    except TypeError as exc:
+        raise ValueError("Trials must be a nonnegative integer") from exc
+    if trials < 0:
+        raise ValueError("Trials must be a nonnegative integer")
+
+    return payoff, loss, transaction_costs, trials
+
+
+def _validate_simulator_probability(probability, name):
+    """Validate a simulator's fixed probability, which must be finite in [0, 1]."""
+    probability = _require_finite(probability, name)
+    if not 0 <= probability <= 1:
+        raise ValueError(f"{name} must be between 0 and 1")
+    return probability
+
+
+def _validate_simulator_stdev(stdev, name):
+    """Validate a simulator's standard deviation, which must be finite and >= 0."""
+    stdev = _require_finite(stdev, name)
+    if stdev < 0:
+        raise ValueError(f"{name} must be non-negative")
+    return stdev
 
 
 def _expected_utility(

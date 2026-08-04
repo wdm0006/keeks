@@ -2,7 +2,11 @@ import random
 
 import numpy as np
 
-from keeks.utils import RuinError
+from keeks.utils import (
+    RuinError,
+    _validate_simulator_controls,
+    _validate_simulator_stdev,
+)
 
 
 class RandomUncertainBinarySimulator:
@@ -30,6 +34,13 @@ class RandomUncertainBinarySimulator:
         The standard deviation of the normal distribution used to add uncertainty
         to the actual outcome probability. The resulting outcome probability is
         clamped to [0.0, 1.0].
+
+    Raises
+    ------
+    ValueError
+        If ``payoff`` is not finite and positive, if ``loss``,
+        ``transaction_costs``, ``stdev`` or ``uncertainty_stdev`` is not finite
+        and nonnegative, or if ``trials`` is not a nonnegative integer.
     """
 
     def __init__(
@@ -41,12 +52,16 @@ class RandomUncertainBinarySimulator:
         stdev=0.1,
         uncertainty_stdev=0.05,
     ):
-        self.payoff = payoff
-        self.loss = loss
-        self.transaction_costs = transaction_costs
-        self.trials = trials
-        self.stdev = stdev
-        self.uncertainty_stdev = uncertainty_stdev
+        (
+            self.payoff,
+            self.loss,
+            self.transaction_costs,
+            self.trials,
+        ) = _validate_simulator_controls(payoff, loss, transaction_costs, trials)
+        self.stdev = _validate_simulator_stdev(stdev, "Standard deviation")
+        self.uncertainty_stdev = _validate_simulator_stdev(
+            uncertainty_stdev, "Uncertainty standard deviation"
+        )
 
     def evaluate_strategy(self, strategy, bankroll):
         """
