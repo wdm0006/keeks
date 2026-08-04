@@ -20,7 +20,12 @@ class RandomUncertainBinarySimulator:
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_costs : float
-        The fixed cost per transaction, regardless of outcome.
+        The flat fee charged once per settled bet, regardless of outcome. This is
+        an absolute bankroll amount, not a fraction of the stake, so it does not
+        scale with bet size: it is subtracted from a winning settlement and added
+        to a losing one. Note this differs in unit from the singular
+        ``transaction_cost`` taken by strategies in ``keeks.binary_strategies``,
+        which is a per-unit fraction of the bet used for sizing.
     trials : int, default=1000
         The number of betting trials to simulate.
     stdev : float, default=0.1
