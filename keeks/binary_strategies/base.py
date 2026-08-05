@@ -23,7 +23,17 @@ class BaseStrategy(abc.ABC):
         loss : float
             The loss multiplier for losing.
         transaction_cost : float, optional
-            The transaction cost as a fraction of the bet, by default 0.
+            The transaction cost as a fraction of each unit staked, by default 0.
+            This is a per-unit *fractional* cost that enters the sizing formulas
+            alongside ``payoff`` and ``loss`` (Kelly, for instance, computes
+            ``payoff - transaction_cost``), so ``0.01`` means one percent of the
+            stake and the fee it represents grows with the bet.
+
+            The simulators in ``keeks.simulators`` take a near-identically named
+            ``transaction_costs`` (plural) that is an *absolute* bankroll amount
+            charged once per settled bet, independent of stake size. The two are
+            different units: passing the same number to both models two very
+            different costs.
 
         Raises
         ------
