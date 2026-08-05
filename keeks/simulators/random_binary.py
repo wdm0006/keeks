@@ -2,7 +2,11 @@ import random
 
 import numpy as np
 
-from keeks.utils import RuinError
+from keeks.utils import (
+    RuinError,
+    _validate_simulator_controls,
+    _validate_simulator_stdev,
+)
 
 
 class RandomBinarySimulator:
@@ -26,14 +30,23 @@ class RandomBinarySimulator:
     stdev : float, default=0.1
         The standard deviation of the normal distribution used to generate probabilities.
         Samples are clamped to [0.0, 1.0].
+
+    Raises
+    ------
+    ValueError
+        If ``payoff`` is not finite and positive, if ``loss``,
+        ``transaction_costs`` or ``stdev`` is not finite and nonnegative, or if
+        ``trials`` is not a nonnegative integer.
     """
 
     def __init__(self, payoff, loss, transaction_costs, trials=1000, stdev=0.1):
-        self.payoff = payoff
-        self.loss = loss
-        self.transaction_costs = transaction_costs
-        self.trials = trials
-        self.stdev = stdev
+        (
+            self.payoff,
+            self.loss,
+            self.transaction_costs,
+            self.trials,
+        ) = _validate_simulator_controls(payoff, loss, transaction_costs, trials)
+        self.stdev = _validate_simulator_stdev(stdev, "Standard deviation")
 
     def evaluate_strategy(self, strategy, bankroll):
         """

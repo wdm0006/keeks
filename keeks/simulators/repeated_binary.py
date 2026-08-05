@@ -1,6 +1,10 @@
 import random
 
-from keeks.utils import RuinError
+from keeks.utils import (
+    RuinError,
+    _validate_simulator_controls,
+    _validate_simulator_probability,
+)
 
 
 class RepeatedBinarySimulator:
@@ -22,14 +26,24 @@ class RepeatedBinarySimulator:
         The fixed probability of a successful outcome for all trials.
     trials : int, default=1000
         The number of betting trials to simulate.
+
+    Raises
+    ------
+    ValueError
+        If ``payoff`` is not finite and positive, if ``loss`` or
+        ``transaction_costs`` is not finite and nonnegative, if ``probability``
+        is not finite within ``[0, 1]``, or if ``trials`` is not a nonnegative
+        integer.
     """
 
     def __init__(self, payoff, loss, transaction_costs, probability, trials=1000):
-        self.payoff = payoff
-        self.loss = loss
-        self.transaction_costs = transaction_costs
-        self.probability = probability
-        self.trials = trials
+        (
+            self.payoff,
+            self.loss,
+            self.transaction_costs,
+            self.trials,
+        ) = _validate_simulator_controls(payoff, loss, transaction_costs, trials)
+        self.probability = _validate_simulator_probability(probability, "Probability")
 
     def evaluate_strategy(self, strategy, bankroll):
         """
