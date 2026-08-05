@@ -130,6 +130,15 @@ class BaseStrategy(abc.ABC):
             ``keeks.utils._validate_entry_price_scalars`` before doing work or
             mutating internal state.
 
+        Warns
+        -----
+        RuntimeWarning
+            Emitted by the utility-based implementations, which delegate to
+            ``keeks.utils.find_indifference_price``, when the gamble is still
+            worth buying at ``current_wealth * max_search_fraction``. The
+            returned price is then that bound rather than a solved indifference
+            price. See ``find_indifference_price`` for details.
+
         Notes
         -----
         This method answers: "What's the maximum I'd pay to participate in this

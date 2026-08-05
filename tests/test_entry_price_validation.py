@@ -99,23 +99,27 @@ class TestFindIndifferencePriceScalars:
             find_indifference_price(OUTCOMES, PROBABILITIES, "a lot")
 
     def test_zero_search_fraction_still_returns_zero(self):
-        assert (
-            find_indifference_price(
+        with pytest.warns(RuntimeWarning, match="saturated at its search bound"):
+            price = find_indifference_price(
                 OUTCOMES, PROBABILITIES, WEALTH, max_search_fraction=0.0
             )
-            == 0.0
-        )
+
+        assert price == 0.0
 
     def test_search_fraction_above_one_is_accepted(self):
         """The documented ability to search beyond current wealth is preserved."""
         # A sure payout of ten times wealth: the true price is above the bound,
         # so the search saturates at current_wealth * max_search_fraction.
-        price = find_indifference_price([10 * WEALTH], [1.0], WEALTH, tolerance=0.001)
+        with pytest.warns(RuntimeWarning, match="saturated at its search bound"):
+            price = find_indifference_price(
+                [10 * WEALTH], [1.0], WEALTH, tolerance=0.001
+            )
         assert price == pytest.approx(0.5 * WEALTH, abs=0.01)
 
-        wide = find_indifference_price(
-            [10 * WEALTH], [1.0], WEALTH, tolerance=0.001, max_search_fraction=2.0
-        )
+        with pytest.warns(RuntimeWarning, match="saturated at its search bound"):
+            wide = find_indifference_price(
+                [10 * WEALTH], [1.0], WEALTH, tolerance=0.001, max_search_fraction=2.0
+            )
         assert wide == pytest.approx(2.0 * WEALTH, abs=0.01)
         assert wide > WEALTH
 
