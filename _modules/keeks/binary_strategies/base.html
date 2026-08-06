@@ -313,6 +313,15 @@
 <span class="sd">            ``keeks.utils._validate_entry_price_scalars`` before doing work or</span>
 <span class="sd">            mutating internal state.</span>
 
+<span class="sd">        Warns</span>
+<span class="sd">        -----</span>
+<span class="sd">        RuntimeWarning</span>
+<span class="sd">            Emitted by the utility-based implementations, which delegate to</span>
+<span class="sd">            ``keeks.utils.find_indifference_price``, when the gamble is still</span>
+<span class="sd">            worth buying at ``current_wealth * max_search_fraction``. The</span>
+<span class="sd">            returned price is then that bound rather than a solved indifference</span>
+<span class="sd">            price. See ``find_indifference_price`` for details.</span>
+
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        This method answers: &quot;What&#39;s the maximum I&#39;d pay to participate in this</span>

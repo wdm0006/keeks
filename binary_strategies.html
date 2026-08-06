@@ -221,6 +221,13 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
     mutating internal state.</p></li>
 </ul>
 </dd>
+<dt class="field-odd">Warns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>RuntimeWarning</strong> – Emitted by the utility-based implementations, which delegate to
+<code class="docutils literal notranslate"><span class="pre">keeks.utils.find_indifference_price</span></code>, when the gamble is still
+worth buying at <code class="docutils literal notranslate"><span class="pre">current_wealth</span> <span class="pre">*</span> <span class="pre">max_search_fraction</span></code>. The
+returned price is then that bound rather than a solved indifference
+price. See <code class="docutils literal notranslate"><span class="pre">find_indifference_price</span></code> for details.</p>
+</dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>This method answers: “What’s the maximum I’d pay to participate in this

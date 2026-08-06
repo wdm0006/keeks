@@ -260,6 +260,13 @@ current wealth.</p></li>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
+<dt class="field-odd">Warns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>RuntimeWarning</strong> – If the gamble is still worth buying at the top of the search range,
+<code class="docutils literal notranslate"><span class="pre">current_wealth</span> <span class="pre">*</span> <span class="pre">max_search_fraction</span></code>. The search cannot look past
+that bound, so the returned price is the bound itself rather than a
+solved indifference price, and the true price is at or above it. Raise
+<code class="docutils literal notranslate"><span class="pre">max_search_fraction</span></code> to search further.</p>
+</dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple 50/50 bet: win $100 or lose $100</span>
