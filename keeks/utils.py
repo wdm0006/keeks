@@ -1,5 +1,6 @@
 import math
 import operator
+import warnings
 
 import numpy as np
 
@@ -282,6 +283,15 @@ def find_indifference_price(
         If the gamble arrays are malformed, or if any scalar control falls
         outside the ranges documented above.
 
+    Warns
+    -----
+    RuntimeWarning
+        If the gamble is still worth buying at the top of the search range,
+        ``current_wealth * max_search_fraction``. The search cannot look past
+        that bound, so the returned price is the bound itself rather than a
+        solved indifference price, and the true price is at or above it. Raise
+        ``max_search_fraction`` to search further.
+
     Examples
     --------
     >>> # Simple 50/50 bet: win $100 or lose $100
@@ -302,6 +312,22 @@ def find_indifference_price(
     # Binary search bounds
     low = 0.0
     high = current_wealth * max_search_fraction
+
+    # The search can only report a price inside [0, high]. If the gamble is
+    # still worth buying at ``high``, every iteration pushes ``low`` up and the
+    # returned price is the bound rather than a solution.
+    if (
+        _expected_utility(outcomes, probabilities, current_wealth, high, risk_aversion)
+        > current_utility
+    ):
+        warnings.warn(
+            f"find_indifference_price saturated at its search bound ({high} = "
+            f"current_wealth * max_search_fraction={max_search_fraction}); the "
+            "true indifference price is at or above this value. Raise "
+            "max_search_fraction to search further.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
 
     while high - low > tolerance:
         mid = (low + high) / 2

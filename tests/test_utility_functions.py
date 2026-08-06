@@ -305,13 +305,15 @@ class TestFindIndifferencePrice:
         risk_aversion = 1.0
         max_search_fraction = 0.3
 
-        max_price = find_indifference_price(
-            outcomes,
-            probabilities,
-            current_wealth,
-            risk_aversion,
-            max_search_fraction=max_search_fraction,
-        )
+        # The bound binds for a bet this favourable, so the search saturates.
+        with pytest.warns(RuntimeWarning, match="saturated at its search bound"):
+            max_price = find_indifference_price(
+                outcomes,
+                probabilities,
+                current_wealth,
+                risk_aversion,
+                max_search_fraction=max_search_fraction,
+            )
 
         # Should not exceed 30% of wealth
         assert max_price <= current_wealth * max_search_fraction
