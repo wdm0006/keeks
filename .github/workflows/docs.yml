@@ -23,12 +23,12 @@ jobs:
       - name: Install Dependencies
         run: |
           uv pip install --system -e ".[dev]"
-      
+          uv pip install --system -r docs/requirements.txt
+
       - name: Build Docs
-        uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "./docs/"
-      
+        run: |
+          python -m sphinx -W --keep-going -b html docs/source docs/build/html
+
       - name: Deploy Docs
         uses: peaceiris/actions-gh-pages@v4
         with:
