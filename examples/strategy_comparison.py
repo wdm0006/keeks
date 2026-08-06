@@ -124,6 +124,44 @@ def run_strategy_simulation(strategy_class, strategy_name, strategy_params=None)
     }
 
 
+def build_comparison_figure(results):
+    """Build the two-panel comparison figure for a list of simulation results.
+
+    Parameters
+    ----------
+    results : list of dict
+        Entries as returned by ``run_strategy_simulation``; each needs the
+        ``name``, ``results``, ``mean`` and ``std`` keys.
+    """
+    plt.figure(figsize=(12, 8))
+
+    # Box plot of final bankrolls
+    plt.subplot(2, 1, 1)
+    boxplot_data = [r["results"] for r in results]
+    boxplot_labels = [r["name"] for r in results]
+    plt.boxplot(boxplot_data)
+    plt.xticks(
+        range(1, len(boxplot_labels) + 1), boxplot_labels, rotation=45, ha="right"
+    )
+    plt.ylabel("Final Bankroll ($)")
+    plt.title("Distribution of Final Bankrolls Across Strategies")
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+
+    # Bar chart of mean bankrolls with standard deviation
+    plt.subplot(2, 1, 2)
+    means = [r["mean"] for r in results]
+    stds = [r["std"] for r in results]
+    names = [r["name"] for r in results]
+
+    plt.bar(names, means, yerr=stds, capsize=5, alpha=0.7)
+    plt.xticks(rotation=45, ha="right")
+    plt.ylabel("Mean Final Bankroll ($)")
+    plt.title("Mean Final Bankroll with Standard Deviation")
+    plt.grid(axis="y", linestyle="--", alpha=0.3)
+
+    plt.tight_layout()
+
+
 def main():
     """Run the simulation for all strategies and plot results."""
     # Define all strategies with parameters - using more conservative parameters
@@ -298,31 +336,7 @@ def main():
     print("      Median shows what a TYPICAL bettor would experience.")
 
     # Plot the distribution of final bankrolls for each strategy
-    plt.figure(figsize=(12, 8))
-
-    # Box plot of final bankrolls
-    plt.subplot(2, 1, 1)
-    boxplot_data = [r["results"] for r in results]
-    boxplot_labels = [r["name"] for r in results]
-    plt.boxplot(boxplot_data, vert=True, labels=boxplot_labels)
-    plt.xticks(rotation=45, ha="right")
-    plt.ylabel("Final Bankroll ($)")
-    plt.title("Distribution of Final Bankrolls Across Strategies")
-    plt.grid(axis="y", linestyle="--", alpha=0.7)
-
-    # Bar chart of mean bankrolls with standard deviation
-    plt.subplot(2, 1, 2)
-    means = [r["mean"] for r in results]
-    stds = [r["std"] for r in results]
-    names = [r["name"] for r in results]
-
-    plt.bar(names, means, yerr=stds, capsize=5, alpha=0.7)
-    plt.xticks(rotation=45, ha="right")
-    plt.ylabel("Mean Final Bankroll ($)")
-    plt.title("Mean Final Bankroll with Standard Deviation")
-    plt.grid(axis="y", linestyle="--", alpha=0.3)
-
-    plt.tight_layout()
+    build_comparison_figure(results)
 
     # Create the output directory if it doesn't exist
     output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
