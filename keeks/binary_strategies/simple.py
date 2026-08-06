@@ -860,12 +860,12 @@ class MertonShare(BaseStrategy):
     """
     Implementation of the Merton Share strategy using CRRA utility.
 
-    This strategy is based on Robert Merton's portfolio optimization problem
+    This strategy is based on Robert Merton's portfolio optimization problem [1]_
     with Constant Relative Risk Aversion (CRRA) utility. The optimal fraction
     to invest is proportional to the expected excess return divided by the
     product of risk aversion and variance.
 
-    The formula is: f* = μ / (γ × σ²)
+    The formula is: f* = μ / (γ × σ²) [2]_
 
     Where:
     - f* is the optimal fraction of wealth to invest

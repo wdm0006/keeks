@@ -70,7 +70,7 @@ build: clean
 
 # Build documentation
 docs:
-	cd docs && uv run $(MAKE) html SPHINXBUILD="python -m sphinx" -W --keep-going
+	cd docs && uv run $(MAKE) html SPHINXBUILD="python -m sphinx" SPHINXOPTS="-W --keep-going"
 	@echo "Opening documentation in Google Chrome..."
 	@if [ "$(shell uname)" = "Darwin" ]; then \
 		open -a "Google Chrome" docs/build/html/index.html; \

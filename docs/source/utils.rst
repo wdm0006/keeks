@@ -7,6 +7,7 @@ The utils module provides utility functions and classes used throughout the keek
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: RuinError
 
 Exceptions
 ----------
