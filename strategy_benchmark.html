@@ -1,0 +1,964 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>Nine-Strategy Risk Benchmark &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
+    <script src="_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Binary Strategies" href="binary_strategies.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="Nine-Strategy Risk Benchmark - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Nine-Strategy Risk Benchmark">
+<meta property="og:description" content="Nine-Strategy Risk Benchmark - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/strategy_benchmark.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nine-Strategy Risk Benchmark">
+<meta name="twitter:description" content="Nine-Strategy Risk Benchmark - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/strategy_benchmark.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="index.html">Docs</a>
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>Nine-Strategy Risk Benchmark</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="nine-strategy-risk-benchmark">
+<h1>Nine-Strategy Risk Benchmark<a class="headerlink" href="#nine-strategy-risk-benchmark" title="Link to this heading">¶</a></h1>
+<p>Every strategy in Keeks implements the same <code class="docutils literal notranslate"><span class="pre">evaluate(probability,</span>
+<span class="pre">current_bankroll)</span></code> contract, so they can be swapped for one another. This page
+answers what that swap actually costs: what growth, drawdown and early-stop
+behaviour each of the nine shipped strategies produces under identical
+assumptions, and how that changes when the edge, the cost input, the quality of
+the probability estimate, or the bankroll’s loss cap changes.</p>
+<p>There is no winner here. Which row you want depends on how much drawdown you are
+willing to sit through, and the benchmark’s job is to price that choice rather
+than make it for you.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These are simulated results from a model, not a forecast and not investment
+advice. The simulator assumes a known win probability, an independent binary
+outcome per bet, and no market impact — none of which hold in a real book.
+Keeks is an educational library; treat every number below as a property of
+the model, not a prediction about money.</p>
+</div>
+<section id="reproducing-it">
+<h2>Reproducing it<a class="headerlink" href="#reproducing-it" title="Link to this heading">¶</a></h2>
+<p>One command, from a checkout of the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>benchmarks/strategy_benchmark.py
+</pre></div>
+</div>
+<p>It takes about half a minute and rewrites <code class="docutils literal notranslate"><span class="pre">benchmarks/output/</span></code> in place:
+<code class="docutils literal notranslate"><span class="pre">strategy_benchmark.csv</span></code> (one row per scenario and strategy, with every metric
+below) and the three charts on this page. The run is fully seeded — two runs on
+the same machine produce byte-identical files, including the PNGs — so a diff on
+the output is a real change in behaviour, not noise.</p>
+<p>To ask a different question, edit <code class="docutils literal notranslate"><span class="pre">SCENARIOS</span></code> or <code class="docutils literal notranslate"><span class="pre">STRATEGY_FACTORIES</span></code> at the
+top of the script and rerun.</p>
+</section>
+<section id="method">
+<h2>Method<a class="headerlink" href="#method" title="Link to this heading">¶</a></h2>
+<p><strong>Fixed seeds and shared paths.</strong> The master seed is <code class="docutils literal notranslate"><span class="pre">20260803</span></code>. Each of the
+200 paths draws its 500 uniform outcomes from <code class="docutils literal notranslate"><span class="pre">random.Random</span></code> keyed on the path
+index alone, so the same 200 outcome sequences are reused by every strategy <em>and</em>
+every scenario. A cell that a scenario axis does not touch reproduces its
+base-scenario number exactly rather than re-rolling it.</p>
+<p><strong>Common random numbers.</strong> Outcomes are replayed by trial index, not by call
+order. This matters because the simulator only draws a random number when a bet
+is actually placed: seeding the global generator alone would mean a strategy that
+declines one trial sees every later outcome shifted relative to its peers. Here,
+trial <em>t</em> of path <em>p</em> resolves the same way for all nine strategies.</p>
+<p><strong>Fresh state everywhere.</strong> Each (scenario, strategy, path) triple builds a new
+<code class="docutils literal notranslate"><span class="pre">BankRoll</span></code> and a new strategy object. Simulators mutate the bankroll in place,
+and <code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code> and <code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code> carry state across
+<code class="docutils literal notranslate"><span class="pre">evaluate</span></code> calls, so anything less would let one path contaminate the next.</p>
+<p><strong>Matched assumptions.</strong> The strategy and the simulator receive the same
+<code class="docutils literal notranslate"><span class="pre">payoff</span></code>, the same <code class="docutils literal notranslate"><span class="pre">loss</span></code> and the same cost scalar. The payoff and loss
+multipliers mean the same thing on both sides. The cost scalar does not, and that
+is a property of the library rather than of this benchmark — see
+<a class="reference internal" href="#what-the-cost-input-actually-does">What the cost input actually does</a>.</p>
+<p><strong>Estimate error.</strong> Keeks ships an uncertain simulator, but it centres its
+probability draws on 0.5 and therefore cannot express an edge. To vary estimate
+quality against a real edge, the benchmark instead perturbs the probability handed
+to <code class="docutils literal notranslate"><span class="pre">strategy.evaluate</span></code> — the strategy sizes its bet on <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">+</span> <span class="pre">σ·Z</span></code>, clipped to
+<code class="docutils literal notranslate"><span class="pre">[0.01,</span> <span class="pre">0.99]</span></code>, while the simulator settles the outcome against the true <code class="docutils literal notranslate"><span class="pre">p</span></code>.
+The standard normal shocks <code class="docutils literal notranslate"><span class="pre">Z</span></code> are drawn per path and shared across scenarios,
+so the <code class="docutils literal notranslate"><span class="pre">σ</span> <span class="pre">=</span> <span class="pre">0.06</span></code> run is the <code class="docutils literal notranslate"><span class="pre">σ</span> <span class="pre">=</span> <span class="pre">0.03</span></code> run with the same shocks scaled up.</p>
+<p><strong>Metrics.</strong> Terminal bankroll is reported as a median with 5th, 25th, 75th and
+95th percentiles, because the mean of this distribution is carried by a handful of
+enormous paths and describes nobody’s experience. Maximum drawdown is the largest
+peak-to-trough fall in <code class="docutils literal notranslate"><span class="pre">bankroll.history</span></code>. Growth rate is
+<code class="docutils literal notranslate"><span class="pre">ln(terminal</span> <span class="pre">/</span> <span class="pre">1000)</span> <span class="pre">/</span> <span class="pre">500</span></code> per bet, over the full nominal horizon, so a run
+that stopped early is charged for the bets it never got to place. Early stops are
+recorded, not inferred: the benchmark subclasses <code class="docutils literal notranslate"><span class="pre">BankRoll</span></code> to capture the
+reason a settlement was refused, and reports the drawdown-cap and bankruptcy
+rates separately.</p>
+<p><strong>Fixed inputs.</strong> $1,000 starting bankroll, 500 bets, 200 paths, even money
+(<code class="docutils literal notranslate"><span class="pre">payoff</span> <span class="pre">=</span> <span class="pre">1.0</span></code>, <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">1.0</span></code>), <code class="docutils literal notranslate"><span class="pre">percent_bettable</span> <span class="pre">=</span> <span class="pre">1.0</span></code>. The base scenario
+is a 55% win probability, a zero cost input, no estimate error, and the library’s
+default <code class="docutils literal notranslate"><span class="pre">max_draw_down</span> <span class="pre">=</span> <span class="pre">0.3</span></code>.</p>
+<p>The strategies are configured once each: full Kelly; fractional Kelly at 0.5;
+drawdown-adjusted Kelly at <code class="docutils literal notranslate"><span class="pre">max_acceptable_drawdown</span> <span class="pre">=</span> <span class="pre">0.2</span></code>; Optimal f with
+<code class="docutils literal notranslate"><span class="pre">win_rate</span></code> set to the scenario’s true probability and
+<code class="docutils literal notranslate"><span class="pre">max_risk_fraction</span> <span class="pre">=</span> <span class="pre">0.2</span></code>; the naive expected-value rule; a flat 2% fixed
+fraction; CPPI with an 80% floor and a multiplier of 2; dynamic bankroll
+management with a 5% base fraction; and the Merton share at
+<code class="docutils literal notranslate"><span class="pre">risk_aversion</span> <span class="pre">=</span> <span class="pre">2.0</span></code>.</p>
+</section>
+<section id="base-scenario">
+<h2>Base scenario<a class="headerlink" href="#base-scenario" title="Link to this heading">¶</a></h2>
+<p>55% win probability, even money, no cost, no estimate error, <code class="docutils literal notranslate"><span class="pre">max_draw_down</span> <span class="pre">=</span>
+<span class="pre">0.3</span></code>. All figures are dollars unless marked otherwise; “Stake” is the fraction
+of the bankroll wagered on the first bet, “MDD” is maximum drawdown.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Strategy</p></th>
+<th class="head"><p>Stake</p></th>
+<th class="head"><p>Median</p></th>
+<th class="head"><p>Mean</p></th>
+<th class="head"><p>p5</p></th>
+<th class="head"><p>p25</p></th>
+<th class="head"><p>p75</p></th>
+<th class="head"><p>p95</p></th>
+<th class="head"><p>Med. MDD</p></th>
+<th class="head"><p>p95 MDD</p></th>
+<th class="head"><p>Growth/bet</p></th>
+<th class="head"><p>Early stops</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Kelly</p></td>
+<td><p>10.00%</p></td>
+<td><p>12,234</p></td>
+<td><p>184,934</p></td>
+<td><p>493</p></td>
+<td><p>2,457</p></td>
+<td><p>64,304</p></td>
+<td><p>676,950</p></td>
+<td><p>81%</p></td>
+<td><p>96%</p></td>
+<td><p>0.501%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Optimal f</p></td>
+<td><p>10.00%</p></td>
+<td><p>12,234</p></td>
+<td><p>184,934</p></td>
+<td><p>493</p></td>
+<td><p>2,457</p></td>
+<td><p>64,304</p></td>
+<td><p>676,950</p></td>
+<td><p>81%</p></td>
+<td><p>96%</p></td>
+<td><p>0.501%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-even"><td><p>Naive</p></td>
+<td><p>10.00%</p></td>
+<td><p>12,234</p></td>
+<td><p>184,934</p></td>
+<td><p>493</p></td>
+<td><p>2,457</p></td>
+<td><p>64,304</p></td>
+<td><p>676,950</p></td>
+<td><p>81%</p></td>
+<td><p>96%</p></td>
+<td><p>0.501%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Half Kelly</p></td>
+<td><p>5.00%</p></td>
+<td><p>6,529</p></td>
+<td><p>13,660</p></td>
+<td><p>1,316</p></td>
+<td><p>2,932</p></td>
+<td><p>14,924</p></td>
+<td><p>48,326</p></td>
+<td><p>52%</p></td>
+<td><p>76%</p></td>
+<td><p>0.375%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-even"><td><p>Merton share</p></td>
+<td><p>5.05%</p></td>
+<td><p>6,612</p></td>
+<td><p>14,029</p></td>
+<td><p>1,312</p></td>
+<td><p>2,945</p></td>
+<td><p>15,240</p></td>
+<td><p>49,940</p></td>
+<td><p>52%</p></td>
+<td><p>76%</p></td>
+<td><p>0.378%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dynamic</p></td>
+<td><p>5.00%</p></td>
+<td><p>7,019</p></td>
+<td><p>15,832</p></td>
+<td><p>1,288</p></td>
+<td><p>3,159</p></td>
+<td><p>16,632</p></td>
+<td><p>62,396</p></td>
+<td><p>53%</p></td>
+<td><p>76%</p></td>
+<td><p>0.390%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-even"><td><p>Drawdown-adjusted Kelly</p></td>
+<td><p>4.00%</p></td>
+<td><p>4,957</p></td>
+<td><p>8,058</p></td>
+<td><p>1,377</p></td>
+<td><p>2,613</p></td>
+<td><p>9,600</p></td>
+<td><p>24,572</p></td>
+<td><p>44%</p></td>
+<td><p>66%</p></td>
+<td><p>0.320%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fixed fraction 2%</p></td>
+<td><p>2.00%</p></td>
+<td><p>2,460</p></td>
+<td><p>2,823</p></td>
+<td><p>1,297</p></td>
+<td><p>1,786</p></td>
+<td><p>3,422</p></td>
+<td><p>5,475</p></td>
+<td><p>24%</p></td>
+<td><p>39%</p></td>
+<td><p>0.180%</p></td>
+<td><p>0%</p></td>
+</tr>
+<tr class="row-even"><td><p>CPPI</p></td>
+<td><p>4.00%</p></td>
+<td><p>1,605</p></td>
+<td><p>2,352</p></td>
+<td><p>866</p></td>
+<td><p>1,103</p></td>
+<td><p>2,834</p></td>
+<td><p>5,720</p></td>
+<td><p>20%</p></td>
+<td><p>20%</p></td>
+<td><p>0.095%</p></td>
+<td><p>0%</p></td>
+</tr>
+</tbody>
+</table>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/terminal_bankroll_bands.png"><img alt="Horizontal range chart of terminal bankroll after 500 bets for nine strategies on a logarithmic dollar axis. Each row shows a thin line for the 5th-to-95th percentile, a thick bar for the interquartile range and an open marker at the median. Kelly, Optimal f and Naive share the widest band, from about 490 dollars at the 5th percentile to about 677,000 at the 95th, with a median near 12,200. Half Kelly, Merton share and Dynamic form a middle group with medians near 6,500 to 7,000 and 5th percentiles above the 1,000 dollar starting line. Fixed fraction 2% and CPPI have the narrowest bands and the lowest medians, near 2,500 and 1,600. A dotted vertical line marks the 1,000 dollar starting bankroll." src="_images/terminal_bankroll_bands.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Terminal bankroll after 500 bets, base scenario. Median, quartiles and the
+5th-to-95th percentile band over 200 paths.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Growth and drawdown move together, and almost linearly. Kelly’s median result is
+five times Half Kelly’s, but it gets there by sitting through an 81% median
+peak-to-trough fall, and one path in twenty ends below $493 — a 51% loss over 500
+bets with a genuine 5% edge.</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/growth_vs_drawdown.png"><img alt="Scatter plot with median maximum drawdown on the horizontal axis from 0 to 105 percent and median growth rate per bet on the vertical axis from 0 to about 0.55 percent. Nine strategies form a rising line. CPPI sits lowest at about 20 percent drawdown and 0.095 percent growth, then Fixed fraction 2% at 24 percent and 0.18 percent, Drawdown-adjusted Kelly at 44 percent and 0.32 percent, a cluster of Half Kelly, Merton share and Dynamic near 52 to 53 percent and 0.375 to 0.39 percent, and finally a single point labelled Kelly = Optimal f = Naive at 81 percent drawdown and 0.501 percent growth. Labels are joined by leader lines to their markers." src="_images/growth_vs_drawdown.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Median growth against median maximum drawdown, base scenario. Joined names are
+strategies whose results were identical.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="three-strategies-are-the-same-rule-here">
+<h2>Three strategies are the same rule here<a class="headerlink" href="#three-strategies-are-the-same-rule-here" title="Link to this heading">¶</a></h2>
+<p>Kelly, Optimal f and Naive return identical numbers in the base scenario, and in
+every scenario where the cost input is zero. That is not a bug in the benchmark;
+it falls out of the formulas whenever <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">1</span></code>, the ordinary binary bet where
+you stake your money and lose it all if you are wrong:</p>
+<ul class="simple">
+<li><p>Kelly returns <code class="docutils literal notranslate"><span class="pre">p/(loss</span> <span class="pre">+</span> <span class="pre">cost)</span> <span class="pre">-</span> <span class="pre">q/(payoff</span> <span class="pre">-</span> <span class="pre">cost)</span></code>, which at <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">1</span></code> and
+<code class="docutils literal notranslate"><span class="pre">cost</span> <span class="pre">=</span> <span class="pre">0</span></code> is <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">-</span> <span class="pre">q/payoff</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code> returns <code class="docutils literal notranslate"><span class="pre">(p·payoff</span> <span class="pre">-</span> <span class="pre">q·loss</span> <span class="pre">-</span> <span class="pre">cost)/payoff</span></code>, which under the
+same conditions is also <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">-</span> <span class="pre">q/payoff</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OptimalF</span></code> returns <code class="docutils literal notranslate"><span class="pre">win_rate</span> <span class="pre">-</span> <span class="pre">(1</span> <span class="pre">-</span> <span class="pre">win_rate)·(loss</span> <span class="pre">+</span> <span class="pre">cost)/(payoff</span> <span class="pre">-</span> <span class="pre">cost)</span></code>,
+which with <code class="docutils literal notranslate"><span class="pre">win_rate</span> <span class="pre">=</span> <span class="pre">p</span></code> is again <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">-</span> <span class="pre">q/payoff</span></code>.</p></li>
+</ul>
+<p>A nonzero cost input separates them, but only slightly: at <code class="docutils literal notranslate"><span class="pre">cost</span> <span class="pre">=</span> <span class="pre">0.05</span></code> the
+three stake 5.01%, 5.00% and 5.26%. If you are reaching for <code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code> as
+an unsophisticated control against Kelly, it is not one for a standard binary
+bet. <code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code>, and CPPI, are the honest baselines.</p>
+<p>At a 51% edge the coincidence widens: full Kelly stakes 2%, which is exactly what
+the flat 2% rule stakes, so four of the nine produce the same path.</p>
+</section>
+<section id="what-the-cost-input-actually-does">
+<h2>What the cost input actually does<a class="headerlink" href="#what-the-cost-input-actually-does" title="Link to this heading">¶</a></h2>
+<p>Strategies treat <code class="docutils literal notranslate"><span class="pre">transaction_cost</span></code> as a <strong>per-unit fractional</strong> cost, folded
+into the payoff and loss multipliers before the growth optimum is computed.
+Simulators treat <code class="docutils literal notranslate"><span class="pre">transaction_costs</span></code> as a <strong>flat fee per settled bet</strong>. The same
+number means different things on the two sides, and at a $1,000 bankroll the
+difference is three orders of magnitude:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Strategy</p></th>
+<th class="head"><p>Stake at cost 0</p></th>
+<th class="head"><p>Stake at cost 0.05</p></th>
+<th class="head"><p>Fee actually charged, % of stake</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Kelly</p></td>
+<td><p>10.00%</p></td>
+<td><p>5.01%</p></td>
+<td><p>0.021%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Optimal f</p></td>
+<td><p>10.00%</p></td>
+<td><p>5.26%</p></td>
+<td><p>0.018%</p></td>
+</tr>
+<tr class="row-even"><td><p>Naive</p></td>
+<td><p>10.00%</p></td>
+<td><p>5.00%</p></td>
+<td><p>0.021%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Half Kelly</p></td>
+<td><p>5.00%</p></td>
+<td><p>2.51%</p></td>
+<td><p>0.098%</p></td>
+</tr>
+<tr class="row-even"><td><p>Merton share</p></td>
+<td><p>5.05%</p></td>
+<td><p>2.53%</p></td>
+<td><p>0.097%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dynamic</p></td>
+<td><p>5.00%</p></td>
+<td><p>5.00%</p></td>
+<td><p>0.017%</p></td>
+</tr>
+<tr class="row-even"><td><p>Drawdown-adjusted Kelly</p></td>
+<td><p>4.00%</p></td>
+<td><p>2.00%</p></td>
+<td><p>0.143%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fixed fraction 2%</p></td>
+<td><p>2.00%</p></td>
+<td><p>2.00%</p></td>
+<td><p>0.144%</p></td>
+</tr>
+<tr class="row-even"><td><p>CPPI</p></td>
+<td><p>4.00%</p></td>
+<td><p>2.00%</p></td>
+<td><p>0.254%</p></td>
+</tr>
+</tbody>
+</table>
+<p>Passing <code class="docutils literal notranslate"><span class="pre">0.05</span></code> to both sides halves what Kelly stakes while costing it 0.021% of
+each stake. So a cost sweep in Keeks measures how conservative the cost input
+makes a strategy, not how much friction erodes the bankroll. Two strategies ignore
+the parameter for sizing entirely: <code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code> by design, and
+<code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code> because its <code class="docutils literal notranslate"><span class="pre">min_fraction</span></code> floor holds it at 5%
+regardless.</p>
+<p>If you want to model real friction, scale the flat <code class="docutils literal notranslate"><span class="pre">transaction_costs</span></code> against
+the bankroll and stake sizes you actually expect, and do not assume the same
+number on the strategy side is doing comparable work.</p>
+</section>
+<section id="max-draw-down-is-a-per-settlement-cap-not-a-risk-budget">
+<h2><code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> is a per-settlement cap, not a risk budget<a class="headerlink" href="#max-draw-down-is-a-per-settlement-cap-not-a-risk-budget" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BankRoll</span></code> refuses any single withdrawal larger than <code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> times
+current funds and raises <code class="docutils literal notranslate"><span class="pre">RuinError</span></code>; the simulator catches it and stops the
+run. It is a cap on one settlement, not on cumulative peak-to-trough loss, and
+that makes it behave as a switch rather than a dial:</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/early_stops_by_drawdown_limit.png"><img alt="Grouped bar chart of the percentage of runs that stopped before 500 bets, for nine strategies at four values of max_draw_down, drawn in greyscale with four distinct hatch patterns. Every bar is either 0 percent or 100 percent. At a cap of 0.03 all strategies except Fixed fraction 2% stop on every path. At a cap of 0.08 only Kelly, Optimal f and Naive stop, again on every path. At the default cap of 0.30 and with no cap at all, no strategy stops and every bar is zero." src="_images/early_stops_by_drawdown_limit.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Early stops by per-settlement loss cap, 55% edge, no cost, no estimate error.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Every bar is either zero or full height. A strategy stakes a roughly fixed
+fraction, so the cap either sits above that fraction and never binds, or sits
+below it and kills the run on the first losing bet — at a cap of 0.08 the Kelly
+group stops after a median of 2 bets.
+The default <code class="docutils literal notranslate"><span class="pre">max_draw_down</span> <span class="pre">=</span> <span class="pre">0.3</span></code> never binds for any of the
+nine at a 55% edge, because none of them stakes more than 10%.</p>
+<p>There is a second-order trap: a stopped run has a <em>lower</em> measured maximum
+drawdown than a completed one, because the losing settlement is refused rather
+than applied. At a cap of 0.08 the Kelly group’s median maximum drawdown is 0%,
+which is a number produced by not playing.</p>
+<p>If you want a cumulative drawdown budget, use <code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code>, which
+shrinks the bet fraction, or <code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code>, which holds a floor. Do not read
+<code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> as one.</p>
+</section>
+<section id="how-each-axis-moves-the-result">
+<h2>How each axis moves the result<a class="headerlink" href="#how-each-axis-moves-the-result" title="Link to this heading">¶</a></h2>
+<p>Median terminal bankroll, in dollars, across the whole matrix. The base column
+repeats the table above.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Strategy</p></th>
+<th class="head"><p>51% edge</p></th>
+<th class="head"><p>55% edge (base)</p></th>
+<th class="head"><p>60% edge</p></th>
+<th class="head"><p>cost 0.01</p></th>
+<th class="head"><p>cost 0.05</p></th>
+<th class="head"><p>sd 0.03</p></th>
+<th class="head"><p>sd 0.06</p></th>
+<th class="head"><p>cap 0.08</p></th>
+<th class="head"><p>cap 0.03</p></th>
+<th class="head"><p>cap None</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Kelly</p></td>
+<td><p>1,150</p></td>
+<td><p>12,234</p></td>
+<td><p>23,570,857</p></td>
+<td><p>11,906</p></td>
+<td><p>6,475</p></td>
+<td><p>5,096</p></td>
+<td><p>1,238</p></td>
+<td><p>1,100</p></td>
+<td><p>1,100</p></td>
+<td><p>12,234</p></td>
+</tr>
+<tr class="row-odd"><td><p>Optimal f</p></td>
+<td><p>1,150</p></td>
+<td><p>12,234</p></td>
+<td><p>23,570,857</p></td>
+<td><p>11,958</p></td>
+<td><p>6,885</p></td>
+<td><p>12,174</p></td>
+<td><p>7,826</p></td>
+<td><p>1,100</p></td>
+<td><p>1,100</p></td>
+<td><p>12,234</p></td>
+</tr>
+<tr class="row-even"><td><p>Naive</p></td>
+<td><p>1,150</p></td>
+<td><p>12,234</p></td>
+<td><p>23,570,857</p></td>
+<td><p>11,906</p></td>
+<td><p>6,455</p></td>
+<td><p>5,096</p></td>
+<td><p>1,238</p></td>
+<td><p>1,100</p></td>
+<td><p>1,100</p></td>
+<td><p>12,234</p></td>
+</tr>
+<tr class="row-odd"><td><p>Half Kelly</p></td>
+<td><p>1,100</p></td>
+<td><p>6,529</p></td>
+<td><p>1,846,327</p></td>
+<td><p>5,712</p></td>
+<td><p>2,948</p></td>
+<td><p>5,397</p></td>
+<td><p>4,208</p></td>
+<td><p>6,529</p></td>
+<td><p>1,050</p></td>
+<td><p>6,529</p></td>
+</tr>
+<tr class="row-even"><td><p>Merton share</p></td>
+<td><p>1,100</p></td>
+<td><p>6,612</p></td>
+<td><p>2,269,001</p></td>
+<td><p>5,783</p></td>
+<td><p>2,969</p></td>
+<td><p>5,474</p></td>
+<td><p>3,079</p></td>
+<td><p>6,612</p></td>
+<td><p>1,051</p></td>
+<td><p>6,612</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dynamic</p></td>
+<td><p>930</p></td>
+<td><p>7,019</p></td>
+<td><p>117,909</p></td>
+<td><p>6,999</p></td>
+<td><p>6,920</p></td>
+<td><p>6,340</p></td>
+<td><p>4,857</p></td>
+<td><p>7,019</p></td>
+<td><p>1,050</p></td>
+<td><p>7,019</p></td>
+</tr>
+<tr class="row-even"><td><p>Drawdown-adjusted Kelly</p></td>
+<td><p>1,083</p></td>
+<td><p>4,957</p></td>
+<td><p>609,105</p></td>
+<td><p>4,367</p></td>
+<td><p>2,424</p></td>
+<td><p>4,397</p></td>
+<td><p>3,971</p></td>
+<td><p>4,957</p></td>
+<td><p>1,040</p></td>
+<td><p>4,957</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fixed fraction 2%</p></td>
+<td><p>1,150</p></td>
+<td><p>2,460</p></td>
+<td><p>6,688</p></td>
+<td><p>2,452</p></td>
+<td><p>2,419</p></td>
+<td><p>2,420</p></td>
+<td><p>2,076</p></td>
+<td><p>2,460</p></td>
+<td><p>2,460</p></td>
+<td><p>2,460</p></td>
+</tr>
+<tr class="row-even"><td><p>CPPI</p></td>
+<td><p>1,034</p></td>
+<td><p>1,605</p></td>
+<td><p>3,026</p></td>
+<td><p>1,683</p></td>
+<td><p>1,705</p></td>
+<td><p>1,240</p></td>
+<td><p>1,056</p></td>
+<td><p>1,605</p></td>
+<td><p>1,040</p></td>
+<td><p>1,605</p></td>
+</tr>
+</tbody>
+</table>
+<p>Percentage of the 200 paths that stopped before all 500 bets were placed:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Strategy</p></th>
+<th class="head"><p>51% edge</p></th>
+<th class="head"><p>55% edge (base)</p></th>
+<th class="head"><p>60% edge</p></th>
+<th class="head"><p>cost 0.01</p></th>
+<th class="head"><p>cost 0.05</p></th>
+<th class="head"><p>sd 0.03</p></th>
+<th class="head"><p>sd 0.06</p></th>
+<th class="head"><p>cap 0.08</p></th>
+<th class="head"><p>cap 0.03</p></th>
+<th class="head"><p>cap None</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Kelly</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>10</p></td>
+<td><p>100</p></td>
+<td><p>100</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Optimal f</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>100</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>Naive</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>10</p></td>
+<td><p>100</p></td>
+<td><p>100</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Half Kelly</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>Merton share</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>22</p></td>
+<td><p>0</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dynamic</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>Drawdown-adjusted Kelly</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fixed fraction 2%</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>CPPI</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+<p>Every early stop in this matrix is a <code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> breach. No path in any
+scenario reached bankruptcy, which is what the drawdown cap is there to prevent.</p>
+<p><strong>Edge.</strong> Growth is extremely sensitive to it. Moving from a 55% to a 60% win
+probability takes Kelly’s median from $12,234 to $23.6 million; moving down to
+51% takes it to $1,150 — a 15% gain over 500 bets. At 51%, <code class="docutils literal notranslate"><span class="pre">Dynamic</span></code> stands
+alone in producing a <em>negative</em> median: its 5% minimum fraction forces a stake
+more than twice what the edge supports, and it ends the median path at $930.</p>
+<p><strong>Estimate error.</strong> This is where the strategies stop being scaled versions of one
+another. At σ = 0.06 the Kelly group trips the default drawdown cap on all 200
+paths, because a probability estimate that lands near 0.70 tells Kelly to stake
+40%, and a 40% loss is refused. Optimal f is untouched: it sizes from its
+configured <code class="docutils literal notranslate"><span class="pre">win_rate</span></code> and uses the per-trial probability only as a 0.5 bet or
+no-bet gate, so noise makes it skip bets rather than oversize them. Half Kelly
+absorbs the noise; Merton share stops on 22% of paths.</p>
+<p><strong>Cost.</strong> Nothing stops, and every strategy that responds to the parameter simply
+bets less. See the previous section for why the effect is one-sided.</p>
+</section>
+<section id="seed-stability">
+<h2>Seed stability<a class="headerlink" href="#seed-stability" title="Link to this heading">¶</a></h2>
+<p>Each cell is a median over 200 seeded paths, so it is an estimate with sampling
+error, not an exact constant. Re-running the base scenario under five master seeds
+(<code class="docutils literal notranslate"><span class="pre">20260803</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">7</span></code>, <code class="docutils literal notranslate"><span class="pre">42</span></code>, <code class="docutils literal notranslate"><span class="pre">12345</span></code>) moves Kelly’s median terminal
+bankroll between $12,234 and $14,952 and Half Kelly’s between $6,529 and $7,217.
+The ranking of the nine strategies is unchanged in all five runs, and the base
+scenario’s early-stop rate is zero for every strategy in all five.</p>
+<p>The headline early-stop findings are equally stable: at σ = 0.06 Kelly and Naive
+stopped on all 200 paths under all five seeds, Optimal f on none, and Merton share
+on 18% to 28%.</p>
+<p>Read a single cell as “about this much”, and read the gaps between rows — which
+are large and stable — as the real result.</p>
+</section>
+<section id="choosing-a-strategy">
+<h2>Choosing a strategy<a class="headerlink" href="#choosing-a-strategy" title="Link to this heading">¶</a></h2>
+<p>The benchmark does not rank the nine, because the ranking depends entirely on the
+drawdown you can tolerate and on how much you trust your probability estimate.
+What it does support:</p>
+<ul class="simple">
+<li><p><strong>If your probability estimate is good and you can sit through an 80% drawdown</strong>,
+full Kelly earns its reputation, and Optimal f and Naive are the same rule.</p></li>
+<li><p><strong>If you are not certain of your edge</strong>, the estimate-error column is the one to
+read, not the growth column. Full Kelly under a noisy estimate hit the drawdown
+cap on every path; Half Kelly did not. Fractional Kelly’s usual justification —
+that it buys robustness to estimation error rather than just lower variance —
+is visible in this matrix.</p></li>
+<li><p><strong>If you want a cumulative drawdown budget</strong>, use <code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code> or
+<code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code>. <code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> will not give you one.</p></li>
+<li><p><strong>If you want a control to measure a strategy against</strong>, use
+<code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code>. <code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code> is Kelly for a standard binary bet.</p></li>
+<li><p><strong>If capital preservation dominates</strong>, CPPI had the tightest distribution of the
+nine — a 20% median maximum drawdown, capped by construction — and paid for it
+with the lowest growth.</p></li>
+</ul>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>One simulator (<code class="docutils literal notranslate"><span class="pre">RepeatedBinarySimulator</span></code>) and one bet shape: independent,
+even-money, binary, with a probability that never changes within a run. Real
+edges vary bet to bet and are correlated across bets.</p></li>
+<li><p>One configuration per strategy. Every tunable — the Kelly fraction, CPPI’s
+floor and multiplier, Optimal f’s <code class="docutils literal notranslate"><span class="pre">max_risk_fraction</span></code>, Merton’s risk aversion
+— moves its row, and the parameters chosen here are reasonable rather than
+optimal.</p></li>
+<li><p>500 bets and a $1,000 bankroll. Both interact with the flat transaction fee and
+with <code class="docutils literal notranslate"><span class="pre">BankRoll</span></code>’s two-decimal rounding.</p></li>
+<li><p>Estimate error is modelled as independent zero-mean noise on a correct
+probability. A persistent bias — believing you have an edge you do not — is a
+different and more dangerous failure, and is not measured here.</p></li>
+<li><p>The library’s cost model is a single normalized scalar. It does not represent
+spreads, slippage, market impact, per-venue commissions, correlated positions
+or rebalancing.</p></li>
+</ul>
+<p>Full results are in <code class="docutils literal notranslate"><span class="pre">benchmarks/output/strategy_benchmark.csv</span></code>: one row per
+scenario and strategy, with every percentile, drawdown, growth and stop-reason
+column used above.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Nine-Strategy Risk Benchmark</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reproducing-it">Reproducing it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#method">Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#base-scenario">Base scenario</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#three-strategies-are-the-same-rule-here">Three strategies are the same rule here</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-the-cost-input-actually-does">What the cost input actually does</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#max-draw-down-is-a-per-settlement-cap-not-a-risk-budget"><code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> is a per-settlement cap, not a risk budget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-each-axis-moves-the-result">How each axis moves the result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#seed-stability">Seed stability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#choosing-a-strategy">Choosing a strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

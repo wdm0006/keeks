@@ -1,9 +1,10 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
-<head>
-  <meta charset="utf-8" />
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
     <script>
@@ -13,209 +14,165 @@
         gtag('config', 'G-Z43R9PWW0B');
     </script>
     
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>keeks.binary_strategies.simple &mdash; Keeks</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/dark_mode_css/general.css?v=c0a7eb24" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/dark_mode_css/dark.css?v=70edf1c7" />
+    <title>keeks.binary_strategies.simple &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.binary_strategies.simple - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.binary_strategies.simple">
+<meta property="og:description" content="keeks.binary_strategies.simple - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/binary_strategies/simple.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.binary_strategies.simple">
+<meta name="twitter:description" content="keeks.binary_strategies.simple - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/binary_strategies/simple.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.binary_strategies.simple</span>
+    
+  </div>
+</nav>
 
   
-      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b1f64a84"></script>
-      <script src="../../../_static/doctools.js?v=888ff710"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
-      <script src="../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
-      <script src="../../../_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #1a1a1a" >
-
-          
-          
-          <a href="../../../index.html" class="icon icon-home">
-            keeks
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#basic-usage">Basic Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#using-different-strategies">Using Different Strategies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#using-different-simulators">Using Different Simulators</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#base-strategy">Base Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy"><code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.get_max_safe_bet()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#naive-strategy">Naive Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#fixed-fraction-strategy">Fixed Fraction Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#cppi-strategy">CPPI Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.update_bankroll()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#dynamic-bankroll-management">Dynamic Bankroll Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_drawdown_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_probability_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_probability_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_streak_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_volatility_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.record_result()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#kelly-criterion">Kelly Criterion</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion"><code class="docutils literal notranslate"><span class="pre">KellyCriterion</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">KellyCriterion.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">KellyCriterion.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#fractional-kelly-criterion">Fractional Kelly Criterion</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#drawdown-adjusted-kelly">Drawdown-Adjusted Kelly</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#optimalf">OptimalF</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF"><code class="docutils literal notranslate"><span class="pre">OptimalF</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">OptimalF.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.evaluate"><code class="docutils literal notranslate"><span class="pre">OptimalF.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#merton-share">Merton Share</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare"><code class="docutils literal notranslate"><span class="pre">MertonShare</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">MertonShare.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.evaluate"><code class="docutils literal notranslate"><span class="pre">MertonShare.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../simulators.html#repeated-binary-simulator">Repeated Binary Simulator</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../simulators.html#keeks.simulators.repeated_binary.RepeatedBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RepeatedBinarySimulator</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../simulators.html#keeks.simulators.repeated_binary.RepeatedBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RepeatedBinarySimulator.evaluate_strategy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../simulators.html#random-binary-simulator">Random Binary Simulator</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_binary.RandomBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RandomBinarySimulator</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_binary.RandomBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RandomBinarySimulator.evaluate_strategy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../simulators.html#random-uncertain-binary-simulator">Random Uncertain Binary Simulator</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RandomUncertainBinarySimulator</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RandomUncertainBinarySimulator.evaluate_strategy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../bankroll.html#exceptions">Exceptions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.RuinError"><code class="docutils literal notranslate"><span class="pre">RuinError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.crra_utility"><code class="docutils literal notranslate"><span class="pre">crra_utility()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.expected_utility"><code class="docutils literal notranslate"><span class="pre">expected_utility()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.find_indifference_price"><code class="docutils literal notranslate"><span class="pre">find_indifference_price()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#exceptions">Exceptions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../utils.html#id0"><code class="docutils literal notranslate"><span class="pre">RuinError</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1a1a1a" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">keeks</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">keeks.binary_strategies.simple</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
   <h1>Source code for keeks.binary_strategies.simple</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -224,7 +181,9 @@
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;willmcginnis&quot;</span>
 
 
-<div class="viewcode-block" id="NaiveStrategy"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">NaiveStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="NaiveStrategy">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NaiveStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple betting strategy that bets based on expected value.</span>
 
@@ -256,7 +215,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NaiveStrategy.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="NaiveStrategy.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the bet size based on expected value.</span>
 
@@ -295,8 +256,17 @@
         <span class="c1"># Ensure we never bet more than would result in negative bankroll</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bet_size</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="NaiveStrategy.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NaiveStrategy.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -309,40 +279,53 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (must sum to ≤ 1)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance (unused, kept for API consistency)</span>
+<span class="sd">            Convergence tolerance (unused, kept for API consistency). Must</span>
+<span class="sd">            still be finite and greater than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound (ignored in this method)</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
-<span class="sd">            Maximum price willing to pay (the expected value)</span>
+<span class="sd">            Maximum price willing to pay (the expected value, bounded above by</span>
+<span class="sd">            ``current_wealth * max_search_fraction``)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Naive strategy is risk-neutral: willing to pay exactly the expected value.</span>
 <span class="sd">        This is the classic &quot;expected value maximizer&quot; that doesn&#39;t account for risk.</span>
+<span class="sd">        The expected value can be unbounded (e.g. the St. Petersburg paradox), so the</span>
+<span class="sd">        result is capped the same way every other strategy caps it. Pass</span>
+<span class="sd">        ``max_search_fraction=1.0`` to allow paying the entire bankroll.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
 
-        <span class="c1"># Suppress unused parameter warning - kept for API consistency</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">tolerance</span>
-
-        <span class="n">outcomes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
-        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
         <span class="c1"># Calculate expected value</span>
         <span class="n">expected_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">probabilities</span> <span class="o">*</span> <span class="n">outcomes</span><span class="p">)</span>
 
-        <span class="c1"># For naive strategy, willing to pay expected value</span>
-        <span class="c1"># This can be infinite (e.g., St. Petersburg paradox)</span>
-        <span class="c1"># We cap at current_wealth for practical reasons</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">expected_value</span><span class="p">))</span></div></div>
+        <span class="c1"># For naive strategy, willing to pay expected value, which can be unbounded</span>
+        <span class="c1"># (e.g., St. Petersburg paradox); respect the same wealth-fraction cap the</span>
+        <span class="c1"># other strategies apply</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">current_wealth</span> <span class="o">*</span> <span class="n">max_search_fraction</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">expected_value</span><span class="p">))</span></div>
+</div>
 
 
-<div class="viewcode-block" id="FixedFractionStrategy"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">FixedFractionStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FixedFractionStrategy">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FixedFractionStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple strategy that bets a fixed percentage of the bankroll.</span>
 
@@ -390,7 +373,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
 
-<div class="viewcode-block" id="FixedFractionStrategy.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="FixedFractionStrategy.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the fixed fraction if the probability meets the minimum threshold.</span>
 
@@ -412,8 +397,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span></div>
 
-<div class="viewcode-block" id="FixedFractionStrategy.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FixedFractionStrategy.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -426,16 +420,24 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (unused)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance (unused, kept for API consistency)</span>
+<span class="sd">            Convergence tolerance (unused, kept for API consistency). Must</span>
+<span class="sd">            still be finite and greater than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay (fixed fraction of wealth)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -443,14 +445,20 @@
 <span class="sd">        commits a fixed fraction of wealth regardless of the opportunity.</span>
 <span class="sd">        This is a mechanical rule-based approach, not optimization-based.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Suppress unused parameter warnings - kept for API consistency</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">tolerance</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
+
+        <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
         <span class="c1"># Pay the fixed fraction of current wealth</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">max_search_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">max_search_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="CPPIStrategy"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">CPPIStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CPPIStrategy">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CPPIStrategy</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of Constant Proportion Portfolio Insurance (CPPI) for binary betting.</span>
 
@@ -503,7 +511,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">initial_bankroll</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="o">=</span> <span class="n">initial_bankroll</span>
 
-<div class="viewcode-block" id="CPPIStrategy.update_bankroll"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">update_bankroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="CPPIStrategy.update_bankroll">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_bankroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the current bankroll value and adjust floor based on peak value.</span>
 
@@ -518,7 +528,10 @@
             <span class="c1"># Adjust floor to maintain the same fraction of peak value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">floor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">floor_fraction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span></div>
 
-<div class="viewcode-block" id="CPPIStrategy.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CPPIStrategy.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the CPPI bet size based on the cushion above the floor.</span>
 
@@ -585,8 +598,17 @@
 
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">proportion</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CPPIStrategy.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CPPIStrategy.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -600,16 +622,25 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (unused in basic calculation)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance (unused, kept for API consistency)</span>
+<span class="sd">            Convergence tolerance (unused, kept for API consistency). Must</span>
+<span class="sd">            still be finite and greater than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay (based on cushion above floor)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above. Validation happens before any</span>
+<span class="sd">            internal bankroll or floor state is updated.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -617,8 +648,10 @@
 <span class="sd">        For entry price, we apply the same logic: pay multiplier × cushion,</span>
 <span class="sd">        but never more than the cushion itself (to maintain floor).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Suppress unused parameter warnings</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">tolerance</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
+
+        <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
         <span class="c1"># Update internal state with current wealth</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_bankroll</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">)</span>
@@ -631,10 +664,14 @@
         <span class="n">max_price</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multiplier</span> <span class="o">*</span> <span class="n">cushion</span><span class="p">,</span> <span class="n">cushion</span><span class="p">)</span>
 
         <span class="c1"># Also respect max_search_fraction</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_price</span><span class="p">,</span> <span class="n">max_search_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_price</span><span class="p">,</span> <span class="n">max_search_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="DynamicBankrollManagement"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DynamicBankrollManagement</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DynamicBankrollManagement">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DynamicBankrollManagement</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A dynamic bankroll management strategy that adjusts bet sizes based on performance.</span>
 
@@ -660,6 +697,9 @@
 <span class="sd">        The maximum fraction of bankroll that can be bet.</span>
 <span class="sd">    min_fraction : float, default=0.05</span>
 <span class="sd">        The minimum fraction of bankroll to bet.</span>
+<span class="sd">    min_probability : float, default=0.5</span>
+<span class="sd">        The minimum probability required to place a bet. Below this the</span>
+<span class="sd">        strategy returns 0.0 (no bet).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -671,6 +711,7 @@
         <span class="n">window_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">max_fraction</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
         <span class="n">min_fraction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">min_probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the DynamicBankrollManagement strategy.</span>
@@ -683,18 +724,23 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Min fraction must be between 0 and max fraction, and max fraction must be between 0 and 1&quot;</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum probability must be between 0 and 1&quot;</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">base_fraction</span> <span class="o">=</span> <span class="n">base_fraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_fraction</span> <span class="o">=</span> <span class="n">max_fraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_fraction</span> <span class="o">=</span> <span class="n">min_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="DynamicBankrollManagement.record_result"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">won</span><span class="p">,</span> <span class="n">return_pct</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DynamicBankrollManagement.record_result">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">won</span><span class="p">,</span> <span class="n">return_pct</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Record the result of a bet.</span>
 
@@ -712,7 +758,10 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DynamicBankrollManagement.get_streak_factor"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_streak_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DynamicBankrollManagement.get_streak_factor">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_streak_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the adjustment factor based on recent performance.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.0</span>
@@ -731,7 +780,10 @@
         <span class="n">win_ratio</span> <span class="o">=</span> <span class="n">wins</span> <span class="o">/</span> <span class="p">(</span><span class="n">wins</span> <span class="o">+</span> <span class="n">losses</span><span class="p">)</span>
         <span class="k">return</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="p">((</span><span class="n">win_ratio</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DynamicBankrollManagement.get_volatility_factor"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_volatility_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DynamicBankrollManagement.get_volatility_factor">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_volatility_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the adjustment factor based on return volatility.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.0</span>
@@ -746,15 +798,24 @@
         <span class="n">scale</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">volatility</span> <span class="o">*</span> <span class="n">scale</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="DynamicBankrollManagement.get_drawdown_factor"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_drawdown_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DynamicBankrollManagement.get_drawdown_factor">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_drawdown_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the adjustment factor based on current drawdown.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># No positive peak to measure a drawdown against.</span>
             <span class="k">return</span> <span class="mf">1.0</span>
 
         <span class="n">drawdown</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">drawdown</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DynamicBankrollManagement.get_probability_factor"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_probability_factor">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_probability_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DynamicBankrollManagement.get_probability_factor">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_probability_factor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_probability_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the adjustment factor based on probability.&quot;&quot;&quot;</span>
         <span class="c1"># Only apply probability factor if we have some results</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
@@ -763,7 +824,10 @@
         <span class="c1"># Scale linearly from 0.5 at 50% probability to 1.5 at 100% probability</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">probability</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="DynamicBankrollManagement.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DynamicBankrollManagement.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the bet size based on all adjustment factors.</span>
 
@@ -779,6 +843,10 @@
 <span class="sd">        float</span>
 <span class="sd">            The proportion of the current bankroll to bet.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Don&#39;t bet on sub-threshold probabilities</span>
+        <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+
         <span class="c1"># Initialize or update bankroll tracking</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_bankroll</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">initial_bankroll</span> <span class="o">=</span> <span class="n">current_bankroll</span>
@@ -800,11 +868,23 @@
         <span class="c1"># Calculate adjusted bet size</span>
         <span class="n">bet_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_fraction</span> <span class="o">*</span> <span class="n">combined_factor</span>
 
-        <span class="c1"># Ensure bet size is within bounds</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_fraction</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_fraction</span><span class="p">,</span> <span class="n">bet_size</span><span class="p">))</span></div>
+        <span class="c1"># Ensure bet size is within min/max bounds</span>
+        <span class="n">bet_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_fraction</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_fraction</span><span class="p">,</span> <span class="n">bet_size</span><span class="p">))</span>
 
-<div class="viewcode-block" id="DynamicBankrollManagement.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="c1"># Never exceed the ruin-safe fraction</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">bet_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DynamicBankrollManagement.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -818,16 +898,24 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (unused)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance (unused, kept for API consistency)</span>
+<span class="sd">            Convergence tolerance (unused, kept for API consistency). Must</span>
+<span class="sd">            still be finite and greater than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay (base fraction of wealth)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -835,14 +923,22 @@
 <span class="sd">        For a one-time decision with no history, we fall back to the base_fraction.</span>
 <span class="sd">        This represents a neutral starting point before dynamic adjustments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Suppress unused parameter warnings</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">tolerance</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
+
+        <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
         <span class="c1"># Use base fraction since we have no history for a one-time decision</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">max_search_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">max_search_fraction</span> <span class="o">*</span> <span class="n">current_wealth</span>
+        <span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="OptimalF"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">OptimalF</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OptimalF">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OptimalF</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the Optimal f strategy for binary betting.</span>
 
@@ -890,7 +986,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">win_rate</span> <span class="o">=</span> <span class="n">win_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_risk_fraction</span> <span class="o">=</span> <span class="n">max_risk_fraction</span>
 
-<div class="viewcode-block" id="OptimalF.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="OptimalF.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the optimal f bet size based on win rate and payoff ratio.</span>
 
@@ -901,7 +999,8 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        probability : float</span>
-<span class="sd">            The probability of a successful outcome, typically between 0 and 1.</span>
+<span class="sd">            The probability of a successful outcome, used to decide whether to bet.</span>
+<span class="sd">            Probabilities below 0.5 return zero; bet sizing uses ``win_rate``.</span>
 <span class="sd">        current_bankroll : float</span>
 <span class="sd">            The current bankroll amount.</span>
 
@@ -913,9 +1012,7 @@
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>  <span class="c1"># Use 0.5 as default minimum probability</span>
             <span class="k">return</span> <span class="mf">0.0</span>
 
-        <span class="c1"># Use the provided probability to adjust our expectations</span>
-        <span class="c1"># If no specific edge is known, the win_rate will be used directly</span>
-        <span class="n">adjusted_win_rate</span> <span class="o">=</span> <span class="n">probability</span> <span class="k">if</span> <span class="n">probability</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">win_rate</span>
+        <span class="n">adjusted_win_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">win_rate</span>
         <span class="n">adjusted_loss_rate</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">adjusted_win_rate</span>
 
         <span class="c1"># Calculate the risk-to-reward ratio (R-multiple)</span>
@@ -937,8 +1034,17 @@
         <span class="c1"># Ensure we never bet more than would result in negative bankroll</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">optimal_f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="OptimalF.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OptimalF.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -951,16 +1057,24 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (must sum to ≤ 1)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance for binary search</span>
+<span class="sd">            Convergence tolerance for binary search. Must be finite and greater</span>
+<span class="sd">            than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay for the gamble</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -975,20 +1089,24 @@
             <span class="n">current_wealth</span><span class="o">=</span><span class="n">current_wealth</span><span class="p">,</span>
             <span class="n">risk_aversion</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Optimal F uses log utility like Kelly</span>
             <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
-            <span class="n">max_search_fraction</span><span class="o">=</span><span class="n">max_search_fraction</span>
-        <span class="p">)</span></div></div>
+            <span class="n">max_search_fraction</span><span class="o">=</span><span class="n">max_search_fraction</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="MertonShare"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MertonShare</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MertonShare">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MertonShare</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the Merton Share strategy using CRRA utility.</span>
 
-<span class="sd">    This strategy is based on Robert Merton&#39;s portfolio optimization problem</span>
+<span class="sd">    This strategy is based on Robert Merton&#39;s portfolio optimization problem [1]_</span>
 <span class="sd">    with Constant Relative Risk Aversion (CRRA) utility. The optimal fraction</span>
 <span class="sd">    to invest is proportional to the expected excess return divided by the</span>
 <span class="sd">    product of risk aversion and variance.</span>
 
-<span class="sd">    The formula is: f* = μ / (γ × σ²)</span>
+<span class="sd">    The formula is: f* = μ / (γ × σ²) [2]_</span>
 
 <span class="sd">    Where:</span>
 <span class="sd">    - f* is the optimal fraction of wealth to invest</span>
@@ -1065,7 +1183,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_fraction</span> <span class="o">=</span> <span class="n">max_fraction</span>
 
-<div class="viewcode-block" id="MertonShare.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="MertonShare.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the Merton Share bet size using CRRA utility.</span>
 
@@ -1086,9 +1206,9 @@
 
         <span class="c1"># Calculate expected return accounting for transaction costs</span>
         <span class="c1"># Expected return = p * (payoff - tc) - (1-p) * (loss + tc)</span>
-        <span class="n">expected_return</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">*</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span>
-        <span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
+        <span class="n">expected_return</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
 
         <span class="c1"># Don&#39;t bet if expected return is non-positive</span>
         <span class="k">if</span> <span class="n">expected_return</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -1097,12 +1217,13 @@
         <span class="c1"># Calculate variance of returns for a binary outcome</span>
         <span class="c1"># For a binary bet: Var(R) = p * (payoff)^2 + (1-p) * (-loss)^2 - E[R]^2</span>
         <span class="c1"># We use gross returns (before transaction costs) for variance calculation</span>
-        <span class="n">mean_squared_return</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">probability</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mean_squared_return</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">**</span><span class="mi">2</span>
         <span class="p">)</span>
-        <span class="n">variance</span> <span class="o">=</span> <span class="n">mean_squared_return</span> <span class="o">-</span> <span class="p">(</span>
-            <span class="n">probability</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span>
-        <span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">variance</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mean_squared_return</span>
+            <span class="o">-</span> <span class="p">(</span><span class="n">probability</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
 
         <span class="c1"># Avoid division by zero</span>
         <span class="k">if</span> <span class="n">variance</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -1117,8 +1238,17 @@
         <span class="c1"># Ensure we never bet more than would result in negative bankroll</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">merton_fraction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="MertonShare.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MertonShare.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -1132,16 +1262,24 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (must sum to ≤ 1)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance for binary search</span>
+<span class="sd">            Convergence tolerance for binary search. Must be finite and greater</span>
+<span class="sd">            than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay for the gamble</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1157,35 +1295,87 @@
             <span class="n">current_wealth</span><span class="o">=</span><span class="n">current_wealth</span><span class="p">,</span>
             <span class="n">risk_aversion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">risk_aversion</span><span class="p">,</span>  <span class="c1"># Use the strategy&#39;s γ parameter</span>
             <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
-            <span class="n">max_search_fraction</span><span class="o">=</span><span class="n">max_search_fraction</span>
-        <span class="p">)</span></div></div>
+            <span class="n">max_search_fraction</span><span class="o">=</span><span class="n">max_search_fraction</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
 </pre></div>
 
-           </div>
+            <div class="clearer"></div>
           </div>
-          <footer>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2020, Will McGinnis.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
         </div>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
 
-</body>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
 </html>

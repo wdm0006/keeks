@@ -1,9 +1,10 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
-<head>
-  <meta charset="utf-8" />
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
     <script>
@@ -13,216 +14,174 @@
         gtag('config', 'G-Z43R9PWW0B');
     </script>
     
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>keeks.binary_strategies.kelly &mdash; Keeks</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/dark_mode_css/general.css?v=c0a7eb24" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/dark_mode_css/dark.css?v=70edf1c7" />
+    <title>keeks.binary_strategies.kelly &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.binary_strategies.kelly - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.binary_strategies.kelly">
+<meta property="og:description" content="keeks.binary_strategies.kelly - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/binary_strategies/kelly.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.binary_strategies.kelly">
+<meta name="twitter:description" content="keeks.binary_strategies.kelly - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/binary_strategies/kelly.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.binary_strategies.kelly</span>
+    
+  </div>
+</nav>
 
   
-      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=b1f64a84"></script>
-      <script src="../../../_static/doctools.js?v=888ff710"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
-      <script src="../../../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
-      <script src="../../../_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: #1a1a1a" >
-
-          
-          
-          <a href="../../../index.html" class="icon icon-home">
-            keeks
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#basic-usage">Basic Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#using-different-strategies">Using Different Strategies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../getting_started.html#using-different-simulators">Using Different Simulators</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#base-strategy">Base Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy"><code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet"><code class="docutils literal notranslate"><span class="pre">BaseStrategy.get_max_safe_bet()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#naive-strategy">Naive Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.NaiveStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">NaiveStrategy.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#fixed-fraction-strategy">Fixed Fraction Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.FixedFractionStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#cppi-strategy">CPPI Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.evaluate"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.CPPIStrategy.update_bankroll"><code class="docutils literal notranslate"><span class="pre">CPPIStrategy.update_bankroll()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#dynamic-bankroll-management">Dynamic Bankroll Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.evaluate"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.evaluate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_drawdown_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_drawdown_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_probability_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_probability_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_streak_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_streak_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.get_volatility_factor"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.get_volatility_factor()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.DynamicBankrollManagement.record_result"><code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement.record_result()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#kelly-criterion">Kelly Criterion</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion"><code class="docutils literal notranslate"><span class="pre">KellyCriterion</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">KellyCriterion.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">KellyCriterion.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#fractional-kelly-criterion">Fractional Kelly Criterion</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate"><code class="docutils literal notranslate"><span class="pre">FractionalKellyCriterion.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#drawdown-adjusted-kelly">Drawdown-Adjusted Kelly</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate"><code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#optimalf">OptimalF</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF"><code class="docutils literal notranslate"><span class="pre">OptimalF</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">OptimalF.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.OptimalF.evaluate"><code class="docutils literal notranslate"><span class="pre">OptimalF.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../binary_strategies.html#merton-share">Merton Share</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare"><code class="docutils literal notranslate"><span class="pre">MertonShare</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.calculate_max_entry_price"><code class="docutils literal notranslate"><span class="pre">MertonShare.calculate_max_entry_price()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../binary_strategies.html#keeks.binary_strategies.simple.MertonShare.evaluate"><code class="docutils literal notranslate"><span class="pre">MertonShare.evaluate()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../simulators.html#repeated-binary-simulator">Repeated Binary Simulator</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../simulators.html#keeks.simulators.repeated_binary.RepeatedBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RepeatedBinarySimulator</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../simulators.html#keeks.simulators.repeated_binary.RepeatedBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RepeatedBinarySimulator.evaluate_strategy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../simulators.html#random-binary-simulator">Random Binary Simulator</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_binary.RandomBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RandomBinarySimulator</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_binary.RandomBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RandomBinarySimulator.evaluate_strategy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../simulators.html#random-uncertain-binary-simulator">Random Uncertain Binary Simulator</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator"><code class="docutils literal notranslate"><span class="pre">RandomUncertainBinarySimulator</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator.evaluate_strategy"><code class="docutils literal notranslate"><span class="pre">RandomUncertainBinarySimulator.evaluate_strategy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../bankroll.html#exceptions">Exceptions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.RuinError"><code class="docutils literal notranslate"><span class="pre">RuinError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.crra_utility"><code class="docutils literal notranslate"><span class="pre">crra_utility()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.expected_utility"><code class="docutils literal notranslate"><span class="pre">expected_utility()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#keeks.utils.find_indifference_price"><code class="docutils literal notranslate"><span class="pre">find_indifference_price()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../utils.html#exceptions">Exceptions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../utils.html#id0"><code class="docutils literal notranslate"><span class="pre">RuinError</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #1a1a1a" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">keeks</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">keeks.binary_strategies.kelly</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
   <h1>Source code for keeks.binary_strategies.kelly</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;willmcginnis&quot;</span>
 
 
-<div class="viewcode-block" id="KellyCriterion"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">KellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="KellyCriterion">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">KellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the Kelly Criterion for binary betting.</span>
 
@@ -262,18 +221,24 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
 
-<div class="viewcode-block" id="KellyCriterion.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="KellyCriterion.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the optimal Kelly bet size.</span>
 
 <span class="sd">        The Kelly Criterion formula is:</span>
-<span class="sd">        f* = (bp - q) / b</span>
+<span class="sd">        f* = p / l - q / a</span>
 
 <span class="sd">        where:</span>
 <span class="sd">        f* = fraction of current bankroll to bet</span>
-<span class="sd">        b = net odds received on the bet (payoff/loss)</span>
+<span class="sd">        a = payoff after transaction costs</span>
+<span class="sd">        l = loss including transaction costs</span>
 <span class="sd">        p = probability of winning</span>
 <span class="sd">        q = probability of losing (1 - p)</span>
+
+<span class="sd">        Unlike the classic formula, which assumes the entire stake is lost, this</span>
+<span class="sd">        formula explicitly accounts for the loss multiplier used by this library.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -290,9 +255,6 @@
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
 
-        <span class="c1"># Calculate net odds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span>
-
         <span class="c1"># Calculate probability of losing</span>
         <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">probability</span>
 
@@ -305,16 +267,23 @@
         <span class="k">if</span> <span class="n">adjusted_payoff</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">adjusted_loss</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>  <span class="c1"># If transaction costs make the bet unprofitable</span>
 
-        <span class="n">adjusted_b</span> <span class="o">=</span> <span class="n">adjusted_payoff</span> <span class="o">/</span> <span class="n">adjusted_loss</span>
-
-        <span class="c1"># Calculate Kelly fraction with adjusted odds</span>
-        <span class="n">kelly_fraction</span> <span class="o">=</span> <span class="p">(</span><span class="n">adjusted_b</span> <span class="o">*</span> <span class="n">probability</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span> <span class="o">/</span> <span class="n">adjusted_b</span>
+        <span class="c1"># Calculate Kelly fraction with adjusted payoff and loss</span>
+        <span class="n">kelly_fraction</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">/</span> <span class="n">adjusted_loss</span> <span class="o">-</span> <span class="n">q</span> <span class="o">/</span> <span class="n">adjusted_payoff</span>
 
         <span class="c1"># Ensure we never bet more than would result in negative bankroll</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">kelly_fraction</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="KellyCriterion.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="KellyCriterion.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -328,16 +297,24 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (must sum to ≤ 1)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance for binary search</span>
+<span class="sd">            Convergence tolerance for binary search. Must be finite and greater</span>
+<span class="sd">            than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay for the gamble</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -352,11 +329,15 @@
             <span class="n">current_wealth</span><span class="o">=</span><span class="n">current_wealth</span><span class="p">,</span>
             <span class="n">risk_aversion</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Kelly uses log utility (γ=1)</span>
             <span class="n">tolerance</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span>
-            <span class="n">max_search_fraction</span><span class="o">=</span><span class="n">max_search_fraction</span>
-        <span class="p">)</span></div></div>
+            <span class="n">max_search_fraction</span><span class="o">=</span><span class="n">max_search_fraction</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="FractionalKellyCriterion"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">FractionalKellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FractionalKellyCriterion">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FractionalKellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the Fractional Kelly Criterion for binary betting.</span>
 
@@ -382,7 +363,9 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span>
 
-<div class="viewcode-block" id="FractionalKellyCriterion.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="FractionalKellyCriterion.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the fractional Kelly bet size.</span>
 
@@ -401,8 +384,17 @@
         <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FractionalKellyCriterion.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FractionalKellyCriterion.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -417,16 +409,24 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (must sum to ≤ 1)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance for binary search</span>
+<span class="sd">            Convergence tolerance for binary search. Must be finite and greater</span>
+<span class="sd">            than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay for the gamble</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -441,10 +441,14 @@
         <span class="p">)</span>
 
         <span class="c1"># Scale by the fraction (more conservative)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">kelly_price</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">kelly_price</span></div>
+</div>
 
 
-<div class="viewcode-block" id="DrawdownAdjustedKelly"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DrawdownAdjustedKelly</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DrawdownAdjustedKelly">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DrawdownAdjustedKelly</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the Drawdown-Adjusted Kelly Criterion for binary betting.</span>
 
@@ -493,7 +497,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">=</span> <span class="n">max_acceptable_drawdown</span>
 
-<div class="viewcode-block" id="DrawdownAdjustedKelly.evaluate"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<div class="viewcode-block" id="DrawdownAdjustedKelly.evaluate">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the drawdown-adjusted Kelly bet size.</span>
 
@@ -529,8 +535,17 @@
         <span class="c1"># Ensure we never bet more than would result in negative bankroll</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">adjusted_kelly</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="DrawdownAdjustedKelly.calculate_max_entry_price"><a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.calculate_max_entry_price">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span>
-                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DrawdownAdjustedKelly.calculate_max_entry_price">
+<a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.calculate_max_entry_price">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">outcomes</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -544,16 +559,24 @@
 <span class="sd">        probabilities : array-like</span>
 <span class="sd">            The probability of each outcome (must sum to ≤ 1)</span>
 <span class="sd">        current_wealth : float</span>
-<span class="sd">            Current wealth before the gamble</span>
+<span class="sd">            Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">        tolerance : float, default=0.01</span>
-<span class="sd">            Convergence tolerance for binary search</span>
+<span class="sd">            Convergence tolerance for binary search. Must be finite and greater</span>
+<span class="sd">            than 0.</span>
 <span class="sd">        max_search_fraction : float, default=0.5</span>
-<span class="sd">            Maximum fraction of wealth to consider as upper bound</span>
+<span class="sd">            Maximum fraction of wealth to consider as upper bound. Must be</span>
+<span class="sd">            finite and non-negative; values above 1.0 are allowed.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Maximum price willing to pay for the gamble</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the gamble arrays are malformed, or if any scalar control falls</span>
+<span class="sd">            outside the ranges documented above.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -569,34 +592,86 @@
         <span class="c1"># Apply the same drawdown adjustment used in evaluate()</span>
         <span class="n">drawdown_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">/</span> <span class="mf">0.5</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">drawdown_factor</span> <span class="o">*</span> <span class="n">kelly_price</span></div></div>
+        <span class="k">return</span> <span class="n">drawdown_factor</span> <span class="o">*</span> <span class="n">kelly_price</span></div>
+</div>
+
 </pre></div>
 
-           </div>
+            <div class="clearer"></div>
           </div>
-          <footer>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2020, Will McGinnis.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
         </div>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
 
-</body>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
 </html>
