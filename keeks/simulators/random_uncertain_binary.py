@@ -5,6 +5,7 @@ import numpy as np
 from keeks.utils import (
     RuinError,
     _validate_simulator_controls,
+    _validate_simulator_seed,
     _validate_simulator_stdev,
 )
 
@@ -39,13 +40,18 @@ class RandomUncertainBinarySimulator:
         The standard deviation of the normal distribution used to add uncertainty
         to the actual outcome probability. The resulting outcome probability is
         clamped to [0.0, 1.0].
+    seed : int or None, default=None
+        Seed for private outcome, probability, and uncertainty generators. When
+        omitted, the process-global ``random`` and ``numpy.random`` generators
+        are used for backward compatibility.
 
     Raises
     ------
     ValueError
         If ``payoff`` is not finite and positive, if ``loss``,
         ``transaction_costs``, ``stdev`` or ``uncertainty_stdev`` is not finite
-        and nonnegative, or if ``trials`` is not a nonnegative integer.
+        and nonnegative, if ``trials`` is not a nonnegative integer, or if
+        ``seed`` is not a nonnegative integer or ``None``.
     """
 
     def __init__(
@@ -56,6 +62,7 @@ class RandomUncertainBinarySimulator:
         trials=1000,
         stdev=0.1,
         uncertainty_stdev=0.05,
+        seed=None,
     ):
         (
             self.payoff,
@@ -66,6 +73,11 @@ class RandomUncertainBinarySimulator:
         self.stdev = _validate_simulator_stdev(stdev, "Standard deviation")
         self.uncertainty_stdev = _validate_simulator_stdev(
             uncertainty_stdev, "Uncertainty standard deviation"
+        )
+        self.seed = _validate_simulator_seed(seed)
+        self._outcome_rng = random.Random(self.seed) if self.seed is not None else None
+        self._probability_rng = (
+            np.random.default_rng(self.seed) if self.seed is not None else None
         )
 
     def evaluate_strategy(self, strategy, bankroll):
@@ -95,7 +107,15 @@ class RandomUncertainBinarySimulator:
                 break
 
             # Normal samples are unbounded; only [0, 1] values are probabilities.
-            probability = min(1.0, max(0.0, np.random.normal(0.5, self.stdev, 1)[0]))
+            probability = min(
+                1.0,
+                max(
+                    0.0,
+                    np.random.normal(0.5, self.stdev, 1)[0]
+                    if self._probability_rng is None
+                    else self._probability_rng.normal(0.5, self.stdev),
+                ),
+            )
             proportion = strategy.evaluate(probability, bankroll.total_funds)
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
@@ -106,11 +126,21 @@ class RandomUncertainBinarySimulator:
                     1.0,
                     max(
                         0.0,
-                        probability + np.random.normal(0, self.uncertainty_stdev, 1)[0],
+                        probability
+                        + (
+                            np.random.normal(0, self.uncertainty_stdev, 1)[0]
+                            if self._probability_rng is None
+                            else self._probability_rng.normal(0, self.uncertainty_stdev)
+                        ),
                     ),
                 )
                 try:
-                    won = random.random() < outcome_probability
+                    outcome = (
+                        random.random()
+                        if self._outcome_rng is None
+                        else self._outcome_rng.random()
+                    )
+                    won = outcome < outcome_probability
                     if won:
                         amt = (self.payoff * bet_amount) - self.transaction_costs
                         if amt >= 0:

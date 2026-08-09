@@ -55,6 +55,7 @@ INVALID_TRANSACTION_COSTS = [-0.01, -10, math.nan, math.inf, -math.inf, None, "a
 INVALID_TRIALS = [-1, -1000, 1.5, 10.0, math.nan, math.inf, None, "10"]
 INVALID_PROBABILITY = [-0.01, 1.01, 2, math.nan, math.inf, -math.inf, None, "abc"]
 INVALID_STDEV = [-0.01, -1.0, math.nan, math.inf, -math.inf, None, "abc"]
+INVALID_SEED = [-1, 1.5, 10.0, math.nan, math.inf, "10"]
 
 
 def build(simulator_cls, **overrides):
@@ -95,6 +96,19 @@ def test_shared_control_boundaries_accepted(simulator_cls):
     assert simulator.transaction_costs == 0.0
     assert simulator.trials == 0
     assert simulator.payoff == 1.0
+
+
+@pytest.mark.parametrize("simulator_cls", SIMULATORS)
+@pytest.mark.parametrize("seed", INVALID_SEED)
+def test_invalid_seed_rejected(simulator_cls, seed):
+    with pytest.raises(ValueError):
+        build(simulator_cls, seed=seed)
+
+
+@pytest.mark.parametrize("simulator_cls", SIMULATORS)
+def test_seed_boundaries_accepted(simulator_cls):
+    assert build(simulator_cls, seed=None).seed is None
+    assert build(simulator_cls, seed=0).seed == 0
 
 
 @pytest.mark.parametrize("probability", INVALID_PROBABILITY)

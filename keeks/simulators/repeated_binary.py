@@ -4,6 +4,7 @@ from keeks.utils import (
     RuinError,
     _validate_simulator_controls,
     _validate_simulator_probability,
+    _validate_simulator_seed,
 )
 
 
@@ -31,6 +32,9 @@ class RepeatedBinarySimulator:
         The fixed probability of a successful outcome for all trials.
     trials : int, default=1000
         The number of betting trials to simulate.
+    seed : int or None, default=None
+        Seed for a private outcome generator. When omitted, the process-global
+        ``random`` generator is used for backward compatibility.
 
     Raises
     ------
@@ -38,10 +42,12 @@ class RepeatedBinarySimulator:
         If ``payoff`` is not finite and positive, if ``loss`` or
         ``transaction_costs`` is not finite and nonnegative, if ``probability``
         is not finite within ``[0, 1]``, or if ``trials`` is not a nonnegative
-        integer.
+        integer, or if ``seed`` is not a nonnegative integer or ``None``.
     """
 
-    def __init__(self, payoff, loss, transaction_costs, probability, trials=1000):
+    def __init__(
+        self, payoff, loss, transaction_costs, probability, trials=1000, seed=None
+    ):
         (
             self.payoff,
             self.loss,
@@ -49,6 +55,8 @@ class RepeatedBinarySimulator:
             self.trials,
         ) = _validate_simulator_controls(payoff, loss, transaction_costs, trials)
         self.probability = _validate_simulator_probability(probability, "Probability")
+        self.seed = _validate_simulator_seed(seed)
+        self._outcome_rng = random.Random(self.seed) if self.seed is not None else None
 
     def evaluate_strategy(self, strategy, bankroll):
         """
@@ -87,7 +95,12 @@ class RepeatedBinarySimulator:
                 current_bankroll = bankroll.total_funds
                 bet_amount = bankroll.bettable_funds * proportion
                 try:
-                    won = random.random() < self.probability
+                    outcome = (
+                        random.random()
+                        if self._outcome_rng is None
+                        else self._outcome_rng.random()
+                    )
+                    won = outcome < self.probability
                     if won:
                         amt = (self.payoff * bet_amount) - self.transaction_costs
                         if amt >= 0:

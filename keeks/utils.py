@@ -181,6 +181,19 @@ def _validate_simulator_controls(payoff, loss, transaction_costs, trials):
     return payoff, loss, transaction_costs, trials
 
 
+def _validate_simulator_seed(seed):
+    """Validate an optional simulator seed, which must be a nonnegative integer."""
+    if seed is None:
+        return None
+    try:
+        seed = operator.index(seed)
+    except TypeError as exc:
+        raise ValueError("Seed must be a nonnegative integer or None") from exc
+    if seed < 0:
+        raise ValueError("Seed must be a nonnegative integer or None")
+    return seed
+
+
 def _validate_simulator_probability(probability, name):
     """Validate a simulator's fixed probability, which must be finite in [0, 1]."""
     probability = _require_finite(probability, name)
