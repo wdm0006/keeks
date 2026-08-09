@@ -72,3 +72,68 @@ jobs:
     - name: Run ruff format check
       run: |
         uv run ruff format --check .
+
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Build wheel and sdist
+      run: |
+        uv build
+
+    - name: Check both distributions were produced
+      run: |
+        ls -l dist/
+        ls dist/*.whl
+        ls dist/*.tar.gz
+
+    - name: Install the wheel into a throwaway environment
+      run: |
+        uv venv "$RUNNER_TEMP/wheelenv"
+        uv pip install --python "$RUNNER_TEMP/wheelenv/bin/python" dist/*.whl
+
+    - name: Import the installed package from outside the checkout
+      working-directory: ${{ runner.temp }}
+      run: |
+        "$RUNNER_TEMP/wheelenv/bin/python" - <<'PY'
+        import importlib
+        import os
+
+        import keeks
+
+        workspace = os.path.realpath(os.environ["GITHUB_WORKSPACE"])
+        if os.path.realpath(keeks.__file__).startswith(workspace + os.sep):
+            raise SystemExit(
+                f"imported keeks from the checkout ({keeks.__file__}), not the wheel"
+            )
+
+        for name in [
+            "keeks.bankroll",
+            "keeks.utils",
+            "keeks.simulators.random_binary",
+            "keeks.simulators.random_uncertain_binary",
+            "keeks.simulators.repeated_binary",
+        ]:
+            importlib.import_module(name)
+
+        strategies = importlib.import_module("keeks.binary_strategies")
+        exported = list(strategies.__all__)
+        if not exported:
+            raise SystemExit("keeks.binary_strategies.__all__ is empty")
+        for name in exported:
+            getattr(strategies, name)
+
+        print(f"imported {keeks.__file__} plus {len(exported)} exported strategies")
+        PY
