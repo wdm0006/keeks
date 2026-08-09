@@ -290,6 +290,7 @@ def test_simulation_random():
         transaction_costs=transaction_cost,
         trials=trials,
         stdev=stdev,
+        seed=42,
     )
 
     simulator_naive = RandomBinarySimulator(
@@ -298,16 +299,14 @@ def test_simulation_random():
         transaction_costs=transaction_cost,
         trials=trials,
         stdev=stdev,
+        seed=42,
     )
 
-    random.seed(42)
     simulator_kelly.evaluate_strategy(strategy_kelly, bankroll_kelly)
-
-    random.seed(42)
     simulator_naive.evaluate_strategy(strategy_naive, bankroll_naive)
 
-    assert len(bankroll_kelly.history) > 1
-    assert len(bankroll_naive.history) > 1
+    assert bankroll_kelly.history[-5:] == [983.35, 987.08, 990.49, 996.08, 999.06]
+    assert bankroll_naive.history[-5:] == [983.35, 987.08, 990.49, 996.09, 999.06]
 
 
 def test_simulation_random_uncertain():
@@ -341,6 +340,7 @@ def test_simulation_random_uncertain():
         trials=trials,
         stdev=stdev,
         uncertainty_stdev=uncertainty_stdev,
+        seed=42,
     )
 
     simulator_naive = RandomUncertainBinarySimulator(
@@ -350,6 +350,7 @@ def test_simulation_random_uncertain():
         trials=trials,
         stdev=stdev,
         uncertainty_stdev=uncertainty_stdev,
+        seed=42,
     )
 
     simulator_fractional_kelly = RandomUncertainBinarySimulator(
@@ -359,22 +360,36 @@ def test_simulation_random_uncertain():
         trials=trials,
         stdev=stdev,
         uncertainty_stdev=uncertainty_stdev,
+        seed=42,
     )
 
-    random.seed(42)
     simulator_kelly.evaluate_strategy(strategy_kelly, bankroll_kelly)
-
-    random.seed(42)
     simulator_naive.evaluate_strategy(strategy_naive, bankroll_naive)
-
-    random.seed(42)
     simulator_fractional_kelly.evaluate_strategy(
         strategy_fractional_kelly, bankroll_fractional_kelly
     )
 
-    assert len(bankroll_kelly.history) > 1
-    assert len(bankroll_naive.history) > 1
-    assert len(bankroll_fractional_kelly.history) > 1
+    assert bankroll_kelly.history[-5:] == [
+        999.34,
+        999.09,
+        1005.43,
+        1006.13,
+        1004.37,
+    ]
+    assert bankroll_naive.history[-5:] == [
+        999.81,
+        999.76,
+        1000.7,
+        1000.8,
+        1000.53,
+    ]
+    assert bankroll_fractional_kelly.history[-5:] == [
+        999.65,
+        999.52,
+        1002.68,
+        1003.03,
+        1002.15,
+    ]
 
 
 def test_fractional_kelly_validation():
