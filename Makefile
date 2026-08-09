@@ -66,7 +66,7 @@ clean:
 
 # Build package distributions
 build: clean
-	uv run python -m build
+	uv build
 
 # Build documentation
 docs:
