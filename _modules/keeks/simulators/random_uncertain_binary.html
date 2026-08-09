@@ -181,6 +181,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">RuinError</span><span class="p">,</span>
     <span class="n">_validate_simulator_controls</span><span class="p">,</span>
+    <span class="n">_validate_simulator_seed</span><span class="p">,</span>
     <span class="n">_validate_simulator_stdev</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -217,13 +218,18 @@
 <span class="sd">        The standard deviation of the normal distribution used to add uncertainty</span>
 <span class="sd">        to the actual outcome probability. The resulting outcome probability is</span>
 <span class="sd">        clamped to [0.0, 1.0].</span>
+<span class="sd">    seed : int or None, default=None</span>
+<span class="sd">        Seed for private outcome, probability, and uncertainty generators. When</span>
+<span class="sd">        omitted, the process-global ``random`` and ``numpy.random`` generators</span>
+<span class="sd">        are used for backward compatibility.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If ``payoff`` is not finite and positive, if ``loss``,</span>
 <span class="sd">        ``transaction_costs``, ``stdev`` or ``uncertainty_stdev`` is not finite</span>
-<span class="sd">        and nonnegative, or if ``trials`` is not a nonnegative integer.</span>
+<span class="sd">        and nonnegative, if ``trials`` is not a nonnegative integer, or if</span>
+<span class="sd">        ``seed`` is not a nonnegative integer or ``None``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -234,6 +240,7 @@
         <span class="n">trials</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
         <span class="n">stdev</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
         <span class="n">uncertainty_stdev</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span>
@@ -244,6 +251,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span> <span class="o">=</span> <span class="n">_validate_simulator_stdev</span><span class="p">(</span><span class="n">stdev</span><span class="p">,</span> <span class="s2">&quot;Standard deviation&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span> <span class="o">=</span> <span class="n">_validate_simulator_stdev</span><span class="p">(</span>
             <span class="n">uncertainty_stdev</span><span class="p">,</span> <span class="s2">&quot;Uncertainty standard deviation&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_outcome_rng</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="RandomUncertainBinarySimulator.evaluate_strategy">
@@ -275,7 +287,15 @@
                 <span class="k">break</span>
 
             <span class="c1"># Normal samples are unbounded; only [0, 1] values are probabilities.</span>
-            <span class="n">probability</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">probability</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="mf">1.0</span><span class="p">,</span>
+                <span class="nb">max</span><span class="p">(</span>
+                    <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span><span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
             <span class="n">proportion</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
 
             <span class="c1"># Only process the bet if proportion &gt; 0 (avoid charging costs on no-bet)</span>
@@ -286,11 +306,21 @@
                     <span class="mf">1.0</span><span class="p">,</span>
                     <span class="nb">max</span><span class="p">(</span>
                         <span class="mf">0.0</span><span class="p">,</span>
-                        <span class="n">probability</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">probability</span>
+                        <span class="o">+</span> <span class="p">(</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
+                            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span><span class="p">)</span>
+                        <span class="p">),</span>
                     <span class="p">),</span>
                 <span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">won</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">outcome_probability</span>
+                    <span class="n">outcome</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outcome_rng</span> <span class="ow">is</span> <span class="kc">None</span>
+                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outcome_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="n">won</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&lt;</span> <span class="n">outcome_probability</span>
                     <span class="k">if</span> <span class="n">won</span><span class="p">:</span>
                         <span class="n">amt</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">*</span> <span class="n">bet_amount</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
                         <span class="k">if</span> <span class="n">amt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
