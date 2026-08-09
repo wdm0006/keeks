@@ -60,6 +60,20 @@ class BankRoll:
         if value > 1:
             raise ValueError(f"{name} must be between 0 and 1")
 
+    def _remove_with_limits(self, amount, description):
+        # Shared removal path for withdraw/remove_funds/bet so every public
+        # removal enforces the same bankruptcy and drawdown safeguards.
+        if self._bank - amount < 0:
+            raise RuinError(
+                f"Insufficient funds for {description} (would cause bankruptcy)"
+            )
+
+        if self.max_draw_down is not None and amount > self.max_draw_down * self._bank:
+            raise RuinError("You lost too much money buddy, slow down.")
+
+        self._bank -= amount
+        self.update_history()
+
     def update_history(self):
         """
         Update the history list with the current total funds.
@@ -125,24 +139,14 @@ class BankRoll:
             cause the bankroll to go negative (bankruptcy).
         """
         self._validate_nonnegative_finite(amt, "amt")
-
-        # Check if withdrawal would cause bankruptcy
-        if self._bank - amt < 0:
-            raise RuinError(
-                "Insufficient funds for withdrawal (would cause bankruptcy)"
-            )
-
-        # Check drawdown limit if set
-        if self.max_draw_down is not None and amt > self.max_draw_down * self._bank:
-            raise RuinError("You lost too much money buddy, slow down.")
-
-        # Only withdraw if checks pass
-        self._bank -= amt
-        self.update_history()
+        self._remove_with_limits(amt, "withdrawal")
 
     def bet(self, amount):
         """
         Place a bet with the specified amount.
+
+        This method enforces the max_draw_down limit if set, raising a RuinError
+        if the bet would exceed the allowed drawdown or cause bankruptcy.
 
         Parameters
         ----------
@@ -153,12 +157,14 @@ class BankRoll:
         ------
         ValueError
             If the bet amount exceeds the bettable funds.
+        RuinError
+            If the bet would exceed the maximum allowed drawdown or
+            cause the bankroll to go negative (bankruptcy).
         """
         self._validate_nonnegative_finite(amount, "amount")
         if amount > self.bettable_funds:
             raise ValueError("Bet amount exceeds bettable funds")
-        self._bank -= amount
-        self.update_history()
+        self._remove_with_limits(amount, "bet")
 
     def add_funds(self, amount):
         """
@@ -189,18 +195,7 @@ class BankRoll:
             cause the bankroll to go negative (bankruptcy).
         """
         self._validate_nonnegative_finite(amount, "amount")
-
-        # Check if removal would cause bankruptcy
-        if self._bank - amount < 0:
-            raise RuinError("Insufficient funds for removal (would cause bankruptcy)")
-
-        # Check drawdown limit if set
-        if self.max_draw_down is not None and amount > self.max_draw_down * self._bank:
-            raise RuinError("You lost too much money buddy, slow down.")
-
-        # Only remove if checks pass
-        self._bank -= amount
-        self.update_history()
+        self._remove_with_limits(amount, "removal")
 
     def plot_history(self, fname=None):
         """
