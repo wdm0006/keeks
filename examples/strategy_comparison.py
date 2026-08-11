@@ -45,6 +45,7 @@ TRANS_COST = 0.01  # 1% transaction cost (more realistic including all fees)
 PROBABILITY = 0.52  # 52% win rate (slight edge - very achievable but marginal)
 NUM_TRIALS = 5000  # Number of betting rounds per simulation (realistic season)
 NUM_SIMULATIONS = 500  # Run multiple simulations to see distribution
+BASE_SEED = 42  # Reuse indexed outcome streams across strategies
 
 # Expected Value: 52% × (0.95 - 0.01) - 48% × (1.0 + 0.01) = 0.40% per bet
 # This tiny 0.4% edge means:
@@ -60,7 +61,7 @@ def run_strategy_simulation(strategy_class, strategy_name, strategy_params=None)
     ruin_count = 0
     max_bankroll = 0
 
-    for _i in range(NUM_SIMULATIONS):
+    for i in range(NUM_SIMULATIONS):
         try:
             # Initialize the bankroll and strategy
             bankroll = BankRoll(INITIAL_BANKROLL)
@@ -78,6 +79,7 @@ def run_strategy_simulation(strategy_class, strategy_name, strategy_params=None)
                 transaction_costs=TRANS_COST,
                 probability=PROBABILITY,
                 trials=NUM_TRIALS,
+                seed=BASE_SEED + i,
             )
             simulator.evaluate_strategy(strategy, bankroll)
 

@@ -12,6 +12,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pytest
 
+from keeks.binary_strategies.kelly import FractionalKellyCriterion, KellyCriterion
+
 EXAMPLE_PATH = (
     Path(__file__).resolve().parents[1] / "examples" / "strategy_comparison.py"
 )
@@ -80,3 +82,43 @@ def test_box_plot_is_vertical(results):
     # x axis over one position per strategy.
     assert box_axes.get_xlim()[1] <= len(results) + 1
     assert box_axes.get_ylim()[1] >= max(max(r["results"]) for r in results)
+
+
+def test_strategy_simulation_is_reproducible_with_paired_indexed_seeds(monkeypatch):
+    monkeypatch.setattr(EXAMPLE, "NUM_TRIALS", 50)
+    monkeypatch.setattr(EXAMPLE, "NUM_SIMULATIONS", 8)
+    simulator_class = EXAMPLE.RepeatedBinarySimulator
+    seeds = []
+
+    def build_simulator(**kwargs):
+        seeds.append(kwargs["seed"])
+        return simulator_class(**kwargs)
+
+    monkeypatch.setattr(EXAMPLE, "RepeatedBinarySimulator", build_simulator)
+    params = {
+        "payoff": EXAMPLE.PAYOFF,
+        "loss": EXAMPLE.LOSS,
+        "transaction_cost": EXAMPLE.TRANS_COST,
+    }
+
+    first = EXAMPLE.run_strategy_simulation(KellyCriterion, "Kelly", params)
+    second = EXAMPLE.run_strategy_simulation(KellyCriterion, "Kelly", params)
+    fractional_params = {**params, "fraction": 0.5}
+    EXAMPLE.run_strategy_simulation(
+        FractionalKellyCriterion, "Half Kelly", fractional_params
+    )
+
+    expected = [
+        1002.03,
+        985.7,
+        1018.64,
+        1002.04,
+        1027.04,
+        1002.04,
+        1061.36,
+        1018.64,
+    ]
+    assert first["results"] == expected
+    assert second["results"] == expected
+    indexed_seeds = [EXAMPLE.BASE_SEED + i for i in range(EXAMPLE.NUM_SIMULATIONS)]
+    assert seeds == indexed_seeds * 3
