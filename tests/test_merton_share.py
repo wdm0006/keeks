@@ -122,6 +122,24 @@ def test_invalid_parameters():
         MertonShare(payoff=1.0, loss=-1.0, transaction_cost=0)
 
 
+@pytest.mark.parametrize("risk_aversion", [float("nan"), float("inf"), float("-inf")])
+def test_nonfinite_risk_aversion_is_rejected(risk_aversion):
+    with pytest.raises(ValueError, match="Risk aversion"):
+        MertonShare(
+            payoff=1.0,
+            loss=1.0,
+            transaction_cost=0,
+            risk_aversion=risk_aversion,
+        )
+
+
+def test_valid_risk_aversion_is_stored_and_used():
+    strategy = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.5)
+
+    assert strategy.risk_aversion == 2.5
+    assert strategy.evaluate(0.6, 1000) == pytest.approx(0.0833333333333333)
+
+
 def test_zero_probability():
     """Test behavior with 0% probability of winning."""
     strategy = MertonShare(
