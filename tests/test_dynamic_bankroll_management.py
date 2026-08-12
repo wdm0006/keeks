@@ -1,5 +1,7 @@
+import operator
 import random
 
+import numpy as np
 import pytest
 
 from keeks.bankroll import BankRoll
@@ -94,6 +96,34 @@ def test_window_size_effect():
     small_bet = strategy_small.evaluate(0.6, 1000)
     large_bet = strategy_large.evaluate(0.6, 1000)
     assert small_bet > large_bet
+
+
+@pytest.mark.parametrize("window_size", [1, np.int64(3)])
+def test_window_size_accepts_positive_integer_like_values(window_size):
+    strategy = DynamicBankrollManagement(
+        base_fraction=0.1,
+        payoff=1,
+        loss=1,
+        transaction_cost=0,
+        window_size=window_size,
+    )
+
+    assert strategy.window_size == operator.index(window_size)
+
+
+@pytest.mark.parametrize(
+    "window_size",
+    [True, False, 1.5, 10.0, "10", 0, -1, float("nan"), float("inf"), float("-inf")],
+)
+def test_window_size_rejects_non_positive_integers_and_other_types(window_size):
+    with pytest.raises(ValueError, match="Window size"):
+        DynamicBankrollManagement(
+            base_fraction=0.1,
+            payoff=1,
+            loss=1,
+            transaction_cost=0,
+            window_size=window_size,
+        )
 
 
 def test_invalid_parameters():

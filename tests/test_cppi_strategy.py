@@ -198,6 +198,40 @@ def test_invalid_parameters():
         )
 
 
+@pytest.mark.parametrize("field", ["multiplier", "initial_bankroll"])
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_nonfinite_positive_controls_are_rejected(field, value):
+    kwargs = {
+        "floor_fraction": 0.5,
+        "multiplier": 2,
+        "initial_bankroll": 1000,
+        "payoff": 1,
+        "loss": 1,
+    }
+    kwargs[field] = value
+
+    expected_field = {
+        "multiplier": "Multiplier",
+        "initial_bankroll": "Initial bankroll",
+    }[field]
+    with pytest.raises(ValueError, match=expected_field):
+        CPPIStrategy(**kwargs)
+
+
+def test_positive_controls_are_stored_and_used():
+    strategy = CPPIStrategy(
+        floor_fraction=0.5,
+        multiplier=2.5,
+        initial_bankroll=1000,
+        payoff=1,
+        loss=1,
+    )
+
+    assert strategy.multiplier == 2.5
+    assert strategy.current_bankroll == 1000.0
+    assert strategy.evaluate(0.6, 1000) == pytest.approx(0.25)
+
+
 def test_simulation():
     """Test the strategy in a simulation with a favorable edge."""
     payoff = 1

@@ -1,6 +1,9 @@
+import operator
+
 import numpy as np
 
 from keeks.binary_strategies.base import BaseStrategy
+from keeks.utils import _require_finite
 
 __author__ = "willmcginnis"
 
@@ -300,8 +303,10 @@ class CPPIStrategy(BaseStrategy):
         """Initialize the CPPI strategy."""
         if not 0 < floor_fraction < 1:
             raise ValueError("Floor fraction must be between 0 and 1")
+        multiplier = _require_finite(multiplier, "Multiplier")
         if multiplier <= 0:
             raise ValueError("Multiplier must be greater than 0")
+        initial_bankroll = _require_finite(initial_bankroll, "Initial bankroll")
         if initial_bankroll <= 0:
             raise ValueError("Initial bankroll must be greater than 0")
         if not 0 <= min_probability <= 1:
@@ -510,8 +515,14 @@ class DynamicBankrollManagement(BaseStrategy):
         """
         if not 0 <= base_fraction <= 1:
             raise ValueError("Base fraction must be between 0 and 1")
-        if not window_size > 0:
-            raise ValueError("Window size must be positive")
+        try:
+            if isinstance(window_size, bool):
+                raise TypeError
+            window_size = operator.index(window_size)
+        except TypeError as exc:
+            raise ValueError("Window size must be positive integer") from exc
+        if window_size <= 0:
+            raise ValueError("Window size must be positive integer")
         if not 0 <= min_fraction <= max_fraction <= 1:
             raise ValueError(
                 "Min fraction must be between 0 and max fraction, and max fraction must be between 0 and 1"
@@ -930,6 +941,7 @@ class MertonShare(BaseStrategy):
         max_fraction : float, default=1.0
             The maximum fraction of bankroll to bet.
         """
+        risk_aversion = _require_finite(risk_aversion, "Risk aversion")
         if risk_aversion <= 0:
             raise ValueError("Risk aversion must be greater than 0")
         if not 0 <= min_probability <= 1:
