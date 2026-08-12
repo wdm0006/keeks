@@ -174,9 +174,12 @@
           <div class="body" role="main">
             
   <h1>Source code for keeks.binary_strategies.simple</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;willmcginnis&quot;</span>
 
@@ -496,8 +499,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the CPPI strategy.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">floor_fraction</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Floor fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">multiplier</span><span class="p">,</span> <span class="s2">&quot;Multiplier&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">multiplier</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Multiplier must be greater than 0&quot;</span><span class="p">)</span>
+        <span class="n">initial_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">initial_bankroll</span><span class="p">,</span> <span class="s2">&quot;Initial bankroll&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">initial_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Initial bankroll must be greater than 0&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -718,8 +723,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">base_fraction</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Base fraction must be between 0 and 1&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">window_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Window size must be positive&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">window_size</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span>
+            <span class="n">window_size</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">window_size</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Window size must be positive integer&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">if</span> <span class="n">window_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Window size must be positive integer&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_fraction</span> <span class="o">&lt;=</span> <span class="n">max_fraction</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Min fraction must be between 0 and max fraction, and max fraction must be between 0 and 1&quot;</span>
@@ -1171,6 +1182,7 @@
 <span class="sd">        max_fraction : float, default=1.0</span>
 <span class="sd">            The maximum fraction of bankroll to bet.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">risk_aversion</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="s2">&quot;Risk aversion&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">risk_aversion</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Risk aversion must be greater than 0&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
