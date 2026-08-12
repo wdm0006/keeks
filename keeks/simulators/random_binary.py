@@ -7,6 +7,7 @@ from keeks.utils import (
     _validate_simulator_controls,
     _validate_simulator_seed,
     _validate_simulator_stdev,
+    _validate_strategy_odds,
 )
 
 
@@ -85,7 +86,16 @@ class RandomBinarySimulator:
         -------
         None
             The bankroll object is updated in-place with the results of the simulation.
+
+        Raises
+        ------
+        ValueError
+            If ``strategy`` is a ``BaseStrategy`` whose ``payoff`` or ``loss``
+            differs from this simulator's, since it would then size bets against
+            different odds than the ones the simulator settles at.
         """
+        _validate_strategy_odds(strategy, self.payoff, self.loss)
+
         for _ in range(self.trials):
             # Stop if bankrupt
             if bankroll.total_funds <= 0:
