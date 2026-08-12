@@ -210,6 +210,45 @@ def _validate_simulator_stdev(stdev, name):
     return stdev
 
 
+def _validate_strategy_odds(strategy, payoff, loss):
+    """
+    Reject a strategy whose odds contradict a simulator's settlement odds.
+
+    A simulator sizes every bet through ``strategy.evaluate`` but settles it with
+    its own ``payoff`` and ``loss``, so the two models have to agree for the run
+    to describe anything. Only :class:`keeks.binary_strategies.base.BaseStrategy`
+    instances are checked; a duck-typed strategy needs no ``payoff``/``loss`` at
+    all and its compatibility stays the caller's responsibility.
+
+    The strategies' fractional ``transaction_cost`` and the simulators' flat
+    ``transaction_costs`` fee are deliberately different units and are never
+    compared.
+
+    Raises
+    ------
+    ValueError
+        If the strategy's ``payoff`` or ``loss`` differs from the simulator's.
+    """
+    # Deferred like the strategy modules' own keeks.utils imports, since the
+    # two packages reference each other.
+    from keeks.binary_strategies.base import BaseStrategy
+
+    if not isinstance(strategy, BaseStrategy):
+        return
+
+    for name, strategy_value, simulator_value in (
+        ("payoff", strategy.payoff, payoff),
+        ("loss", strategy.loss, loss),
+    ):
+        if strategy_value != simulator_value:
+            raise ValueError(
+                f"Strategy {name} ({strategy_value!r}) does not match simulator "
+                f"{name} ({simulator_value!r}); the strategy sizes each bet with "
+                "its own odds while the simulator settles with the simulator's, "
+                "so the two must agree."
+            )
+
+
 def _expected_utility(
     outcomes, probabilities, current_wealth, entry_price, risk_aversion
 ):
