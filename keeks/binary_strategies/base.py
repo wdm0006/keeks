@@ -1,5 +1,7 @@
 import abc
 
+from keeks.utils import _require_finite
+
 __author__ = "willmcginnis"
 
 
@@ -38,12 +40,17 @@ class BaseStrategy(abc.ABC):
         Raises
         ------
         ValueError
-            If payoff is not positive, loss is negative, or loss + transaction_cost is not positive.
+            If any of payoff, loss or transaction_cost is not a finite number, if
+            payoff is not positive, loss is negative, or loss + transaction_cost
+            is not positive.
         """
+        payoff = _require_finite(payoff, "Payoff")
         if payoff <= 0:
             raise ValueError("Payoff must be greater than 0")
+        loss = _require_finite(loss, "Loss")
         if loss < 0:
             raise ValueError("Loss must be non-negative")
+        transaction_cost = _require_finite(transaction_cost, "Transaction cost")
         if transaction_cost < 0:
             raise ValueError("Transaction cost must be non-negative")
         if loss + transaction_cost <= 0:
