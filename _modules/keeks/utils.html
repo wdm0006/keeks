@@ -392,6 +392,45 @@
     <span class="k">return</span> <span class="n">stdev</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reject a strategy whose odds contradict a simulator&#39;s settlement odds.</span>
+
+<span class="sd">    A simulator sizes every bet through ``strategy.evaluate`` but settles it with</span>
+<span class="sd">    its own ``payoff`` and ``loss``, so the two models have to agree for the run</span>
+<span class="sd">    to describe anything. Only :class:`keeks.binary_strategies.base.BaseStrategy`</span>
+<span class="sd">    instances are checked; a duck-typed strategy needs no ``payoff``/``loss`` at</span>
+<span class="sd">    all and its compatibility stays the caller&#39;s responsibility.</span>
+
+<span class="sd">    The strategies&#39; fractional ``transaction_cost`` and the simulators&#39; flat</span>
+<span class="sd">    ``transaction_costs`` fee are deliberately different units and are never</span>
+<span class="sd">    compared.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the strategy&#39;s ``payoff`` or ``loss`` differs from the simulator&#39;s.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Deferred like the strategy modules&#39; own keeks.utils imports, since the</span>
+    <span class="c1"># two packages reference each other.</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">BaseStrategy</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">strategy_value</span><span class="p">,</span> <span class="n">simulator_value</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">&quot;payoff&quot;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="n">payoff</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">strategy_value</span> <span class="o">!=</span> <span class="n">simulator_value</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Strategy </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">strategy_value</span><span class="si">!r}</span><span class="s2">) does not match simulator &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">simulator_value</span><span class="si">!r}</span><span class="s2">); the strategy sizes each bet with &quot;</span>
+                <span class="s2">&quot;its own odds while the simulator settles with the simulator&#39;s, &quot;</span>
+                <span class="s2">&quot;so the two must agree.&quot;</span>
+            <span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_expected_utility</span><span class="p">(</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">entry_price</span><span class="p">,</span> <span class="n">risk_aversion</span>
 <span class="p">):</span>
