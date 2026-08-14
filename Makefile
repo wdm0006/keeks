@@ -1,4 +1,4 @@
-.PHONY: help setup install install-dev test test-cov lint format clean build docs lint-fix test-all examples benchmark
+.PHONY: help setup install install-dev test test-doctest test-cov lint format clean build docs lint-fix test-all examples benchmark
 
 # Default target
 help:
@@ -7,6 +7,7 @@ help:
 	@echo "  make install      - Install the package"
 	@echo "  make install-dev  - Install the package with development dependencies"
 	@echo "  make test         - Run tests"
+	@echo "  make test-doctest - Run docstring examples"
 	@echo "  make test-cov     - Run tests with coverage"
 	@echo "  make test-all     - Run tests on all supported Python versions using tox"
 	@echo "  make lint         - Run linting checks"
@@ -35,6 +36,10 @@ install-dev:
 # Run tests
 test:
 	uv run pytest $(PYTEST_ARGS)
+
+# Run docstring examples
+test-doctest:
+	uv run pytest --doctest-modules keeks/
 
 # Run tests with coverage
 test-cov:

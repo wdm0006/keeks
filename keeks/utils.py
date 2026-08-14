@@ -346,12 +346,13 @@ def find_indifference_price(
 
     Examples
     --------
-    >>> # Simple 50/50 bet: win $100 or lose $100
-    >>> outcomes = [100, -100]
-    >>> probabilities = [0.5, 0.5]
+    >>> # A favourable gamble: 60% chance to win $200, 40% chance to lose $100
+    >>> outcomes = [200, -100]
+    >>> probabilities = [0.6, 0.4]
     >>> max_price = find_indifference_price(outcomes, probabilities,
     ...                                      current_wealth=1000, risk_aversion=2.0)
     >>> print(f"Willing to pay: ${max_price:.2f}")
+    Willing to pay: $57.56
     """
     outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
     _validate_entry_price_scalars(
