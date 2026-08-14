@@ -249,6 +249,13 @@ def _validate_strategy_odds(strategy, payoff, loss):
             )
 
 
+def _update_strategy_bankroll(strategy, current_bankroll):
+    """Update a strategy's bankroll state when it exposes a callable hook."""
+    update_bankroll = getattr(strategy, "update_bankroll", None)
+    if callable(update_bankroll):
+        update_bankroll(current_bankroll)
+
+
 def _expected_utility(
     outcomes, probabilities, current_wealth, entry_price, risk_aversion
 ):
