@@ -431,6 +431,13 @@
             <span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_update_strategy_bankroll</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update a strategy&#39;s bankroll state when it exposes a callable hook.&quot;&quot;&quot;</span>
+    <span class="n">update_bankroll</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">&quot;update_bankroll&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">update_bankroll</span><span class="p">):</span>
+        <span class="n">update_bankroll</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_expected_utility</span><span class="p">(</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">entry_price</span><span class="p">,</span> <span class="n">risk_aversion</span>
 <span class="p">):</span>

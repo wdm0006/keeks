@@ -178,6 +178,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">RuinError</span><span class="p">,</span>
+    <span class="n">_update_strategy_bankroll</span><span class="p">,</span>
     <span class="n">_validate_simulator_controls</span><span class="p">,</span>
     <span class="n">_validate_simulator_probability</span><span class="p">,</span>
     <span class="n">_validate_simulator_seed</span><span class="p">,</span>
@@ -273,9 +274,7 @@
             <span class="k">if</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">break</span>
 
-            <span class="c1"># Update the strategy&#39;s internal state with current bankroll if supported</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">&quot;update_bankroll&quot;</span><span class="p">):</span>
-                <span class="n">strategy</span><span class="o">.</span><span class="n">update_bankroll</span><span class="p">(</span><span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
+            <span class="n">_update_strategy_bankroll</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
 
             <span class="c1"># Get the proportion to bet</span>
             <span class="n">proportion</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
