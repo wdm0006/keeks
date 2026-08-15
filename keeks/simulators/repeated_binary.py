@@ -2,6 +2,7 @@ import random
 
 from keeks.utils import (
     RuinError,
+    _update_strategy_bankroll,
     _validate_simulator_controls,
     _validate_simulator_probability,
     _validate_simulator_seed,
@@ -93,9 +94,7 @@ class RepeatedBinarySimulator:
             if bankroll.total_funds <= 0:
                 break
 
-            # Update the strategy's internal state with current bankroll if supported
-            if hasattr(strategy, "update_bankroll"):
-                strategy.update_bankroll(bankroll.total_funds)
+            _update_strategy_bankroll(strategy, bankroll.total_funds)
 
             # Get the proportion to bet
             proportion = strategy.evaluate(self.probability, bankroll.total_funds)

@@ -4,6 +4,7 @@ import numpy as np
 
 from keeks.utils import (
     RuinError,
+    _update_strategy_bankroll,
     _validate_simulator_controls,
     _validate_simulator_seed,
     _validate_simulator_stdev,
@@ -100,6 +101,8 @@ class RandomBinarySimulator:
             # Stop if bankrupt
             if bankroll.total_funds <= 0:
                 break
+
+            _update_strategy_bankroll(strategy, bankroll.total_funds)
 
             # Normal samples are unbounded; only [0, 1] values are probabilities.
             probability = min(
