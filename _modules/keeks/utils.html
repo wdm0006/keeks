@@ -540,12 +540,13 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; # Simple 50/50 bet: win $100 or lose $100</span>
-<span class="sd">    &gt;&gt;&gt; outcomes = [100, -100]</span>
-<span class="sd">    &gt;&gt;&gt; probabilities = [0.5, 0.5]</span>
+<span class="sd">    &gt;&gt;&gt; # A favourable gamble: 60% chance to win $200, 40% chance to lose $100</span>
+<span class="sd">    &gt;&gt;&gt; outcomes = [200, -100]</span>
+<span class="sd">    &gt;&gt;&gt; probabilities = [0.6, 0.4]</span>
 <span class="sd">    &gt;&gt;&gt; max_price = find_indifference_price(outcomes, probabilities,</span>
 <span class="sd">    ...                                      current_wealth=1000, risk_aversion=2.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(f&quot;Willing to pay: ${max_price:.2f}&quot;)</span>
+<span class="sd">    Willing to pay: $57.56</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
     <span class="n">_validate_entry_price_scalars</span><span class="p">(</span>
