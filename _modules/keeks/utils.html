@@ -229,26 +229,26 @@
 <span class="sd">    fraction of wealth an agent is willing to risk remains constant</span>
 <span class="sd">    as wealth changes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">wealth</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="c1"># Both arms of an ``np.where`` are evaluated, so masking afterwards would</span>
+        <span class="c1"># still apply the log/power to the entries this branch exists to exclude</span>
+        <span class="c1"># and warn once per one. Evaluate only where the utility is defined.</span>
+        <span class="n">wealth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">wealth</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">defined</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">utility</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">wealth</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">risk_aversion</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">wealth</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">utility</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">defined</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">exponent</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">risk_aversion</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">wealth</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">utility</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">defined</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">utility</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">utility</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">defined</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">utility</span>
+
     <span class="k">if</span> <span class="n">risk_aversion</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">wealth</span><span class="p">)</span>
-                <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">wealth</span><span class="p">))</span>
-            <span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">wealth</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">wealth</span><span class="p">)</span>
-                <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                    <span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
-                    <span class="p">(</span><span class="n">wealth</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">risk_aversion</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">risk_aversion</span><span class="p">),</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">wealth</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">risk_aversion</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">risk_aversion</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">wealth</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">risk_aversion</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">risk_aversion</span><span class="p">)</span></div>
 
 
 
