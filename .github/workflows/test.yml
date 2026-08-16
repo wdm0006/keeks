@@ -41,6 +41,10 @@ jobs:
       run: |
         uv run pytest tests --cov=keeks --cov-report=term-missing
 
+    - name: Run docstring examples
+      run: |
+        uv run pytest --doctest-modules keeks/
+
   lint:
     runs-on: ubuntu-latest
 
