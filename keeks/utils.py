@@ -48,26 +48,26 @@ def crra_utility(wealth, risk_aversion=1.0):
     fraction of wealth an agent is willing to risk remains constant
     as wealth changes.
     """
+    if np.any(wealth <= 0):
+        if np.isscalar(wealth):
+            return -np.inf
+        # Both arms of an ``np.where`` are evaluated, so masking afterwards would
+        # still apply the log/power to the entries this branch exists to exclude
+        # and warn once per one. Evaluate only where the utility is defined.
+        wealth = np.asarray(wealth, dtype=float)
+        defined = ~(wealth <= 0)
+        utility = np.full(wealth.shape, -np.inf)
+        if risk_aversion == 1.0:
+            np.log(wealth, out=utility, where=defined)
+        else:
+            exponent = 1 - risk_aversion
+            np.power(wealth, exponent, out=utility, where=defined)
+            np.divide(utility, exponent, out=utility, where=defined)
+        return utility
+
     if risk_aversion == 1.0:
-        if np.any(wealth <= 0):
-            return (
-                -np.inf
-                if np.isscalar(wealth)
-                else np.where(wealth <= 0, -np.inf, np.log(wealth))
-            )
         return np.log(wealth)
-    else:
-        if np.any(wealth <= 0):
-            return (
-                -np.inf
-                if np.isscalar(wealth)
-                else np.where(
-                    wealth <= 0,
-                    -np.inf,
-                    (wealth ** (1 - risk_aversion)) / (1 - risk_aversion),
-                )
-            )
-        return (wealth ** (1 - risk_aversion)) / (1 - risk_aversion)
+    return (wealth ** (1 - risk_aversion)) / (1 - risk_aversion)
 
 
 def _normalize_gamble(outcomes, probabilities):
