@@ -6,6 +6,7 @@ from keeks.utils import (
     _validate_simulator_controls,
     _validate_simulator_probability,
     _validate_simulator_seed,
+    _validate_stake_fraction,
     _validate_strategy_odds,
 )
 
@@ -85,7 +86,8 @@ class RepeatedBinarySimulator:
         ValueError
             If ``strategy`` is a ``BaseStrategy`` whose ``payoff`` or ``loss``
             differs from this simulator's, since it would then size bets against
-            different odds than the ones the simulator settles at.
+            different odds than the ones the simulator settles at, or if the
+            strategy returns a non-finite or out-of-range stake fraction.
         """
         _validate_strategy_odds(strategy, self.payoff, self.loss)
 
@@ -97,7 +99,9 @@ class RepeatedBinarySimulator:
             _update_strategy_bankroll(strategy, bankroll.total_funds)
 
             # Get the proportion to bet
-            proportion = strategy.evaluate(self.probability, bankroll.total_funds)
+            proportion = _validate_stake_fraction(
+                strategy.evaluate(self.probability, bankroll.total_funds)
+            )
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
             if proportion > 0:

@@ -249,6 +249,14 @@ def _validate_strategy_odds(strategy, payoff, loss):
             )
 
 
+def _validate_stake_fraction(value):
+    """Coerce a strategy result to a finite float within ``[0, 1]``."""
+    value = _require_finite(value, "Strategy stake fraction")
+    if not 0 <= value <= 1:
+        raise ValueError("Strategy stake fraction must be between 0 and 1")
+    return value
+
+
 def _update_strategy_bankroll(strategy, current_bankroll):
     """Update a strategy's bankroll state when it exposes a callable hook."""
     update_bankroll = getattr(strategy, "update_bankroll", None)

@@ -1,3 +1,4 @@
+import copy
 import random
 
 import numpy as np
@@ -8,6 +9,7 @@ from keeks.utils import (
     _validate_simulator_controls,
     _validate_simulator_seed,
     _validate_simulator_stdev,
+    _validate_stake_fraction,
     _validate_strategy_odds,
 )
 
@@ -93,7 +95,8 @@ class RandomBinarySimulator:
         ValueError
             If ``strategy`` is a ``BaseStrategy`` whose ``payoff`` or ``loss``
             differs from this simulator's, since it would then size bets against
-            different odds than the ones the simulator settles at.
+            different odds than the ones the simulator settles at, or if the
+            strategy returns a non-finite or out-of-range stake fraction.
         """
         _validate_strategy_odds(strategy, self.payoff, self.loss)
 
@@ -104,6 +107,11 @@ class RandomBinarySimulator:
 
             _update_strategy_bankroll(strategy, bankroll.total_funds)
 
+            probability_state = (
+                np.random.get_state()
+                if self._probability_rng is None
+                else copy.deepcopy(self._probability_rng.bit_generator.state)
+            )
             # Normal samples are unbounded; only [0, 1] values are probabilities.
             probability = min(
                 1.0,
@@ -115,6 +123,14 @@ class RandomBinarySimulator:
                 ),
             )
             proportion = strategy.evaluate(probability, bankroll.total_funds)
+            try:
+                proportion = _validate_stake_fraction(proportion)
+            except ValueError:
+                if self._probability_rng is None:
+                    np.random.set_state(probability_state)
+                else:
+                    self._probability_rng.bit_generator.state = probability_state
+                raise
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
             if proportion > 0:
