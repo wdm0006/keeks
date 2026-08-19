@@ -176,13 +176,13 @@
   <h1>Source code for keeks.binary_strategies.kelly</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;willmcginnis&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
 
 
 <div class="viewcode-block" id="KellyCriterion">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">KellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Implementation of the Kelly Criterion for binary betting.</span>
 
 <span class="sd">    The Kelly Criterion is a mathematical formula that determines the optimal</span>
@@ -198,10 +198,10 @@
 <span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
 <span class="sd">    min_probability : float, default=0.5</span>
 <span class="sd">        The minimum probability required to place a bet.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">min_probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the Kelly Criterion strategy.</span>
 
 <span class="sd">        Parameters</span>
@@ -214,9 +214,9 @@
 <span class="sd">            The fixed cost per transaction, regardless of outcome.</span>
 <span class="sd">        min_probability : float, default=0.5</span>
 <span class="sd">            The minimum probability required to place a bet.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Minimum probability must be between 0 and 1&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Minimum probability must be between 0 and 1"</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
@@ -224,7 +224,7 @@
 <div class="viewcode-block" id="KellyCriterion.evaluate">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.KellyCriterion.evaluate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate the optimal Kelly bet size.</span>
 
 <span class="sd">        The Kelly Criterion formula is:</span>
@@ -251,7 +251,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
 
@@ -284,7 +284,7 @@
         <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
         <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
 <span class="sd">        Kelly Criterion is derived from log utility maximization (CRRA with γ=1.0),</span>
@@ -320,7 +320,7 @@
 <span class="sd">        -----</span>
 <span class="sd">        Kelly Criterion maximizes E[log(wealth)], which corresponds to</span>
 <span class="sd">        CRRA utility with risk aversion γ=1.0 (log utility).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_indifference_price</span>
 
         <span class="k">return</span> <span class="n">find_indifference_price</span><span class="p">(</span>
@@ -338,7 +338,7 @@
 <div class="viewcode-block" id="FractionalKellyCriterion">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FractionalKellyCriterion</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Implementation of the Fractional Kelly Criterion for binary betting.</span>
 
 <span class="sd">    The Fractional Kelly Criterion applies a fraction to the full Kelly bet size,</span>
@@ -354,11 +354,11 @@
 <span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
 <span class="sd">    fraction : float</span>
 <span class="sd">        The fraction of the full Kelly bet to use (typically between 0 and 1).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">fraction</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">fraction</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Fraction must be between 0 and 1&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Fraction must be between 0 and 1"</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span>
@@ -366,7 +366,7 @@
 <div class="viewcode-block" id="FractionalKellyCriterion.evaluate">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate the fractional Kelly bet size.</span>
 
 <span class="sd">        Parameters</span>
@@ -380,7 +380,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span></div>
 
@@ -395,7 +395,7 @@
         <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
         <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
 <span class="sd">        Fractional Kelly is more conservative than full Kelly, so we scale down</span>
@@ -433,7 +433,7 @@
 <span class="sd">        Fractional Kelly (e.g., Half Kelly) is more conservative than full Kelly.</span>
 <span class="sd">        We scale the entry price by the fraction, which is a reasonable</span>
 <span class="sd">        approximation though not derived from first principles.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Get full Kelly price</span>
         <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
         <span class="n">kelly_price</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">calculate_max_entry_price</span><span class="p">(</span>
@@ -449,7 +449,7 @@
 <div class="viewcode-block" id="DrawdownAdjustedKelly">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DrawdownAdjustedKelly</span><span class="p">(</span><span class="n">BaseStrategy</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Implementation of the Drawdown-Adjusted Kelly Criterion for binary betting.</span>
 
 <span class="sd">    This strategy adjusts the Kelly bet size based on a maximum acceptable drawdown.</span>
@@ -466,10 +466,10 @@
 <span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
 <span class="sd">    max_acceptable_drawdown : float</span>
 <span class="sd">        The maximum acceptable drawdown as a fraction of the bankroll (0 to 1).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">max_acceptable_drawdown</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the DrawdownAdjustedKelly strategy.</span>
 
 <span class="sd">        Parameters</span>
@@ -487,12 +487,12 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If max_acceptable_drawdown is not between 0 and 1 (exclusive).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">max_acceptable_drawdown</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Maximum acceptable drawdown must be between 0 and 1 (exclusive)&quot;</span>
+                <span class="s2">"Maximum acceptable drawdown must be between 0 and 1 (exclusive)"</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">=</span> <span class="n">max_acceptable_drawdown</span>
@@ -500,7 +500,7 @@
 <div class="viewcode-block" id="DrawdownAdjustedKelly.evaluate">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate the drawdown-adjusted Kelly bet size.</span>
 
 <span class="sd">        The adjustment is an approximation based on the relationship between</span>
@@ -517,7 +517,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            The drawdown-adjusted proportion of the bankroll to bet.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Calculate the standard Kelly bet size</span>
         <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
         <span class="n">full_kelly</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span>
@@ -546,7 +546,7 @@
         <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
         <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
 <span class="sd">        Drawdown-Adjusted Kelly scales down Kelly based on drawdown tolerance.</span>
@@ -582,7 +582,7 @@
 <span class="sd">        -----</span>
 <span class="sd">        Uses the same drawdown adjustment factor as the betting strategy:</span>
 <span class="sd">        drawdown_factor = min(1.0, max_acceptable_drawdown / 0.5)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Get full Kelly price</span>
         <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
         <span class="n">kelly_price</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">calculate_max_entry_price</span><span class="p">(</span>

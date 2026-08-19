@@ -174,7 +174,8 @@
           <div class="body" role="main">
             
   <h1>Source code for keeks.simulators.random_uncertain_binary</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -184,6 +185,7 @@
     <span class="n">_validate_simulator_controls</span><span class="p">,</span>
     <span class="n">_validate_simulator_seed</span><span class="p">,</span>
     <span class="n">_validate_simulator_stdev</span><span class="p">,</span>
+    <span class="n">_validate_stake_fraction</span><span class="p">,</span>
     <span class="n">_validate_strategy_odds</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -191,7 +193,7 @@
 <div class="viewcode-block" id="RandomUncertainBinarySimulator">
 <a class="viewcode-back" href="../../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RandomUncertainBinarySimulator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Simulator for binary betting strategies with random probabilities and uncertainty.</span>
 
 <span class="sd">    This simulator generates random probabilities for each trial, centered around 0.5</span>
@@ -232,7 +234,7 @@
 <span class="sd">        ``transaction_costs``, ``stdev`` or ``uncertainty_stdev`` is not finite</span>
 <span class="sd">        and nonnegative, if ``trials`` is not a nonnegative integer, or if</span>
 <span class="sd">        ``seed`` is not a nonnegative integer or ``None``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -250,9 +252,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">=</span> <span class="n">_validate_simulator_controls</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_costs</span><span class="p">,</span> <span class="n">trials</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span> <span class="o">=</span> <span class="n">_validate_simulator_stdev</span><span class="p">(</span><span class="n">stdev</span><span class="p">,</span> <span class="s2">&quot;Standard deviation&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span> <span class="o">=</span> <span class="n">_validate_simulator_stdev</span><span class="p">(</span><span class="n">stdev</span><span class="p">,</span> <span class="s2">"Standard deviation"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span> <span class="o">=</span> <span class="n">_validate_simulator_stdev</span><span class="p">(</span>
-            <span class="n">uncertainty_stdev</span><span class="p">,</span> <span class="s2">&quot;Uncertainty standard deviation&quot;</span>
+            <span class="n">uncertainty_stdev</span><span class="p">,</span> <span class="s2">"Uncertainty standard deviation"</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outcome_rng</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
@@ -263,7 +265,7 @@
 <div class="viewcode-block" id="RandomUncertainBinarySimulator.evaluate_strategy">
 <a class="viewcode-back" href="../../../simulators.html#keeks.simulators.random_uncertain_binary.RandomUncertainBinarySimulator.evaluate_strategy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Evaluate a betting strategy over multiple trials with uncertainty.</span>
 
 <span class="sd">        For each trial, a random probability is generated, the strategy is evaluated</span>
@@ -287,9 +289,10 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If ``strategy`` is a ``BaseStrategy`` whose ``payoff`` or ``loss``</span>
-<span class="sd">            differs from this simulator&#39;s, since it would then size bets against</span>
-<span class="sd">            different odds than the ones the simulator settles at.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            differs from this simulator's, since it would then size bets against</span>
+<span class="sd">            different odds than the ones the simulator settles at, or if the</span>
+<span class="sd">            strategy returns a non-finite or out-of-range stake fraction.</span>
+<span class="sd">        """</span>
         <span class="n">_validate_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">):</span>
@@ -299,6 +302,11 @@
 
             <span class="n">_update_strategy_bankroll</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
 
+            <span class="n">probability_state</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">bit_generator</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="c1"># Normal samples are unbounded; only [0, 1] values are probabilities.</span>
             <span class="n">probability</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
                 <span class="mf">1.0</span><span class="p">,</span>
@@ -310,6 +318,14 @@
                 <span class="p">),</span>
             <span class="p">)</span>
             <span class="n">proportion</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">proportion</span> <span class="o">=</span> <span class="n">_validate_stake_fraction</span><span class="p">(</span><span class="n">proportion</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">probability_state</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">bit_generator</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">probability_state</span>
+                <span class="k">raise</span>
 
             <span class="c1"># Only process the bet if proportion &gt; 0 (avoid charging costs on no-bet)</span>
             <span class="k">if</span> <span class="n">proportion</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -349,7 +365,7 @@
                     <span class="c1"># Settlement exceeded a bankroll safeguard; stop gracefully</span>
                     <span class="k">break</span>
 
-                <span class="n">record_result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">&quot;record_result&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">record_result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"record_result"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">record_result</span><span class="p">):</span>
                     <span class="n">record_result</span><span class="p">(</span><span class="n">won</span><span class="p">,</span> <span class="n">return_pct</span><span class="p">)</span></div>
 </div>

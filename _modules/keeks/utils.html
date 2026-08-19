@@ -188,12 +188,12 @@
 <div class="viewcode-block" id="RuinError">
 <a class="viewcode-back" href="../../utils.html#keeks.utils.RuinError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RuinError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Exception raised when a bankroll experiences a drawdown exceeding the maximum allowed limit.</span>
 
 <span class="sd">    This exception is typically raised by the BankRoll class when a withdrawal would cause</span>
 <span class="sd">    the bankroll to drop below the configured maximum drawdown threshold.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">pass</span></div>
 
@@ -202,7 +202,7 @@
 <div class="viewcode-block" id="crra_utility">
 <a class="viewcode-back" href="../../utils.html#keeks.utils.crra_utility">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">crra_utility</span><span class="p">(</span><span class="n">wealth</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate CRRA (Constant Relative Risk Aversion) utility.</span>
 
 <span class="sd">    For γ=1 (risk_aversion=1.0), uses log utility.</span>
@@ -228,7 +228,7 @@
 <span class="sd">    CRRA utility exhibits constant relative risk aversion, meaning the</span>
 <span class="sd">    fraction of wealth an agent is willing to risk remains constant</span>
 <span class="sd">    as wealth changes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">wealth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">wealth</span><span class="p">):</span>
             <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
@@ -253,27 +253,27 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a gamble and add its implicit zero-payout outcome.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Validate a gamble and add its implicit zero-payout outcome."""</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">outcomes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Outcomes and probabilities must be finite sequences&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must be finite sequences"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
     <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Outcomes and probabilities must be one-dimensional&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must be one-dimensional"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Outcomes and probabilities must be non-empty&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must be non-empty"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Outcomes and probabilities must have equal length&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must have equal length"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">outcomes</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Outcomes and probabilities must contain only finite values&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must contain only finite values"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">probabilities</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Probabilities must be nonnegative&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be nonnegative"</span><span class="p">)</span>
 
     <span class="n">total_probability</span> <span class="o">=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">total_probability</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Probabilities must sum to no more than one&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must sum to no more than one"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">total_probability</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">probabilities</span> <span class="o">=</span> <span class="n">probabilities</span> <span class="o">/</span> <span class="n">total_probability</span>
         <span class="n">total_probability</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -285,20 +285,20 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_require_finite</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coerce ``value`` to a finite float or raise ``ValueError``.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Coerce ``value`` to a finite float or raise ``ValueError``."""</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be a finite number"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be a finite number&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be a finite number"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_entry_price_scalars</span><span class="p">(</span>
     <span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="n">_UNSET</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validate the scalar controls shared by every entry-price calculation.</span>
 
 <span class="sd">    ``current_wealth`` and ``tolerance`` must be finite and positive,</span>
@@ -310,22 +310,22 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If any control is outside its accepted range.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="s2">&quot;Current wealth&quot;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Current wealth must be greater than 0&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="s2">&quot;Tolerance&quot;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tolerance must be greater than 0&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">max_search_fraction</span><span class="p">,</span> <span class="s2">&quot;Maximum search fraction&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Maximum search fraction must be non-negative&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="s2">"Current wealth"</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Current wealth must be greater than 0"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="s2">"Tolerance"</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Tolerance must be greater than 0"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">max_search_fraction</span><span class="p">,</span> <span class="s2">"Maximum search fraction"</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Maximum search fraction must be non-negative"</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span>
         <span class="n">risk_aversion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_UNSET</span>
-        <span class="ow">and</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="s2">&quot;Risk aversion&quot;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+        <span class="ow">and</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="s2">"Risk aversion"</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span>
     <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Risk aversion must be greater than 0&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Risk aversion must be greater than 0"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_controls</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_costs</span><span class="p">,</span> <span class="n">trials</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validate the controls shared by every simulator constructor.</span>
 
 <span class="sd">    ``payoff`` must be finite and positive, ``loss`` and the flat</span>
@@ -342,76 +342,76 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If any control is outside its accepted range.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">payoff</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="s2">&quot;Payoff&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">payoff</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="s2">"Payoff"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">payoff</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Payoff must be greater than 0&quot;</span><span class="p">)</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoff must be greater than 0"</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">"Loss"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Loss must be non-negative&quot;</span><span class="p">)</span>
-    <span class="n">transaction_costs</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_costs</span><span class="p">,</span> <span class="s2">&quot;Transaction costs&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Loss must be non-negative"</span><span class="p">)</span>
+    <span class="n">transaction_costs</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_costs</span><span class="p">,</span> <span class="s2">"Transaction costs"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">transaction_costs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Transaction costs must be non-negative&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction costs must be non-negative"</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">trials</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">trials</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trials must be a nonnegative integer&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trials must be a nonnegative integer"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
     <span class="k">if</span> <span class="n">trials</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trials must be a nonnegative integer&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trials must be a nonnegative integer"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_costs</span><span class="p">,</span> <span class="n">trials</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate an optional simulator seed, which must be a nonnegative integer.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Validate an optional simulator seed, which must be a nonnegative integer."""</span>
     <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">seed</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Seed must be a nonnegative integer or None&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Seed must be a nonnegative integer or None"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
     <span class="k">if</span> <span class="n">seed</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Seed must be a nonnegative integer or None&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Seed must be a nonnegative integer or None"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">seed</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a simulator&#39;s fixed probability, which must be finite in [0, 1].&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Validate a simulator's fixed probability, which must be finite in [0, 1]."""</span>
     <span class="n">probability</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be between 0 and 1&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be between 0 and 1"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">probability</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_stdev</span><span class="p">(</span><span class="n">stdev</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a simulator&#39;s standard deviation, which must be finite and &gt;= 0.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Validate a simulator's standard deviation, which must be finite and &gt;= 0."""</span>
     <span class="n">stdev</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">stdev</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">stdev</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be non-negative&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be non-negative"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">stdev</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reject a strategy whose odds contradict a simulator&#39;s settlement odds.</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Reject a strategy whose odds contradict a simulator's settlement odds.</span>
 
 <span class="sd">    A simulator sizes every bet through ``strategy.evaluate`` but settles it with</span>
 <span class="sd">    its own ``payoff`` and ``loss``, so the two models have to agree for the run</span>
 <span class="sd">    to describe anything. Only :class:`keeks.binary_strategies.base.BaseStrategy`</span>
 <span class="sd">    instances are checked; a duck-typed strategy needs no ``payoff``/``loss`` at</span>
-<span class="sd">    all and its compatibility stays the caller&#39;s responsibility.</span>
+<span class="sd">    all and its compatibility stays the caller's responsibility.</span>
 
-<span class="sd">    The strategies&#39; fractional ``transaction_cost`` and the simulators&#39; flat</span>
+<span class="sd">    The strategies' fractional ``transaction_cost`` and the simulators' flat</span>
 <span class="sd">    ``transaction_costs`` fee are deliberately different units and are never</span>
 <span class="sd">    compared.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If the strategy&#39;s ``payoff`` or ``loss`` differs from the simulator&#39;s.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Deferred like the strategy modules&#39; own keeks.utils imports, since the</span>
+<span class="sd">        If the strategy's ``payoff`` or ``loss`` differs from the simulator's.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Deferred like the strategy modules' own keeks.utils imports, since the</span>
     <span class="c1"># two packages reference each other.</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
 
@@ -419,21 +419,29 @@
         <span class="k">return</span>
 
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">strategy_value</span><span class="p">,</span> <span class="n">simulator_value</span> <span class="ow">in</span> <span class="p">(</span>
-        <span class="p">(</span><span class="s2">&quot;payoff&quot;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="n">payoff</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"payoff"</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="n">payoff</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"loss"</span><span class="p">,</span> <span class="n">strategy</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">),</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">strategy_value</span> <span class="o">!=</span> <span class="n">simulator_value</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Strategy </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">strategy_value</span><span class="si">!r}</span><span class="s2">) does not match simulator &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">simulator_value</span><span class="si">!r}</span><span class="s2">); the strategy sizes each bet with &quot;</span>
-                <span class="s2">&quot;its own odds while the simulator settles with the simulator&#39;s, &quot;</span>
-                <span class="s2">&quot;so the two must agree.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Strategy </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">strategy_value</span><span class="si">!r}</span><span class="s2">) does not match simulator "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">simulator_value</span><span class="si">!r}</span><span class="s2">); the strategy sizes each bet with "</span>
+                <span class="s2">"its own odds while the simulator settles with the simulator's, "</span>
+                <span class="s2">"so the two must agree."</span>
             <span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_stake_fraction</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Coerce a strategy result to a finite float within ``[0, 1]``."""</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"Strategy stake fraction"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Strategy stake fraction must be between 0 and 1"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_update_strategy_bankroll</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update a strategy&#39;s bankroll state when it exposes a callable hook.&quot;&quot;&quot;</span>
-    <span class="n">update_bankroll</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">&quot;update_bankroll&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Update a strategy's bankroll state when it exposes a callable hook."""</span>
+    <span class="n">update_bankroll</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"update_bankroll"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">update_bankroll</span><span class="p">):</span>
         <span class="n">update_bankroll</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">)</span>
 
@@ -451,7 +459,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">expected_utility</span><span class="p">(</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">entry_price</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="mf">1.0</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate expected utility of a gamble.</span>
 
 <span class="sd">    Parameters</span>
@@ -473,7 +481,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        The expected utility from participating in the gamble</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_expected_utility</span><span class="p">(</span>
         <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">entry_price</span><span class="p">,</span> <span class="n">risk_aversion</span>
@@ -491,7 +499,7 @@
     <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
     <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find maximum price willing to pay for a gamble using binary search.</span>
 
 <span class="sd">    This function finds the entry price where the expected utility from</span>
@@ -545,9 +553,9 @@
 <span class="sd">    &gt;&gt;&gt; probabilities = [0.6, 0.4]</span>
 <span class="sd">    &gt;&gt;&gt; max_price = find_indifference_price(outcomes, probabilities,</span>
 <span class="sd">    ...                                      current_wealth=1000, risk_aversion=2.0)</span>
-<span class="sd">    &gt;&gt;&gt; print(f&quot;Willing to pay: ${max_price:.2f}&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(f"Willing to pay: ${max_price:.2f}")</span>
 <span class="sd">    Willing to pay: $57.56</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
     <span class="n">_validate_entry_price_scalars</span><span class="p">(</span>
         <span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="n">risk_aversion</span>
@@ -568,10 +576,10 @@
         <span class="o">&gt;</span> <span class="n">current_utility</span>
     <span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;find_indifference_price saturated at its search bound (</span><span class="si">{</span><span class="n">high</span><span class="si">}</span><span class="s2"> = &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;current_wealth * max_search_fraction=</span><span class="si">{</span><span class="n">max_search_fraction</span><span class="si">}</span><span class="s2">); the &quot;</span>
-            <span class="s2">&quot;true indifference price is at or above this value. Raise &quot;</span>
-            <span class="s2">&quot;max_search_fraction to search further.&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"find_indifference_price saturated at its search bound (</span><span class="si">{</span><span class="n">high</span><span class="si">}</span><span class="s2"> = "</span>
+            <span class="sa">f</span><span class="s2">"current_wealth * max_search_fraction=</span><span class="si">{</span><span class="n">max_search_fraction</span><span class="si">}</span><span class="s2">); the "</span>
+            <span class="s2">"true indifference price is at or above this value. Raise "</span>
+            <span class="s2">"max_search_fraction to search further."</span><span class="p">,</span>
             <span class="ne">RuntimeWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>

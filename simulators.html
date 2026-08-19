@@ -231,7 +231,8 @@ early if the bankroll is depleted (bankruptcy).</p>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is a <code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code> whose <code class="docutils literal notranslate"><span class="pre">payoff</span></code> or <code class="docutils literal notranslate"><span class="pre">loss</span></code>
     differs from this simulator’s, since it would then size bets against
-    different odds than the ones the simulator settles at.</p>
+    different odds than the ones the simulator settles at, or if the
+    strategy returns a non-finite or out-of-range stake fraction.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -298,7 +299,8 @@ simulation stops early if the bankroll is depleted (bankruptcy).</p>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is a <code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code> whose <code class="docutils literal notranslate"><span class="pre">payoff</span></code> or <code class="docutils literal notranslate"><span class="pre">loss</span></code>
     differs from this simulator’s, since it would then size bets against
-    different odds than the ones the simulator settles at.</p>
+    different odds than the ones the simulator settles at, or if the
+    strategy returns a non-finite or out-of-range stake fraction.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -369,7 +371,8 @@ is depleted (bankruptcy).</p>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is a <code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code> whose <code class="docutils literal notranslate"><span class="pre">payoff</span></code> or <code class="docutils literal notranslate"><span class="pre">loss</span></code>
     differs from this simulator’s, since it would then size bets against
-    different odds than the ones the simulator settles at.</p>
+    different odds than the ones the simulator settles at, or if the
+    strategy returns a non-finite or out-of-range stake fraction.</p>
 </dd>
 </dl>
 </dd></dl>
