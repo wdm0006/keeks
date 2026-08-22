@@ -1,8 +1,25 @@
-Unreleased
-==========
+v0.6.0
+======
 
 **Added:**
  * Deterministic nine-strategy risk benchmark (`benchmarks/strategy_benchmark.py`, `make benchmark`) with committed CSV and chart artifacts and a documentation page covering growth, drawdown, percentile bands and early stops across edge, cost, estimate-error and drawdown-cap scenarios
+ * Explicit simulator seeds, so a strategy comparison reproduces run to run
+ * A bankroll update hook that fires in every simulator, which is the feedback path an adaptive strategy needs to size from settled outcomes
+ * Simulator classes are re-exported from the package root
+
+**Changed:**
+ * `find_indifference_price` now signals when it saturates at its search bound instead of returning the bound silently
+ * The transaction-cost unit difference across the API boundary is documented at every entry point
+ * Docstring examples are gated in CI, so the getting-started snippets stay runnable
+
+**Validation:**
+ * Strategy economics must be finite at construction, and stake fractions must be valid
+ * Simulator configuration is validated at construction, and a simulation is refused when its strategy odds contradict its settlement odds
+ * `crra_utility` no longer evaluates a log or power over nonpositive wealth
+ * `get_max_safe_bet` is guarded against zero and negative bankrolls, and drawdown safeguards are enforced when a bet is placed
+ * Scalar inputs and strategy-specific numeric controls are validated for entry-price calculations
+
+**Note:** v0.5.0 was tagged in the changelog but never published to PyPI, so its OptimalF sizing change ships here.
 
 v0.5.0
 ======
