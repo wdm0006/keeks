@@ -113,9 +113,13 @@ jobs:
       run: |
         "$RUNNER_TEMP/wheelenv/bin/python" - <<'PY'
         import importlib
+        import importlib.util
         import os
 
         import keeks
+
+        if importlib.util.find_spec("pandas") is not None:
+            raise SystemExit("pandas is present in the wheel environment")
 
         workspace = os.path.realpath(os.environ["GITHUB_WORKSPACE"])
         if os.path.realpath(keeks.__file__).startswith(workspace + os.sep):
