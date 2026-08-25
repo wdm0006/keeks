@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+ * pandas is now a development-only dependency rather than part of the core install
+
 v0.6.0
 ======
 
