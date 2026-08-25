@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Office/Business :: Financial :: Investment",
 ]
 dependencies = [
@@ -78,7 +79,7 @@ docstring-code-line-length = 88
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py310, py311, py312, py313
+envlist = py310, py311, py312, py313, py314
 isolated_build = True
 skip_missing_interpreters = True
 
@@ -95,4 +96,5 @@ python =
     3.11: py311
     3.12: py312
     3.13: py313
+    3.14: py314
 """
