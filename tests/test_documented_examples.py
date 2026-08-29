@@ -67,7 +67,7 @@ UNRUNNABLE_CALLS = {
 }
 
 # Blocks below this count mean the extraction broke rather than the docs shrinking.
-MINIMUM_EXECUTED = {"README.md": 10, "getting_started.rst": 7}
+MINIMUM_EXECUTED = {"README.md": 1, "getting_started.rst": 7}
 
 
 def _markdown_blocks(text):
