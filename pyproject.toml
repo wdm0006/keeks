@@ -5,15 +5,24 @@ build-backend = "hatchling.build"
 [project]
 name = "keeks"
 version = "0.6.0"
-description = "A python library for bankroll allocation strategies"
+description = "Python bet sizing and bankroll simulation for repeated binary outcomes"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "Keeks Contributors"}
 ]
+keywords = [
+    "bankroll",
+    "bet-sizing",
+    "decision-theory",
+    "kelly-criterion",
+    "simulation",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
     "Intended Audience :: Financial and Insurance Industry",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -22,7 +31,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
-    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Education",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
     "numpy",
@@ -30,8 +42,11 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/wdm0006/keeks"
-"Bug Tracker" = "https://github.com/wdm0006/keeks/issues"
+Documentation = "https://wdm0006.github.io/keeks/"
+Examples = "https://github.com/wdm0006/keeks/tree/master/examples"
+Homepage = "https://github.com/wdm0006/keeks"
+Issues = "https://github.com/wdm0006/keeks/issues"
+Source = "https://github.com/wdm0006/keeks"
 
 [project.optional-dependencies]
 dev = [
