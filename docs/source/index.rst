@@ -122,6 +122,8 @@ Contents
    :caption: Contents:
 
    getting_started
+   kelly-criterion-python
+   fractional-kelly-vs-kelly
    strategy_benchmark
    binary_strategies
    simulators
