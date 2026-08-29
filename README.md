@@ -1,255 +1,200 @@
 # Keeks
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
-A Python library for optimal bankroll allocation and betting strategies, with a focus on the Kelly Criterion and its variants.
+**Python bet sizing and bankroll simulation for developers modeling repeated
+binary outcomes.**
 
-Full documentation at [keeks.mcginniscommawill.com](https://keeks.mcginniscommawill.com).
+Given your estimated win probability, payoff, loss, and normalized transaction
+cost, Keeks calculates a model-derived fraction of the current bankroll to stake.
+You can then run the same rule over repeated trials and inspect the bankroll path.
 
-**[Nine-strategy risk benchmark](https://keeks.mcginniscommawill.com/strategy_benchmark.html)** — what growth, drawdown and
+**[Nine-strategy risk benchmark](https://wdm0006.github.io/keeks/strategy_benchmark.html)** — what growth, drawdown and
 early-stop behaviour each shipped strategy actually produces under identical, seeded assumptions,
 and how that changes with edge, cost, probability-estimate error and the bankroll's loss cap.
 Regenerate every number with `uv run python benchmarks/strategy_benchmark.py`.
 
-## What is Keeks?
-
-Keeks is a specialized Python library designed to help you implement and test various betting and investment strategies. It provides tools for:
-
-- **Bankroll management**: Track and manage your funds with built-in protection against excessive losses
-- **Betting strategies**: Implement mathematically optimal strategies like the Kelly Criterion
-- **Simulation**: Test your strategies under different conditions before risking real money
-
-Whether you're a sports bettor, a financial trader, or a researcher in decision theory, Keeks provides the tools to make more informed decisions about capital allocation.
-
-## Why Use Keeks?
-
-- **Mathematically sound**: Based on proven mathematical principles like the Kelly Criterion
-- **Risk management**: Built-in protection against ruin with configurable drawdown limits
-- **Simulation-driven**: Test strategies in various scenarios before applying them with real money
-- **Flexible**: Supports different types of betting scenarios and probability distributions
-- **Educational**: Learn about optimal betting strategies through practical implementation
-
-**Disclaimer**: This library is for educational purposes only. It is not intended to provide investment, legal, or tax advice. Always be responsible and consult with a professional before applying these strategies to real-world betting or investment scenarios. The authors and contributors of this library are not liable for any financial losses or damages that may result from the use of this software.
-
-## Installation
+## Install
 
 ```bash
 pip install keeks
 ```
 
-## Quick Start
+Keeks supports Python 3.10 through 3.14.
 
-Here's a simple example of how to use Keeks to simulate a betting strategy:
+## Get a bet fraction
+
+```python
+from keeks.binary_strategies import KellyCriterion
+
+bankroll = 1_000.0
+strategy = KellyCriterion(
+    payoff=1.0,
+    loss=1.0,
+    transaction_cost=0.01,
+)
+
+fraction = strategy.evaluate(probability=0.55, current_bankroll=bankroll)
+amount = bankroll * fraction
+
+print(f"Bankroll fraction: {fraction:.4%}")
+print(f"Amount from a $1,000 bankroll: ${amount:.2f}")
+```
+
+```text
+Bankroll fraction: 9.0009%
+Amount from a $1,000 bankroll: $90.01
+```
+
+`evaluate()` returns a fraction, not a currency amount. The example multiplies
+that fraction by the current bankroll only to make the result concrete.
+
+## Compare repeated-bet strategies
+
+Keeks includes a headless comparison example that gives every strategy a fresh
+bankroll under the same repeated-bet inputs:
+
+```bash
+python -m examples.strategy_comparison
+```
+
+![Bankroll paths from the strategy comparison example](examples/output/strategy_comparison.png)
+
+The chart is one simulated comparison under the example's assumptions. It does
+not validate the probability estimate or predict future results.
+
+## Choose a strategy
+
+All nine strategies expose `evaluate(probability, current_bankroll)`, but their
+constructors and sizing rules differ.
+
+| Strategy | Choose it when you want to model |
+|---|---|
+| `KellyCriterion` | Full Kelly sizing from a binary win probability, payoff, loss, and cost. |
+| `FractionalKellyCriterion` | A fixed fraction of the full-Kelly result. |
+| `DrawdownAdjustedKelly` | Kelly sizing scaled by an acceptable-drawdown input. |
+| `OptimalF` | A geometric-growth rule based on a supplied win rate, with a risk-fraction cap. |
+| `FixedFractionStrategy` | A constant fraction above a minimum probability; useful as a baseline. |
+| `CPPIStrategy` | A cushion-based rule relative to a bankroll floor. |
+| `DynamicBankrollManagement` | A fraction adjusted from recent recorded outcomes. |
+| `MertonShare` | A CRRA risk-aversion rule adapted to binary outcomes. |
+| `NaiveStrategy` | A positive-expected-value rule without utility-based sizing. |
+
+See the [strategy API](https://wdm0006.github.io/keeks/binary_strategies.html)
+for constructor parameters and formulas.
+
+## Simulate a bankroll
+
+Once you have chosen a strategy, pass it and a fresh `BankRoll` to a simulator:
 
 ```python
 from keeks.bankroll import BankRoll
-from keeks.binary_strategies.kelly import KellyCriterion
+from keeks.binary_strategies import FractionalKellyCriterion
 from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 
-# Create a bankroll with initial funds
-bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
-
-# Create a Kelly Criterion strategy
-# Parameters: payoff, loss, transaction_cost
-strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
-
-# Create a simulator with a fixed probability
+bankroll = BankRoll(
+    initial_funds=1_000.0,
+    percent_bettable=0.8,
+    max_draw_down=0.3,
+)
+strategy = FractionalKellyCriterion(
+    payoff=1.0,
+    loss=1.0,
+    transaction_cost=0.01,
+    fraction=0.5,
+)
 simulator = RepeatedBinarySimulator(
     payoff=1.0,
     loss=1.0,
     transaction_costs=0.01,
-    probability=0.55,  # 55% chance of winning
-    trials=1000,
+    probability=0.55,
+    trials=1_000,
 )
 
-# Run the simulation
 simulator.evaluate_strategy(strategy, bankroll)
 
-# Plot the results
-bankroll.plot_history()
+print(f"Final bankroll: ${bankroll.total_funds:.2f}")
+bankroll.plot_history(fname="bankroll-history.png")
 ```
 
-## Examples
+Simulation mutates the bankroll and records its history. Use matching payoff and
+loss assumptions in the strategy and simulator; Keeks does not enforce that they
+match. The cost assumption is a separate matter — see the note below.
 
-### St. Petersburg Paradox Simulation
+## Repeated sizing is not one-time pricing
 
-The St. Petersburg paradox is a theoretical game with infinite expected value but finite practical outcomes. Our example compares all binary strategies using a simplified binary model with favorable odds.
+`strategy.evaluate(...)` answers a repeated-bet question:
 
-```python
-python -m examples.st_petersburg_comparison
-```
+> Given this binary model, what fraction of the current bankroll does this rule
+> allocate now?
 
-The example simulates various strategies under favorable betting conditions and visualizes the results:
+`find_indifference_price(...)` and supported
+`strategy.calculate_max_entry_price(...)` methods answer a different question:
 
-![St. Petersburg Paradox Strategy Comparison](examples/output/st_petersburg_strategies_comparison.png)
+> Given possible outcomes and their probabilities, what is the maximum entry
+> price that leaves modeled utility unchanged for a one-time gamble?
 
-*This chart shows the distribution of final bankrolls across different betting strategies after multiple simulations. Notice how Optimal-F and Kelly Criterion achieved the highest returns but with greater volatility, while more conservative strategies like Quarter Kelly had more consistent (but lower) returns.*
-
-For more examples, check the [examples directory](examples/).
-
-## Key Features
-
-### Bankroll Management
-
-The `BankRoll` class provides a way to track your funds and enforce risk management:
-
-```python
-# Create a bankroll with $1000, allowing only 80% to be bet, and a 30% max drawdown limit
-bankroll = BankRoll(initial_funds=1000.0, percent_bettable=0.8, max_draw_down=0.3)
-```
-
-### Betting Strategies
-
-Keeks implements several betting strategies:
-
-1. **Kelly Criterion**: The mathematically optimal strategy for maximizing the logarithm of wealth
-   ```python
-   kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
-   ```
-
-2. **Fractional Kelly**: A more conservative version of Kelly that reduces volatility
-   ```python
-   fractional_kelly = FractionalKellyCriterion(
-       payoff=1.0, loss=1.0, transaction_cost=0.01, fraction=0.5
-   )
-   ```
-
-3. **Drawdown-Adjusted Kelly**: A Kelly variant that adjusts bet sizing based on risk tolerance
-   ```python
-   drawdown_kelly = DrawdownAdjustedKelly(
-       payoff=1.0, loss=1.0, transaction_cost=0.01, max_acceptable_drawdown=0.2
-   )
-   ```
-
-4. **OptimalF (Ralph Vince)**: Strategy that maximizes geometric growth rate
-   ```python
-   from keeks.binary_strategies.simple import OptimalF
-
-   optimal_f = OptimalF(
-       payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.55, max_risk_fraction=0.2
-   )
-   ```
-
-5. **Fixed Fraction**: Simple strategy that bets a constant percentage of the bankroll
-   ```python
-   fixed_fraction = FixedFractionStrategy(
-       fraction=0.05, payoff=1.0, loss=1.0, transaction_cost=0.01, min_probability=0.5
-   )
-   ```
-
-6. **CPPI (Constant Proportion Portfolio Insurance)**: Strategy that protects a floor value while allowing upside exposure
-   ```python
-   cppi = CPPIStrategy(
-       floor_fraction=0.5,
-       multiplier=2.0,
-       initial_bankroll=1000.0,
-       payoff=1.0,
-       loss=1.0,
-       transaction_cost=0.01,
-   )
-   ```
-
-7. **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
-   ```python
-   dynamic = DynamicBankrollManagement(
-       base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01, window_size=10
-   )
-   ```
-
-8. **Merton Share (CRRA Utility)**: Based on Merton's portfolio problem with constant relative risk aversion
-   ```python
-   from keeks.binary_strategies.simple import MertonShare
-
-   merton = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.01, risk_aversion=2.0)
-   ```
-
-9. **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
-   ```python
-   naive = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.01)
-   ```
-
-### Utility Functions
-
-For one-time decision problems (e.g., "What should I pay for this opportunity?"), keeks provides CRRA utility functions:
-
-```python
-from keeks.utils import find_indifference_price
-
-# Calculate maximum price you'd pay for a gamble
-# Example: St. Petersburg paradox
-outcomes = [2**n for n in range(1, 31)]
-probabilities = [(0.5) ** n for n in range(1, 31)]
-
-max_price = find_indifference_price(
-    outcomes=outcomes,
-    probabilities=probabilities,
-    current_wealth=10000,
-    risk_aversion=2.0,  # 1.0=Kelly, 2.0=moderate, 5.0=conservative
-)
-# Returns: ~$12.80 despite infinite expected value!
-```
-
-See [examples/st_petersburg_paradox.py](examples/st_petersburg_paradox.py) for a complete demonstration.
-
-### Simulators
-
-Test your strategies with different simulators:
-
-1. **RepeatedBinarySimulator**: For scenarios with a fixed probability
-2. **RandomBinarySimulator**: For scenarios with varying probabilities
-3. **RandomUncertainBinarySimulator**: For scenarios where your probability estimate has uncertainty
-
-## Applications
-
-Keeks can be applied to various domains:
-
-- **Sports Betting**: Optimize your bet sizing based on your edge
-- **Financial Trading**: Apply Kelly principles to portfolio management
-- **Gambling**: Understand the mathematics behind optimal betting
-- **Research**: Study the behavior of different betting strategies
-- **Education**: Learn about probability, statistics, and risk management
-
-## Documentation
-
-To build the docs locally:
+Run the shipped decision-theory example with:
 
 ```bash
-git clone https://github.com/wdm0006/keeks.git
-cd keeks
-pip install -e ".[dev]"
-make docs
+python -m examples.st_petersburg_paradox
 ```
 
-## Development
+See [`examples/st_petersburg_paradox.py`](examples/st_petersburg_paradox.py) and
+the [utilities documentation](https://wdm0006.github.io/keeks/utils.html) for
+the one-time workflow.
 
-To set up the development environment:
+## Safety semantics and model limits
+
+- Strategy fractions are floored at zero and capped so the modeled loss plus
+  transaction cost cannot allocate more than the current bankroll.
+- `BankRoll` can restrict the bettable percentage and stop a simulation when a
+  withdrawal breaches its configured maximum drawdown.
+- These constraints apply to the values in Keeks' binary model. They do not
+  prevent losses, verify your probability estimate, or model spreads, slippage,
+  market impact, venue-specific commissions, correlated positions, or portfolio
+  rebalancing.
+- A strategy's `transaction_cost` is a per-unit *fractional* cost that scales
+  with stake size. A simulator's `transaction_costs` (plural) is a flat,
+  *absolute* bankroll amount charged once per settled bet. The two are
+  different units — passing the same number to both models two different
+  real-world costs, and Keeks does not convert between them.
+
+## Documentation and examples
+
+- [Full documentation](https://wdm0006.github.io/keeks/)
+- [Getting started](https://wdm0006.github.io/keeks/getting_started.html)
+- [Strategy API](https://wdm0006.github.io/keeks/binary_strategies.html)
+- [Bankroll API](https://wdm0006.github.io/keeks/bankroll.html)
+- [Simulators](https://wdm0006.github.io/keeks/simulators.html)
+- [Nine-strategy risk benchmark](https://wdm0006.github.io/keeks/strategy_benchmark.html)
+- [`examples/strategy_comparison.py`](examples/strategy_comparison.py)
+- [`examples/st_petersburg_paradox.py`](examples/st_petersburg_paradox.py)
+
+## Disclaimer
+
+Keeks is for educational purposes. It does not provide investment, legal, or tax
+advice. Models and simulations can be wrong, and financial loss is possible. You
+are responsible for validating your inputs and deciding whether any real-world use
+is appropriate.
+
+## Contributing
+
+Contributions are welcome. To set up the project and run its checks:
 
 ```bash
 git clone https://github.com/wdm0006/keeks.git
 cd keeks
 make setup
 make install-dev
+make test
+make lint
 ```
 
-Run tests:
+Build the documentation with:
 
 ```bash
-make test
+make docs
 ```
 
-## References
-
-- [1] [A New Interpretation of Information Rate](http://www.herrold.com/brokerage/kelly.pdf) - The original Kelly Criterion paper
-- [2] [The Kelly Criterion in Blackjack, Sports Betting, and the Stock Market](https://www.amazon.com/Kelly-Criterion-Blackjack-Sports-Betting/dp/1096432366) - A practical guide to applying the Kelly Criterion
-- [3] [Fortune's Formula](https://www.amazon.com/Fortunes-Formula-Scientific-Betting-Casinos/dp/0809045990) - The untold story of the scientific betting system that beat the casinos and Wall Street
-
-## License
-
-MIT License - see the [LICENSE](./LICENSE.md) file for details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
+Keeks is available under the [MIT License](LICENSE.md).
