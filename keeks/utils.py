@@ -113,6 +113,14 @@ def _require_finite(value, name):
     return value
 
 
+def _validate_probability(probability):
+    """Validate a probability, which must be finite and between 0 and 1."""
+    probability = _require_finite(probability, "Probability")
+    if not 0 <= probability <= 1:
+        raise ValueError("Probability must be between 0 and 1")
+    return probability
+
+
 def _validate_entry_price_scalars(
     current_wealth, tolerance, max_search_fraction, risk_aversion=_UNSET
 ):
