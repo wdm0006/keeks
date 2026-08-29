@@ -6,6 +6,10 @@ positive tolerance, finite positive risk aversion (where applicable) and a
 finite non-negative search fraction. Some invalid values used to loop forever
 (``tolerance=0``, infinite wealth); others silently returned negative or NaN
 prices.
+
+``expected_utility`` is the fourth caller of that contract: it shares
+``current_wealth`` and ``risk_aversion`` with its sibling and adds
+``entry_price``, which must be finite but may be negative.
 """
 
 import math
@@ -14,7 +18,7 @@ import threading
 import pytest
 
 from keeks.binary_strategies import CPPIStrategy
-from keeks.utils import find_indifference_price
+from keeks.utils import expected_utility, find_indifference_price
 
 from .test_max_safe_bet_boundaries import STRATEGY_FACTORIES
 
@@ -26,6 +30,11 @@ INVALID_WEALTH = [0.0, -1.0, -5000.0, math.nan, math.inf, -math.inf]
 INVALID_TOLERANCE = [0.0, -0.01, -1.0, math.nan, math.inf, -math.inf]
 INVALID_SEARCH_FRACTION = [-0.01, -1.0, math.nan, math.inf, -math.inf]
 INVALID_RISK_AVERSION = [0.0, -1.0, math.nan, math.inf, -math.inf]
+INVALID_ENTRY_PRICE = [math.nan, math.inf, -math.inf]
+
+# Pinned pre-change value: validating the scalars must not move any valid call.
+UNCHANGED_CALL = ([200, -100], [0.6, 0.4], 1000, 0, 2.0)
+UNCHANGED_RESULT = -0.0009444444444444445
 
 
 def _call_with_deadline(call, timeout=5.0):
@@ -122,6 +131,49 @@ class TestFindIndifferencePriceScalars:
             )
         assert wide == pytest.approx(2.0 * WEALTH, abs=0.01)
         assert wide > WEALTH
+
+
+class TestExpectedUtilityScalars:
+    """expected_utility enforces the same scalar contract as its sibling.
+
+    ``INVALID_WEALTH`` straddles two guards, so this is not one rule tested six
+    ways: ``nan``/``±inf`` are rejected by the finiteness coercion while ``0``
+    and the negative values are rejected by the ``> 0`` comparison after it.
+    """
+
+    @pytest.mark.parametrize("current_wealth", INVALID_WEALTH)
+    def test_invalid_current_wealth(self, current_wealth):
+        with pytest.raises(ValueError, match="Current wealth"):
+            expected_utility(OUTCOMES, PROBABILITIES, current_wealth, 0.0)
+
+    @pytest.mark.parametrize("risk_aversion", INVALID_RISK_AVERSION)
+    def test_invalid_risk_aversion(self, risk_aversion):
+        with pytest.raises(ValueError, match="Risk aversion"):
+            expected_utility(
+                OUTCOMES, PROBABILITIES, WEALTH, 0.0, risk_aversion=risk_aversion
+            )
+
+    @pytest.mark.parametrize("entry_price", INVALID_ENTRY_PRICE)
+    def test_invalid_entry_price(self, entry_price):
+        with pytest.raises(ValueError, match="Entry price must be a finite number"):
+            expected_utility(OUTCOMES, PROBABILITIES, WEALTH, entry_price)
+
+    def test_non_numeric_scalar(self):
+        with pytest.raises(ValueError, match="Current wealth"):
+            expected_utility(OUTCOMES, PROBABILITIES, "a lot", 0.0)
+
+    def test_negative_entry_price_is_accepted(self):
+        """Being paid to take the gamble is meaningful, so only finiteness is required."""
+        paid = expected_utility(OUTCOMES, PROBABILITIES, WEALTH, -50.0)
+        free = expected_utility(OUTCOMES, PROBABILITIES, WEALTH, 0.0)
+
+        assert math.isfinite(paid)
+        assert paid > free
+
+    def test_valid_call_is_numerically_unchanged(self):
+        assert expected_utility(*UNCHANGED_CALL) == pytest.approx(
+            UNCHANGED_RESULT, rel=0, abs=0
+        )
 
 
 @pytest.mark.parametrize("name", sorted(STRATEGY_FACTORIES))
