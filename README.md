@@ -117,9 +117,9 @@ print(f"Final bankroll: ${bankroll.total_funds:.2f}")
 bankroll.plot_history(fname="bankroll-history.png")
 ```
 
-Simulation mutates the bankroll and records its history. Use matching payoff,
-loss, and cost assumptions in the strategy and simulator; Keeks does not enforce
-that they match.
+Simulation mutates the bankroll and records its history. Use matching payoff and
+loss assumptions in the strategy and simulator; Keeks does not enforce that they
+match. The cost assumption is a separate matter — see the note below.
 
 ## Repeated sizing is not one-time pricing
 
@@ -154,8 +154,11 @@ the one-time workflow.
   prevent losses, verify your probability estimate, or model spreads, slippage,
   market impact, venue-specific commissions, correlated positions, or portfolio
   rebalancing.
-- `transaction_cost` is a normalized per-bet model input. Keep it consistent
-  between a strategy and its simulator.
+- A strategy's `transaction_cost` is a per-unit *fractional* cost that scales
+  with stake size. A simulator's `transaction_costs` (plural) is a flat,
+  *absolute* bankroll amount charged once per settled bet. The two are
+  different units — passing the same number to both models two different
+  real-world costs, and Keeks does not convert between them.
 
 ## Documentation and examples
 
