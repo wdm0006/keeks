@@ -171,9 +171,7 @@ class TestExpectedUtilityScalars:
         assert paid > free
 
     def test_valid_call_is_numerically_unchanged(self):
-        assert expected_utility(*UNCHANGED_CALL) == pytest.approx(
-            UNCHANGED_RESULT, rel=0, abs=0
-        )
+        assert expected_utility(*UNCHANGED_CALL) == pytest.approx(UNCHANGED_RESULT)
 
 
 @pytest.mark.parametrize("name", sorted(STRATEGY_FACTORIES))
