@@ -106,10 +106,9 @@ inputs and share the same ``evaluate()`` method:
    Quarter Kelly: 2.2502% ($22.50)
 
 The values demonstrate scaling, not realized returns. Fractional Kelly
-inherits the full strategy's zero floor and maximum-safe-bet clamp before
-applying the selected fraction — see
-:doc:`kelly-criterion-python`'s `Why the result can be zero or capped`
-section for what those clamps do.
+computes the full-Kelly fraction first — floor and maximum-safe-bet clamp
+included — and only then multiplies by the selected fraction. See
+:doc:`kelly-criterion-python` for what those clamps do.
 
 Half Kelly and quarter Kelly
 -------------------------------

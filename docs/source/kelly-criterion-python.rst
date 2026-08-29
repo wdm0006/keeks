@@ -111,11 +111,14 @@ per-unit multipliers for a win and a loss, and ``cost`` is
 the payoff side before the ratio is taken, so it makes both a win pay a
 little less and a loss cost a little more.
 
-``transaction_cost`` is Keeks' normalized, per-bet model input — not a
-synonym for a broker commission, a bid-ask spread, or slippage. It does not
-model market impact, venue-specific fees, correlated positions, or portfolio
-rebalancing. Keep the same numeric value consistent between a strategy and
-the simulator you pair it with; Keeks does not enforce that they match.
+``transaction_cost`` is Keeks' normalized, per-unit fractional model input —
+not a synonym for a broker commission, a bid-ask spread, or slippage. It does
+not model market impact, venue-specific fees, correlated positions, or
+portfolio rebalancing. It is also not the same quantity as the ``keeks.simulators``
+classes' ``transaction_costs`` (plural): that one is a flat, absolute
+bankroll amount charged once per settled bet, independent of stake size.
+Passing the same number to both does not mean the same real-world cost, and
+Keeks does not convert between them.
 
 Why the result can be zero or capped
 ---------------------------------------
