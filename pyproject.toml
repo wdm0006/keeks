@@ -42,7 +42,7 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://wdm0006.github.io/keeks/"
+Documentation = "https://keeks.mcginniscommawill.com/"
 Examples = "https://github.com/wdm0006/keeks/tree/master/examples"
 Homepage = "https://github.com/wdm0006/keeks"
 Issues = "https://github.com/wdm0006/keeks/issues"

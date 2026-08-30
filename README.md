@@ -9,7 +9,7 @@ Given your estimated win probability, payoff, loss, and normalized transaction
 cost, Keeks calculates a model-derived fraction of the current bankroll to stake.
 You can then run the same rule over repeated trials and inspect the bankroll path.
 
-**[Nine-strategy risk benchmark](https://wdm0006.github.io/keeks/strategy_benchmark.html)** — what growth, drawdown and
+**[Nine-strategy risk benchmark](https://keeks.mcginniscommawill.com/strategy_benchmark.html)** — what growth, drawdown and
 early-stop behaviour each shipped strategy actually produces under identical, seeded assumptions,
 and how that changes with edge, cost, probability-estimate error and the bankroll's loss cap.
 Regenerate every number with `uv run python benchmarks/strategy_benchmark.py`.
@@ -80,7 +80,7 @@ constructors and sizing rules differ.
 | `MertonShare` | A CRRA risk-aversion rule adapted to binary outcomes. |
 | `NaiveStrategy` | A positive-expected-value rule without utility-based sizing. |
 
-See the [strategy API](https://wdm0006.github.io/keeks/binary_strategies.html)
+See the [strategy API](https://keeks.mcginniscommawill.com/binary_strategies.html)
 for constructor parameters and formulas.
 
 ## Simulate a bankroll
@@ -141,7 +141,7 @@ python -m examples.st_petersburg_paradox
 ```
 
 See [`examples/st_petersburg_paradox.py`](examples/st_petersburg_paradox.py) and
-the [utilities documentation](https://wdm0006.github.io/keeks/utils.html) for
+the [utilities documentation](https://keeks.mcginniscommawill.com/utils.html) for
 the one-time workflow.
 
 ## Safety semantics and model limits
@@ -162,14 +162,20 @@ the one-time workflow.
 
 ## Documentation and examples
 
-- [Full documentation](https://wdm0006.github.io/keeks/)
-- [Getting started](https://wdm0006.github.io/keeks/getting_started.html)
-- [Strategy API](https://wdm0006.github.io/keeks/binary_strategies.html)
-- [Bankroll API](https://wdm0006.github.io/keeks/bankroll.html)
-- [Simulators](https://wdm0006.github.io/keeks/simulators.html)
-- [Nine-strategy risk benchmark](https://wdm0006.github.io/keeks/strategy_benchmark.html)
+- [Full documentation](https://keeks.mcginniscommawill.com/)
+- [Getting started](https://keeks.mcginniscommawill.com/getting_started.html)
+- [Strategy API](https://keeks.mcginniscommawill.com/binary_strategies.html)
+- [Bankroll API](https://keeks.mcginniscommawill.com/bankroll.html)
+- [Simulators](https://keeks.mcginniscommawill.com/simulators.html)
+- [Nine-strategy risk benchmark](https://keeks.mcginniscommawill.com/strategy_benchmark.html)
 - [`examples/strategy_comparison.py`](examples/strategy_comparison.py)
 - [`examples/st_petersburg_paradox.py`](examples/st_petersburg_paradox.py)
+
+## References
+
+- [1] [A New Interpretation of Information Rate](http://www.herrold.com/brokerage/kelly.pdf) - The original Kelly Criterion paper
+- [2] [The Kelly Criterion in Blackjack, Sports Betting, and the Stock Market](https://www.amazon.com/Kelly-Criterion-Blackjack-Sports-Betting/dp/1096432366) - A practical guide to applying the Kelly Criterion
+- [3] [Fortune's Formula](https://www.amazon.com/Fortunes-Formula-Scientific-Betting-Casinos/dp/0809045990) - The untold story of the scientific betting system that beat the casinos and Wall Street
 
 ## Disclaimer
 
