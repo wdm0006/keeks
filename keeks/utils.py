@@ -122,32 +122,44 @@ def _validate_probability(probability):
 
 
 def _validate_entry_price_scalars(
-    current_wealth, tolerance, max_search_fraction, risk_aversion=_UNSET
+    current_wealth,
+    tolerance=_UNSET,
+    max_search_fraction=_UNSET,
+    risk_aversion=_UNSET,
+    entry_price=_UNSET,
 ):
     """
     Validate the scalar controls shared by every entry-price calculation.
 
+    Every control except ``current_wealth`` is optional, so a caller supplies
+    only the ones it has and each rule lives in one place. When supplied:
     ``current_wealth`` and ``tolerance`` must be finite and positive,
     ``max_search_fraction`` must be finite and nonnegative (values above 1.0 are
-    allowed), and ``risk_aversion`` — when the caller has one — must be finite
-    and positive.
+    allowed), ``risk_aversion`` must be finite and positive, and ``entry_price``
+    must be finite — its sign is unconstrained, since a negative price models
+    being paid to take the gamble.
 
     Raises
     ------
     ValueError
-        If any control is outside its accepted range.
+        If any supplied control is outside its accepted range.
     """
     if _require_finite(current_wealth, "Current wealth") <= 0:
         raise ValueError("Current wealth must be greater than 0")
-    if _require_finite(tolerance, "Tolerance") <= 0:
+    if tolerance is not _UNSET and _require_finite(tolerance, "Tolerance") <= 0:
         raise ValueError("Tolerance must be greater than 0")
-    if _require_finite(max_search_fraction, "Maximum search fraction") < 0:
+    if (
+        max_search_fraction is not _UNSET
+        and _require_finite(max_search_fraction, "Maximum search fraction") < 0
+    ):
         raise ValueError("Maximum search fraction must be non-negative")
     if (
         risk_aversion is not _UNSET
         and _require_finite(risk_aversion, "Risk aversion") <= 0
     ):
         raise ValueError("Risk aversion must be greater than 0")
+    if entry_price is not _UNSET:
+        _require_finite(entry_price, "Entry price")
 
 
 def _validate_simulator_controls(payoff, loss, transaction_costs, trials):
@@ -295,18 +307,30 @@ def expected_utility(
         ``PROBABILITY_SUM_TOLERANCE``). Any omitted mass is treated as a
         zero-payout outcome.
     current_wealth : float
-        Current wealth before the gamble
+        Current wealth before the gamble. Must be finite and greater than 0.
     entry_price : float
-        Price to pay to participate in the gamble
+        Price to pay to participate in the gamble. Must be finite; its sign is
+        unconstrained, because a negative price models being paid to take the
+        gamble.
     risk_aversion : float, default=1.0
-        Coefficient of relative risk aversion (γ)
+        Coefficient of relative risk aversion (γ). Must be finite and greater
+        than 0.
 
     Returns
     -------
     float
         The expected utility from participating in the gamble
+
+    Raises
+    ------
+    ValueError
+        If the gamble arrays are malformed, or if any scalar argument falls
+        outside the ranges documented above.
     """
     outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
+    _validate_entry_price_scalars(
+        current_wealth, risk_aversion=risk_aversion, entry_price=entry_price
+    )
     return _expected_utility(
         outcomes, probabilities, current_wealth, entry_price, risk_aversion
     )
