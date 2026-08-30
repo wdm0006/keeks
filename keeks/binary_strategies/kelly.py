@@ -72,6 +72,10 @@ class KellyCriterion(BaseStrategy):
         float
             The optimal proportion of the bankroll to bet.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability < self.min_probability:
             return 0.0
 
@@ -192,6 +196,10 @@ class FractionalKellyCriterion(BaseStrategy):
         float
             The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
         return self.fraction * kelly.evaluate(probability, current_bankroll)
 
@@ -320,6 +328,11 @@ class DrawdownAdjustedKelly(BaseStrategy):
         float
             The drawdown-adjusted proportion of the bankroll to bet.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
+
         # Calculate the standard Kelly bet size
         kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
         full_kelly = kelly.evaluate(probability, current_bankroll)

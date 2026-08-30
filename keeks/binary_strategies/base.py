@@ -77,6 +77,11 @@ class BaseStrategy(abc.ABC):
             The maximum safe bet size as a proportion of bankroll. Zero when
             there is nothing left to stake (``current_bankroll <= 0``).
 
+        Raises
+        ------
+        ValueError
+            If ``current_bankroll`` is not finite.
+
         Notes
         -----
         The maximum stake that cannot drive the bankroll negative is
@@ -86,6 +91,7 @@ class BaseStrategy(abc.ABC):
         A non-positive bankroll has no safe stake at all, so the answer there is
         ``0.0``.
         """
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if current_bankroll <= 0:
             return 0.0
         return min(1.0, 1.0 / (self.loss + self.transaction_cost))
@@ -180,5 +186,11 @@ class BaseStrategy(abc.ABC):
         -------
         float
             The proportion of the bankroll to bet.
+
+        Raises
+        ------
+        ValueError
+            If ``probability`` is not finite and between 0 and 1 inclusive, or
+            if ``current_bankroll`` is not finite.
         """
         pass

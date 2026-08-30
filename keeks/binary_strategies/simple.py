@@ -62,6 +62,11 @@ class NaiveStrategy(BaseStrategy):
         float
             The proportion of the bankroll to bet.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
+
         # Calculate expected value
         expected_value = (
             (probability * self.payoff)
@@ -205,6 +210,10 @@ class FixedFractionStrategy(BaseStrategy):
         float
             The fixed fraction if probability >= min_probability, otherwise 0.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability >= self.min_probability:
             # Ensure we never bet more than would result in negative bankroll
             return min(self.fraction, self.get_max_safe_bet(current_bankroll))
@@ -352,6 +361,11 @@ class CPPIStrategy(BaseStrategy):
             The proportion of the current bankroll to bet, or 0 if below
             the minimum probability threshold.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
+
         # Update current bankroll
         self.update_bankroll(current_bankroll)
 
@@ -629,6 +643,11 @@ class DynamicBankrollManagement(BaseStrategy):
         float
             The proportion of the current bankroll to bet.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
+
         # Don't bet on sub-threshold probabilities
         if probability < self.min_probability:
             return 0.0
@@ -786,6 +805,10 @@ class OptimalF(BaseStrategy):
         float
             The optimal proportion of the bankroll to bet.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability < 0.5:  # Use 0.5 as default minimum probability
             return 0.0
 
@@ -970,6 +993,10 @@ class MertonShare(BaseStrategy):
         float
             The optimal proportion of the bankroll to bet based on Merton's formula.
         """
+        from keeks.utils import _require_finite, _validate_probability
+
+        probability = _validate_probability(probability)
+        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability < self.min_probability:
             return 0.0
 
