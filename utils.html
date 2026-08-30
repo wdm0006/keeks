@@ -213,9 +213,12 @@ as wealth changes.</p>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to no more than 1, within
 <code class="docutils literal notranslate"><span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>). Any omitted mass is treated as a
 zero-payout outcome.</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble</p></li>
-<li><p><strong>entry_price</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Price to pay to participate in the gamble</p></li>
-<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ)</p></li>
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>entry_price</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Price to pay to participate in the gamble. Must be finite; its sign is
+unconstrained, because a negative price models being paid to take the
+gamble.</p></li>
+<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ). Must be finite and greater
+than 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -223,6 +226,10 @@ zero-payout outcome.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar argument falls
+    outside the ranges documented above.</p>
 </dd>
 </dl>
 </dd></dl>

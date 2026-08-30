@@ -304,32 +304,44 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_entry_price_scalars</span><span class="p">(</span>
-    <span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="n">_UNSET</span>
+    <span class="n">current_wealth</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="o">=</span><span class="n">_UNSET</span><span class="p">,</span>
+    <span class="n">max_search_fraction</span><span class="o">=</span><span class="n">_UNSET</span><span class="p">,</span>
+    <span class="n">risk_aversion</span><span class="o">=</span><span class="n">_UNSET</span><span class="p">,</span>
+    <span class="n">entry_price</span><span class="o">=</span><span class="n">_UNSET</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validate the scalar controls shared by every entry-price calculation.</span>
 
+<span class="sd">    Every control except ``current_wealth`` is optional, so a caller supplies</span>
+<span class="sd">    only the ones it has and each rule lives in one place. When supplied:</span>
 <span class="sd">    ``current_wealth`` and ``tolerance`` must be finite and positive,</span>
 <span class="sd">    ``max_search_fraction`` must be finite and nonnegative (values above 1.0 are</span>
-<span class="sd">    allowed), and ``risk_aversion`` — when the caller has one — must be finite</span>
-<span class="sd">    and positive.</span>
+<span class="sd">    allowed), ``risk_aversion`` must be finite and positive, and ``entry_price``</span>
+<span class="sd">    must be finite — its sign is unconstrained, since a negative price models</span>
+<span class="sd">    being paid to take the gamble.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If any control is outside its accepted range.</span>
+<span class="sd">        If any supplied control is outside its accepted range.</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="s2">"Current wealth"</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Current wealth must be greater than 0"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="s2">"Tolerance"</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">tolerance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_UNSET</span> <span class="ow">and</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">tolerance</span><span class="p">,</span> <span class="s2">"Tolerance"</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Tolerance must be greater than 0"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">max_search_fraction</span><span class="p">,</span> <span class="s2">"Maximum search fraction"</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">max_search_fraction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_UNSET</span>
+        <span class="ow">and</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">max_search_fraction</span><span class="p">,</span> <span class="s2">"Maximum search fraction"</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Maximum search fraction must be non-negative"</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span>
         <span class="n">risk_aversion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_UNSET</span>
         <span class="ow">and</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="s2">"Risk aversion"</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span>
     <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Risk aversion must be greater than 0"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entry_price</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_UNSET</span><span class="p">:</span>
+        <span class="n">_require_finite</span><span class="p">(</span><span class="n">entry_price</span><span class="p">,</span> <span class="s2">"Entry price"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_controls</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_costs</span><span class="p">,</span> <span class="n">trials</span><span class="p">):</span>
@@ -479,18 +491,30 @@
 <span class="sd">        ``PROBABILITY_SUM_TOLERANCE``). Any omitted mass is treated as a</span>
 <span class="sd">        zero-payout outcome.</span>
 <span class="sd">    current_wealth : float</span>
-<span class="sd">        Current wealth before the gamble</span>
+<span class="sd">        Current wealth before the gamble. Must be finite and greater than 0.</span>
 <span class="sd">    entry_price : float</span>
-<span class="sd">        Price to pay to participate in the gamble</span>
+<span class="sd">        Price to pay to participate in the gamble. Must be finite; its sign is</span>
+<span class="sd">        unconstrained, because a negative price models being paid to take the</span>
+<span class="sd">        gamble.</span>
 <span class="sd">    risk_aversion : float, default=1.0</span>
-<span class="sd">        Coefficient of relative risk aversion (γ)</span>
+<span class="sd">        Coefficient of relative risk aversion (γ). Must be finite and greater</span>
+<span class="sd">        than 0.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        The expected utility from participating in the gamble</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the gamble arrays are malformed, or if any scalar argument falls</span>
+<span class="sd">        outside the ranges documented above.</span>
 <span class="sd">    """</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+    <span class="n">_validate_entry_price_scalars</span><span class="p">(</span>
+        <span class="n">current_wealth</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="n">entry_price</span><span class="o">=</span><span class="n">entry_price</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">_expected_utility</span><span class="p">(</span>
         <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">entry_price</span><span class="p">,</span> <span class="n">risk_aversion</span>
     <span class="p">)</span></div>
