@@ -257,6 +257,11 @@
 <span class="sd">            The maximum safe bet size as a proportion of bankroll. Zero when</span>
 <span class="sd">            there is nothing left to stake (``current_bankroll &lt;= 0``).</span>
 
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``current_bankroll`` is not finite.</span>
+
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        The maximum stake that cannot drive the bankroll negative is</span>
@@ -266,6 +271,7 @@
 <span class="sd">        A non-positive bankroll has no safe stake at all, so the answer there is</span>
 <span class="sd">        ``0.0``.</span>
 <span class="sd">        """</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">))</span></div>
@@ -366,6 +372,12 @@
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            The proportion of the bankroll to bet.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``probability`` is not finite and between 0 and 1 inclusive, or</span>
+<span class="sd">            if ``current_bankroll`` is not finite.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span></div>
 </div>

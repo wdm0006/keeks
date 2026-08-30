@@ -252,6 +252,10 @@
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
 
@@ -381,6 +385,10 @@
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span></div>
 
@@ -518,6 +526,11 @@
 <span class="sd">        float</span>
 <span class="sd">            The drawdown-adjusted proportion of the bankroll to bet.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
+
         <span class="c1"># Calculate the standard Kelly bet size</span>
         <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
         <span class="n">full_kelly</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span>

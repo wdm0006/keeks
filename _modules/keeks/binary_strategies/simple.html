@@ -242,6 +242,11 @@
 <span class="sd">        float</span>
 <span class="sd">            The proportion of the bankroll to bet.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
+
         <span class="c1"># Calculate expected value</span>
         <span class="n">expected_value</span> <span class="o">=</span> <span class="p">(</span>
             <span class="p">(</span><span class="n">probability</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">)</span>
@@ -394,6 +399,10 @@
 <span class="sd">        float</span>
 <span class="sd">            The fixed fraction if probability &gt;= min_probability, otherwise 0.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
             <span class="c1"># Ensure we never bet more than would result in negative bankroll</span>
             <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fraction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span>
@@ -553,6 +562,11 @@
 <span class="sd">            The proportion of the current bankroll to bet, or 0 if below</span>
 <span class="sd">            the minimum probability threshold.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
+
         <span class="c1"># Update current bankroll</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_bankroll</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">)</span>
 
@@ -854,6 +868,11 @@
 <span class="sd">        float</span>
 <span class="sd">            The proportion of the current bankroll to bet.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
+
         <span class="c1"># Don't bet on sub-threshold probabilities</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
@@ -1020,6 +1039,10 @@
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>  <span class="c1"># Use 0.5 as default minimum probability</span>
             <span class="k">return</span> <span class="mf">0.0</span>
 
@@ -1213,6 +1236,10 @@
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet based on Merton's formula.</span>
 <span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
+
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
 
