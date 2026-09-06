@@ -1,0 +1,12 @@
+# Repo policy for obvious workers
+defaultBranch: master
+mergeMethod: merge        # GitHub allows merge/squash/rebase; history uses merge commits
+deleteBranchOnMerge: false
+requiredChecks:
+  - Run Tests / test (3.10)
+  - Run Tests / test (3.11)
+  - Run Tests / test (3.12)
+  - Run Tests / test (3.13)
+  - Run Tests / test (3.14)
+  - Run Tests / lint
+  - Run Tests / package
