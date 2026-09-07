@@ -195,9 +195,13 @@
 <span class="sd">    loss : float</span>
 <span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
 <span class="sd">    transaction_cost : float</span>
-<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</span>
 <span class="sd">    min_probability : float, default=0.5</span>
-<span class="sd">        The minimum probability required to place a bet.</span>
+<span class="sd">        The minimum probability required to place a bet. The default is a</span>
+<span class="sd">        lossy gate for better-than-even payoffs: with ``payoff=10``,</span>
+<span class="sd">        ``loss=1`` and probability 0.3, the true Kelly fraction is about</span>
+<span class="sd">        0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.</span>
+<span class="sd">        Pass a lower ``min_probability`` to size such bets.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">min_probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
@@ -211,9 +215,13 @@
 <span class="sd">        loss : float</span>
 <span class="sd">            The amount lost per unit bet on an unsuccessful outcome.</span>
 <span class="sd">        transaction_cost : float</span>
-<span class="sd">            The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</span>
 <span class="sd">        min_probability : float, default=0.5</span>
-<span class="sd">            The minimum probability required to place a bet.</span>
+<span class="sd">            The minimum probability required to place a bet. The default is a</span>
+<span class="sd">            lossy gate for better-than-even payoffs: with ``payoff=10``,</span>
+<span class="sd">            ``loss=1`` and probability 0.3, the true Kelly fraction is about</span>
+<span class="sd">            0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.</span>
+<span class="sd">            Pass a lower ``min_probability`` to size such bets.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Minimum probability must be between 0 and 1"</span><span class="p">)</span>
@@ -355,7 +363,7 @@
 <span class="sd">    loss : float</span>
 <span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
 <span class="sd">    transaction_cost : float</span>
-<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</span>
 <span class="sd">    fraction : float</span>
 <span class="sd">        The fraction of the full Kelly bet to use (typically between 0 and 1).</span>
 <span class="sd">    """</span>
@@ -471,7 +479,7 @@
 <span class="sd">    loss : float</span>
 <span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
 <span class="sd">    transaction_cost : float</span>
-<span class="sd">        The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</span>
 <span class="sd">    max_acceptable_drawdown : float</span>
 <span class="sd">        The maximum acceptable drawdown as a fraction of the bankroll (0 to 1).</span>
 <span class="sd">    """</span>
@@ -487,7 +495,7 @@
 <span class="sd">        loss : float</span>
 <span class="sd">            The amount lost per unit bet on an unsuccessful outcome.</span>
 <span class="sd">        transaction_cost : float</span>
-<span class="sd">            The fixed cost per transaction, regardless of outcome.</span>
+<span class="sd">            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</span>
 <span class="sd">        max_acceptable_drawdown : float, default=0.2</span>
 <span class="sd">            The maximum acceptable drawdown as a fraction of the bankroll.</span>
 

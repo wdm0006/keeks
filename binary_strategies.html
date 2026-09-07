@@ -307,7 +307,7 @@ fraction of the bankroll if the expected value is positive.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 </ul>
 </dd>
 </dl>
@@ -391,7 +391,7 @@ for comparison or as a simple approach for risk management.</p>
 <li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed fraction of the bankroll to bet (between 0 and 1).</p></li>
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0</em>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0</em>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 <li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
 </ul>
 </dd>
@@ -470,7 +470,7 @@ and invests a multiple of the cushion (amount above floor) in each bet.</p>
 <li><p><strong>initial_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The initial bankroll amount.</p></li>
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 <li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
 </ul>
 </dd>
@@ -564,7 +564,7 @@ the minimum probability threshold.</p>
 <li><p><strong>base_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The base fraction of bankroll to bet.</p></li>
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 <li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=10</em>) – The number of recent results to consider for adjustments.</p></li>
 <li><p><strong>max_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.2</em>) – The maximum fraction of bankroll that can be bet.</p></li>
 <li><p><strong>min_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.05</em>) – The minimum fraction of bankroll to bet.</p></li>
@@ -683,8 +683,12 @@ size of a series of bets to maximize long-term growth rate.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
-<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet. The default is a
+lossy gate for better-than-even payoffs: with <code class="docutils literal notranslate"><span class="pre">payoff=10</span></code>,
+<code class="docutils literal notranslate"><span class="pre">loss=1</span></code> and probability 0.3, the true Kelly fraction is about
+0.23, but <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> returns 0.0 because 0.3 is below the gate.
+Pass a lower <code class="docutils literal notranslate"><span class="pre">min_probability</span></code> to size such bets.</p></li>
 </ul>
 </dd>
 </dl>
@@ -769,7 +773,7 @@ which can reduce volatility at the expense of long-term growth rate.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 <li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fraction of the full Kelly bet to use (typically between 0 and 1).</p></li>
 </ul>
 </dd>
@@ -848,7 +852,7 @@ the risk of large drawdowns.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 <li><p><strong>max_acceptable_drawdown</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The maximum acceptable drawdown as a fraction of the bankroll (0 to 1).</p></li>
 </ul>
 </dd>
@@ -927,7 +931,7 @@ approach to risk management.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 <li><p><strong>win_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The historical or expected win rate (between 0 and 1).</p></li>
 <li><p><strong>max_risk_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.2</em>) – The maximum fraction of bankroll that can be risked on a single bet.</p></li>
 </ul>
@@ -982,7 +986,9 @@ Probabilities below 0.5 return zero; bet sizing uses <code class="docutils liter
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The optimal proportion of the bankroll to bet.</p>
+<dd class="field-even"><p>The optimal proportion of the bankroll to stake: Ralph Vince’s
+optimal f converted from a risk fraction to a stake fraction.
+The two coincide only when <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">+</span> <span class="pre">transaction_cost</span></code> is 1.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
@@ -1019,7 +1025,7 @@ product of risk aversion and variance.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
 <li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed cost per transaction, regardless of outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 <li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=2.0</em>) – The coefficient of relative risk aversion (γ). Common values:
 - 1.0: Low risk aversion
 - 2.0: Moderate risk aversion (most common empirical estimate)

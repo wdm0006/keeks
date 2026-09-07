@@ -471,7 +471,12 @@
 <span class="p">):</span>
     <span class="n">final_wealth</span> <span class="o">=</span> <span class="n">current_wealth</span> <span class="o">-</span> <span class="n">entry_price</span> <span class="o">+</span> <span class="n">outcomes</span>
     <span class="n">utilities</span> <span class="o">=</span> <span class="n">crra_utility</span><span class="p">(</span><span class="n">final_wealth</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">probabilities</span> <span class="o">*</span> <span class="n">utilities</span><span class="p">)</span>
+    <span class="c1"># A zero-probability outcome can carry a -inf utility (its wealth may be</span>
+    <span class="c1"># nonpositive); 0 * -inf is NaN, so mask those rows out before summing</span>
+    <span class="c1"># instead of letting them poison the expectation and the comparisons</span>
+    <span class="c1"># downstream (which silently truncates the indifference-price search).</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">probabilities</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">utilities</span><span class="p">[</span><span class="n">mask</span><span class="p">]))</span>
 
 
 <div class="viewcode-block" id="expected_utility">
