@@ -16,11 +16,13 @@ import pytest
 
 from keeks.binary_strategies.kelly import (
     DrawdownAdjustedKelly,
+    FractionalKellyCriterion,
     KellyCriterion,
 )
 from keeks.binary_strategies.simple import (
     CPPIStrategy,
     DynamicBankrollManagement,
+    FixedFractionStrategy,
     MertonShare,
     NaiveStrategy,
     OptimalF,
@@ -342,6 +344,7 @@ class TestEntryPriceGolden:
 
     def test_naive_negative_ev_gamble_prices_at_zero(self):
         strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0)
+
         # EV = 0.25*1 - 0.75*1 = -0.5 -> unwilling to pay anything.
         assert (
             strategy.calculate_max_entry_price([1.0, -1.0], [0.25, 0.75], 1000.0) == 0.0
@@ -363,3 +366,46 @@ class TestOptimalFGolden:
     def test_unprofitable_costs_do_not_bet(self):
         strategy = OptimalF(payoff=0.5, loss=1.0, transaction_cost=0.5, win_rate=0.6)
         assert strategy.evaluate(0.7, 1000.0) == 0.0
+
+
+@pytest.mark.parametrize(
+    ("strategy_cls", "kwargs", "expected_multiplier"),
+    [
+        (MertonShare, {"risk_aversion": 2.0, "min_probability": 0.0}, 1.0),
+        (FractionalKellyCriterion, {"fraction": 0.5}, 0.5),
+        (DrawdownAdjustedKelly, {"max_acceptable_drawdown": 0.5}, 1.0),
+    ],
+)
+def test_utility_entry_price_saturates_at_default_search_cap(
+    strategy_cls, kwargs, expected_multiplier
+):
+    """Utility strategies saturate at wealth * max_search_fraction = 500."""
+    strategy = strategy_cls(payoff=1.0, loss=1.0, transaction_cost=0.0, **kwargs)
+
+    with pytest.warns(RuntimeWarning, match="saturated at its search bound"):
+        price = strategy.calculate_max_entry_price([10000.0], [1.0], 1000.0)
+
+    assert price == pytest.approx(1000.0 * 0.5 * expected_multiplier, abs=0.01)
+
+
+@pytest.mark.parametrize(
+    ("strategy_cls", "kwargs", "expected_price"),
+    [
+        (FixedFractionStrategy, {"fraction": 0.1}, 100.0),
+        (
+            CPPIStrategy,
+            {"floor_fraction": 0.1, "initial_bankroll": 1000.0, "multiplier": 5.0},
+            500.0,
+        ),
+        (DynamicBankrollManagement, {"base_fraction": 0.1, "max_fraction": 1.0}, 100.0),
+    ],
+)
+def test_heuristic_entry_price_pinned_with_default_config(
+    strategy_cls, kwargs, expected_price
+):
+    """Heuristic overrides pin wealth*max_search_fraction*fraction exactly."""
+    strategy = strategy_cls(payoff=1.0, loss=1.0, transaction_cost=0.0, **kwargs)
+
+    price = strategy.calculate_max_entry_price([10000.0], [1.0], 1000.0)
+
+    assert price == pytest.approx(expected_price, abs=1e-9)

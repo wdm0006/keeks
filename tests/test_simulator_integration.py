@@ -8,7 +8,6 @@ the legacy global stream, the exact-0.0 bankruptcy stop, the ``record_result``
 payload, and the ``None`` return value of an early-exited run.
 """
 
-
 import numpy as np
 import pytest
 
