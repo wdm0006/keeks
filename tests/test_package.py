@@ -46,9 +46,7 @@ def test_reexports_are_the_documented_classes():
     assert keeks.BankRoll is keeks.bankroll.BankRoll
     assert keeks.BaseStrategy is keeks.binary_strategies.base.BaseStrategy
     assert keeks.KellyCriterion is keeks.binary_strategies.KellyCriterion
-    assert (
-        keeks.RepeatedBinarySimulator is keeks.simulators.RepeatedBinarySimulator
-    )
+    assert keeks.RepeatedBinarySimulator is keeks.simulators.RepeatedBinarySimulator
     assert keeks.RuinError is keeks.utils.RuinError
     assert keeks.crra_utility is keeks.utils.crra_utility
 
