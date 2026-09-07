@@ -22,7 +22,7 @@ class NaiveStrategy(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     """
 
     def __init__(self, payoff, loss, transaction_cost):
@@ -36,7 +36,7 @@ class NaiveStrategy(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         """
         super().__init__(payoff, loss, transaction_cost)
 
@@ -163,7 +163,7 @@ class FixedFractionStrategy(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float, default=0
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     min_probability : float, default=0.5
         The minimum probability required to place a bet.
     """
@@ -181,7 +181,7 @@ class FixedFractionStrategy(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float, default=0
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         min_probability : float, default=0.5
             The minimum probability required to place a bet.
         """
@@ -294,7 +294,7 @@ class CPPIStrategy(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     min_probability : float, default=0.5
         The minimum probability required to place a bet.
     """
@@ -501,7 +501,7 @@ class DynamicBankrollManagement(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     window_size : int, default=10
         The number of recent results to consider for adjustments.
     max_fraction : float, default=0.2
@@ -751,7 +751,7 @@ class OptimalF(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     win_rate : float
         The historical or expected win rate (between 0 and 1).
     max_risk_fraction : float, default=0.2
@@ -769,7 +769,7 @@ class OptimalF(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         win_rate : float
             The historical or expected win rate (between 0 and 1).
         max_risk_fraction : float, default=0.2
@@ -928,7 +928,7 @@ class MertonShare(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     risk_aversion : float, default=2.0
         The coefficient of relative risk aversion (γ). Common values:
         - 1.0: Low risk aversion
@@ -965,7 +965,7 @@ class MertonShare(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         risk_aversion : float, default=2.0
             The coefficient of relative risk aversion.
         min_probability : float, default=0.5

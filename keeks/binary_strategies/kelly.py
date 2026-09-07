@@ -17,9 +17,13 @@ class KellyCriterion(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     min_probability : float, default=0.5
-        The minimum probability required to place a bet.
+        The minimum probability required to place a bet. The default is a
+        lossy gate for better-than-even payoffs: with ``payoff=10``,
+        ``loss=1`` and probability 0.3, the true Kelly fraction is about
+        0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.
+        Pass a lower ``min_probability`` to size such bets.
     """
 
     def __init__(self, payoff, loss, transaction_cost, min_probability=0.5):
@@ -33,9 +37,13 @@ class KellyCriterion(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         min_probability : float, default=0.5
-            The minimum probability required to place a bet.
+            The minimum probability required to place a bet. The default is a
+            lossy gate for better-than-even payoffs: with ``payoff=10``,
+            ``loss=1`` and probability 0.3, the true Kelly fraction is about
+            0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.
+            Pass a lower ``min_probability`` to size such bets.
         """
         if not 0 <= min_probability <= 1:
             raise ValueError("Minimum probability must be between 0 and 1")
@@ -168,7 +176,7 @@ class FractionalKellyCriterion(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     fraction : float
         The fraction of the full Kelly bet to use (typically between 0 and 1).
     """
@@ -275,7 +283,7 @@ class DrawdownAdjustedKelly(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     max_acceptable_drawdown : float
         The maximum acceptable drawdown as a fraction of the bankroll (0 to 1).
     """
@@ -291,7 +299,7 @@ class DrawdownAdjustedKelly(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         max_acceptable_drawdown : float, default=0.2
             The maximum acceptable drawdown as a fraction of the bankroll.
 

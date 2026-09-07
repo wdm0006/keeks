@@ -159,6 +159,11 @@ the one-time workflow.
   *absolute* bankroll amount charged once per settled bet. The two are
   different units — passing the same number to both models two different
   real-world costs, and Keeks does not convert between them.
+- Kelly-family strategies gate bets behind a default `min_probability=0.5`: a
+  trial probability below it returns 0.0 regardless of payoff asymmetry. With
+  `payoff=10`, `loss=1`, and a 0.3 win probability, the true Kelly fraction is
+  about 0.23, but `evaluate` returns 0.0 until you pass a lower
+  `min_probability`. `OptimalF` hardcodes the same 0.5 gate.
 
 ## Documentation and examples
 
