@@ -56,7 +56,6 @@ dev = [
     "pytest-cov",
     "sphinx",
     "sphinxcontrib-googleanalytics",
-    "flake8",
     "wheel",
     "ruff",
     "tox",
