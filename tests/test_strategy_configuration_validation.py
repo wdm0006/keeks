@@ -97,7 +97,9 @@ def test_base_kwargs_cover_every_exported_strategy():
 @pytest.mark.parametrize("value", NON_FINITE)
 def test_non_finite_economics_rejected(strategy_cls, field, value):
     """NaN and both infinities are rejected for every shared economic control."""
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError, match=rf"^{field.replace('_', ' ').capitalize()} must be"
+    ):
         build(strategy_cls, **{field: value})
 
 
@@ -113,14 +115,19 @@ def test_non_finite_economics_rejected(strategy_cls, field, value):
 def test_shared_economics_rejected(strategy_cls, field, invalid_values):
     """The pre-existing range checks still reject their own invalid values."""
     for value in invalid_values:
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            ValueError, match=rf"^{field.replace('_', ' ').capitalize()} must be"
+        ):
             build(strategy_cls, **{field: value})
 
 
 @pytest.mark.parametrize("strategy_cls", STRATEGIES)
 def test_zero_total_cost_still_rejected(strategy_cls):
     """``loss + transaction_cost`` must remain strictly positive."""
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match=r"^Total cost \(loss \+ transaction_cost\) must be greater than 0$",
+    ):
         build(strategy_cls, loss=0.0, transaction_cost=0.0)
 
 

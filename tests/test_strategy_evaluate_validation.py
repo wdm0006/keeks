@@ -24,7 +24,7 @@ def test_base_kwargs_cover_every_exported_strategy():
 @pytest.mark.parametrize("strategy_cls", STRATEGIES)
 @pytest.mark.parametrize("probability", INVALID_PROBABILITIES)
 def test_invalid_probability_rejected(strategy_cls, probability):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Probability must be"):
         build(strategy_cls).evaluate(probability, 1000.0)
 
 
@@ -32,7 +32,7 @@ def test_invalid_probability_rejected(strategy_cls, probability):
 @pytest.mark.parametrize("probability", [0.4, 0.6])
 @pytest.mark.parametrize("current_bankroll", [math.nan, math.inf, -math.inf])
 def test_non_finite_bankroll_rejected(strategy_cls, probability, current_bankroll):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Current bankroll must be a finite number$"):
         build(strategy_cls).evaluate(probability, current_bankroll)
 
 
@@ -45,7 +45,7 @@ def test_boundary_probability_accepted(strategy_cls, probability):
 
 
 def test_get_max_safe_bet_rejects_nan_bankroll():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Current bankroll must be a finite number$"):
         build(STRATEGIES[0]).get_max_safe_bet(math.nan)
 
 

@@ -169,7 +169,9 @@ class TestExpectedUtility:
         ],
     )
     def test_invalid_gamble_raises_value_error(self, outcomes, probabilities):
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            ValueError, match=r"^(Outcomes and probabilities|Probabilities) must "
+        ):
             expected_utility(outcomes, probabilities, 1000, 0)
 
     def test_probability_sum_tolerance_is_accepted(self):
@@ -333,5 +335,7 @@ class TestFindIndifferencePrice:
         ],
     )
     def test_invalid_gamble_raises_value_error(self, outcomes, probabilities):
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            ValueError, match=r"^(Outcomes and probabilities|Probabilities) must "
+        ):
             find_indifference_price(outcomes, probabilities, 1000)

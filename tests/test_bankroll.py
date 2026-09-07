@@ -38,7 +38,7 @@ def test_percent_bettable():
 
 def test_drawdown_limit():
     br = BankRoll(initial_funds=1000, percent_bettable=0.5, max_draw_down=0.3)
-    with pytest.raises(RuinError):
+    with pytest.raises(RuinError, match=r"^You lost too much"):
         br.withdraw(400)
 
 
@@ -58,7 +58,7 @@ def test_drawdown_limit():
     ],
 )
 def test_invalid_configuration_raises_value_error(argument, value):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=rf"^{argument} must be"):
         BankRoll(**{argument: value})
 
 
@@ -79,7 +79,7 @@ def test_invalid_transaction_does_not_mutate_bankroll(method_name, amount):
     br = BankRoll(initial_funds=100, max_draw_down=1)
     original_history = br.history.copy()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"must be a finite, nonnegative number$"):
         getattr(br, method_name)(amount)
 
     assert br.total_funds == 100
@@ -91,7 +91,7 @@ def test_zero_drawdown_rejects_positive_removal_without_mutation(method_name):
     br = BankRoll(initial_funds=100, max_draw_down=0)
     original_history = br.history.copy()
 
-    with pytest.raises(RuinError):
+    with pytest.raises(RuinError, match=r"^You lost too much"):
         getattr(br, method_name)(1)
 
     assert br.total_funds == 100
@@ -112,7 +112,7 @@ def test_bet_above_drawdown_limit_does_not_mutate_bankroll():
     br = BankRoll(initial_funds=100, max_draw_down=0.5)
     original_history = br.history.copy()
 
-    with pytest.raises(RuinError):
+    with pytest.raises(RuinError, match=r"^You lost too much"):
         br.bet(50.01)
 
     assert br.total_funds == 100
@@ -132,7 +132,7 @@ def test_bet_above_bettable_funds_raises_before_drawdown_check():
     br = BankRoll(initial_funds=100, percent_bettable=0.1, max_draw_down=None)
     original_history = br.history.copy()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Bet amount exceeds bettable funds$"):
         br.bet(20)
 
     assert br.total_funds == 100
