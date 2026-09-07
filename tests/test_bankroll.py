@@ -146,3 +146,31 @@ def test_none_disables_drawdown_limit_for_bet():
 
     assert br.total_funds == 0
     assert br.history == [100, 0]
+
+
+def test_plot_history_saves_figure_to_file(tmp_path):
+    """With a fname, plot_history writes the figure to disk and skips show."""
+    import matplotlib
+
+    matplotlib.use("Agg", force=True)
+
+    br = BankRoll(initial_funds=100, max_draw_down=None)
+    br.deposit(50)
+    fname = tmp_path / "bankroll.png"
+
+    br.plot_history(fname=str(fname))
+
+    assert fname.exists()
+    assert fname.stat().st_size > 0
+
+
+def test_plot_history_display_branch_is_headless_safe():
+    """Without a fname, plot_history calls plt.show() — a no-op under Agg."""
+    import matplotlib
+
+    matplotlib.use("Agg", force=True)
+
+    br = BankRoll(initial_funds=100, max_draw_down=None)
+    br.deposit(50)
+
+    br.plot_history()

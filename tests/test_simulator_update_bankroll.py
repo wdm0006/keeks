@@ -95,3 +95,32 @@ def test_cppi_seeded_histories_remain_unchanged(simulator_cls, expected_history)
     build_simulator(simulator_cls).evaluate_strategy(strategy, bankroll)
 
     assert bankroll.history == expected_history
+
+
+@pytest.mark.parametrize(
+    "simulator_cls", [RandomBinarySimulator, RandomUncertainBinarySimulator]
+)
+def test_starting_bankrupt_stops_before_first_strategy_call(simulator_cls):
+    """A zero-funds bankroll exits the trial loop before any strategy work."""
+
+    class CountingStrategy:
+        def __init__(self):
+            self.calls = 0
+
+        def update_bankroll(self, _current_bankroll):
+            self.calls += 1
+
+        def evaluate(self, _probability, _current_bankroll):
+            self.calls += 1
+
+            return 0.1
+
+    sim = build_simulator(simulator_cls)
+    strategy = CountingStrategy()
+    bankroll = BankRoll(initial_funds=0.0)
+
+    # The random simulators stop silently (no return value) on early exit.
+    assert sim.evaluate_strategy(strategy, bankroll) is None
+
+    assert strategy.calls == 0
+    assert bankroll.history == [0.0]

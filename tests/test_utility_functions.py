@@ -9,6 +9,7 @@ import pytest
 
 from keeks.utils import (
     PROBABILITY_SUM_TOLERANCE,
+    _update_strategy_bankroll,
     crra_utility,
     expected_utility,
     find_indifference_price,
@@ -339,3 +340,33 @@ class TestFindIndifferencePrice:
             ValueError, match=r"^(Outcomes and probabilities|Probabilities) must "
         ):
             find_indifference_price(outcomes, probabilities, 1000)
+
+
+def test_update_strategy_bankroll_invokes_callable_hook():
+    """Strategies exposing a callable update_bankroll hook get notified."""
+
+    class HookProbe:
+        def __init__(self):
+            self.updates = []
+
+        def update_bankroll(self, current_bankroll):
+            self.updates.append(current_bankroll)
+
+    strategy = HookProbe()
+
+    _update_strategy_bankroll(strategy, 1234.0)
+
+    assert strategy.updates == [1234.0]
+
+
+def test_update_strategy_bankroll_ignores_non_callable_hook():
+    """A non-callable or absent hook is skipped instead of raising."""
+
+    class NonCallableProbe:
+        update_bankroll = None
+
+    strategy = NonCallableProbe()
+
+    _update_strategy_bankroll(strategy, 1234.0)
+
+    assert strategy.update_bankroll is None
