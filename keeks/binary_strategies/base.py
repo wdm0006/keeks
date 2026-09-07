@@ -61,6 +61,10 @@ class BaseStrategy(abc.ABC):
         self.payoff = payoff
         self.loss = loss
         self.transaction_cost = transaction_cost
+        # Constructor-only constant: for a positive bankroll the bankroll term
+        # in current_bankroll / (loss + transaction_cost) cancels, so the cap
+        # is a fixed fraction.
+        self._max_safe_fraction = min(1.0, 1.0 / (loss + transaction_cost))
 
     def get_max_safe_bet(self, current_bankroll: float) -> float:
         """
@@ -94,7 +98,7 @@ class BaseStrategy(abc.ABC):
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if current_bankroll <= 0:
             return 0.0
-        return min(1.0, 1.0 / (self.loss + self.transaction_cost))
+        return self._max_safe_fraction
 
     def calculate_max_entry_price(
         self,

@@ -1,4 +1,5 @@
 from keeks.binary_strategies.base import BaseStrategy
+from keeks.utils import _require_finite, _validate_probability, find_indifference_price
 
 __author__ = "willmcginnis"
 
@@ -80,8 +81,6 @@ class KellyCriterion(BaseStrategy):
         float
             The optimal proportion of the bankroll to bet.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability < self.min_probability:
@@ -150,8 +149,6 @@ class KellyCriterion(BaseStrategy):
         Kelly Criterion maximizes E[log(wealth)], which corresponds to
         CRRA utility with risk aversion γ=1.0 (log utility).
         """
-        from keeks.utils import find_indifference_price
-
         return find_indifference_price(
             outcomes=outcomes,
             probabilities=probabilities,
@@ -187,6 +184,9 @@ class FractionalKellyCriterion(BaseStrategy):
 
         super().__init__(payoff, loss, transaction_cost)
         self.fraction = fraction
+        # Constructed once: the inner Kelly strategy depends only on
+        # constructor arguments, and strategies are immutable after init.
+        self._kelly = KellyCriterion(payoff, loss, transaction_cost)
 
     def evaluate(self, probability, current_bankroll):
         """
@@ -204,12 +204,9 @@ class FractionalKellyCriterion(BaseStrategy):
         float
             The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
-        probability = _validate_probability(probability)
-        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
-        kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
-        return self.fraction * kelly.evaluate(probability, current_bankroll)
+        # The inner Kelly evaluate validates both arguments, so the wrapper
+        # only rescales its result.
+        return self.fraction * self._kelly.evaluate(probability, current_bankroll)
 
     def calculate_max_entry_price(
         self,
@@ -259,8 +256,7 @@ class FractionalKellyCriterion(BaseStrategy):
         approximation though not derived from first principles.
         """
         # Get full Kelly price
-        kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
-        kelly_price = kelly.calculate_max_entry_price(
+        kelly_price = self._kelly.calculate_max_entry_price(
             outcomes, probabilities, current_wealth, tolerance, max_search_fraction
         )
 
@@ -316,6 +312,10 @@ class DrawdownAdjustedKelly(BaseStrategy):
             )
 
         self.max_acceptable_drawdown = max_acceptable_drawdown
+        # Constructed once: the inner Kelly strategy depends only on
+        # constructor arguments, and strategies are immutable after init.
+        self._kelly = KellyCriterion(payoff, loss, transaction_cost)
+        self._drawdown_factor = min(1.0, max_acceptable_drawdown / 0.5)
 
     def evaluate(self, probability, current_bankroll):
         """
@@ -336,24 +336,13 @@ class DrawdownAdjustedKelly(BaseStrategy):
         float
             The drawdown-adjusted proportion of the bankroll to bet.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
-        probability = _validate_probability(probability)
-        current_bankroll = _require_finite(current_bankroll, "Current bankroll")
-
-        # Calculate the standard Kelly bet size
-        kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
-        full_kelly = kelly.evaluate(probability, current_bankroll)
-
-        # Adjust the Kelly fraction based on maximum acceptable drawdown
-        # This is a simplified approximation of the relationship
-        # Various research suggests specific formulas, but a common
-        # conservative approach is to scale Kelly by max drawdown / 0.5
-        # (since full Kelly has an expected drawdown of around 50%)
-        drawdown_factor = min(1.0, self.max_acceptable_drawdown / 0.5)
+        # The inner Kelly evaluate validates both arguments and caps at the
+        # max-safe fraction; the wrapper only rescales its result. Full Kelly
+        # has an expected drawdown of around 50%, so scale by max drawdown / 0.5.
+        full_kelly = self._kelly.evaluate(probability, current_bankroll)
 
         # Apply the drawdown adjustment
-        adjusted_kelly = drawdown_factor * full_kelly
+        adjusted_kelly = self._drawdown_factor * full_kelly
 
         # Ensure we never bet more than would result in negative bankroll
         return min(adjusted_kelly, self.get_max_safe_bet(current_bankroll))
@@ -404,12 +393,9 @@ class DrawdownAdjustedKelly(BaseStrategy):
         drawdown_factor = min(1.0, max_acceptable_drawdown / 0.5)
         """
         # Get full Kelly price
-        kelly = KellyCriterion(self.payoff, self.loss, self.transaction_cost)
-        kelly_price = kelly.calculate_max_entry_price(
+        kelly_price = self._kelly.calculate_max_entry_price(
             outcomes, probabilities, current_wealth, tolerance, max_search_fraction
         )
 
         # Apply the same drawdown adjustment used in evaluate()
-        drawdown_factor = min(1.0, self.max_acceptable_drawdown / 0.5)
-
-        return drawdown_factor * kelly_price
+        return self._drawdown_factor * kelly_price

@@ -1,11 +1,9 @@
-import copy
 import random
 
 import numpy as np
 
 from keeks.utils import (
     RuinError,
-    _update_strategy_bankroll,
     _validate_simulator_controls,
     _validate_simulator_seed,
     _validate_simulator_stdev,
@@ -115,17 +113,31 @@ class RandomUncertainBinarySimulator:
         """
         _validate_strategy_odds(strategy, self.payoff, self.loss)
 
+        # Resolve state-dependent hooks once: neither the strategy's hook set
+        # nor the bankroll value changes between the reads within one trial.
+        update_bankroll = getattr(strategy, "update_bankroll", None)
+        if not callable(update_bankroll):
+            update_bankroll = None
+        record_result = getattr(strategy, "record_result", None)
+        if not callable(record_result):
+            record_result = None
+        probability_rng = self._probability_rng
+
         for _ in range(self.trials):
             # Stop if bankrupt
-            if bankroll.total_funds <= 0:
+            total_funds = bankroll.total_funds
+            if total_funds <= 0:
                 break
 
-            _update_strategy_bankroll(strategy, bankroll.total_funds)
+            if update_bankroll is not None:
+                update_bankroll(total_funds)
 
+            # The state getter already returns a fresh snapshot, so no copy
+            # is needed before the validation-restore path below.
             probability_state = (
                 np.random.get_state()
-                if self._probability_rng is None
-                else copy.deepcopy(self._probability_rng.bit_generator.state)
+                if probability_rng is None
+                else probability_rng.bit_generator.state
             )
             # Normal samples are unbounded; only [0, 1] values are probabilities.
             probability = min(
@@ -133,23 +145,23 @@ class RandomUncertainBinarySimulator:
                 max(
                     0.0,
                     np.random.normal(0.5, self.stdev, 1)[0]
-                    if self._probability_rng is None
-                    else self._probability_rng.normal(0.5, self.stdev),
+                    if probability_rng is None
+                    else probability_rng.normal(0.5, self.stdev),
                 ),
             )
-            proportion = strategy.evaluate(probability, bankroll.total_funds)
+            proportion = strategy.evaluate(probability, total_funds)
             try:
                 proportion = _validate_stake_fraction(proportion)
             except ValueError:
-                if self._probability_rng is None:
+                if probability_rng is None:
                     np.random.set_state(probability_state)
                 else:
-                    self._probability_rng.bit_generator.state = probability_state
+                    probability_rng.bit_generator.state = probability_state
                 raise
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
             if proportion > 0:
-                current_bankroll = bankroll.total_funds
+                current_bankroll = total_funds
                 bet_amount = bankroll.bettable_funds * proportion
                 outcome_probability = min(
                     1.0,
@@ -158,8 +170,8 @@ class RandomUncertainBinarySimulator:
                         probability
                         + (
                             np.random.normal(0, self.uncertainty_stdev, 1)[0]
-                            if self._probability_rng is None
-                            else self._probability_rng.normal(0, self.uncertainty_stdev)
+                            if probability_rng is None
+                            else probability_rng.normal(0, self.uncertainty_stdev)
                         ),
                     ),
                 )
@@ -185,6 +197,5 @@ class RandomUncertainBinarySimulator:
                     # Settlement exceeded a bankroll safeguard; stop gracefully
                     break
 
-                record_result = getattr(strategy, "record_result", None)
-                if callable(record_result):
+                if record_result is not None:
                     record_result(won, return_pct)
