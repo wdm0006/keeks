@@ -43,6 +43,7 @@ from keeks.utils import (
     crra_utility,
     expected_utility,
     find_indifference_price,
+    normalize_probabilities,
 )
 
 try:
@@ -70,4 +71,5 @@ __all__ = [
     "crra_utility",
     "expected_utility",
     "find_indifference_price",
+    "normalize_probabilities",
 ]

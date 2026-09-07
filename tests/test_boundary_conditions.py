@@ -25,7 +25,12 @@ from keeks.binary_strategies.simple import (
     MertonShare,
     OptimalF,
 )
-from keeks.utils import _normalize_gamble, crra_utility, expected_utility
+from keeks.utils import (
+    _normalize_gamble,
+    crra_utility,
+    expected_utility,
+    normalize_probabilities,
+)
 
 
 class TestValidatorEndpoints:
@@ -430,6 +435,89 @@ class TestGambleInputBoundaries:
         # 1 + 5e-12 is an order of magnitude outside the window: rejected.
         with pytest.raises(ValueError, match=r"must sum to no more than one$"):
             _normalize_gamble([1.0], [1.0 + 5e-12])
+
+
+class TestNormalizeProbabilitiesBoundaries:
+    """The public probability-vector validator: shape, value, and window edges."""
+
+    def test_non_sequence_rejected(self):
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must be a finite sequence$"
+        ):
+            normalize_probabilities("not numbers")
+
+    def test_none_is_rejected_as_malformed_shape(self):
+        """NumPy coerces None to nan, so None fails the shape check."""
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must be one-dimensional$"
+        ):
+            normalize_probabilities(None)
+
+    def test_cross_shape_rejected(self):
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must be one-dimensional$"
+        ):
+            normalize_probabilities([[0.5, 0.5]])
+
+    def test_scalar_rejected(self):
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must be one-dimensional$"
+        ):
+            normalize_probabilities(0.5)
+
+    def test_empty_rejected(self):
+        with pytest.raises(ValueError, match=r"^Probabilities must be non-empty$"):
+            normalize_probabilities([])
+
+    def test_nan_rejected(self):
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must contain only finite values$"
+        ):
+            normalize_probabilities([0.5, math.nan])
+
+    def test_infinite_rejected(self):
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must contain only finite values$"
+        ):
+            normalize_probabilities([0.5, math.inf])
+
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must contain only finite values$"
+        ):
+            normalize_probabilities([0.5, -math.inf])
+
+    def test_negative_probability_rejected(self):
+        with pytest.raises(ValueError, match=r"^Probabilities must be nonnegative$"):
+            normalize_probabilities([1.5, -0.5])
+
+    def test_sum_above_tolerance_window_rejected(self):
+        # 1 + 5e-12 is an order of magnitude outside PROBABILITY_SUM_TOLERANCE.
+        with pytest.raises(
+            ValueError, match=r"^Probabilities must sum to no more than one$"
+        ):
+            normalize_probabilities([1.0 + 5e-12])
+
+    def test_sum_inside_tolerance_window_is_returned_unchanged(self):
+        """Mass within the window is accepted as-is: no rescale, no padding."""
+        probabilities = [1.0 + 5e-13]
+        cleaned = normalize_probabilities(probabilities)
+        assert cleaned.dtype == np.float64
+        assert list(cleaned) == probabilities
+
+    def test_deficit_is_left_in_place(self):
+        """A sub-unity sum is returned untouched; completion is the caller's call."""
+        cleaned = normalize_probabilities([0.25, 0.25])
+        assert list(cleaned) == [0.25, 0.25]
+
+    def test_integer_inputs_coerced_to_float64(self):
+        cleaned = normalize_probabilities([1, 0])
+        assert cleaned.dtype == np.float64
+        assert list(cleaned) == [1.0, 0.0]
+
+    def test_numpy_array_input_round_trips(self):
+        cleaned = normalize_probabilities(np.array([0.3, 0.7]))
+        assert isinstance(cleaned, np.ndarray)
+        assert list(cleaned) == [0.3, 0.7]
 
 
 class TestBankrollBoundaries:
