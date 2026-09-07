@@ -1,5 +1,6 @@
 import random
 
+import numpy as np
 import pytest
 
 from keeks.bankroll import BankRoll
@@ -182,10 +183,10 @@ def test_max_safe_bet():
     safety_capped = OptimalF(
         win_rate=0.9, payoff=10, loss=4, transaction_cost=0, max_risk_fraction=1
     )
-    assert safety_capped.evaluate(0.6, 1000) == pytest.approx(0.25)
-    assert safety_capped.evaluate(0.6, 1000) == pytest.approx(
-        safety_capped.get_max_safe_bet(1000)
-    )
+    # Vince f* = 0.86 risk fraction; staking s risks s * 4, so the returned
+    # stake is 0.86 / 4 = 0.215, inside the 1/(loss + cost) = 0.25 safe bound.
+    assert safety_capped.evaluate(0.6, 1000) == pytest.approx(0.215)
+    assert safety_capped.evaluate(0.6, 1000) <= safety_capped.get_max_safe_bet(1000)
 
 
 def test_ralph_vince_formula():
@@ -214,5 +215,61 @@ def test_ralph_vince_formula():
 
     # Adjusted reward = 1 - 0.1 = 0.9
     # Adjusted risk = 1 + 0.1 = 1.1
-    # f* = 0.6 - 0.4/(0.9/1.1) = 0.6 - 0.4/(0.818) = 0.6 - 0.489 = 0.111
-    assert strategy3.evaluate(0.6, 1000) == pytest.approx(0.111, abs=0.01)
+    # f* = 0.6 - 0.4/(0.9/1.1) = 0.6 - 0.489 = 0.111 risk fraction
+    # Stake = f* / (loss + cost) = 0.111 / 1.1 = 0.101
+    assert strategy3.evaluate(0.6, 1000) == pytest.approx(0.101, abs=0.01)
+
+
+def _twr(stake, win_rate, payoff, loss):
+    """Terminal wealth relative of one win/loss cycle at the given stake."""
+    return (1 + stake * payoff) ** win_rate * (1 - stake * loss) ** (1 - win_rate)
+
+
+@pytest.mark.parametrize(
+    ("win_rate", "payoff", "loss", "expected_stake"),
+    [
+        # f* = W - (1-W)*L/R is a *risk* fraction; the stake divides it by
+        # loss + transaction_cost, so expectations below are f*/(loss + cost).
+        (0.6, 1, 0.5, 0.8),  # f* = 0.4, each staked unit risks 0.5
+        (0.6, 1, 1.0, 0.2),  # loss + cost = 1: stake equals Vince's f
+        (0.7, 1, 1.5, 0.25 / 1.5),  # f* = 0.25, each staked unit risks 1.5
+    ],
+)
+def test_stake_is_twr_optimal(win_rate, payoff, loss, expected_stake):
+    """Hand-computed TWR-optimal stakes, including loss + cost != 1."""
+    strategy = OptimalF(
+        win_rate=win_rate,
+        payoff=payoff,
+        loss=loss,
+        transaction_cost=0,
+        max_risk_fraction=1,
+    )
+
+    stake = strategy.evaluate(0.6, 1000)
+
+    assert stake == pytest.approx(expected_stake)
+
+    # No nearby stake beats the returned one on the TWR objective.
+    grid = np.linspace(0.001, 0.999 / loss, 2000)
+    best = grid[np.argmax(_twr(grid, win_rate, payoff, loss))]
+    assert stake == pytest.approx(best, abs=0.001)
+
+
+def test_stake_conversion_dominates_raw_vince_fraction_on_twr():
+    """The audit's growth reference points: converting the fraction wins TWR."""
+    under_even = OptimalF(
+        win_rate=0.6, payoff=1, loss=0.5, transaction_cost=0, max_risk_fraction=1
+    )
+    over_even = OptimalF(
+        win_rate=0.7, payoff=1, loss=1.5, transaction_cost=0, max_risk_fraction=1
+    )
+
+    # loss=0.5: converted stake 0.8 grows 1.15991 per cycle vs 1.11921 for the
+    # raw risk fraction 0.4. loss=1.5: converted stake 1/6 grows 1.021836 vs
+    # 1.015315 for the raw 0.25, which overbets.
+    assert _twr(under_even.evaluate(0.6, 1000), 0.6, 1, 0.5) == pytest.approx(
+        1.15991, abs=1e-4
+    )
+    assert _twr(over_even.evaluate(0.6, 1000), 0.7, 1, 1.5) == pytest.approx(
+        1.021836, abs=1e-4
+    )

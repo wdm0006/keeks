@@ -803,7 +803,9 @@ class OptimalF(BaseStrategy):
         Returns
         -------
         float
-            The optimal proportion of the bankroll to bet.
+            The optimal proportion of the bankroll to stake: Ralph Vince's
+            optimal f converted from a risk fraction to a stake fraction.
+            The two coincide only when ``loss + transaction_cost`` is 1.
         """
         from keeks.utils import _require_finite, _validate_probability
 
@@ -831,8 +833,15 @@ class OptimalF(BaseStrategy):
         # Cap at our maximum risk fraction
         optimal_f = min(max(0, optimal_f), self.max_risk_fraction)
 
+        # Vince's f is a *risk* fraction: staking a fraction s of the bankroll
+        # puts s * (loss + transaction_cost) at risk, so the TWR-optimal stake
+        # is f* / (loss + transaction_cost), the Kelly closed form
+        # W/(l+c) - (1-W)/(b-c) for this game. evaluate() returns a stake
+        # fraction, so convert; the two agree only when loss + cost == 1.
+        stake_fraction = optimal_f / risk
+
         # Ensure we never bet more than would result in negative bankroll
-        return min(optimal_f, self.get_max_safe_bet(current_bankroll))
+        return min(stake_fraction, self.get_max_safe_bet(current_bankroll))
 
     def calculate_max_entry_price(
         self,
