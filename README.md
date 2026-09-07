@@ -123,8 +123,13 @@ headlessly — so the example stays runnable; the narrative above describes the
 full 1,000-trial run.
 
 Simulation mutates the bankroll and records its history. Use matching payoff and
-loss assumptions in the strategy and simulator; Keeks does not enforce that they
-match. The cost assumption is a separate matter — see the note below.
+Simulation mutates the bankroll and records its history. Use matching payoff and
+loss assumptions in the strategy and simulator: Keeks enforces the match. Every
+simulator's `evaluate_strategy` checks that a `BaseStrategy` instance's `payoff`
+and `loss` agree with the odds it settles at, and raises `ValueError` on a
+mismatch. Duck-typed strategies that carry no odds of their own are not checked —
+their compatibility stays your responsibility. The cost assumption is a separate
+matter — see the note below.
 
 ## Repeated sizing is not one-time pricing
 

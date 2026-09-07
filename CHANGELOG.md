@@ -6,9 +6,11 @@ Unreleased
  * `find_indifference_price` and `expected_utility` no longer let explicit zero-probability outcomes poison the expected utility with NaN when their final wealth is nonpositive; affected gambles now price correctly and the saturation warning fires instead of being silently suppressed
  * `MertonShare` no longer raises `OverflowError` for extreme payoffs (about 1.34e154 and above); the variance saturates and the strategy returns 0.0
  * Strategy docstrings now describe `transaction_cost` as the per-unit fractional cost it is, not a fixed per-transaction amount
+ * `keeks.__version__` now reports the installed version, with `version.py` as the single source: the Sphinx build imports it and hatchling's dynamic versioning consumes it, so `pyproject.toml` no longer duplicates the number
+ * The package root re-exports the documented public API — `BankRoll`, `RuinError`, `BaseStrategy`, all nine strategies, the three simulators, and the CRRA utilities (`crra_utility`, `expected_utility`, `find_indifference_price`) — so `from keeks import BankRoll` works alongside the module paths
 
-v0.6.0
-======
+v0.6.0 (2026-08-22)
+===================
 
 **Added:**
  * Deterministic nine-strategy risk benchmark (`benchmarks/strategy_benchmark.py`, `make benchmark`) with committed CSV and chart artifacts and a documentation page covering growth, drawdown, percentile bands and early stops across edge, cost, estimate-error and drawdown-cap scenarios
@@ -30,14 +32,14 @@ v0.6.0
 
 **Note:** v0.5.0 was tagged in the changelog but never published to PyPI, so its OptimalF sizing change ships here.
 
-v0.5.0
-======
+v0.5.0 (never published)
+=========================
 
 **Changed:**
  * OptimalF now uses its historical or expected win rate for bet sizing while retaining the per-trial probability gate
 
-v0.4.0
-======
+v0.4.0 (2026-08-01)
+====================
 
 **Changed:**
  * Dynamic bankroll management now skips bets below its configurable minimum probability, respects the maximum safe bet, and adapts from settled simulator outcomes
@@ -51,8 +53,8 @@ v0.4.0
  * Routed fee-dominated wins through bankroll withdrawal safeguards instead of depositing a negative amount
  * Corrected bankroll history plotting for current Matplotlib versions
 
-v0.3.0
-======
+v0.3.0 (2025-10-11)
+====================
 
 **New Features:**
  * Added MertonShare strategy based on Merton's portfolio problem with CRRA utility
@@ -82,22 +84,22 @@ v0.3.0
  * Added 9 comprehensive bankruptcy protection tests
  * Updated example parameters to realistic professional bettor scenario (52% win, 0.95x payoff, 0.4% edge)
 
-v0.2.0
-======
+v0.2.0 (2025-03-20)
+====================
 
  * no longer allowing negative bets
 
-v0.1.0
-======
+v0.1.0 (2025-03-09)
+====================
 
  * modernizing, added new methods, examples fixes
 
-v0.0.2
-======
+v0.0.2 (never published)
+=========================
 
  * adding CI, docs, and testing
 
-v0.0.1
-======
+v0.0.1 (never published)
+=========================
 
  * first release
