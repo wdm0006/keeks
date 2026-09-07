@@ -6,6 +6,8 @@ Unreleased
  * `find_indifference_price` and `expected_utility` no longer let explicit zero-probability outcomes poison the expected utility with NaN when their final wealth is nonpositive; affected gambles now price correctly and the saturation warning fires instead of being silently suppressed
  * `MertonShare` no longer raises `OverflowError` for extreme payoffs (about 1.34e154 and above); the variance saturates and the strategy returns 0.0
  * Strategy docstrings now describe `transaction_cost` as the per-unit fractional cost it is, not a fixed per-transaction amount
+ * `keeks.__version__` now reports the installed version, with `version.py` as the single source: the Sphinx build imports it and hatchling's dynamic versioning consumes it, so `pyproject.toml` no longer duplicates the number
+ * The package root re-exports the documented public API — `BankRoll`, `RuinError`, `BaseStrategy`, all nine strategies, the three simulators, and the CRRA utilities (`crra_utility`, `expected_utility`, `find_indifference_price`) — so `from keeks import BankRoll` works alongside the module paths
 
 v0.6.0 (2026-08-22)
 ===================

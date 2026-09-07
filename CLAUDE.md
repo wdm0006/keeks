@@ -192,7 +192,7 @@ print(f"Maximum willing to pay: ${max_price:.2f}")
 
 ## Project-Specific Notes
 
-- **Version**: Managed in `pyproject.toml` (currently 0.5.0)
+- **Version**: Declared once in `version.py` — hatchling's dynamic versioning consumes it for builds and `keeks.__version__` exposes it at runtime
 - **Python Support**: 3.10, 3.11, 3.12, 3.13, 3.14
 - **Documentation site**: [keeks.mcginniscommawill.com](https://keeks.mcginniscommawill.com)
 - **Educational focus**: Library includes disclaimer about educational use only
