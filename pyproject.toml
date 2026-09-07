@@ -50,6 +50,7 @@ Source = "https://github.com/wdm0006/keeks"
 
 [project.optional-dependencies]
 dev = [
+    "hypothesis",
     "pandas",
     "pytest",
     "pytest-cov",
