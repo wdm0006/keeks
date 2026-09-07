@@ -60,6 +60,10 @@ def test_invalid_parameters():
 
 def test_simulation():
     """Test the strategy in a simulation with a favorable edge."""
+    # The simulator's unseeded path draws from the global ``random`` stream,
+    # so seed it here: the module-level seed does not survive other tests'
+    # consumption of the stream when pytest partitions files across workers.
+    random.seed(42)
     payoff = 1
     loss = 1
     transaction_cost = 0.01
