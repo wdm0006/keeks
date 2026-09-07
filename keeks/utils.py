@@ -70,31 +70,90 @@ def crra_utility(wealth, risk_aversion=1.0):
     return (wealth ** (1 - risk_aversion)) / (1 - risk_aversion)
 
 
+def normalize_probabilities(probabilities):
+    """
+    Validate a probability vector and return it as a float array.
+
+    A vector is valid when every probability is finite and nonnegative and
+    the probabilities sum to no more than one within
+    ``PROBABILITY_SUM_TOLERANCE``. Mass below one is left as-is: completing a
+    partial vector (padding it with an implicit outcome, or rescaling a
+    within-tolerance excess) is a gamble-modeling decision, so
+    :func:`expected_utility` and :func:`find_indifference_price` make it
+    themselves and treat the omitted mass as a zero-payout outcome.
+
+    Parameters
+    ----------
+    probabilities : array-like
+        The probability of each outcome. Must be a non-empty one-dimensional
+        sequence of finite, nonnegative numbers whose sum is at most
+        ``1 + PROBABILITY_SUM_TOLERANCE``.
+
+    Returns
+    -------
+    numpy.ndarray
+        The validated probabilities as a one-dimensional float array.
+
+    Raises
+    ------
+    ValueError
+        If the probabilities are not a non-empty one-dimensional sequence of
+        finite nonnegative numbers, or if they sum to more than
+        ``1 + PROBABILITY_SUM_TOLERANCE``.
+
+    Examples
+    --------
+    >>> normalize_probabilities([0.25, 0.75])
+    array([0.25, 0.75])
+
+    A sum above one by more than the tolerance is rejected:
+
+    >>> normalize_probabilities([0.5, 0.6])
+    Traceback (most recent call last):
+        ...
+    ValueError: Probabilities must sum to no more than one
+    """
+    try:
+        probabilities = np.asarray(probabilities, dtype=float)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Probabilities must be a finite sequence") from exc
+    if probabilities.ndim != 1:
+        raise ValueError("Probabilities must be one-dimensional")
+    if probabilities.size == 0:
+        raise ValueError("Probabilities must be non-empty")
+    if not np.all(np.isfinite(probabilities)):
+        raise ValueError("Probabilities must contain only finite values")
+    if np.any(probabilities < 0):
+        raise ValueError("Probabilities must be nonnegative")
+    if probabilities.sum() > 1 + PROBABILITY_SUM_TOLERANCE:
+        raise ValueError("Probabilities must sum to no more than one")
+    return probabilities
+
+
 def _normalize_gamble(outcomes, probabilities):
     """Validate a gamble and add its implicit zero-payout outcome."""
     try:
         outcomes = np.asarray(outcomes, dtype=float)
-        probabilities = np.asarray(probabilities, dtype=float)
     except (TypeError, ValueError) as exc:
         raise ValueError("Outcomes and probabilities must be finite sequences") from exc
 
-    if outcomes.ndim != 1 or probabilities.ndim != 1:
+    if outcomes.ndim != 1:
         raise ValueError("Outcomes and probabilities must be one-dimensional")
-    if outcomes.size == 0 or probabilities.size == 0:
+    if outcomes.size == 0:
         raise ValueError("Outcomes and probabilities must be non-empty")
+    if not np.all(np.isfinite(outcomes)):
+        raise ValueError("Outcomes and probabilities must contain only finite values")
+
+    probabilities = normalize_probabilities(probabilities)
+
     if outcomes.size != probabilities.size:
         raise ValueError("Outcomes and probabilities must have equal length")
-    if not np.all(np.isfinite(outcomes)) or not np.all(np.isfinite(probabilities)):
-        raise ValueError("Outcomes and probabilities must contain only finite values")
-    if np.any(probabilities < 0):
-        raise ValueError("Probabilities must be nonnegative")
 
+    # The validator returns the probabilities untouched, so this sum is the
+    # caller's exact total and exactly one of the two completions can fire.
     total_probability = probabilities.sum()
-    if total_probability > 1 + PROBABILITY_SUM_TOLERANCE:
-        raise ValueError("Probabilities must sum to no more than one")
     if total_probability > 1:
         probabilities = probabilities / total_probability
-        total_probability = 1.0
     if total_probability < 1:
         outcomes = np.append(outcomes, 0.0)
         probabilities = np.append(probabilities, 1.0 - total_probability)

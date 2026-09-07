@@ -83,6 +83,7 @@ The library follows a four-component architecture:
    - `crra_utility(wealth, risk_aversion)`: Calculate CRRA utility values
    - `expected_utility(outcomes, probabilities, current_wealth, entry_price, risk_aversion)`: Calculate expected utility of a gamble
    - `find_indifference_price(outcomes, probabilities, current_wealth, risk_aversion)`: Find maximum price willing to pay for a gamble
+   - `normalize_probabilities(probabilities)`: Validate a probability vector (finite, nonnegative, sum <= 1 within tolerance) and return it as a float array
    - Used for one-time decision problems (e.g., St. Petersburg paradox) vs. repeated betting strategies
 
 ### Key Design Patterns

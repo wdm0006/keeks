@@ -8,6 +8,7 @@ Unreleased
  * Strategy docstrings now describe `transaction_cost` as the per-unit fractional cost it is, not a fixed per-transaction amount
  * `keeks.__version__` now reports the installed version, with `version.py` as the single source: the Sphinx build imports it and hatchling's dynamic versioning consumes it, so `pyproject.toml` no longer duplicates the number
  * The package root re-exports the documented public API — `BankRoll`, `RuinError`, `BaseStrategy`, all nine strategies, the three simulators, and the CRRA utilities (`crra_utility`, `expected_utility`, `find_indifference_price`) — so `from keeks import BankRoll` works alongside the module paths
+ * New public `keeks.utils.normalize_probabilities` (also re-exported from the package root) validates a probability vector — finite, nonnegative, summing to no more than one within `PROBABILITY_SUM_TOLERANCE` — and returns it as a float array; `_normalize_gamble` now delegates its validation there, leaving gamble behavior unchanged
 
 v0.6.0 (2026-08-22)
 ===================

@@ -52,6 +52,7 @@ from keeks.utils import (
     crra_utility,
     expected_utility,
     find_indifference_price,
+    normalize_probabilities,
 )
 
 settings.register_profile("keeks", max_examples=50, deadline=None)
@@ -291,6 +292,64 @@ def test_normalize_gamble_rejects_negative_legs(gamble):
 
     with pytest.raises(ValueError, match=r"^Probabilities must be nonnegative$"):
         _normalize_gamble(outcomes, [-0.1] + probabilities[1:])
+
+
+# The public vector validator behind _normalize_gamble's validation half:
+# the same acceptance laws, minus the gamble-specific completion.
+@given(gamble=unit_gambles())
+def test_normalize_probabilities_round_trips_valid_vectors(gamble):
+    """Valid vectors pass through as an equal-length float64 array."""
+    _, probabilities = gamble
+    cleaned = normalize_probabilities(probabilities)
+
+    assert cleaned.dtype == np.float64
+    assert list(cleaned) == probabilities
+    assert len(cleaned) == len(probabilities)
+    assert cleaned.sum() <= 1 + PROBABILITY_SUM_TOLERANCE
+
+
+@given(gamble=unit_gambles())
+def test_normalize_probabilities_is_idempotent(gamble):
+    """A validated vector is itself valid, so revalidation changes nothing."""
+    _, probabilities = gamble
+    cleaned = normalize_probabilities(probabilities)
+
+    assert np.array_equal(normalize_probabilities(cleaned), cleaned)
+
+
+@given(gamble=unit_gambles(), excess=st.floats(1e-11, 1.0, allow_nan=False))
+def test_normalize_probabilities_rejects_mass_above_tolerance_window(gamble, excess):
+    _, probabilities = gamble
+    complete = probabilities + [max(0.0, 1.0 - sum(probabilities))]
+    scaled = [p * (1.0 + excess) for p in complete]
+    assert sum(scaled) > 1 + PROBABILITY_SUM_TOLERANCE
+
+    with pytest.raises(
+        ValueError, match=r"^Probabilities must sum to no more than one$"
+    ):
+        normalize_probabilities(scaled)
+
+
+@given(
+    gamble=unit_gambles(),
+    bad=st.sampled_from([math.nan, math.inf, -math.inf]),
+)
+def test_normalize_probabilities_rejects_non_finite_values(gamble, bad):
+    _, probabilities = gamble
+    corrupted = probabilities[:-1] + [bad]
+
+    with pytest.raises(
+        ValueError, match=r"^Probabilities must contain only finite values$"
+    ):
+        normalize_probabilities(corrupted)
+
+
+@given(gamble=unit_gambles())
+def test_normalize_probabilities_rejects_negative_vectors(gamble):
+    _, probabilities = gamble
+
+    with pytest.raises(ValueError, match=r"^Probabilities must be nonnegative$"):
+        normalize_probabilities([-0.1] + probabilities[1:])
 
 
 @given(
