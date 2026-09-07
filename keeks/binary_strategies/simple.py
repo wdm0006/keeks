@@ -545,6 +545,10 @@ class DynamicBankrollManagement(BaseStrategy):
         self.min_fraction = min_fraction
         self.min_probability = min_probability
         self.results = []
+        # Volatility cache for the current window; record_result is the only
+        # in-library mutator of the window and invalidates it. External code
+        # mutating ``results`` directly bypasses invalidation.
+        self._volatility_cache = None
         self.initial_bankroll = None
         self.current_bankroll = None
         self.peak_bankroll = None
@@ -566,6 +570,7 @@ class DynamicBankrollManagement(BaseStrategy):
         self.results.append(return_pct)
         if len(self.results) > self.window_size:
             self.results.pop(0)
+        self._volatility_cache = None
 
     def get_streak_factor(self):
         """Calculate the adjustment factor based on recent performance."""
@@ -591,8 +596,9 @@ class DynamicBankrollManagement(BaseStrategy):
         if not self.results:
             return 1.0
 
-        returns = np.array(self.results)
-        volatility = np.std(returns)
+        if self._volatility_cache is None:
+            self._volatility_cache = np.std(np.array(self.results))
+        volatility = self._volatility_cache
 
         if volatility == 0:
             return 1.0
