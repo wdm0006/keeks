@@ -1022,16 +1022,19 @@ class MertonShare(BaseStrategy):
         # Calculate variance of returns for a binary outcome
         # For a binary bet: Var(R) = p * (payoff)^2 + (1-p) * (-loss)^2 - E[R]^2
         # We use gross returns (before transaction costs) for variance calculation
-        mean_squared_return = probability * (self.payoff**2) + (1 - probability) * (
-            self.loss**2
-        )
+        # Coerce to np.float64 before squaring: Python floats raise OverflowError
+        # once payoff**2 exceeds float range (payoff ~1.34e154), while float64
+        # saturates to inf (with a numpy warning) and the guard below handles it.
+        payoff = np.float64(self.payoff)
+        loss = np.float64(self.loss)
+        mean_squared_return = probability * payoff**2 + (1 - probability) * loss**2
         variance = (
-            mean_squared_return
-            - (probability * self.payoff - (1 - probability) * self.loss) ** 2
+            mean_squared_return - (probability * payoff - (1 - probability) * loss) ** 2
         )
 
-        # Avoid division by zero
-        if variance <= 0:
+        # Avoid division by zero; "not variance > 0" also catches NaN variance
+        # (inf - inf after saturation), which a bare <= 0 test would let through.
+        if not variance > 0:
             return 0.0
 
         # Apply Merton's formula: f* = μ / (γ × σ²)

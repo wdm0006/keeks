@@ -1,3 +1,4 @@
+import math
 import random
 
 import pytest
@@ -332,3 +333,28 @@ def test_get_max_safe_bet():
     # Should not bet more than what would avoid negative bankroll
     max_safe = strategy.get_max_safe_bet(current_bankroll)
     assert result <= max_safe
+
+
+def test_extreme_payoff_returns_finite_share():
+    """A payoff whose square still fits in float64 returns a finite share."""
+    strategy = MertonShare(
+        payoff=1e154, loss=1.0, transaction_cost=0, risk_aversion=2.0
+    )
+
+    share = strategy.evaluate(0.6, 1000)
+
+    assert math.isfinite(share)
+    assert share > 0
+
+
+def test_overflowing_payoff_saturates_to_zero_without_raising():
+    """Above ~1.34e154 the squared payoff overflows float64.
+
+    The variance saturates (inf - inf = NaN) and the not->0 guard returns
+    0.0 instead of raising OverflowError as Python-float squaring did.
+    """
+    strategy = MertonShare(
+        payoff=1e155, loss=1.0, transaction_cost=0, risk_aversion=2.0
+    )
+
+    assert strategy.evaluate(0.6, 1000) == 0.0
