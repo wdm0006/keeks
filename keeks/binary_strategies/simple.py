@@ -3,7 +3,13 @@ import operator
 import numpy as np
 
 from keeks.binary_strategies.base import BaseStrategy
-from keeks.utils import _require_finite
+from keeks.utils import (
+    _normalize_gamble,
+    _require_finite,
+    _validate_entry_price_scalars,
+    _validate_probability,
+    find_indifference_price,
+)
 
 __author__ = "willmcginnis"
 
@@ -62,8 +68,6 @@ class NaiveStrategy(BaseStrategy):
         float
             The proportion of the bankroll to bet.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
 
@@ -132,8 +136,6 @@ class NaiveStrategy(BaseStrategy):
         result is capped the same way every other strategy caps it. Pass
         ``max_search_fraction=1.0`` to allow paying the entire bankroll.
         """
-        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
-
         outcomes, probabilities = _normalize_gamble(outcomes, probabilities)
         _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
@@ -210,8 +212,6 @@ class FixedFractionStrategy(BaseStrategy):
         float
             The fixed fraction if probability >= min_probability, otherwise 0.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability >= self.min_probability:
@@ -265,8 +265,6 @@ class FixedFractionStrategy(BaseStrategy):
         commits a fixed fraction of wealth regardless of the opportunity.
         This is a mechanical rule-based approach, not optimization-based.
         """
-        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
-
         _normalize_gamble(outcomes, probabilities)
         _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
@@ -361,8 +359,6 @@ class CPPIStrategy(BaseStrategy):
             The proportion of the current bankroll to bet, or 0 if below
             the minimum probability threshold.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
 
@@ -463,8 +459,6 @@ class CPPIStrategy(BaseStrategy):
         For entry price, we apply the same logic: pay multiplier × cushion,
         but never more than the cushion itself (to maintain floor).
         """
-        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
-
         _normalize_gamble(outcomes, probabilities)
         _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
@@ -643,8 +637,6 @@ class DynamicBankrollManagement(BaseStrategy):
         float
             The proportion of the current bankroll to bet.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
 
@@ -725,8 +717,6 @@ class DynamicBankrollManagement(BaseStrategy):
         For a one-time decision with no history, we fall back to the base_fraction.
         This represents a neutral starting point before dynamic adjustments.
         """
-        from keeks.utils import _normalize_gamble, _validate_entry_price_scalars
-
         _normalize_gamble(outcomes, probabilities)
         _validate_entry_price_scalars(current_wealth, tolerance, max_search_fraction)
 
@@ -807,8 +797,6 @@ class OptimalF(BaseStrategy):
             optimal f converted from a risk fraction to a stake fraction.
             The two coincide only when ``loss + transaction_cost`` is 1.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability < 0.5:  # Use 0.5 as default minimum probability
@@ -887,8 +875,6 @@ class OptimalF(BaseStrategy):
         Optimal F, like Kelly Criterion, aims to maximize geometric growth,
         which corresponds to log utility (γ=1.0).
         """
-        from keeks.utils import find_indifference_price
-
         return find_indifference_price(
             outcomes=outcomes,
             probabilities=probabilities,
@@ -1002,8 +988,6 @@ class MertonShare(BaseStrategy):
         float
             The optimal proportion of the bankroll to bet based on Merton's formula.
         """
-        from keeks.utils import _require_finite, _validate_probability
-
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if probability < self.min_probability:
@@ -1092,8 +1076,6 @@ class MertonShare(BaseStrategy):
         For γ=1.0, this is equivalent to Kelly Criterion (log utility).
         Higher γ values indicate more risk aversion and lower willing payments.
         """
-        from keeks.utils import find_indifference_price
-
         return find_indifference_price(
             outcomes=outcomes,
             probabilities=probabilities,
