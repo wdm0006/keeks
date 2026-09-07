@@ -73,6 +73,11 @@ The library follows a four-component architecture:
    - Strategy constructors take: `payoff`, `loss`, `transaction_cost`
    - Available strategies: `KellyCriterion`, `FractionalKellyCriterion`, `DrawdownAdjustedKelly`, `OptimalF`, `FixedFractionStrategy`, `CPPIStrategy`, `DynamicBankrollManagement`, `MertonShare`, `NaiveStrategy`
 
+2b. **Multi-outcome strategies** (`keeks/multi_outcome/`): stake allocation across the mutually exclusive legs of one market (e.g. a 1X2 match)
+   - All inherit from `BaseMultiOutcomeStrategy` abstract class; constructors take `payoffs` (one per leg, fixed at construction), `loss`, `transaction_cost`
+   - Must implement `evaluate(probabilities, current_bankroll)` returning one stake fraction per leg as a tuple (`len == len(probabilities)`, each in `[0, 1]`, sum <= 1 within tolerance)
+   - `get_max_safe_total_bet()` caps the aggregate stake at the worst leg's `min(1, 1 / (loss + transaction_cost))` bound
+
 3. **Simulators** (`keeks/simulators/`): Test harnesses
    - `RepeatedBinarySimulator`: Fixed probability across all trials
    - `RandomBinarySimulator`: Normally distributed probabilities
