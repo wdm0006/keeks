@@ -9,6 +9,7 @@ Unreleased
  * `keeks.__version__` now reports the installed version, with `version.py` as the single source: the Sphinx build imports it and hatchling's dynamic versioning consumes it, so `pyproject.toml` no longer duplicates the number
  * The package root re-exports the documented public API — `BankRoll`, `RuinError`, `BaseStrategy`, all nine strategies, the three simulators, and the CRRA utilities (`crra_utility`, `expected_utility`, `find_indifference_price`) — so `from keeks import BankRoll` works alongside the module paths
  * New public `keeks.utils.normalize_probabilities` (also re-exported from the package root) validates a probability vector — finite, nonnegative, summing to no more than one within `PROBABILITY_SUM_TOLERANCE` — and returns it as a float array; `_normalize_gamble` now delegates its validation there, leaving gamble behavior unchanged
+ * New `keeks.multi_outcome` package: `BaseMultiOutcomeStrategy` generalizes the strategy contract to mutually exclusive markets — `evaluate(probabilities, current_bankroll)` returns one stake fraction per leg as a tuple (`len == len(probabilities)`, each in `[0, 1]`, the sum at most `1 + PROBABILITY_SUM_TOLERANCE`), a vector stake validator mirrors the scalar stake gate's error discipline, and `get_max_safe_total_bet` caps the aggregate stake at the worst leg's `min(1, 1 / (loss + transaction_cost))` bound; the binary surface is untouched
 
 v0.6.0 (2026-08-22)
 ===================
