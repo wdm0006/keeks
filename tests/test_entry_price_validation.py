@@ -264,7 +264,10 @@ def test_invalid_call_does_not_mutate_cppi_state(kwargs):
     )
     before = _cppi_state(strategy)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match=r"^(Current wealth|Tolerance|Maximum search fraction) must be",
+    ):
         _call_with_deadline(
             lambda: strategy.calculate_max_entry_price(
                 OUTCOMES, PROBABILITIES, **kwargs

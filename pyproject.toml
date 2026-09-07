@@ -50,6 +50,7 @@ Source = "https://github.com/wdm0006/keeks"
 
 [project.optional-dependencies]
 dev = [
+    "hypothesis",
     "pandas",
     "pytest",
     "pytest-cov",
@@ -72,6 +73,15 @@ addopts = "--cov=keeks --cov-report=term-missing"
 [tool.coverage.run]
 source = ["keeks"]
 omit = ["tests/*"]
+
+[tool.coverage.report]
+# The abstract `evaluate` stub and the base `calculate_max_entry_price` raise
+# are contract-only statements exercised through subclasses.
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "@abc.abstractmethod",
+]
 
 [tool.ruff]
 line-length = 88

@@ -21,6 +21,14 @@ from keeks.simulators.random_binary import RandomBinarySimulator
 from keeks.simulators.random_uncertain_binary import RandomUncertainBinarySimulator
 from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 
+# Each shared control's rejection message, keyed by constructor field.
+CONTROL_MESSAGES = {
+    "payoff": r"^Payoff must be",
+    "loss": r"^Loss must be",
+    "transaction_costs": r"^Transaction costs must be",
+    "trials": r"^Trials must be",
+}
+
 BASE_KWARGS = {
     RepeatedBinarySimulator: {
         "payoff": 1.0,
@@ -84,7 +92,7 @@ def test_base_kwargs_cover_every_simulator():
 )
 def test_shared_controls_rejected(simulator_cls, field, invalid_values):
     for value in invalid_values:
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=CONTROL_MESSAGES[field]):
             build(simulator_cls, **{field: value})
 
 
@@ -101,7 +109,9 @@ def test_shared_control_boundaries_accepted(simulator_cls):
 @pytest.mark.parametrize("simulator_cls", SIMULATORS)
 @pytest.mark.parametrize("seed", INVALID_SEED)
 def test_invalid_seed_rejected(simulator_cls, seed):
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError, match=r"^Seed must be a nonnegative integer or None$"
+    ):
         build(simulator_cls, seed=seed)
 
 
@@ -113,7 +123,7 @@ def test_seed_boundaries_accepted(simulator_cls):
 
 @pytest.mark.parametrize("probability", INVALID_PROBABILITY)
 def test_fixed_probability_rejected(probability):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Probability must be"):
         build(RepeatedBinarySimulator, probability=probability)
 
 
@@ -126,13 +136,13 @@ def test_fixed_probability_boundaries_accepted(probability):
 @pytest.mark.parametrize("simulator_cls", RANDOM_SIMULATORS)
 @pytest.mark.parametrize("stdev", INVALID_STDEV)
 def test_stdev_rejected(simulator_cls, stdev):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Standard deviation must be"):
         build(simulator_cls, stdev=stdev)
 
 
 @pytest.mark.parametrize("uncertainty_stdev", INVALID_STDEV)
 def test_uncertainty_stdev_rejected(uncertainty_stdev):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Uncertainty standard deviation must be"):
         build(RandomUncertainBinarySimulator, uncertainty_stdev=uncertainty_stdev)
 
 
@@ -149,7 +159,7 @@ def test_zero_uncertainty_stdev_accepted():
 
 def test_negative_fee_no_longer_manufactures_gains():
     """A negative flat fee used to pay the bettor on every settled bet."""
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Transaction costs must be non-negative$"):
         RepeatedBinarySimulator(
             payoff=1.0,
             loss=1.0,

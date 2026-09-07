@@ -394,5 +394,5 @@ class TestEntryPriceParameters:
         ],
     )
     def test_invalid_gamble_raises_value_error_for_strategy_delegates(self, strategy):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"must sum to no more than one$"):
             strategy.calculate_max_entry_price([100], [1.1], 1000)

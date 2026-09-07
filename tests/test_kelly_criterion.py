@@ -410,3 +410,10 @@ def test_fractional_kelly_validation():
     # Inherits validation from BaseStrategy
     with pytest.raises(ValueError, match="Payoff must be greater than 0"):
         FractionalKellyCriterion(payoff=0, loss=1, transaction_cost=0, fraction=0.5)
+
+
+def test_transaction_costs_swallowing_payoff_return_zero():
+    """A transaction cost at or above the payoff makes Kelly sit out."""
+    strategy = KellyCriterion(payoff=0.5, loss=1.0, transaction_cost=0.6)
+
+    assert strategy.evaluate(0.9, 1000) == 0.0

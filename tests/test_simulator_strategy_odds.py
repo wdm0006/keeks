@@ -61,7 +61,7 @@ class TestMismatchRejected:
     def test_mismatch_raises_naming_both_values(self, simulator_cls, field):
         sim = simulator(simulator_cls)
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(ValueError, match=rf"^Strategy {field} \(") as excinfo:
             sim.evaluate_strategy(
                 strategy(**{field: 3.5}), BankRoll(initial_funds=1000.0)
             )
@@ -77,7 +77,7 @@ class TestMismatchRejected:
         sim = simulator(simulator_cls)
         bankroll = BankRoll(initial_funds=1000.0)
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=rf"^Strategy {field} \("):
             sim.evaluate_strategy(strategy(**{field: 3.5}), bankroll)
 
         assert bankroll.total_funds == 1000.0
@@ -88,7 +88,7 @@ class TestMismatchRejected:
     def test_mismatch_consumes_no_private_randomness(self, simulator_cls, field):
         """A seeded simulator replays identically after a refused strategy."""
         sim = simulator(simulator_cls)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=rf"^Strategy {field} \("):
             sim.evaluate_strategy(
                 strategy(**{field: 3.5}), BankRoll(initial_funds=1000.0)
             )
@@ -105,7 +105,7 @@ class TestMismatchRejected:
         expected_random = random.getstate()
         expected_numpy = np.random.get_state()
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=rf"^Strategy {field} \("):
             sim.evaluate_strategy(
                 strategy(**{field: 3.5}), BankRoll(initial_funds=1000.0)
             )
@@ -120,7 +120,7 @@ class TestMismatchRejected:
             base_fraction=0.1, payoff=2.0, loss=1.0, transaction_cost=0.0
         )
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"^Strategy payoff \("):
             sim.evaluate_strategy(dynamic, BankRoll(initial_funds=1000.0))
 
         assert dynamic.results == []
@@ -138,7 +138,7 @@ class TestMismatchRejected:
             loss=2.0,
         )
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"^Strategy loss \("):
             sim.evaluate_strategy(cppi, BankRoll(initial_funds=1000.0))
 
         assert cppi.current_bankroll == 500.0
@@ -152,7 +152,7 @@ class TestMismatchRejected:
             payoff=10.0, loss=0.1, transaction_costs=0.0, probability=1.0, trials=1
         )
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"^Strategy payoff \("):
             sim.evaluate_strategy(strategy(fraction=1.0), bankroll)
 
         assert bankroll.total_funds == 100.0

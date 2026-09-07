@@ -82,7 +82,7 @@ def test_rejected_fraction_does_not_shift_seeded_run(simulator_cls):
         overrides["uncertainty_stdev"] = 0.05
 
     reused = build(simulator_cls, **overrides)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Strategy stake fraction"):
         reused.evaluate_strategy(Strategy(2.0), BankRoll(initial_funds=100.0))
 
     reused_bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
