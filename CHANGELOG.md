@@ -2,6 +2,10 @@ Unreleased
 ==========
 
  * pandas is now a development-only dependency rather than part of the core install
+ * `OptimalF.evaluate` now returns Ralph Vince's optimal f converted from a risk fraction to a stake fraction (`f* / (loss + transaction_cost)`), so it is the TWR-optimal stake; sizes are unchanged when `loss + transaction_cost = 1` and otherwise grow for losses under 1 and shrink for losses over 1
+ * `find_indifference_price` and `expected_utility` no longer let explicit zero-probability outcomes poison the expected utility with NaN when their final wealth is nonpositive; affected gambles now price correctly and the saturation warning fires instead of being silently suppressed
+ * `MertonShare` no longer raises `OverflowError` for extreme payoffs (about 1.34e154 and above); the variance saturates and the strategy returns 0.0
+ * Strategy docstrings now describe `transaction_cost` as the per-unit fractional cost it is, not a fixed per-transaction amount
 
 v0.6.0
 ======

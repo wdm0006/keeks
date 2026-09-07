@@ -22,7 +22,7 @@ class NaiveStrategy(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     """
 
     def __init__(self, payoff, loss, transaction_cost):
@@ -36,7 +36,7 @@ class NaiveStrategy(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         """
         super().__init__(payoff, loss, transaction_cost)
 
@@ -163,7 +163,7 @@ class FixedFractionStrategy(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float, default=0
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     min_probability : float, default=0.5
         The minimum probability required to place a bet.
     """
@@ -181,7 +181,7 @@ class FixedFractionStrategy(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float, default=0
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         min_probability : float, default=0.5
             The minimum probability required to place a bet.
         """
@@ -294,7 +294,7 @@ class CPPIStrategy(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     min_probability : float, default=0.5
         The minimum probability required to place a bet.
     """
@@ -501,7 +501,7 @@ class DynamicBankrollManagement(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     window_size : int, default=10
         The number of recent results to consider for adjustments.
     max_fraction : float, default=0.2
@@ -751,7 +751,7 @@ class OptimalF(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     win_rate : float
         The historical or expected win rate (between 0 and 1).
     max_risk_fraction : float, default=0.2
@@ -769,7 +769,7 @@ class OptimalF(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         win_rate : float
             The historical or expected win rate (between 0 and 1).
         max_risk_fraction : float, default=0.2
@@ -803,7 +803,9 @@ class OptimalF(BaseStrategy):
         Returns
         -------
         float
-            The optimal proportion of the bankroll to bet.
+            The optimal proportion of the bankroll to stake: Ralph Vince's
+            optimal f converted from a risk fraction to a stake fraction.
+            The two coincide only when ``loss + transaction_cost`` is 1.
         """
         from keeks.utils import _require_finite, _validate_probability
 
@@ -831,8 +833,15 @@ class OptimalF(BaseStrategy):
         # Cap at our maximum risk fraction
         optimal_f = min(max(0, optimal_f), self.max_risk_fraction)
 
+        # Vince's f is a *risk* fraction: staking a fraction s of the bankroll
+        # puts s * (loss + transaction_cost) at risk, so the TWR-optimal stake
+        # is f* / (loss + transaction_cost), the Kelly closed form
+        # W/(l+c) - (1-W)/(b-c) for this game. evaluate() returns a stake
+        # fraction, so convert; the two agree only when loss + cost == 1.
+        stake_fraction = optimal_f / risk
+
         # Ensure we never bet more than would result in negative bankroll
-        return min(optimal_f, self.get_max_safe_bet(current_bankroll))
+        return min(stake_fraction, self.get_max_safe_bet(current_bankroll))
 
     def calculate_max_entry_price(
         self,
@@ -919,7 +928,7 @@ class MertonShare(BaseStrategy):
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
-        The fixed cost per transaction, regardless of outcome.
+        The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     risk_aversion : float, default=2.0
         The coefficient of relative risk aversion (γ). Common values:
         - 1.0: Low risk aversion
@@ -956,7 +965,7 @@ class MertonShare(BaseStrategy):
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
-            The fixed cost per transaction, regardless of outcome.
+            The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         risk_aversion : float, default=2.0
             The coefficient of relative risk aversion.
         min_probability : float, default=0.5
@@ -1013,16 +1022,19 @@ class MertonShare(BaseStrategy):
         # Calculate variance of returns for a binary outcome
         # For a binary bet: Var(R) = p * (payoff)^2 + (1-p) * (-loss)^2 - E[R]^2
         # We use gross returns (before transaction costs) for variance calculation
-        mean_squared_return = probability * (self.payoff**2) + (1 - probability) * (
-            self.loss**2
-        )
+        # Coerce to np.float64 before squaring: Python floats raise OverflowError
+        # once payoff**2 exceeds float range (payoff ~1.34e154), while float64
+        # saturates to inf (with a numpy warning) and the guard below handles it.
+        payoff = np.float64(self.payoff)
+        loss = np.float64(self.loss)
+        mean_squared_return = probability * payoff**2 + (1 - probability) * loss**2
         variance = (
-            mean_squared_return
-            - (probability * self.payoff - (1 - probability) * self.loss) ** 2
+            mean_squared_return - (probability * payoff - (1 - probability) * loss) ** 2
         )
 
-        # Avoid division by zero
-        if variance <= 0:
+        # Avoid division by zero; "not variance > 0" also catches NaN variance
+        # (inf - inf after saturation), which a bare <= 0 test would let through.
+        if not variance > 0:
             return 0.0
 
         # Apply Merton's formula: f* = μ / (γ × σ²)
