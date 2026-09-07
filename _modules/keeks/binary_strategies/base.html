@@ -239,6 +239,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+        <span class="c1"># Constructor-only constant: for a positive bankroll the bankroll term</span>
+        <span class="c1"># in current_bankroll / (loss + transaction_cost) cancels, so the cap</span>
+        <span class="c1"># is a fixed fraction.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_fraction</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span><span class="p">))</span>
 
 <div class="viewcode-block" id="BaseStrategy.get_max_safe_bet">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet">[docs]</a>
@@ -274,7 +278,7 @@
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_fraction</span></div>
 
 
 <div class="viewcode-block" id="BaseStrategy.calculate_max_entry_price">

@@ -179,7 +179,13 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_normalize_gamble</span><span class="p">,</span>
+    <span class="n">_require_finite</span><span class="p">,</span>
+    <span class="n">_validate_entry_price_scalars</span><span class="p">,</span>
+    <span class="n">_validate_probability</span><span class="p">,</span>
+    <span class="n">find_indifference_price</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
 
@@ -242,8 +248,6 @@
 <span class="sd">        float</span>
 <span class="sd">            The proportion of the bankroll to bet.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
         <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
 
@@ -315,8 +319,6 @@
 <span class="sd">        result is capped the same way every other strategy caps it. Pass</span>
 <span class="sd">        ``max_search_fraction=1.0`` to allow paying the entire bankroll.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
-
         <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
         <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
@@ -399,8 +401,6 @@
 <span class="sd">        float</span>
 <span class="sd">            The fixed fraction if probability &gt;= min_probability, otherwise 0.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
         <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
@@ -457,8 +457,6 @@
 <span class="sd">        commits a fixed fraction of wealth regardless of the opportunity.</span>
 <span class="sd">        This is a mechanical rule-based approach, not optimization-based.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
-
         <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
         <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
@@ -562,8 +560,6 @@
 <span class="sd">            The proportion of the current bankroll to bet, or 0 if below</span>
 <span class="sd">            the minimum probability threshold.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
         <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
 
@@ -667,8 +663,6 @@
 <span class="sd">        For entry price, we apply the same logic: pay multiplier × cushion,</span>
 <span class="sd">        but never more than the cushion itself (to maintain floor).</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
-
         <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
         <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
@@ -759,6 +753,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_fraction</span> <span class="o">=</span> <span class="n">min_fraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Volatility cache for the current window; record_result is the only</span>
+        <span class="c1"># in-library mutator of the window and invalidates it. External code</span>
+        <span class="c1"># mutating ``results`` directly bypasses invalidation.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_volatility_cache</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">peak_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
@@ -781,7 +779,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">return_pct</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_volatility_cache</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="DynamicBankrollManagement.get_streak_factor">
@@ -813,8 +812,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.0</span>
 
-        <span class="n">returns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
-        <span class="n">volatility</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_volatility_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_volatility_cache</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">))</span>
+        <span class="n">volatility</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_volatility_cache</span>
 
         <span class="k">if</span> <span class="n">volatility</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.0</span>
@@ -868,8 +868,6 @@
 <span class="sd">        float</span>
 <span class="sd">            The proportion of the current bankroll to bet.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
         <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
 
@@ -953,8 +951,6 @@
 <span class="sd">        For a one-time decision with no history, we fall back to the base_fraction.</span>
 <span class="sd">        This represents a neutral starting point before dynamic adjustments.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_gamble</span><span class="p">,</span> <span class="n">_validate_entry_price_scalars</span>
-
         <span class="n">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
         <span class="n">_validate_entry_price_scalars</span><span class="p">(</span><span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span><span class="p">)</span>
 
@@ -1041,8 +1037,6 @@
 <span class="sd">            optimal f converted from a risk fraction to a stake fraction.</span>
 <span class="sd">            The two coincide only when ``loss + transaction_cost`` is 1.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
         <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>  <span class="c1"># Use 0.5 as default minimum probability</span>
@@ -1124,8 +1118,6 @@
 <span class="sd">        Optimal F, like Kelly Criterion, aims to maximize geometric growth,</span>
 <span class="sd">        which corresponds to log utility (γ=1.0).</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_indifference_price</span>
-
         <span class="k">return</span> <span class="n">find_indifference_price</span><span class="p">(</span>
             <span class="n">outcomes</span><span class="o">=</span><span class="n">outcomes</span><span class="p">,</span>
             <span class="n">probabilities</span><span class="o">=</span><span class="n">probabilities</span><span class="p">,</span>
@@ -1245,8 +1237,6 @@
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet based on Merton's formula.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
         <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
@@ -1338,8 +1328,6 @@
 <span class="sd">        For γ=1.0, this is equivalent to Kelly Criterion (log utility).</span>
 <span class="sd">        Higher γ values indicate more risk aversion and lower willing payments.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_indifference_price</span>
-
         <span class="k">return</span> <span class="n">find_indifference_price</span><span class="p">(</span>
             <span class="n">outcomes</span><span class="o">=</span><span class="n">outcomes</span><span class="p">,</span>
             <span class="n">probabilities</span><span class="o">=</span><span class="n">probabilities</span><span class="p">,</span>

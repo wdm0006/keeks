@@ -174,14 +174,12 @@
           <div class="body" role="main">
             
   <h1>Source code for keeks.simulators.random_uncertain_binary</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">RuinError</span><span class="p">,</span>
-    <span class="n">_update_strategy_bankroll</span><span class="p">,</span>
     <span class="n">_validate_simulator_controls</span><span class="p">,</span>
     <span class="n">_validate_simulator_seed</span><span class="p">,</span>
     <span class="n">_validate_simulator_stdev</span><span class="p">,</span>
@@ -295,17 +293,31 @@
 <span class="sd">        """</span>
         <span class="n">_validate_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
 
+        <span class="c1"># Resolve state-dependent hooks once: neither the strategy's hook set</span>
+        <span class="c1"># nor the bankroll value changes between the reads within one trial.</span>
+        <span class="n">update_bankroll</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"update_bankroll"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">update_bankroll</span><span class="p">):</span>
+            <span class="n">update_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">record_result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"record_result"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">record_result</span><span class="p">):</span>
+            <span class="n">record_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">probability_rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span>
+
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">):</span>
             <span class="c1"># Stop if bankrupt</span>
-            <span class="k">if</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">total_funds</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span>
+            <span class="k">if</span> <span class="n">total_funds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">break</span>
 
-            <span class="n">_update_strategy_bankroll</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">update_bankroll</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">update_bankroll</span><span class="p">(</span><span class="n">total_funds</span><span class="p">)</span>
 
+            <span class="c1"># The state getter already returns a fresh snapshot, so no copy</span>
+            <span class="c1"># is needed before the validation-restore path below.</span>
             <span class="n">probability_state</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">bit_generator</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">probability_rng</span><span class="o">.</span><span class="n">bit_generator</span><span class="o">.</span><span class="n">state</span>
             <span class="p">)</span>
             <span class="c1"># Normal samples are unbounded; only [0, 1] values are probabilities.</span>
             <span class="n">probability</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
@@ -313,23 +325,23 @@
                 <span class="nb">max</span><span class="p">(</span>
                     <span class="mf">0.0</span><span class="p">,</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
-                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span><span class="p">),</span>
+                    <span class="k">if</span> <span class="n">probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="n">probability_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdev</span><span class="p">),</span>
                 <span class="p">),</span>
             <span class="p">)</span>
-            <span class="n">proportion</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span><span class="p">)</span>
+            <span class="n">proportion</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">total_funds</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">proportion</span> <span class="o">=</span> <span class="n">_validate_stake_fraction</span><span class="p">(</span><span class="n">proportion</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">probability_rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">probability_state</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">bit_generator</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">probability_state</span>
+                    <span class="n">probability_rng</span><span class="o">.</span><span class="n">bit_generator</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">probability_state</span>
                 <span class="k">raise</span>
 
             <span class="c1"># Only process the bet if proportion &gt; 0 (avoid charging costs on no-bet)</span>
             <span class="k">if</span> <span class="n">proportion</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span>
+                <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">total_funds</span>
                 <span class="n">bet_amount</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">bettable_funds</span> <span class="o">*</span> <span class="n">proportion</span>
                 <span class="n">outcome_probability</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
                     <span class="mf">1.0</span><span class="p">,</span>
@@ -338,8 +350,8 @@
                         <span class="n">probability</span>
                         <span class="o">+</span> <span class="p">(</span>
                             <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
-                            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probability_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">probability_rng</span> <span class="ow">is</span> <span class="kc">None</span>
+                            <span class="k">else</span> <span class="n">probability_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty_stdev</span><span class="p">)</span>
                         <span class="p">),</span>
                     <span class="p">),</span>
                 <span class="p">)</span>
@@ -365,8 +377,7 @@
                     <span class="c1"># Settlement exceeded a bankroll safeguard; stop gracefully</span>
                     <span class="k">break</span>
 
-                <span class="n">record_result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"record_result"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">record_result</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">record_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">record_result</span><span class="p">(</span><span class="n">won</span><span class="p">,</span> <span class="n">return_pct</span><span class="p">)</span></div>
 </div>
 

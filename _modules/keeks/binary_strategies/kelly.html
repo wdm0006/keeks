@@ -175,6 +175,7 @@
             
   <h1>Source code for keeks.binary_strategies.kelly</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span><span class="p">,</span> <span class="n">find_indifference_price</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
 
@@ -260,8 +261,6 @@
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
         <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">probability</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span><span class="p">:</span>
@@ -333,8 +332,6 @@
 <span class="sd">        Kelly Criterion maximizes E[log(wealth)], which corresponds to</span>
 <span class="sd">        CRRA utility with risk aversion γ=1.0 (log utility).</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_indifference_price</span>
-
         <span class="k">return</span> <span class="n">find_indifference_price</span><span class="p">(</span>
             <span class="n">outcomes</span><span class="o">=</span><span class="n">outcomes</span><span class="p">,</span>
             <span class="n">probabilities</span><span class="o">=</span><span class="n">probabilities</span><span class="p">,</span>
@@ -374,6 +371,9 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span>
+        <span class="c1"># Constructed once: the inner Kelly strategy depends only on</span>
+        <span class="c1"># constructor arguments, and strategies are immutable after init.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FractionalKellyCriterion.evaluate">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.FractionalKellyCriterion.evaluate">[docs]</a>
@@ -393,12 +393,9 @@
 <span class="sd">        float</span>
 <span class="sd">            The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
-        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
-        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
-        <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span></div>
+        <span class="c1"># The inner Kelly evaluate validates both arguments, so the wrapper</span>
+        <span class="c1"># only rescales its result.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FractionalKellyCriterion.calculate_max_entry_price">
@@ -451,8 +448,7 @@
 <span class="sd">        approximation though not derived from first principles.</span>
 <span class="sd">        """</span>
         <span class="c1"># Get full Kelly price</span>
-        <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
-        <span class="n">kelly_price</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="n">kelly_price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kelly</span><span class="o">.</span><span class="n">calculate_max_entry_price</span><span class="p">(</span>
             <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span>
         <span class="p">)</span>
 
@@ -512,6 +508,10 @@
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">=</span> <span class="n">max_acceptable_drawdown</span>
+        <span class="c1"># Constructed once: the inner Kelly strategy depends only on</span>
+        <span class="c1"># constructor arguments, and strategies are immutable after init.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_drawdown_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_acceptable_drawdown</span> <span class="o">/</span> <span class="mf">0.5</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DrawdownAdjustedKelly.evaluate">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.kelly.DrawdownAdjustedKelly.evaluate">[docs]</a>
@@ -534,24 +534,13 @@
 <span class="sd">        float</span>
 <span class="sd">            The drawdown-adjusted proportion of the bankroll to bet.</span>
 <span class="sd">        """</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_probability</span>
-
-        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_probability</span><span class="p">(</span><span class="n">probability</span><span class="p">)</span>
-        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
-
-        <span class="c1"># Calculate the standard Kelly bet size</span>
-        <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
-        <span class="n">full_kelly</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span>
-
-        <span class="c1"># Adjust the Kelly fraction based on maximum acceptable drawdown</span>
-        <span class="c1"># This is a simplified approximation of the relationship</span>
-        <span class="c1"># Various research suggests specific formulas, but a common</span>
-        <span class="c1"># conservative approach is to scale Kelly by max drawdown / 0.5</span>
-        <span class="c1"># (since full Kelly has an expected drawdown of around 50%)</span>
-        <span class="n">drawdown_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">/</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="c1"># The inner Kelly evaluate validates both arguments and caps at the</span>
+        <span class="c1"># max-safe fraction; the wrapper only rescales its result. Full Kelly</span>
+        <span class="c1"># has an expected drawdown of around 50%, so scale by max drawdown / 0.5.</span>
+        <span class="n">full_kelly</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kelly</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">)</span>
 
         <span class="c1"># Apply the drawdown adjustment</span>
-        <span class="n">adjusted_kelly</span> <span class="o">=</span> <span class="n">drawdown_factor</span> <span class="o">*</span> <span class="n">full_kelly</span>
+        <span class="n">adjusted_kelly</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drawdown_factor</span> <span class="o">*</span> <span class="n">full_kelly</span>
 
         <span class="c1"># Ensure we never bet more than would result in negative bankroll</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">adjusted_kelly</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">))</span></div>
@@ -605,15 +594,12 @@
 <span class="sd">        drawdown_factor = min(1.0, max_acceptable_drawdown / 0.5)</span>
 <span class="sd">        """</span>
         <span class="c1"># Get full Kelly price</span>
-        <span class="n">kelly</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span><span class="p">)</span>
-        <span class="n">kelly_price</span> <span class="o">=</span> <span class="n">kelly</span><span class="o">.</span><span class="n">calculate_max_entry_price</span><span class="p">(</span>
+        <span class="n">kelly_price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kelly</span><span class="o">.</span><span class="n">calculate_max_entry_price</span><span class="p">(</span>
             <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_search_fraction</span>
         <span class="p">)</span>
 
         <span class="c1"># Apply the same drawdown adjustment used in evaluate()</span>
-        <span class="n">drawdown_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_acceptable_drawdown</span> <span class="o">/</span> <span class="mf">0.5</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">drawdown_factor</span> <span class="o">*</span> <span class="n">kelly_price</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drawdown_factor</span> <span class="o">*</span> <span class="n">kelly_price</span></div>
 </div>
 
 </pre></div>
