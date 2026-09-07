@@ -2,7 +2,6 @@ import random
 
 from keeks.utils import (
     RuinError,
-    _update_strategy_bankroll,
     _validate_simulator_controls,
     _validate_simulator_probability,
     _validate_simulator_seed,
@@ -91,21 +90,32 @@ class RepeatedBinarySimulator:
         """
         _validate_strategy_odds(strategy, self.payoff, self.loss)
 
+        # Resolve state-dependent hooks once: neither the strategy's hook set
+        # nor the bankroll value changes between the reads within one trial.
+        update_bankroll = getattr(strategy, "update_bankroll", None)
+        if not callable(update_bankroll):
+            update_bankroll = None
+        record_result = getattr(strategy, "record_result", None)
+        if not callable(record_result):
+            record_result = None
+
         for _ in range(self.trials):
             # Stop if bankrupt
-            if bankroll.total_funds <= 0:
+            total_funds = bankroll.total_funds
+            if total_funds <= 0:
                 break
 
-            _update_strategy_bankroll(strategy, bankroll.total_funds)
+            if update_bankroll is not None:
+                update_bankroll(total_funds)
 
             # Get the proportion to bet
             proportion = _validate_stake_fraction(
-                strategy.evaluate(self.probability, bankroll.total_funds)
+                strategy.evaluate(self.probability, total_funds)
             )
 
             # Only process the bet if proportion > 0 (avoid charging costs on no-bet)
             if proportion > 0:
-                current_bankroll = bankroll.total_funds
+                current_bankroll = total_funds
                 bet_amount = bankroll.bettable_funds * proportion
                 try:
                     outcome = (
@@ -129,6 +139,5 @@ class RepeatedBinarySimulator:
                     # Settlement exceeded a bankroll safeguard; stop gracefully
                     break
 
-                record_result = getattr(strategy, "record_result", None)
-                if callable(record_result):
+                if record_result is not None:
                     record_result(won, return_pct)
