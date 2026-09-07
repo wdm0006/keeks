@@ -11,6 +11,7 @@ non-saturating calls stay silent.
 import warnings
 from contextlib import contextmanager
 
+import numpy as np
 import pytest
 
 from keeks.binary_strategies import (
@@ -200,3 +201,79 @@ class TestStrategyDelegation:
             strategy_factory().calculate_max_entry_price(
                 CERTAIN_OUTCOMES, CERTAIN_PROBABILITIES, 1000.0
             )
+
+
+class TestZeroProbabilityOutcomes:
+    """Explicit p=0 rows must not poison the expectation with NaN.
+
+    A zero-probability outcome whose final wealth is nonpositive carries a
+    -inf utility; 0 * -inf used to be NaN, which made every EU comparison
+    false, collapsed the bisection onto current wealth, and suppressed the
+    saturation warning for the same gamble. Regression for the accuracy
+    audit's finding F2.
+    """
+
+    OUTCOMES = [100000.0, 99000.0, 0.0]
+    PROBABILITIES = [0.5, 0.5, 0.0]
+
+    def test_zero_probability_row_does_not_truncate_the_price(self):
+        """The search reaches the true price instead of stopping at wealth."""
+        # Exact solution: with x = current_wealth - price, the indifference
+        # condition is 0.5*ln(x+100000) + 0.5*ln(x+99000) = ln(1000), i.e.
+        # (x+100000)(x+99000) = 1000**2, giving price ~= 99381.97.
+        with (
+            np.errstate(invalid="raise", divide="raise"),
+            warnings.catch_warnings(),
+        ):
+            warnings.simplefilter("error", RuntimeWarning)
+            price = find_indifference_price(
+                self.OUTCOMES,
+                self.PROBABILITIES,
+                current_wealth=1000.0,
+                risk_aversion=1.0,
+                tolerance=0.01,
+                max_search_fraction=100,
+            )
+
+        assert price == pytest.approx(99381.9684, rel=1e-4)
+
+    def test_saturation_warning_is_no_longer_suppressed(self):
+        """A bound below the true price warns again; NaN disabled it before."""
+        with (
+            np.errstate(invalid="raise", divide="raise"),
+            pytest.warns(RuntimeWarning, match="saturated") as record,
+        ):
+            find_indifference_price(
+                self.OUTCOMES,
+                self.PROBABILITIES,
+                current_wealth=1000.0,
+                risk_aversion=1.0,
+                tolerance=0.01,
+                max_search_fraction=50,
+            )
+
+        # Exactly one warning: the saturation signal, no numpy leak alongside.
+        assert len(record) == 1
+
+    def test_matches_the_same_gamble_without_the_zero_row(self):
+        """Masking the p=0 row leaves the price equal to the control gamble."""
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            with_row = find_indifference_price(
+                self.OUTCOMES,
+                self.PROBABILITIES,
+                current_wealth=1000.0,
+                risk_aversion=1.0,
+                tolerance=0.01,
+                max_search_fraction=100,
+            )
+            without_row = find_indifference_price(
+                [100000.0, 99000.0],
+                [0.5, 0.5],
+                current_wealth=1000.0,
+                risk_aversion=1.0,
+                tolerance=0.01,
+                max_search_fraction=100,
+            )
+
+        assert with_row == pytest.approx(without_row, abs=0.02)

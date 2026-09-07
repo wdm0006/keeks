@@ -289,7 +289,12 @@ def _expected_utility(
 ):
     final_wealth = current_wealth - entry_price + outcomes
     utilities = crra_utility(final_wealth, risk_aversion)
-    return np.sum(probabilities * utilities)
+    # A zero-probability outcome can carry a -inf utility (its wealth may be
+    # nonpositive); 0 * -inf is NaN, so mask those rows out before summing
+    # instead of letting them poison the expectation and the comparisons
+    # downstream (which silently truncates the indifference-price search).
+    mask = probabilities > 0
+    return float(np.sum(probabilities[mask] * utilities[mask]))
 
 
 def expected_utility(
