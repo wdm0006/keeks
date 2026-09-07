@@ -287,6 +287,49 @@ solved indifference price, and the true price is at or above it. Raise
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="keeks.utils.normalize_probabilities">
+<span class="sig-prename descclassname"><span class="pre">keeks.utils.</span></span><span class="sig-name descname"><span class="pre">normalize_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/utils.html#normalize_probabilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.utils.normalize_probabilities" title="Link to this definition">¶</a></dt>
+<dd><p>Validate a probability vector and return it as a float array.</p>
+<p>A vector is valid when every probability is finite and nonnegative and
+the probabilities sum to no more than one within
+<code class="docutils literal notranslate"><span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>. Mass below one is left as-is: completing a
+partial vector (padding it with an implicit outcome, or rescaling a
+within-tolerance excess) is a gamble-modeling decision, so
+<a class="reference internal" href="#keeks.utils.expected_utility" title="keeks.utils.expected_utility"><code class="xref py py-func docutils literal notranslate"><span class="pre">expected_utility()</span></code></a> and <a class="reference internal" href="#keeks.utils.find_indifference_price" title="keeks.utils.find_indifference_price"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_indifference_price()</span></code></a> make it
+themselves and treat the omitted mass as a zero-payout outcome.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome. Must be a non-empty one-dimensional
+sequence of finite, nonnegative numbers whose sum is at most
+<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The validated probabilities as a one-dimensional float array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the probabilities are not a non-empty one-dimensional sequence of
+    finite nonnegative numbers, or if they sum to more than
+    <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_probabilities</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
+<span class="go">array([0.25, 0.75])</span>
+</pre></div>
+</div>
+<p>A sum above one by more than the tolerance is rejected:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_probabilities</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">Probabilities must sum to no more than one</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <section id="exceptions">
 <h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">¶</a></h2>
 <dl class="py exception">
@@ -322,6 +365,7 @@ the bankroll to drop below the configured maximum drawdown threshold.</p>
 <li class="toctree-l2"><a class="reference internal" href="#keeks.utils.crra_utility"><code class="docutils literal notranslate"><span class="pre">crra_utility()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keeks.utils.expected_utility"><code class="docutils literal notranslate"><span class="pre">expected_utility()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keeks.utils.find_indifference_price"><code class="docutils literal notranslate"><span class="pre">find_indifference_price()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keeks.utils.normalize_probabilities"><code class="docutils literal notranslate"><span class="pre">normalize_probabilities()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
 </ul>
 </li>

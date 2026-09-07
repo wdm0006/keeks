@@ -252,31 +252,93 @@
 
 
 
+<div class="viewcode-block" id="normalize_probabilities">
+<a class="viewcode-back" href="../../utils.html#keeks.utils.normalize_probabilities">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a probability vector and return it as a float array.</span>
+
+<span class="sd">    A vector is valid when every probability is finite and nonnegative and</span>
+<span class="sd">    the probabilities sum to no more than one within</span>
+<span class="sd">    ``PROBABILITY_SUM_TOLERANCE``. Mass below one is left as-is: completing a</span>
+<span class="sd">    partial vector (padding it with an implicit outcome, or rescaling a</span>
+<span class="sd">    within-tolerance excess) is a gamble-modeling decision, so</span>
+<span class="sd">    :func:`expected_utility` and :func:`find_indifference_price` make it</span>
+<span class="sd">    themselves and treat the omitted mass as a zero-payout outcome.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    probabilities : array-like</span>
+<span class="sd">        The probability of each outcome. Must be a non-empty one-dimensional</span>
+<span class="sd">        sequence of finite, nonnegative numbers whose sum is at most</span>
+<span class="sd">        ``1 + PROBABILITY_SUM_TOLERANCE``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated probabilities as a one-dimensional float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the probabilities are not a non-empty one-dimensional sequence of</span>
+<span class="sd">        finite nonnegative numbers, or if they sum to more than</span>
+<span class="sd">        ``1 + PROBABILITY_SUM_TOLERANCE``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; normalize_probabilities([0.25, 0.75])</span>
+<span class="sd">    array([0.25, 0.75])</span>
+
+<span class="sd">    A sum above one by more than the tolerance is rejected:</span>
+
+<span class="sd">    &gt;&gt;&gt; normalize_probabilities([0.5, 0.6])</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    ValueError: Probabilities must sum to no more than one</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be one-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be non-empty"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">probabilities</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be nonnegative"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must sum to no more than one"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">probabilities</span></div>
+
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_gamble</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate a gamble and add its implicit zero-payout outcome."""</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">outcomes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must be finite sequences"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
-    <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must be one-dimensional"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must be non-empty"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must contain only finite values"</span><span class="p">)</span>
+
+    <span class="n">probabilities</span> <span class="o">=</span> <span class="n">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must have equal length"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">outcomes</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must contain only finite values"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">probabilities</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be nonnegative"</span><span class="p">)</span>
 
+    <span class="c1"># The validator returns the probabilities untouched, so this sum is the</span>
+    <span class="c1"># caller's exact total and exactly one of the two completions can fire.</span>
     <span class="n">total_probability</span> <span class="o">=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">total_probability</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must sum to no more than one"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">total_probability</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">probabilities</span> <span class="o">=</span> <span class="n">probabilities</span> <span class="o">/</span> <span class="n">total_probability</span>
-        <span class="n">total_probability</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="k">if</span> <span class="n">total_probability</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">outcomes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">total_probability</span><span class="p">)</span>
