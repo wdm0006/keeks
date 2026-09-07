@@ -117,6 +117,11 @@ print(f"Final bankroll: ${bankroll.total_funds:.2f}")
 bankroll.plot_history(fname="bankroll-history.png")
 ```
 
+The test suite executes this exact block as a seeded, down-scaled demo — the
+simulator clamped to 50 trials with a fixed seed and the plot rendered
+headlessly — so the example stays runnable; the narrative above describes the
+full 1,000-trial run.
+
 Simulation mutates the bankroll and records its history. Use matching payoff and
 loss assumptions in the strategy and simulator; Keeks does not enforce that they
 match. The cost assumption is a separate matter — see the note below.

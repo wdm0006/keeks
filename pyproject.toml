@@ -56,7 +56,6 @@ dev = [
     "pytest-cov",
     "sphinx",
     "sphinxcontrib-googleanalytics",
-    "flake8",
     "wheel",
     "ruff",
     "tox",
@@ -81,6 +80,27 @@ exclude_lines = [
     "pragma: no cover",
     "raise NotImplementedError",
     "@abc.abstractmethod",
+]
+
+[tool.mutmut]
+# mutmut copies source_paths plus tests/ and the config into a scratch
+# mutants/ tree and regenerates it on every run; anything else the suite
+# reads from the repo root must be listed in also_copy. Directories are
+# listed as directories: file-mode entries cannot create parent paths.
+source_paths = ["keeks"]
+pytest_add_cli_args_test_selection = ["tests"]
+# The repo's pytest addopts inject --cov flags into every mutant run; strip
+# them here. mutmut already invokes pytest with -x -q, so pass/fail
+# semantics are unchanged -- only the coverage overhead goes away.
+pytest_add_cli_args = ["-o", "addopts="]
+also_copy = [
+    "README.md",
+    "docs",
+    "benchmarks",
+    "examples",
+    "CHANGELOG.md",
+    "version.py",
+    "Makefile",
 ]
 
 [tool.ruff]

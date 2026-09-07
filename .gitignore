@@ -64,6 +64,9 @@ target/
 # Testing
 .pytest_cache/
 
+# mutmut scratch tree (regenerated on every run)
+mutants/
+
 # Virtual environments
 venv/
 ENV/

@@ -38,12 +38,22 @@ jobs:
         uv pip install -e ".[dev]"
         
     - name: Run tests with pytest
+      # The suite measures 100% of 692 statements post-hardening (the abstract
+      # evaluate stub is contract-only, excluded via [tool.coverage.report]);
+      # fail-under 99 leaves slack while still failing any real regression.
       run: |
-        uv run pytest tests --cov=keeks --cov-report=term-missing
+        uv run pytest tests --cov=keeks --cov-report=term-missing --cov-fail-under=99
 
     - name: Run docstring examples
       run: |
         uv run pytest --doctest-modules keeks/
+
+    - name: Version consistency (keeks.__version__ == pyproject)
+      # Explicit per-matrix-leg gate for the version-consistency contract from
+      # the hardening suite; -o addopts= skips coverage overhead for this
+      # one-file check. The full-suite run above already includes it.
+      run: |
+        uv run pytest tests/test_version_consistency.py -o addopts= -v
 
   lint:
     runs-on: ubuntu-latest
