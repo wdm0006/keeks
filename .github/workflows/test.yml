@@ -48,6 +48,13 @@ jobs:
       run: |
         uv run pytest --doctest-modules keeks/
 
+    - name: Version consistency (keeks.__version__ == pyproject)
+      # Explicit per-matrix-leg gate for the version-consistency contract from
+      # the hardening suite; -o addopts= skips coverage overhead for this
+      # one-file check. The full-suite run above already includes it.
+      run: |
+        uv run pytest tests/test_version_consistency.py -o addopts= -v
+
   lint:
     runs-on: ubuntu-latest
 
