@@ -7,6 +7,8 @@ includes:
 
 - Bankroll management: Track and manage funds for betting
 - Binary betting strategies: Implementations of Kelly Criterion and other strategies
+- Multi-outcome betting: Strategies and simulators for mutually exclusive markets
+  and portfolios of independent bets
 - Simulators: Tools to evaluate strategies under different conditions
 - Decision-theory utilities: CRRA utility and one-time gamble pricing
 
@@ -33,6 +35,12 @@ from keeks.binary_strategies import (
     OptimalF,
 )
 from keeks.binary_strategies.base import BaseStrategy
+from keeks.multi_outcome import (
+    BaseMultiOutcomeStrategy,
+    MultiOutcomeKellyCriterion,
+    PortfolioSimulator,
+    RepeatedMultiOutcomeSimulator,
+)
 from keeks.simulators import (
     RandomBinarySimulator,
     RandomUncertainBinarySimulator,
@@ -54,6 +62,7 @@ except PackageNotFoundError:  # pragma: no cover - uninstalled source checkout
 __all__ = [
     "__version__",
     "BankRoll",
+    "BaseMultiOutcomeStrategy",
     "BaseStrategy",
     "CPPIStrategy",
     "DrawdownAdjustedKelly",
@@ -62,11 +71,14 @@ __all__ = [
     "FractionalKellyCriterion",
     "KellyCriterion",
     "MertonShare",
+    "MultiOutcomeKellyCriterion",
     "NaiveStrategy",
     "OptimalF",
+    "PortfolioSimulator",
     "RandomBinarySimulator",
     "RandomUncertainBinarySimulator",
     "RepeatedBinarySimulator",
+    "RepeatedMultiOutcomeSimulator",
     "RuinError",
     "crra_utility",
     "expected_utility",
