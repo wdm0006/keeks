@@ -1,0 +1,878 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.multi_outcome.kelly &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.multi_outcome.kelly - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.multi_outcome.kelly">
+<meta property="og:description" content="keeks.multi_outcome.kelly - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/multi_outcome/kelly.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.multi_outcome.kelly">
+<meta name="twitter:description" content="keeks.multi_outcome.kelly - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/multi_outcome/kelly.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.multi_outcome.kelly</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.multi_outcome.kelly</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Log-growth optimal stakes on the legs of one mutually exclusive market.</span>
+
+<span class="sd">The Kelly criterion generalizes from one binary bet to N legs. Staking the</span>
+<span class="sd">fractions ``f_1..f_N`` of the bankroll on legs quoted at decimal odds</span>
+<span class="sd">``payoff_i`` (a winning leg pays ``payoff_i`` times its stake, stake</span>
+<span class="sd">included), the net win per unit staked on leg ``i`` is</span>
+<span class="sd">``a_i = payoff_i - 1 - transaction_cost`` and every losing leg costs</span>
+<span class="sd">``l = loss + transaction_cost`` per unit. Exactly one leg realizes, so the</span>
+<span class="sd">bankroll multiplier when leg ``j`` wins is</span>
+<span class="sd">``1 + a_j f_j - l * sum_{k != j} f_k`` and the log-growth optimal allocation</span>
+<span class="sd">maximizes::</span>
+
+<span class="sd">    sum_i p_i * log(1 + a_i f_i - l * sum_{k != i} f_k)</span>
+
+<span class="sd">At two legs the optimum of this objective is a single-leg stake whenever the</span>
+<span class="sd">book is fully priced (the probabilities sum to one) and only one leg prices a</span>
+<span class="sd">positive binary Kelly fraction - the realistic case, since both legs pricing</span>
+<span class="sd">positive is an inconsistent (arbitrage) book - so</span>
+<span class="sd">:class:`MultiOutcomeKellyCriterion` falls back to exact</span>
+<span class="sd">:class:`keeks.binary_strategies.KellyCriterion` sizing there and is</span>
+<span class="sd">golden-tested to reproduce it exactly. When the probabilities leave void mass</span>
+<span class="sd">(binary Kelly would count the refund branch as a loss), when both legs price</span>
+<span class="sd">positive, or at three legs and beyond, the joint problem is solved</span>
+<span class="sd">numerically by deterministic coordinate ascent.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.kelly</span><span class="w"> </span><span class="kn">import</span> <span class="n">KellyCriterion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.multi_outcome.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMultiOutcomeStrategy</span><span class="p">,</span> <span class="n">_validate_stake_fractions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">,</span>
+    <span class="n">_require_finite</span><span class="p">,</span>
+    <span class="n">normalize_probabilities</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+<span class="n">_MAX_BISECTIONS</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">_MAX_SWEEPS</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="c1"># Coordinate changes below this are float noise on a [0, 1] fraction.</span>
+<span class="n">_COORDINATE_TOLERANCE</span> <span class="o">=</span> <span class="mf">1e-15</span>
+<span class="c1"># Hard floor on every positive-probability leg's winning multiplier. The log</span>
+<span class="c1"># domain is open (a zeroed multiplier is unconditional ruin), so stakes must</span>
+<span class="c1"># back off from its boundary; the floor only ever binds for subnormal-</span>
+<span class="c1"># probability legs, whose log terms are weighted by that tiny probability.</span>
+<span class="n">_MULTIPLIER_FLOOR</span> <span class="o">=</span> <span class="mf">1e-12</span>
+<span class="c1"># Slack for the delegation KKT check: marginal values within this of zero</span>
+<span class="c1"># are float noise on the binary root, not real improvement directions.</span>
+<span class="n">_KKT_SLACK</span> <span class="o">=</span> <span class="mf">1e-12</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_slice_slope</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">other_probs</span><span class="p">,</span> <span class="n">other_multipliers</span><span class="p">,</span> <span class="n">cost</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    dU/df_j of the log-growth objective at ``f_j = t``, other legs fixed.</span>
+
+<span class="sd">    ``alpha`` is the winning leg's own multiplier at ``t = 0`` and</span>
+<span class="sd">    ``other_multipliers`` are the other legs' multipliers at ``t = 0``; both</span>
+<span class="sd">    are positive inside the log's domain.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">other_probs</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">rooms</span> <span class="o">=</span> <span class="n">other_multipliers</span> <span class="o">-</span> <span class="n">cost</span> <span class="o">*</span> <span class="n">t</span>
+        <span class="k">if</span> <span class="n">rooms</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="c1"># Past another leg's log domain: its multiplier would vanish, and</span>
+            <span class="c1"># the objective falls to -infinity, so the slope is -infinity.</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+        <span class="n">drag</span> <span class="o">=</span> <span class="n">cost</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">other_probs</span> <span class="o">/</span> <span class="n">rooms</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">drag</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">own_room</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">+</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">t</span>
+    <span class="k">if</span> <span class="n">own_room</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="c1"># Only reachable at t = 0 with a zero own multiplier; the leg's own</span>
+        <span class="c1"># term dominates in the limit.</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">return</span> <span class="n">prob</span> <span class="o">*</span> <span class="n">weight</span> <span class="o">/</span> <span class="n">own_room</span> <span class="o">-</span> <span class="n">drag</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_multipliers_within_floor</span><span class="p">(</span><span class="n">stakes</span><span class="p">,</span> <span class="n">net_gains</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The legs' winning multipliers for a stake vector, or ``None``.</span>
+
+<span class="sd">    ``None`` means at least one positive-probability leg's multiplier falls</span>
+<span class="sd">    below ``_MULTIPLIER_FLOOR`` - a stake vector this close to guaranteed</span>
+<span class="sd">    ruin must never leave the strategy, so both the two-leg delegation and</span>
+<span class="sd">    the joint solver validate candidates through this one check.</span>
+<span class="sd">    """</span>
+    <span class="n">stakes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">stakes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">multipliers</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">1.0</span>
+        <span class="o">-</span> <span class="n">cost</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">stakes</span><span class="p">))</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">net_gains</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">+</span> <span class="n">cost</span><span class="p">)</span> <span class="o">*</span> <span class="n">stakes</span>
+    <span class="p">)</span>
+    <span class="n">relevant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">multipliers</span><span class="p">[</span><span class="n">relevant</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">_MULTIPLIER_FLOOR</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">multipliers</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_delegation_is_joint_optimum</span><span class="p">(</span><span class="n">stakes</span><span class="p">,</span> <span class="n">net_gains</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">max_total</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Whether a fully priced delegation candidate is already the joint optimum.</span>
+
+<span class="sd">    ``stakes`` holds at most one positive per-leg binary Kelly stake. The</span>
+<span class="sd">    candidate is the joint optimum only if no feasible direction improves</span>
+<span class="sd">    the log-growth objective at that point: no other positive-probability</span>
+<span class="sd">    leg may grow into the remaining aggregate cap on its own, and none may</span>
+<span class="sd">    beat the priced leg in a fixed-total trade. For an uncapped priced leg</span>
+<span class="sd">    the priced marginal is exactly zero and the trade condition reduces to</span>
+<span class="sd">    ``p_k * w_k * w_j &lt;= (1 - p_j) * l**2`` per other leg - the closed form</span>
+<span class="sd">    that separates genuinely binary-equivalent books from two-sided books</span>
+<span class="sd">    that grow faster by staking both legs (which must be solved jointly).</span>
+<span class="sd">    """</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cost</span><span class="p">)</span>
+    <span class="n">stakes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">stake</span><span class="p">)</span> <span class="k">for</span> <span class="n">stake</span> <span class="ow">in</span> <span class="n">stakes</span><span class="p">]</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">stakes</span><span class="p">))</span>
+    <span class="n">multipliers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="mf">1.0</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">net_gains</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span> <span class="o">*</span> <span class="n">stakes</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">-</span> <span class="n">cost</span> <span class="o">*</span> <span class="p">(</span><span class="n">total</span> <span class="o">-</span> <span class="n">stakes</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stakes</span><span class="p">))</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+        <span class="n">multipliers</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stakes</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+    <span class="p">):</span>
+        <span class="c1"># A realized outcome would zero the bankroll: the candidate is</span>
+        <span class="c1"># infeasible, hence certainly not the joint optimum. (Callers that</span>
+        <span class="c1"># check the multiplier floor first never reach this, but the gate</span>
+        <span class="c1"># must stay safe standing alone.)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">gradient</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stakes</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="c1"># A zero-probability leg contributes no log term; staking it</span>
+            <span class="c1"># only burns fees, so it never improves the objective.</span>
+            <span class="n">gradient</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">own</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">net_gains</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span> <span class="o">/</span> <span class="n">multipliers</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span>
+        <span class="n">drag</span> <span class="o">=</span> <span class="n">cost</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">multipliers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stakes</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">leg</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+        <span class="n">gradient</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">own</span> <span class="o">-</span> <span class="n">drag</span><span class="p">)</span>
+
+    <span class="n">priced</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg</span> <span class="k">for</span> <span class="n">leg</span><span class="p">,</span> <span class="n">stake</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stakes</span><span class="p">)</span> <span class="k">if</span> <span class="n">stake</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">priced</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">g</span> <span class="o">&lt;=</span> <span class="n">_KKT_SLACK</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gradient</span><span class="p">)</span>
+
+    <span class="n">priced_leg</span> <span class="o">=</span> <span class="n">priced</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">room</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_total</span><span class="p">)</span> <span class="o">-</span> <span class="n">total</span>
+    <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stakes</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">leg</span> <span class="o">==</span> <span class="n">priced_leg</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">gradient</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_KKT_SLACK</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">room</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="c1"># The leg can grow on its own without touching the priced leg.</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">gradient</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">-</span> <span class="n">gradient</span><span class="p">[</span><span class="n">priced_leg</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">_KKT_SLACK</span><span class="p">:</span>
+            <span class="c1"># Trading the priced leg's stake into this leg improves.</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_optimal_single_leg_stake</span><span class="p">(</span>
+    <span class="n">prob</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">other_probs</span><span class="p">,</span> <span class="n">other_multipliers</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">upper</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Maximize the objective's 1-D slice over ``f_j`` on ``[0, upper]``.</span>
+
+<span class="sd">    The slice is strictly concave in ``f_j`` (a sum of logs of affine</span>
+<span class="sd">    functions with positive coefficients on the log arguments), so its</span>
+<span class="sd">    derivative crosses zero at most once and bisection on the slope sign</span>
+<span class="sd">    finds the maximum to float precision.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">upper</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">other_probs</span><span class="p">,</span> <span class="n">other_multipliers</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_slice_slope</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">_slice_slope</span><span class="p">(</span><span class="n">upper</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="c1"># The aggregate cap binds before the interior root is reached.</span>
+        <span class="n">stake</span> <span class="o">=</span> <span class="n">upper</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">upper</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_MAX_BISECTIONS</span><span class="p">):</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mid</span> <span class="o">&lt;=</span> <span class="n">lo</span> <span class="ow">or</span> <span class="n">mid</span> <span class="o">&gt;=</span> <span class="n">hi</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">_slice_slope</span><span class="p">(</span><span class="n">mid</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">mid</span>
+        <span class="n">stake</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span>
+    <span class="c1"># Never land on the log-domain boundary itself: a root or cap that rounds</span>
+    <span class="c1"># onto it would zero another leg's multiplier in float arithmetic, so</span>
+    <span class="c1"># back off by whole ulps until every room is strictly positive.</span>
+    <span class="k">while</span> <span class="n">stake</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">other_multipliers</span> <span class="o">-</span> <span class="n">cost</span> <span class="o">*</span> <span class="n">stake</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">)):</span>
+        <span class="n">stake</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="n">stake</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stake</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_optimal_pairwise_transfer</span><span class="p">(</span>
+    <span class="n">prob_to</span><span class="p">,</span>
+    <span class="n">spread_to</span><span class="p">,</span>
+    <span class="n">multiplier_to</span><span class="p">,</span>
+    <span class="n">prob_from</span><span class="p">,</span>
+    <span class="n">spread_from</span><span class="p">,</span>
+    <span class="n">multiplier_from</span><span class="p">,</span>
+    <span class="n">available</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Maximize the objective along a stake transfer between two active legs.</span>
+
+<span class="sd">    Moving ``delta`` stake from one leg to the other keeps the total stake -</span>
+<span class="sd">    and therefore every other leg's multiplier - fixed, so the objective</span>
+<span class="sd">    along the move is ``p_to * log(m_to + spread_to * delta) +</span>
+<span class="sd">    p_from * log(m_from - spread_from * delta)``, strictly concave in</span>
+<span class="sd">    ``delta``. Returns the maximizing transfer, in ``[0, available]``.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">available</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">multiplier_to</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">multiplier_from</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="c1"># Defensive: a transfer is meaningless from a state that has already</span>
+        <span class="c1"># lost a log domain, and the receiver's slope divides by its</span>
+        <span class="c1"># multiplier below.</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">slope</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+        <span class="n">room</span> <span class="o">=</span> <span class="n">multiplier_from</span> <span class="o">-</span> <span class="n">spread_from</span> <span class="o">*</span> <span class="n">delta</span>
+        <span class="k">if</span> <span class="n">room</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="c1"># The donor leg's multiplier would vanish: past its log domain.</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">return</span> <span class="n">prob_to</span> <span class="o">*</span> <span class="n">spread_to</span> <span class="o">/</span> <span class="p">(</span><span class="n">multiplier_to</span> <span class="o">+</span> <span class="n">spread_to</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span>
+            <span class="n">prob_from</span> <span class="o">*</span> <span class="n">spread_from</span> <span class="o">/</span> <span class="n">room</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">slope</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">_COORDINATE_TOLERANCE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">available</span><span class="p">,</span> <span class="n">multiplier_from</span> <span class="o">/</span> <span class="n">spread_from</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">slope</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="c1"># The donor leg gives everything it has (or its domain allows).</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">upper</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">upper</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_MAX_BISECTIONS</span><span class="p">):</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mid</span> <span class="o">&lt;=</span> <span class="n">lo</span> <span class="ow">or</span> <span class="n">mid</span> <span class="o">&gt;=</span> <span class="n">hi</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">slope</span><span class="p">(</span><span class="n">mid</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">mid</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span>
+    <span class="c1"># Keep the donor off the log-domain boundary: rounding onto it would zero</span>
+    <span class="c1"># (or flip negative) its multiplier once fractions are recomputed.</span>
+    <span class="k">while</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">multiplier_from</span> <span class="o">-</span> <span class="n">spread_from</span> <span class="o">*</span> <span class="n">delta</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">delta</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_solve_log_growth_allocation</span><span class="p">(</span><span class="n">net_gains</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">max_total</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Solve the N-leg log-growth allocation by coordinate ascent.</span>
+
+<span class="sd">    Maximizes ``sum_i p_i * log(1 + w_i f_i - cost * sum_{k != i} f_k)`` over</span>
+<span class="sd">    stakes ``f &gt;= 0`` with ``sum f &lt;= max_total``. Legs with no probability or</span>
+<span class="sd">    no net gain (``w_i &lt;= 0``) are held at exactly zero: the objective strictly</span>
+<span class="sd">    decreases in their stake, so zero is optimal for them and for the whole</span>
+<span class="sd">    problem they are simply absent.</span>
+
+<span class="sd">    Each sweep alternates two moves. A single-leg move grows one stake up to</span>
+<span class="sd">    the remaining aggregate cap, which reaches every interior optimum; a</span>
+<span class="sd">    pairwise transfer moves stake between two legs at a fixed total, the only</span>
+<span class="sd">    way to improve once the cap binds (no single-leg move can trade). A point</span>
+<span class="sd">    optimal for both move types is optimal along every direction of the</span>
+<span class="sd">    feasible cone, hence - the objective being concave - globally optimal.</span>
+
+<span class="sd">    Returns one stake per leg as a tuple, in leg order.</span>
+<span class="sd">    """</span>
+    <span class="n">stakes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">net_gains</span><span class="p">)</span>
+    <span class="n">gains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">net_gains</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">spreads</span> <span class="o">=</span> <span class="n">gains</span> <span class="o">+</span> <span class="n">cost</span>
+    <span class="c1"># Legs that carry probability mass enter the objective through their own</span>
+    <span class="c1"># log term, so their multipliers must stay positive even when they are</span>
+    <span class="c1"># never staked: a no-edge leg that realizes still multiplies the bankroll</span>
+    <span class="c1"># by 1 - cost * F, and letting that hit zero is unconditional ruin.</span>
+    <span class="n">relevant</span> <span class="o">=</span> <span class="n">probs</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+    <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg</span> <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gains</span><span class="p">))</span> <span class="k">if</span> <span class="n">relevant</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="ow">and</span> <span class="n">gains</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">stakes</span><span class="p">)</span>
+
+    <span class="n">fractions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gains</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">multipliers</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">cost</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">fractions</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">+</span> <span class="n">spreads</span> <span class="o">*</span> <span class="n">fractions</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_capped</span><span class="p">(</span><span class="n">candidate</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Accept as much of a proposed move as the multiplier floor allows.</span>
+
+<span class="sd">        Multipliers are affine in the stakes, so floor-feasible move sizes</span>
+<span class="sd">        form an interval: bisecting the move size recovers the frontier</span>
+<span class="sd">        exactly where a proposed move rounds past it. The floor is enforced</span>
+<span class="sd">        on recomputed multipliers, which makes it authoritative over the</span>
+<span class="sd">        helpers' internal room models.</span>
+<span class="sd">        """</span>
+        <span class="k">nonlocal</span> <span class="n">fractions</span><span class="p">,</span> <span class="n">multipliers</span>
+        <span class="n">trial</span> <span class="o">=</span> <span class="n">_multipliers_within_floor</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="n">gains</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">probs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fractions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">multipliers</span> <span class="o">=</span> <span class="n">trial</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_MAX_BISECTIONS</span><span class="p">):</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mid</span> <span class="o">&lt;=</span> <span class="n">lo</span> <span class="ow">or</span> <span class="n">mid</span> <span class="o">&gt;=</span> <span class="n">hi</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">trial_fractions</span> <span class="o">=</span> <span class="n">fractions</span> <span class="o">+</span> <span class="n">mid</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span> <span class="o">-</span> <span class="n">fractions</span><span class="p">)</span>
+            <span class="n">trial</span> <span class="o">=</span> <span class="n">_multipliers_within_floor</span><span class="p">(</span><span class="n">trial_fractions</span><span class="p">,</span> <span class="n">gains</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">probs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">trial</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">mid</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="p">(</span><span class="n">trial_fractions</span><span class="p">,</span> <span class="n">trial</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">best</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">fractions</span><span class="p">,</span> <span class="n">multipliers</span> <span class="o">=</span> <span class="n">best</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_MAX_SWEEPS</span><span class="p">):</span>
+        <span class="n">worst_change</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="n">rest</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fractions</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="n">fractions</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span>
+            <span class="n">rooms</span> <span class="o">=</span> <span class="n">relevant</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">rooms</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">stake</span> <span class="o">=</span> <span class="n">_optimal_single_leg_stake</span><span class="p">(</span>
+                <span class="n">prob</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="n">leg</span><span class="p">]),</span>
+                <span class="n">weight</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">gains</span><span class="p">[</span><span class="n">leg</span><span class="p">]),</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">cost</span> <span class="o">*</span> <span class="n">rest</span><span class="p">,</span>
+                <span class="n">other_probs</span><span class="o">=</span><span class="n">probs</span><span class="p">[</span><span class="n">rooms</span><span class="p">],</span>
+                <span class="n">other_multipliers</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">cost</span> <span class="o">*</span> <span class="n">rest</span> <span class="o">+</span> <span class="n">spreads</span><span class="p">[</span><span class="n">rooms</span><span class="p">]</span> <span class="o">*</span> <span class="n">fractions</span><span class="p">[</span><span class="n">rooms</span><span class="p">],</span>
+                <span class="n">cost</span><span class="o">=</span><span class="n">cost</span><span class="p">,</span>
+                <span class="n">upper</span><span class="o">=</span><span class="n">max_total</span> <span class="o">-</span> <span class="n">rest</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">previous</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fractions</span><span class="p">[</span><span class="n">leg</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">stake</span> <span class="o">==</span> <span class="n">previous</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">candidate</span> <span class="o">=</span> <span class="n">fractions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">candidate</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="n">stake</span>
+            <span class="k">if</span> <span class="n">_apply_capped</span><span class="p">(</span><span class="n">candidate</span><span class="p">):</span>
+                <span class="n">worst_change</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">worst_change</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stake</span> <span class="o">-</span> <span class="n">previous</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">to</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">hero</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">to</span> <span class="o">==</span> <span class="n">hero</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">_optimal_pairwise_transfer</span><span class="p">(</span>
+                    <span class="n">prob_to</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="n">to</span><span class="p">]),</span>
+                    <span class="n">spread_to</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">spreads</span><span class="p">[</span><span class="n">to</span><span class="p">]),</span>
+                    <span class="n">multiplier_to</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">multipliers</span><span class="p">[</span><span class="n">to</span><span class="p">]),</span>
+                    <span class="n">prob_from</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">probs</span><span class="p">[</span><span class="n">hero</span><span class="p">]),</span>
+                    <span class="n">spread_from</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">spreads</span><span class="p">[</span><span class="n">hero</span><span class="p">]),</span>
+                    <span class="n">multiplier_from</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">multipliers</span><span class="p">[</span><span class="n">hero</span><span class="p">]),</span>
+                    <span class="n">available</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">fractions</span><span class="p">[</span><span class="n">hero</span><span class="p">]),</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="n">candidate</span> <span class="o">=</span> <span class="n">fractions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">candidate</span><span class="p">[</span><span class="n">to</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+                    <span class="n">candidate</span><span class="p">[</span><span class="n">hero</span><span class="p">]</span> <span class="o">-=</span> <span class="n">delta</span>
+                    <span class="k">if</span> <span class="n">_apply_capped</span><span class="p">(</span><span class="n">candidate</span><span class="p">):</span>
+                        <span class="n">worst_change</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">worst_change</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">worst_change</span> <span class="o">&lt;=</span> <span class="n">_COORDINATE_TOLERANCE</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fractions</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="MultiOutcomeKellyCriterion">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.kelly.MultiOutcomeKellyCriterion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiOutcomeKellyCriterion</span><span class="p">(</span><span class="n">BaseMultiOutcomeStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Kelly criterion for mutually exclusive markets with N legs.</span>
+
+<span class="sd">    Sizes one stake fraction per leg to maximize the expected log growth of</span>
+<span class="sd">    the bankroll: ``sum_i p_i * log(1 + a_i f_i - l * sum_{k != i} f_k)``</span>
+<span class="sd">    where ``a_i = payoff_i - 1 - transaction_cost`` is the net win per unit</span>
+<span class="sd">    staked on leg ``i`` (the payoffs are decimal odds: a winning leg pays its</span>
+<span class="sd">    payoff times its stake, stake included) and ``l = loss +</span>
+<span class="sd">    transaction_cost`` is the per-unit charge on every losing leg. Exactly one</span>
+<span class="sd">    leg realizes per round, so staking two legs is a hedge inside one market,</span>
+<span class="sd">    not two independent bets.</span>
+
+<span class="sd">    Two legs are special: for a fully priced book (the probabilities sum to</span>
+<span class="sd">    one) where at most one leg prices a positive binary Kelly stake - which</span>
+<span class="sd">    holds for every consistent two-outcome book - the joint optimum is that</span>
+<span class="sd">    leg's exact binary Kelly fraction and zero on the other, so</span>
+<span class="sd">    :class:`MultiOutcomeKellyCriterion` computes it with</span>
+<span class="sd">    :class:`keeks.binary_strategies.KellyCriterion` (including its</span>
+<span class="sd">    ``min_probability`` gate) and reproduces the binary strategy exactly.</span>
+<span class="sd">    When the probabilities leave void mass the delegation no longer applies -</span>
+<span class="sd">    binary Kelly would count the refund branch as a loss - and the joint</span>
+<span class="sd">    solver below runs instead; the same happens when both legs price a</span>
+<span class="sd">    positive binary stake (an inconsistent, arbitrage two-sided book).</span>
+
+<span class="sd">    At three legs and up the objective has no closed form in general and is</span>
+<span class="sd">    maximized by deterministic coordinate ascent, converged to roughly</span>
+<span class="sd">    ``1e-15`` of a stake unit. The ``min_probability`` gate is a</span>
+<span class="sd">    :class:`~keeks.binary_strategies.KellyCriterion` feature of the two-leg</span>
+<span class="sd">    fallback only; the general optimizer sizes every leg that carries a net</span>
+<span class="sd">    win on its own merits, including legs below even odds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoffs : sequence of float</span>
+<span class="sd">        The decimal-odds multiplier paid by each mutually exclusive leg, in</span>
+<span class="sd">        leg order, on top of the stake's own return. Every payoff must be</span>
+<span class="sd">        finite and greater than 0; a leg whose payoff cannot beat its costs</span>
+<span class="sd">        (``payoff &lt;= 1 + transaction_cost``) is never staked.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The loss multiplier applied to every losing leg's stake.</span>
+<span class="sd">    transaction_cost : float, optional</span>
+<span class="sd">        The transaction cost as a fraction of each unit staked, by default 0.</span>
+<span class="sd">        This is a per-unit *fractional* cost that enters the sizing formulas</span>
+<span class="sd">        alongside ``payoffs`` and ``loss``, so ``0.01`` means one percent of</span>
+<span class="sd">        the stake. Note this differs in unit from the simulators' flat</span>
+<span class="sd">        per-settlement ``transaction_costs`` fee.</span>
+<span class="sd">    min_probability : float, default=0.5</span>
+<span class="sd">        The minimum leg probability for the two-leg binary fallback to place</span>
+<span class="sd">        a stake, mirroring</span>
+<span class="sd">        :class:`~keeks.binary_strategies.KellyCriterion`'s lossy gate. It has</span>
+<span class="sd">        no effect at three legs and up.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``payoffs`` is not a non-empty one-dimensional sequence of finite</span>
+<span class="sd">        numbers greater than 0, if ``loss`` or ``transaction_cost`` is not a</span>
+<span class="sd">        finite nonnegative number with ``loss + transaction_cost &gt; 0``, or if</span>
+<span class="sd">        ``min_probability`` is outside ``[0, 1]``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A two-leg market reproduces the binary Kelly stake exactly. Leg 1 at</span>
+<span class="sd">    decimal odds 3.0 is a net win of 2.0 per unit staked - the same bet</span>
+<span class="sd">    :class:`~keeks.binary_strategies.KellyCriterion` sizes from its net</span>
+<span class="sd">    payoff:</span>
+
+<span class="sd">    &gt;&gt;&gt; strategy = MultiOutcomeKellyCriterion(payoffs=(3.0, 1.5), loss=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; strategy.evaluate([0.5, 0.5], 1000.0)</span>
+<span class="sd">    (0.25, 0.0)</span>
+<span class="sd">    &gt;&gt;&gt; KellyCriterion(payoff=2.0, loss=1.0, transaction_cost=0).evaluate(0.5, 1000.0)</span>
+<span class="sd">    0.25</span>
+
+<span class="sd">    A 1X2 market where only leg 0 has a standalone edge still splits the</span>
+<span class="sd">    stake: leg 1's odds are rich enough that once leg 0 is staked its</span>
+<span class="sd">    coupled marginal value turns positive, while no-edge leg 2 stays at</span>
+<span class="sd">    zero. Only the joint solve sees the coupling - the per-leg binary</span>
+<span class="sd">    answer for leg 0 alone is the first coordinate:</span>
+
+<span class="sd">    &gt;&gt;&gt; strategy = MultiOutcomeKellyCriterion(payoffs=(3.2, 3.4, 2.4), loss=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; stakes = strategy.evaluate([0.42, 0.27, 0.28], 1000.0)</span>
+<span class="sd">    &gt;&gt;&gt; tuple(round(stake, 6) for stake in stakes)</span>
+<span class="sd">    (0.203681, 0.06253, 0.0)</span>
+<span class="sd">    &gt;&gt;&gt; KellyCriterion(payoff=2.2, loss=1.0, transaction_cost=0, min_probability=0.4).evaluate(0.42, 1000.0)</span>
+<span class="sd">    0.15636363636363632</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">payoffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">transaction_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">min_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Initialize the strategy.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        payoffs : sequence of float</span>
+<span class="sd">            The decimal-odds multiplier paid by each mutually exclusive leg,</span>
+<span class="sd">            in leg order. Every payoff must be finite and greater than 0.</span>
+<span class="sd">        loss : float</span>
+<span class="sd">            The loss multiplier applied to every losing leg's stake.</span>
+<span class="sd">        transaction_cost : float, optional</span>
+<span class="sd">            The transaction cost as a fraction of each unit staked, by default 0.</span>
+<span class="sd">        min_probability : float, default=0.5</span>
+<span class="sd">            The minimum leg probability for the two-leg binary fallback to</span>
+<span class="sd">            place a stake.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If any constructor argument is outside its documented range.</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Minimum probability must be between 0 and 1"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
+        <span class="c1"># Net win per unit staked on each leg: decimal odds minus one, less</span>
+        <span class="c1"># the per-unit fractional cost. Shared per-unit charge on every</span>
+        <span class="c1"># losing leg.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_net_gains</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">transaction_cost</span> <span class="k">for</span> <span class="n">payoff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_cost</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span>
+        <span class="c1"># At N=2 the allocation is exact binary Kelly per leg, scored by the</span>
+        <span class="c1"># same class the golden tests pin. A leg whose decimal payoff cannot</span>
+        <span class="c1"># return a positive profit has no scorer and is never staked.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binary_scorers</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">KellyCriterion</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_binary_scorers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">min_probability</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">payoff</span> <span class="o">&gt;</span> <span class="mf">1.0</span>
+                <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">payoff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="MultiOutcomeKellyCriterion.evaluate">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.kelly.MultiOutcomeKellyCriterion.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Calculate the log-growth optimal stake fraction per leg.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probabilities : sequence of float</span>
+<span class="sd">            The probability of each mutually exclusive leg, in leg order.</span>
+<span class="sd">            Must be a valid probability vector per</span>
+<span class="sd">            :func:`keeks.utils.normalize_probabilities` and match the number</span>
+<span class="sd">            of payoffs.</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll amount. The optimal fractions do not depend</span>
+<span class="sd">            on its size; a nonpositive bankroll has no safe stake at all.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            One stake fraction per leg: ``len(result) ==</span>
+<span class="sd">            len(probabilities)``, every element finite and within ``[0, 1]``,</span>
+<span class="sd">            and ``sum(result) &lt;= 1 + PROBABILITY_SUM_TOLERANCE``.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the probability vector is malformed or its length does not</span>
+<span class="sd">            match the number of payoffs, or if ``current_bankroll`` is not</span>
+<span class="sd">            finite.</span>
+<span class="sd">        """</span>
+        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Probabilities (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span><span class="si">}</span><span class="s2">) must match the number of "</span>
+                <span class="sa">f</span><span class="s2">"payoffs (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+
+        <span class="c1"># The per-leg fallback is exact only for a fully priced book: when the</span>
+        <span class="c1"># probabilities leave void mass, binary Kelly counts the refund branch</span>
+        <span class="c1"># as a loss and understakes. Only when the probabilities sum to one</span>
+        <span class="c1"># does the binary "lose" branch coincide with "another leg realizes".</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_binary_scorers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span>
+        <span class="p">):</span>
+            <span class="n">stakes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">scorer</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">probability</span><span class="p">),</span> <span class="n">current_bankroll</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">scorer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="mf">0.0</span>
+                <span class="k">for</span> <span class="n">scorer</span><span class="p">,</span> <span class="n">probability</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_binary_scorers</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">sum</span><span class="p">(</span><span class="n">stake</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">stake</span> <span class="ow">in</span> <span class="n">stakes</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+                <span class="ow">and</span> <span class="n">_multipliers_within_floor</span><span class="p">(</span>
+                    <span class="n">stakes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_net_gains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_cost</span><span class="p">,</span> <span class="n">probabilities</span>
+                <span class="p">)</span>
+                <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">_delegation_is_joint_optimum</span><span class="p">(</span>
+                    <span class="n">stakes</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_net_gains</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_total_cost</span><span class="p">,</span>
+                    <span class="n">probabilities</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_total_fraction</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">):</span>
+                <span class="c1"># At most one leg prices a positive binary stake, the result</span>
+                <span class="c1"># keeps every other leg off the ruin boundary, and no other</span>
+                <span class="c1"># leg has an improving direction at that point: the delegated</span>
+                <span class="c1"># stakes are the exact joint optimum.</span>
+                <span class="k">return</span> <span class="n">_validate_stake_fractions</span><span class="p">(</span><span class="n">stakes</span><span class="p">)</span>
+            <span class="c1"># Otherwise solve the joint problem: both legs may price a</span>
+            <span class="c1"># positive binary stake (an inconsistent arbitrage book), a</span>
+            <span class="c1"># binary stake may drive a positive-probability leg through the</span>
+            <span class="c1"># ruin floor (a float-rounded sure thing can hide a subnormal</span>
+            <span class="c1"># branch), or - most importantly - the other legs' coupled</span>
+            <span class="c1"># marginal value may be positive at the delegated point. For a</span>
+            <span class="c1"># fully priced two-leg book that marginal is proportional to</span>
+            <span class="c1"># ``w_0 * w_1 - l**2``, so two-sided books with rich payoffs on</span>
+            <span class="c1"># both sides grow faster by staking BOTH legs than binary Kelly</span>
+            <span class="c1"># on either one alone.</span>
+
+        <span class="n">stakes</span> <span class="o">=</span> <span class="n">_solve_log_growth_allocation</span><span class="p">(</span>
+            <span class="n">net_gains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net_gains</span><span class="p">,</span>
+            <span class="n">cost</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_total_cost</span><span class="p">,</span>
+            <span class="n">probabilities</span><span class="o">=</span><span class="n">probabilities</span><span class="p">,</span>
+            <span class="n">max_total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_total_fraction</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_validate_stake_fractions</span><span class="p">(</span><span class="n">stakes</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

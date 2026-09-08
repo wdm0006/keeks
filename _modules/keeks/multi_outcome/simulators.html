@@ -1,0 +1,1010 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.multi_outcome.simulators &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.multi_outcome.simulators - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.multi_outcome.simulators">
+<meta property="og:description" content="keeks.multi_outcome.simulators - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/multi_outcome/simulators.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.multi_outcome.simulators">
+<meta name="twitter:description" content="keeks.multi_outcome.simulators - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/multi_outcome/simulators.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.multi_outcome.simulators</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.multi_outcome.simulators</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Repeated-play simulation over mutually exclusive markets and bet portfolios.</span>
+
+<span class="sd">Two simulator families share the net-settlement flow the binary simulators</span>
+<span class="sd">use and a ``record_settlement`` hook that reports each batch's full result.</span>
+<span class="sd">:class:`RepeatedMultiOutcomeSimulator` bets the mutually exclusive legs of</span>
+<span class="sd">one market per trial: one categorical draw realizes exactly one leg (the</span>
+<span class="sd">probability mass below one is a void or push on which no leg settles).</span>
+<span class="sd">:class:`PortfolioSimulator` places M independent binary bets per trial:</span>
+<span class="sd">every staked bet settles on its own draw and the batch nets into one</span>
+<span class="sd">bankroll transaction.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.multi_outcome.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMultiOutcomeStrategy</span><span class="p">,</span> <span class="n">_validate_stake_fractions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RuinError</span><span class="p">,</span>
+    <span class="n">_require_finite</span><span class="p">,</span>
+    <span class="n">_validate_simulator_probability</span><span class="p">,</span>
+    <span class="n">_validate_simulator_seed</span><span class="p">,</span>
+    <span class="n">normalize_probabilities</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_payoffs</span><span class="p">(</span><span class="n">payoffs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a simulator's payoff vector and return it as a float tuple.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoffs : sequence of float</span>
+<span class="sd">        The payoff multiplier for each mutually exclusive leg, in leg order.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of float</span>
+<span class="sd">        The validated payoffs, one per leg, in leg order.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``payoffs`` is not a non-empty one-dimensional sequence of finite</span>
+<span class="sd">        numbers greater than 0.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">payoff_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">payoffs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">payoff_array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be one-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">payoff_array</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be non-empty"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">payoff_array</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">payoff_array</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be greater than 0"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">payoff_array</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">payoffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Reject a strategy whose odds contradict the simulator's settlement odds.</span>
+
+<span class="sd">    The simulator sizes every stake through ``strategy.evaluate`` but settles</span>
+<span class="sd">    it with its own ``payoffs`` and ``loss``, so the two models have to agree</span>
+<span class="sd">    for the run to describe anything. Only</span>
+<span class="sd">    :class:`keeks.multi_outcome.base.BaseMultiOutcomeStrategy` instances are</span>
+<span class="sd">    checked; a duck-typed strategy needs no ``payoffs``/``loss`` at all and</span>
+<span class="sd">    its compatibility stays the caller's responsibility.</span>
+
+<span class="sd">    The strategy's fractional ``transaction_cost`` and the simulator's flat</span>
+<span class="sd">    ``transaction_costs`` fee are deliberately different units and are never</span>
+<span class="sd">    compared.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the strategy's ``payoffs`` or ``loss`` differ from the simulator's.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">BaseMultiOutcomeStrategy</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">payoffs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Strategy payoffs (</span><span class="si">{</span><span class="n">strategy</span><span class="o">.</span><span class="n">payoffs</span><span class="si">!r}</span><span class="s2">) does not match simulator "</span>
+            <span class="sa">f</span><span class="s2">"payoffs (</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">payoffs</span><span class="p">)</span><span class="si">!r}</span><span class="s2">); the strategy sizes each stake with "</span>
+            <span class="s2">"its own odds while the simulator settles with the simulator's, "</span>
+            <span class="s2">"so the two must agree."</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">strategy</span><span class="o">.</span><span class="n">loss</span> <span class="o">!=</span> <span class="n">loss</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Strategy loss (</span><span class="si">{</span><span class="n">strategy</span><span class="o">.</span><span class="n">loss</span><span class="si">!r}</span><span class="s2">) does not match simulator loss "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">loss</span><span class="si">!r}</span><span class="s2">); the strategy sizes each stake with its own odds "</span>
+            <span class="s2">"while the simulator settles with the simulator's, so the two "</span>
+            <span class="s2">"must agree."</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="RepeatedMultiOutcomeSimulator">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.simulators.RepeatedMultiOutcomeSimulator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RepeatedMultiOutcomeSimulator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Simulator for multi-outcome strategies on a fixed mutually exclusive market.</span>
+
+<span class="sd">    Every trial bets on the legs of one market - a 1X2 football match, for</span>
+<span class="sd">    instance - with the same win probabilities, payoff multipliers, and loss</span>
+<span class="sd">    multiplier. Exactly one leg realizes per trial: the strategy returns one</span>
+<span class="sd">    stake fraction per leg, one uniform draw picks the realized leg, the</span>
+<span class="sd">    realized leg settles as a win, and every other leg the strategy staked</span>
+<span class="sd">    settles as a loss.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoffs : sequence of float</span>
+<span class="sd">        The payoff multiplier for each mutually exclusive leg, in leg order.</span>
+<span class="sd">        Every payoff must be finite and greater than 0. Leg ``i`` of</span>
+<span class="sd">        ``probabilities`` is settled with leg ``i`` of ``payoffs``.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The loss multiplier applied to every losing leg's stake.</span>
+<span class="sd">    transaction_costs : float</span>
+<span class="sd">        The flat fee charged once per settled leg, regardless of outcome. This</span>
+<span class="sd">        is an absolute bankroll amount, not a fraction of the stake: it is</span>
+<span class="sd">        subtracted from the winning leg's settlement and added to every</span>
+<span class="sd">        losing leg's. Legs the strategy declines (zero stake) settle nothing</span>
+<span class="sd">        and pay no fee. Note this differs in unit from the singular</span>
+<span class="sd">        ``transaction_cost`` taken by strategies in ``keeks.multi_outcome``,</span>
+<span class="sd">        which is a per-unit fraction of the stake used for sizing.</span>
+<span class="sd">    probabilities : sequence of float</span>
+<span class="sd">        The fixed probability of each leg for all trials. Must be a non-empty</span>
+<span class="sd">        one-dimensional sequence of finite nonnegative numbers summing to at</span>
+<span class="sd">        most ``1 + PROBABILITY_SUM_TOLERANCE``; probability mass below one is</span>
+<span class="sd">        the chance of a void or push round on which no leg settles.</span>
+<span class="sd">    trials : int, default=1000</span>
+<span class="sd">        The number of betting trials to simulate.</span>
+<span class="sd">    seed : int or None, default=None</span>
+<span class="sd">        Seed for the private settlement stream. When omitted, numpy's global</span>
+<span class="sd">        generator drives the draws and no replay is promised.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``payoffs`` is not a non-empty one-dimensional sequence of finite</span>
+<span class="sd">        numbers greater than 0, if ``loss`` or ``transaction_costs`` is not</span>
+<span class="sd">        finite and nonnegative, if ``probabilities`` is not a valid probability</span>
+<span class="sd">        vector, or if ``trials`` is not a nonnegative integer, or if ``seed``</span>
+<span class="sd">        is not a nonnegative integer or ``None``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    **Reproducibility contract (public behavior).** With a ``seed``, every</span>
+<span class="sd">    draw comes from a private :class:`numpy.random.Generator` derived as the</span>
+<span class="sd">    first child of ``numpy.random.SeedSequence(seed).spawn(1)``. Rerunning a</span>
+<span class="sd">    seeded construction replays byte-identically: the same bankroll history</span>
+<span class="sd">    and the same hook calls. Spawned children, not the raw seed, power the</span>
+<span class="sd">    streams of this API family, so each stream owns an independent child seed</span>
+<span class="sd">    and a stream added later cannot shift the settlement stream's draws.</span>
+<span class="sd">    Without a seed the draws come from numpy's global generator.</span>
+
+<span class="sd">    **Trial semantics.** Each trial runs the same flow as the binary</span>
+<span class="sd">    simulators, generalized to N legs:</span>
+
+<span class="sd">    1. Stop when the bankroll is depleted (``total_funds &lt;= 0``).</span>
+<span class="sd">    2. Fire the strategy's ``update_bankroll`` hook when it has one.</span>
+<span class="sd">    3. Validate the stake vector returned by ``evaluate`` (one fraction per</span>
+<span class="sd">       leg, each in ``[0, 1]``, sum at most ``1 + PROBABILITY_SUM_TOLERANCE``).</span>
+<span class="sd">       A trial the strategy stakes on nothing (every fraction zero) is</span>
+<span class="sd">       skipped entirely: no draw is consumed, no fee is charged.</span>
+<span class="sd">    4. Draw one uniform and read it against the cumulative probabilities:</span>
+<span class="sd">       the realized leg is the first whose cumulative band contains the draw,</span>
+<span class="sd">       and a draw above the total probability mass is a void or push. A void</span>
+<span class="sd">       or push round refunds every stake: no leg settles, no fee is charged,</span>
+<span class="sd">       and the trial's draw is still consumed.</span>
+<span class="sd">    5. Otherwise settle the batch in leg order. Stakes are computed once from</span>
+<span class="sd">       the bankroll as it stood when the trial began, so settlements within</span>
+<span class="sd">       the batch never resize later legs. Each staked leg settles through the</span>
+<span class="sd">       same net-settlement flow the binary simulators use: the realized leg</span>
+<span class="sd">       pays ``payoff * stake - transaction_costs`` (deposited, or withdrawn</span>
+<span class="sd">       when the fee dominates) and every other staked leg is charged</span>
+<span class="sd">       ``loss * stake + transaction_costs``.</span>
+<span class="sd">    6. When a bankroll safeguard refuses a settlement (:class:`RuinError`),</span>
+<span class="sd">       that leg's settlement leaves the bankroll unchanged and reports a 0.0</span>
+<span class="sd">       return, the remaining legs of the batch still settle, and the</span>
+<span class="sd">       simulation stops after the batch completes - never mid-batch.</span>
+
+<span class="sd">    **The ``record_settlement`` hook.** Strategies expose an N-ary settlement</span>
+<span class="sd">    hook with the signature ``record_settlement(won_leg, return_pcts)``:</span>
+<span class="sd">    ``won_leg`` is the realized leg's index, or ``None`` for a void or push;</span>
+<span class="sd">    ``return_pcts`` holds one signed net return per leg, as a fraction of the</span>
+<span class="sd">    bankroll before the trial, with ``0.0`` for legs that settled nothing:</span>
+<span class="sd">    declined legs, void rounds, and settlements a safeguard refused. The hook</span>
+<span class="sd">    fires once per staked trial, including voids, after the batch settles.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.multi_outcome.simulators import RepeatedMultiOutcomeSimulator</span>
+<span class="sd">    &gt;&gt;&gt; simulator = RepeatedMultiOutcomeSimulator(</span>
+<span class="sd">    ...     payoffs=(3.2, 3.4, 2.4),</span>
+<span class="sd">    ...     loss=1.0,</span>
+<span class="sd">    ...     transaction_costs=0.0,</span>
+<span class="sd">    ...     probabilities=(0.42, 0.27, 0.28),</span>
+<span class="sd">    ...     trials=10_000,</span>
+<span class="sd">    ...     seed=42,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; simulator.payoffs</span>
+<span class="sd">    (3.2, 3.4, 2.4)</span>
+<span class="sd">    &gt;&gt;&gt; simulator.probabilities</span>
+<span class="sd">    array([0.42, 0.27, 0.28])</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">payoffs</span><span class="p">,</span>
+        <span class="n">loss</span><span class="p">,</span>
+        <span class="n">transaction_costs</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">,</span>
+        <span class="n">trials</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">_validate_payoffs</span><span class="p">(</span><span class="n">payoffs</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">"Loss"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Loss must be non-negative"</span><span class="p">)</span>
+        <span class="n">transaction_costs</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_costs</span><span class="p">,</span> <span class="s2">"Transaction costs"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">transaction_costs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction costs must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">transaction_costs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+        <span class="c1"># Cumulative bands for the categorical read: leg j realizes when the</span>
+        <span class="c1"># trial's uniform falls below cumulative[j] and above cumulative[j-1];</span>
+        <span class="c1"># the mass above cumulative[-1] is the void region.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cumulative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">trials</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">trials</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trials must be a nonnegative integer"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">if</span> <span class="n">trials</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trials must be a nonnegative integer"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">trials</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_outcome_rng</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="RepeatedMultiOutcomeSimulator.evaluate_strategy">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.simulators.RepeatedMultiOutcomeSimulator.evaluate_strategy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Evaluate a multi-outcome strategy over multiple trials on a fixed market.</span>
+
+<span class="sd">        For each trial, the strategy is evaluated with the fixed probability</span>
+<span class="sd">        vector, one leg realizes, and the bankroll is updated through the</span>
+<span class="sd">        settlement of the batch. The simulation stops early if the bankroll is</span>
+<span class="sd">        depleted (bankruptcy) or a settlement batch trips a bankroll safeguard</span>
+<span class="sd">        (after that batch completes - see the class notes).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        strategy : BaseMultiOutcomeStrategy</span>
+<span class="sd">            The betting strategy to evaluate. Its ``payoffs`` and ``loss``</span>
+<span class="sd">            must match this simulator's.</span>
+<span class="sd">        bankroll : BankRoll</span>
+<span class="sd">            The bankroll to use for the simulation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            The bankroll object is updated in-place with the results of the</span>
+<span class="sd">            simulation.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``strategy`` is a ``BaseMultiOutcomeStrategy`` whose ``payoffs``</span>
+<span class="sd">            or ``loss`` differ from this simulator's, since it would then size</span>
+<span class="sd">            stakes against different odds than the ones the simulator settles</span>
+<span class="sd">            at, or if the strategy returns an invalid stake vector.</span>
+<span class="sd">        """</span>
+        <span class="n">_validate_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
+
+        <span class="c1"># Resolve state-dependent hooks once: neither the strategy's hook set</span>
+        <span class="c1"># nor the bankroll value changes between the reads within one trial.</span>
+        <span class="n">update_bankroll</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"update_bankroll"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">update_bankroll</span><span class="p">):</span>
+            <span class="n">update_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">record_settlement</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"record_settlement"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">record_settlement</span><span class="p">):</span>
+            <span class="n">record_settlement</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">):</span>
+            <span class="c1"># Stop if bankrupt</span>
+            <span class="n">total_funds</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span>
+            <span class="k">if</span> <span class="n">total_funds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">update_bankroll</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">update_bankroll</span><span class="p">(</span><span class="n">total_funds</span><span class="p">)</span>
+
+            <span class="c1"># Get the proportion to bet on each leg</span>
+            <span class="n">fractions</span> <span class="o">=</span> <span class="n">_validate_stake_fractions</span><span class="p">(</span>
+                <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">total_funds</span><span class="p">),</span>
+                <span class="n">leg_count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Only process the market if the strategy staked something (avoid</span>
+            <span class="c1"># charging costs on no-bet)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">fractions</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">outcome</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_outcome_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outcome_rng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="n">realized</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cumulative</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">))</span>
+            <span class="n">won_leg</span> <span class="o">=</span> <span class="n">realized</span> <span class="k">if</span> <span class="n">realized</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="n">returns</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">won_leg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Void or push: the market refunds every stake, so no leg</span>
+                <span class="c1"># settles and no fee is charged.</span>
+                <span class="k">if</span> <span class="n">record_settlement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">record_settlement</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Stakes come from the bankroll as it stood when the trial began;</span>
+            <span class="c1"># settlements within the batch never resize later legs.</span>
+            <span class="n">bettable_funds</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">bettable_funds</span>
+            <span class="n">bankroll_before</span> <span class="o">=</span> <span class="n">total_funds</span>
+            <span class="n">batch_ruined</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">leg</span><span class="p">,</span> <span class="n">fraction</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fractions</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">fraction</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">stake</span> <span class="o">=</span> <span class="n">bettable_funds</span> <span class="o">*</span> <span class="n">fraction</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">leg</span> <span class="o">==</span> <span class="n">won_leg</span><span class="p">:</span>
+                        <span class="n">amt</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
+                        <span class="k">if</span> <span class="n">amt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">bankroll</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">amt</span><span class="p">))</span>
+                        <span class="n">returns</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="n">amt</span> <span class="o">/</span> <span class="n">bankroll_before</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">amt</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
+                        <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
+                        <span class="n">returns</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">amt</span> <span class="o">/</span> <span class="n">bankroll_before</span>
+                <span class="k">except</span> <span class="n">RuinError</span><span class="p">:</span>
+                    <span class="c1"># Settlement exceeded a bankroll safeguard: that leg's</span>
+                    <span class="c1"># settlement leaves the bankroll unchanged. Finish the</span>
+                    <span class="c1"># rest of the batch, then stop - never truncate mid-batch.</span>
+                    <span class="n">batch_ruined</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">record_settlement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">record_settlement</span><span class="p">(</span><span class="n">won_leg</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">batch_ruined</span><span class="p">:</span>
+                <span class="k">break</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_bets</span><span class="p">(</span><span class="n">bets</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a portfolio's bet table and return it as float triples.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bets : sequence of (probability, payoff, loss) triples</span>
+<span class="sd">        One triple per independent bet: the bet's win probability (finite in</span>
+<span class="sd">        ``[0, 1]``), its payoff multiplier (finite, greater than 0), and its</span>
+<span class="sd">        loss multiplier (finite, nonnegative). Unlike a market's probability</span>
+<span class="sd">        vector the win probabilities are independent events, so they carry no</span>
+<span class="sd">        sum constraint - three bets at 0.5 each describe three separate</span>
+<span class="sd">        markets, not a partition of one.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of (float, float, float)</span>
+<span class="sd">        The validated bets, one triple per bet, in bet order.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``bets`` is empty or not a sequence of exactly three-element</span>
+<span class="sd">        ``(probability, payoff, loss)`` triples with a finite probability in</span>
+<span class="sd">        ``[0, 1]``, a finite payoff greater than 0, and a finite nonnegative</span>
+<span class="sd">        loss.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _validate_bets([(0.55, 2.0, 1.0), (0.3, 2.4, 0.5)])</span>
+<span class="sd">    ((0.55, 2.0, 1.0), (0.3, 2.4, 0.5))</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bet_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">bets</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Bets must be a non-empty sequence of (probability, payoff, loss) triples"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bet_items</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Bets must be a non-empty sequence of (probability, payoff, loss) triples"</span>
+        <span class="p">)</span>
+    <span class="n">validated</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">bet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bet_items</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">bet</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Bet </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a (probability, payoff, loss) triple"</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_validate_simulator_probability</span><span class="p">(</span>
+            <span class="n">probability</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Bet </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> probability"</span>
+        <span class="p">)</span>
+        <span class="n">payoff</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Bet </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> payoff"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">payoff</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bet </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> payoff must be greater than 0"</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Bet </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> loss"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bet </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> loss must be non-negative"</span><span class="p">)</span>
+        <span class="n">validated</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">validated</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_portfolio_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">bets</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Reject a strategy whose odds contradict the portfolio's bet odds.</span>
+
+<span class="sd">    The simulator sizes every stake through ``strategy.evaluate`` but settles</span>
+<span class="sd">    the bets with their own ``payoff`` and ``loss`` multipliers, so the two</span>
+<span class="sd">    models have to agree for the run to describe anything. Only</span>
+<span class="sd">    :class:`keeks.multi_outcome.base.BaseMultiOutcomeStrategy` instances are</span>
+<span class="sd">    checked: the strategy's ``payoffs`` vector must equal the bets' payoff</span>
+<span class="sd">    multipliers in bet order, and its scalar ``loss`` must equal every bet's</span>
+<span class="sd">    loss multiplier - a strategy with one ``loss`` cannot faithfully size a</span>
+<span class="sd">    portfolio whose bets settle at different loss multipliers. A duck-typed</span>
+<span class="sd">    strategy needs no ``payoffs``/``loss`` at all and its compatibility stays</span>
+<span class="sd">    the caller's responsibility.</span>
+
+<span class="sd">    The strategy's fractional ``transaction_cost`` and the simulator's flat</span>
+<span class="sd">    ``transaction_costs`` fee are deliberately different units and are never</span>
+<span class="sd">    compared.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the strategy's ``payoffs`` differ from the bets' payoff</span>
+<span class="sd">        multipliers, or its ``loss`` differs from any bet's loss.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">BaseMultiOutcomeStrategy</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">payoffs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bet</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">bet</span> <span class="ow">in</span> <span class="n">bets</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span> <span class="o">!=</span> <span class="n">payoffs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Strategy payoffs (</span><span class="si">{</span><span class="n">strategy</span><span class="o">.</span><span class="n">payoffs</span><span class="si">!r}</span><span class="s2">) does not match portfolio "</span>
+            <span class="sa">f</span><span class="s2">"bet payoffs (</span><span class="si">{</span><span class="n">payoffs</span><span class="si">!r}</span><span class="s2">); the strategy sizes each stake with "</span>
+            <span class="s2">"its own odds while the simulator settles with the bets', so the "</span>
+            <span class="s2">"two must agree."</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">bet</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bets</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">strategy</span><span class="o">.</span><span class="n">loss</span> <span class="o">!=</span> <span class="n">bet</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Strategy loss (</span><span class="si">{</span><span class="n">strategy</span><span class="o">.</span><span class="n">loss</span><span class="si">!r}</span><span class="s2">) does not match bet </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">'s "</span>
+                <span class="sa">f</span><span class="s2">"loss (</span><span class="si">{</span><span class="n">bet</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">!r}</span><span class="s2">); the strategy sizes that stake with its "</span>
+                <span class="s2">"own odds while the simulator settles with the bet's, so the "</span>
+                <span class="s2">"two must agree."</span>
+            <span class="p">)</span>
+
+
+<div class="viewcode-block" id="PortfolioSimulator">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.simulators.PortfolioSimulator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PortfolioSimulator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Simulator for a portfolio of simultaneous independent binary bets.</span>
+
+<span class="sd">    Every trial places M independent binary bets against one bankroll</span>
+<span class="sd">    snapshot - M bookmaker markets all settling at once, for instance. Each</span>
+<span class="sd">    bet carries its own win probability, payoff multiplier, and loss</span>
+<span class="sd">    multiplier, every staked bet settles win or lose on its own draw, and the</span>
+<span class="sd">    batch's settlements net into exactly one bankroll transaction. This is</span>
+<span class="sd">    the portfolio counterpart of</span>
+<span class="sd">    :class:`RepeatedMultiOutcomeSimulator`: there exactly one leg of one</span>
+<span class="sd">    market realizes per trial, here every staked bet settles.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bets : sequence of (probability, payoff, loss) triples</span>
+<span class="sd">        One triple per independent bet: the win probability (finite in</span>
+<span class="sd">        ``[0, 1]``), the payoff multiplier (finite, greater than 0), and the</span>
+<span class="sd">        loss multiplier (finite, nonnegative). Bet ``m`` of the portfolio is</span>
+<span class="sd">        settled with bet ``m`` of the stake vector the strategy returns. The</span>
+<span class="sd">        win probabilities are independent events, so unlike a market's</span>
+<span class="sd">        probability vector they carry no sum constraint - three bets at 0.5</span>
+<span class="sd">        each describe three separate markets, not a partition of one.</span>
+<span class="sd">    transaction_costs : float, default=0.0</span>
+<span class="sd">        The flat fee charged once per settled bet, regardless of outcome.</span>
+<span class="sd">        This is an absolute bankroll amount, not a fraction of the stake: it</span>
+<span class="sd">        is subtracted from a winning bet's settlement and added to a losing</span>
+<span class="sd">        bet's. Bets the strategy declines (zero stake) settle nothing and pay</span>
+<span class="sd">        no fee. Note this differs in unit from the singular</span>
+<span class="sd">        ``transaction_cost`` taken by strategies in ``keeks.multi_outcome``,</span>
+<span class="sd">        which is a per-unit fraction of the stake used for sizing.</span>
+<span class="sd">    trials : int, default=1000</span>
+<span class="sd">        The number of betting trials to simulate.</span>
+<span class="sd">    seed : int or None, default=None</span>
+<span class="sd">        Seed for the private settlement streams. When omitted, numpy's</span>
+<span class="sd">        global generator drives the draws and no replay is promised.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``bets`` is empty or not a sequence of valid ``(probability,</span>
+<span class="sd">        payoff, loss)`` triples, if ``transaction_costs`` is not finite and</span>
+<span class="sd">        nonnegative, if ``trials`` is not a nonnegative integer, or if</span>
+<span class="sd">        ``seed`` is not a nonnegative integer or ``None``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    **Reproducibility contract (public behavior).** With a ``seed``, every</span>
+<span class="sd">    draw comes from a private :class:`numpy.random.Generator` derived as</span>
+<span class="sd">    child ``m`` of ``numpy.random.SeedSequence(seed).spawn(len(bets))``: bet</span>
+<span class="sd">    ``m`` owns an independent child seed, so its settlement stream is stable</span>
+<span class="sd">    no matter how many bets surround it - adding, removing, or reordering</span>
+<span class="sd">    other bets never shifts a surviving bet's draws. Rerunning a seeded</span>
+<span class="sd">    construction replays byte-identically: the same bankroll history and the</span>
+<span class="sd">    same hook calls. Without a seed the draws come from numpy's global</span>
+<span class="sd">    generator.</span>
+
+<span class="sd">    **Trial semantics.** Each trial runs the same flow as the binary</span>
+<span class="sd">    simulators, generalized to a portfolio:</span>
+
+<span class="sd">    1. Stop when the bankroll is depleted (``total_funds &lt;= 0``).</span>
+<span class="sd">    2. Fire the strategy's ``update_bankroll`` hook when it has one.</span>
+<span class="sd">    3. Validate the stake vector returned by ``evaluate`` (one fraction per</span>
+<span class="sd">       bet, each in ``[0, 1]``, sum at most</span>
+<span class="sd">       ``1 + PROBABILITY_SUM_TOLERANCE``). This is the portfolio's</span>
+<span class="sd">       aggregate-exposure check: stakes are the fractions times</span>
+<span class="sd">       ``bettable_funds``, so the total staked across the portfolio can</span>
+<span class="sd">       never exceed the bettable funds for the trial, and a vector over</span>
+<span class="sd">       that bound is rejected - the run aborts with a ``ValueError``, the</span>
+<span class="sd">       stakes are never silently reduced to fit. A trial the strategy</span>
+<span class="sd">       stakes on nothing (every fraction zero) is skipped entirely: no draw</span>
+<span class="sd">       is consumed, no fee is charged.</span>
+<span class="sd">    4. Draw one uniform per *staked* bet in bet order, from that bet's own</span>
+<span class="sd">       stream, and read it against the bet's win probability:</span>
+<span class="sd">       ``outcome &lt; probability`` wins. A bet staked at probability 0 never</span>
+<span class="sd">       wins; at probability 1 it always wins. Declined bets draw nothing.</span>
+<span class="sd">    5. Settle the batch net. Each staked bet wins ``payoff * stake -</span>
+<span class="sd">       transaction_costs`` or loses ``loss * stake + transaction_costs``;</span>
+<span class="sd">       the signed amounts sum to one net delta and the bankroll receives</span>
+<span class="sd">       exactly one deposit (net gain) or withdrawal (net loss) - one</span>
+<span class="sd">       history entry per settled batch. Stakes are computed once from the</span>
+<span class="sd">       bankroll as it stood when the trial began, so no settlement ever</span>
+<span class="sd">       resizes a later bet.</span>
+<span class="sd">    6. The drawdown check is batch-level: because the batch settles through</span>
+<span class="sd">       one transaction, the bankroll's safeguards (bankruptcy,</span>
+<span class="sd">       ``max_draw_down``) evaluate the batch's net total once - not once per</span>
+<span class="sd">       bet. When a safeguard refuses the net settlement</span>
+<span class="sd">       (:class:`RuinError`), the whole batch leaves the bankroll unchanged,</span>
+<span class="sd">       every bet reports a 0.0 return, and the simulation stops after the</span>
+<span class="sd">       batch completes - never mid-portfolio.</span>
+
+<span class="sd">    **The ``record_settlement`` hook.** Strategies expose an N-ary settlement</span>
+<span class="sd">    hook with the signature ``record_settlement(won_bets, return_pcts)``:</span>
+<span class="sd">    ``won_bets`` holds one entry per bet - ``True`` when the bet's draw won,</span>
+<span class="sd">    ``False`` when it lost, ``None`` for declined bets - and ``return_pcts``</span>
+<span class="sd">    holds one signed net return per bet, as a fraction of the bankroll before</span>
+<span class="sd">    the trial, with ``0.0`` for declined bets and for settlements a safeguard</span>
+<span class="sd">    refused. The hook fires once per staked trial, after the batch settles.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.multi_outcome.simulators import PortfolioSimulator</span>
+<span class="sd">    &gt;&gt;&gt; simulator = PortfolioSimulator(</span>
+<span class="sd">    ...     bets=[(0.55, 2.0, 1.0), (0.45, 3.0, 1.0), (0.30, 2.4, 1.0)],</span>
+<span class="sd">    ...     transaction_costs=0.0,</span>
+<span class="sd">    ...     trials=10_000,</span>
+<span class="sd">    ...     seed=42,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; simulator.bets[0]</span>
+<span class="sd">    (0.55, 2.0, 1.0)</span>
+<span class="sd">    &gt;&gt;&gt; simulator.probabilities.tolist()</span>
+<span class="sd">    [0.55, 0.45, 0.3]</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bets</span><span class="p">,</span>
+        <span class="n">transaction_costs</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">trials</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">_validate_bets</span><span class="p">(</span><span class="n">bets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">bet</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">bet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+        <span class="p">)</span>
+        <span class="n">transaction_costs</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_costs</span><span class="p">,</span> <span class="s2">"Transaction costs"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">transaction_costs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction costs must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">transaction_costs</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">trials</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">trials</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trials must be a nonnegative integer"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">if</span> <span class="n">trials</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trials must be a nonnegative integer"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">trials</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># One spawned child per bet: bet m's stream is child m of the</span>
+            <span class="c1"># seed's spawn tree, independent of every other bet's stream.</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">child</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PortfolioSimulator.evaluate_strategy">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.simulators.PortfolioSimulator.evaluate_strategy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Evaluate a multi-outcome strategy over a portfolio of binary bets.</span>
+
+<span class="sd">        For each trial, the strategy is evaluated with the bets' win</span>
+<span class="sd">        probabilities, every staked bet settles on its own draw, and the</span>
+<span class="sd">        batch's net result is applied to the bankroll in one transaction.</span>
+<span class="sd">        The simulation stops early if the bankroll is depleted or a</span>
+<span class="sd">        settlement batch trips a bankroll safeguard (after that batch</span>
+<span class="sd">        completes - see the class notes).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        strategy : BaseMultiOutcomeStrategy</span>
+<span class="sd">            The betting strategy to evaluate. One stake fraction per bet;</span>
+<span class="sd">            for ABC strategies the ``payoffs`` must match the bets' payoff</span>
+<span class="sd">            multipliers and the ``loss`` every bet's loss multiplier.</span>
+<span class="sd">        bankroll : BankRoll</span>
+<span class="sd">            The bankroll to use for the simulation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">            The bankroll object is updated in-place with the results of the</span>
+<span class="sd">            simulation.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``strategy`` is a ``BaseMultiOutcomeStrategy`` whose</span>
+<span class="sd">            ``payoffs`` or ``loss`` differ from the bets' odds, since it</span>
+<span class="sd">            would then size stakes against different odds than the ones the</span>
+<span class="sd">            simulator settles at, or if the strategy returns an invalid</span>
+<span class="sd">            stake vector.</span>
+<span class="sd">        """</span>
+        <span class="n">_validate_portfolio_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">)</span>
+
+        <span class="c1"># Resolve state-dependent hooks once: neither the strategy's hook set</span>
+        <span class="c1"># nor the bankroll value changes between the reads within one trial.</span>
+        <span class="n">update_bankroll</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"update_bankroll"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">update_bankroll</span><span class="p">):</span>
+            <span class="n">update_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">record_settlement</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"record_settlement"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">record_settlement</span><span class="p">):</span>
+            <span class="n">record_settlement</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">):</span>
+            <span class="c1"># Stop if bankrupt</span>
+            <span class="n">total_funds</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span>
+            <span class="k">if</span> <span class="n">total_funds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">update_bankroll</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">update_bankroll</span><span class="p">(</span><span class="n">total_funds</span><span class="p">)</span>
+
+            <span class="c1"># Get the proportion to bet on each portfolio bet. The validator</span>
+            <span class="c1"># enforces the aggregate-exposure bound (fractions summing to at</span>
+            <span class="c1"># most one) and runs before any draw is consumed.</span>
+            <span class="n">fractions</span> <span class="o">=</span> <span class="n">_validate_stake_fractions</span><span class="p">(</span>
+                <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">total_funds</span><span class="p">),</span>
+                <span class="n">leg_count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Only process the portfolio if the strategy staked something</span>
+            <span class="c1"># (avoid charging costs on no-bet)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">fractions</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Stakes come from the bankroll as it stood when the trial began;</span>
+            <span class="c1"># the batch's settlements never resize later bets.</span>
+            <span class="n">bettable_funds</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">bettable_funds</span>
+            <span class="n">bankroll_before</span> <span class="o">=</span> <span class="n">total_funds</span>
+            <span class="n">won_bets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
+            <span class="n">amounts</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
+            <span class="n">net</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">fraction</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fractions</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">fraction</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">stake</span> <span class="o">=</span> <span class="n">bettable_funds</span> <span class="o">*</span> <span class="n">fraction</span>
+                <span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="n">outcome</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">outcome</span> <span class="o">&lt;</span> <span class="n">probability</span><span class="p">:</span>
+                    <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">payoff</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">loss</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">)</span>
+                <span class="n">net</span> <span class="o">+=</span> <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+            <span class="c1"># Net settlement: the whole batch crosses the bankroll as one</span>
+            <span class="c1"># transaction, so its safeguards evaluate the batch total once.</span>
+            <span class="n">returns</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
+            <span class="n">batch_ruined</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">net</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">bankroll</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="o">-</span><span class="n">net</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">amount</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">amounts</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">returns</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">amount</span> <span class="o">/</span> <span class="n">bankroll_before</span>
+            <span class="k">except</span> <span class="n">RuinError</span><span class="p">:</span>
+                <span class="c1"># The safeguard refused the batch's net settlement: the</span>
+                <span class="c1"># bankroll is unchanged, every return reports 0.0, and the</span>
+                <span class="c1"># simulation stops after this batch - never mid-portfolio.</span>
+                <span class="n">batch_ruined</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">record_settlement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">record_settlement</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">won_bets</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">batch_ruined</span><span class="p">:</span>
+                <span class="k">break</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

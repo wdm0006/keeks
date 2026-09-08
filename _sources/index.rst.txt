@@ -127,6 +127,7 @@ Contents
    strategy_benchmark
    binary_strategies
    simulators
+   multi_outcome
    bankroll
    utils
 

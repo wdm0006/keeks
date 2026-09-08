@@ -1,0 +1,501 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.multi_outcome.base &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.multi_outcome.base - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.multi_outcome.base">
+<meta property="og:description" content="keeks.multi_outcome.base - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/multi_outcome/base.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.multi_outcome.base">
+<meta name="twitter:description" content="keeks.multi_outcome.base - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/multi_outcome/base.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.multi_outcome.base</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.multi_outcome.base</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">,</span> <span class="n">_require_finite</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_stake_fractions</span><span class="p">(</span><span class="n">stakes</span><span class="p">,</span> <span class="n">leg_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Coerce a strategy's stake vector to a tuple of finite floats within ``[0, 1]``.</span>
+
+<span class="sd">    The vector analogue of :func:`keeks.utils._validate_stake_fraction`: one</span>
+<span class="sd">    stake fraction per mutually exclusive leg, every element finite in</span>
+<span class="sd">    ``[0, 1]``, and the total at most one within ``PROBABILITY_SUM_TOLERANCE``</span>
+<span class="sd">    — the legs together can never promise more of the bankroll than it holds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    stakes : sequence of float</span>
+<span class="sd">        One stake fraction per leg. Any sequence is accepted; a bare scalar is</span>
+<span class="sd">        not a one-dimensional sequence and is rejected.</span>
+<span class="sd">    leg_count : int, optional</span>
+<span class="sd">        When given, the vector must carry exactly that many fractions - one</span>
+<span class="sd">        per leg of the market or portfolio it settles. A length mismatch would</span>
+<span class="sd">        otherwise silently skip legs or settle stakes on legs that do not</span>
+<span class="sd">        exist, so simulators pass their leg count and reject the vector.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of float</span>
+<span class="sd">        The validated stakes, one per leg, in leg order.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the stakes are not a non-empty one-dimensional sequence of finite</span>
+<span class="sd">        numbers, if any element falls outside ``[0, 1]``, if they sum to</span>
+<span class="sd">        more than ``1 + PROBABILITY_SUM_TOLERANCE``, or if ``leg_count`` is</span>
+<span class="sd">        given and the vector's length differs from it.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _validate_stake_fractions([0.25, 0.25, 0.5])</span>
+<span class="sd">    (0.25, 0.25, 0.5)</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">stakes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">stakes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Strategy stake fractions must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">stakes</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Strategy stake fractions must be one-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stakes</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Strategy stake fractions must be non-empty"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">leg_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stakes</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">leg_count</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Strategy must return exactly </span><span class="si">{</span><span class="n">leg_count</span><span class="si">}</span><span class="s2"> stake fractions, "</span>
+            <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="n">stakes</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">stakes</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Strategy stake fractions must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">stakes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">stakes</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Strategy stake fractions must be between 0 and 1"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stakes</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Strategy stake fractions must sum to no more than one"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">stakes</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="BaseMultiOutcomeStrategy">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.base.BaseMultiOutcomeStrategy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseMultiOutcomeStrategy</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Abstract base class for all multi-outcome betting strategies.</span>
+
+<span class="sd">    This class defines the interface that all multi-outcome betting strategies</span>
+<span class="sd">    must implement. A multi-outcome strategy sizes stakes on the mutually</span>
+<span class="sd">    exclusive legs of one market - a 1X2 football match, for instance - in a</span>
+<span class="sd">    single decision: exactly one leg settles, every losing leg's stake is</span>
+<span class="sd">    charged ``loss`` plus ``transaction_cost``, and the winning leg pays its</span>
+<span class="sd">    payoff multiplier times its stake.</span>
+
+<span class="sd">    Concrete strategy implementations should inherit from this class and</span>
+<span class="sd">    implement the evaluate method.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payoffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Initialize the strategy.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        payoffs : sequence of float</span>
+<span class="sd">            The payoff multiplier for each mutually exclusive leg, in leg</span>
+<span class="sd">            order. Every payoff must be finite and greater than 0. The legs</span>
+<span class="sd">            are positional and payoffs are fixed at construction: leg ``i``</span>
+<span class="sd">            of the probabilities passed to :meth:`evaluate` is settled with</span>
+<span class="sd">            leg ``i`` of ``payoffs``, and a strategy reprices by fresh</span>
+<span class="sd">            construction, not by mutating its odds.</span>
+<span class="sd">        loss : float</span>
+<span class="sd">            The loss multiplier applied to every losing leg's stake.</span>
+<span class="sd">        transaction_cost : float, optional</span>
+<span class="sd">            The transaction cost as a fraction of each unit staked, by default 0.</span>
+<span class="sd">            This is a per-unit *fractional* cost that enters the sizing formulas</span>
+<span class="sd">            alongside ``payoffs`` and ``loss``, so ``0.01`` means one percent of</span>
+<span class="sd">            the stake and the fee it represents grows with the bet.</span>
+
+<span class="sd">            The simulators in ``keeks.simulators`` take a near-identically named</span>
+<span class="sd">            ``transaction_costs`` (plural) that is an *absolute* bankroll amount</span>
+<span class="sd">            charged once per settled bet, independent of stake size. The two are</span>
+<span class="sd">            different units: passing the same number to both models two very</span>
+<span class="sd">            different costs.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``payoffs`` is not a non-empty one-dimensional sequence of</span>
+<span class="sd">            finite numbers greater than 0, if any of ``loss`` or</span>
+<span class="sd">            ``transaction_cost`` is not a finite number, if ``loss`` is</span>
+<span class="sd">            negative, or if ``loss + transaction_cost`` is not positive.</span>
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">payoff_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">payoffs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">if</span> <span class="n">payoff_array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be one-dimensional"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">payoff_array</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be non-empty"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">payoff_array</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must contain only finite values"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">payoff_array</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Payoffs must be greater than 0"</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">"Loss"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Loss must be non-negative"</span><span class="p">)</span>
+        <span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_cost</span><span class="p">,</span> <span class="s2">"Transaction cost"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">transaction_cost</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction cost must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Total cost (loss + transaction_cost) must be greater than 0"</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">payoff_array</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+        <span class="c1"># Constructor-only constant: for a positive bankroll the bankroll term</span>
+        <span class="c1"># in current_bankroll / (loss + transaction_cost) cancels, so the</span>
+        <span class="c1"># aggregate cap is a fixed fraction (see get_max_safe_total_bet).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_total_fraction</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span><span class="p">))</span>
+
+<div class="viewcode-block" id="BaseMultiOutcomeStrategy.get_max_safe_total_bet">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.base.BaseMultiOutcomeStrategy.get_max_safe_total_bet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_max_safe_total_bet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Calculate the maximum safe aggregate stake across all legs.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll to use for calculations.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The maximum safe total stake size as a proportion of bankroll.</span>
+<span class="sd">            Zero when there is nothing left to stake</span>
+<span class="sd">            (``current_bankroll &lt;= 0``).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``current_bankroll`` is not finite.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Under net settlement exactly one leg of the market wins and every</span>
+<span class="sd">        losing leg's stake is charged ``loss + transaction_cost``, so a total</span>
+<span class="sd">        stake fraction ``F`` spread across the legs can lose at most</span>
+<span class="sd">        ``F * (loss + transaction_cost)`` of the bankroll - the worst leg's</span>
+<span class="sd">        charge being the binding one. Keeping that worst case within the</span>
+<span class="sd">        bankroll requires ``F &lt;= current_bankroll / (loss + transaction_cost)``;</span>
+<span class="sd">        expressed as a proportion of the bankroll the bankroll term cancels,</span>
+<span class="sd">        so for a positive bankroll this is exactly</span>
+<span class="sd">        ``min(1.0, 1 / (loss + transaction_cost))``. Every leg shares one</span>
+<span class="sd">        scalar ``loss`` and ``transaction_cost``, so the worst leg's per-leg</span>
+<span class="sd">        bound is also the aggregate bound - the same value</span>
+<span class="sd">        ``keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet`` returns</span>
+<span class="sd">        for a single binary bet with the same charges. A non-positive bankroll</span>
+<span class="sd">        has no safe stake at all, so the answer there is ``0.0``.</span>
+<span class="sd">        """</span>
+        <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_total_fraction</span></div>
+
+
+<div class="viewcode-block" id="BaseMultiOutcomeStrategy.evaluate">
+<a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.base.BaseMultiOutcomeStrategy.evaluate">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Evaluate the strategy for a given probability vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        probabilities : sequence of float</span>
+<span class="sd">            The probability of each mutually exclusive leg, in leg order. Must</span>
+<span class="sd">            be a non-empty one-dimensional sequence of finite, nonnegative</span>
+<span class="sd">            numbers whose sum is at most ``1 + PROBABILITY_SUM_TOLERANCE`` -</span>
+<span class="sd">            the contract :func:`keeks.utils.normalize_probabilities` enforces.</span>
+<span class="sd">            Probability mass below one models a void or push outcome on which</span>
+<span class="sd">            no leg settles.</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll to use for calculations.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            One stake fraction of the bankroll per leg: ``len(result) ==</span>
+<span class="sd">            len(probabilities)``, every element finite and within ``[0, 1]``,</span>
+<span class="sd">            and ``sum(result) &lt;= 1 + PROBABILITY_SUM_TOLERANCE``.</span>
+<span class="sd">            Implementations accept any sequence input and return a tuple.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the probability vector is malformed (empty, non-finite,</span>
+<span class="sd">            negative, or summing above ``1 + PROBABILITY_SUM_TOLERANCE``), if</span>
+<span class="sd">            ``current_bankroll`` is not finite, or if the stake vector leaving</span>
+<span class="sd">            this strategy violates the contract above.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>
