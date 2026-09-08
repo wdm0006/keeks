@@ -199,6 +199,20 @@ def test_constructor_accepts_zero_trials_and_zero_seed():
 # ---
 
 
+def test_stake_vector_length_must_match_leg_count():
+    # Regression: a strategy returning more fractions than the market has
+    # legs used to settle phantom losing legs (charging ``loss`` on stakes
+    # for legs that do not exist), and a shorter one silently left legs
+    # unstaked.
+    simulator = build_simulator()
+    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    with pytest.raises(ValueError, match="exactly 3 stake fractions, got 4"):
+        simulator.evaluate_strategy(_DuckTypedStrategy((0.1, 0.1, 0.0, 0.1)), bankroll)
+    with pytest.raises(ValueError, match="exactly 3 stake fractions, got 2"):
+        simulator.evaluate_strategy(_DuckTypedStrategy((0.1, 0.1)), bankroll)
+    assert bankroll.history == [1000.0]
+
+
 def test_rejects_strategy_payoffs_that_disagree():
     strategy = _FixedStakesStrategy(
         payoffs=(2.0, 3.5, 2.4), loss=1.0, stakes=(0.1, 0.1, 0.0)

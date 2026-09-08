@@ -8,7 +8,7 @@ from keeks.utils import PROBABILITY_SUM_TOLERANCE, _require_finite
 __author__ = "willmcginnis"
 
 
-def _validate_stake_fractions(stakes):
+def _validate_stake_fractions(stakes, leg_count=None):
     """
     Coerce a strategy's stake vector to a tuple of finite floats within ``[0, 1]``.
 
@@ -22,6 +22,11 @@ def _validate_stake_fractions(stakes):
     stakes : sequence of float
         One stake fraction per leg. Any sequence is accepted; a bare scalar is
         not a one-dimensional sequence and is rejected.
+    leg_count : int, optional
+        When given, the vector must carry exactly that many fractions - one
+        per leg of the market or portfolio it settles. A length mismatch would
+        otherwise silently skip legs or settle stakes on legs that do not
+        exist, so simulators pass their leg count and reject the vector.
 
     Returns
     -------
@@ -32,8 +37,9 @@ def _validate_stake_fractions(stakes):
     ------
     ValueError
         If the stakes are not a non-empty one-dimensional sequence of finite
-        numbers, if any element falls outside ``[0, 1]``, or if they sum to
-        more than ``1 + PROBABILITY_SUM_TOLERANCE``.
+        numbers, if any element falls outside ``[0, 1]``, if they sum to
+        more than ``1 + PROBABILITY_SUM_TOLERANCE``, or if ``leg_count`` is
+        given and the vector's length differs from it.
 
     Examples
     --------
@@ -48,6 +54,11 @@ def _validate_stake_fractions(stakes):
         raise ValueError("Strategy stake fractions must be one-dimensional")
     if stakes.size == 0:
         raise ValueError("Strategy stake fractions must be non-empty")
+    if leg_count is not None and stakes.size != leg_count:
+        raise ValueError(
+            f"Strategy must return exactly {leg_count} stake fractions, "
+            f"got {stakes.size}"
+        )
     if not np.all(np.isfinite(stakes)):
         raise ValueError("Strategy stake fractions must contain only finite values")
     if np.any((stakes < 0) | (stakes > 1)):
