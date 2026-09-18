@@ -1,11 +1,11 @@
 """Seeding, replay, and stream-purity tests for the portfolio simulator.
 
-The portfolio spends no draws from the process-global generator: a seeded
-simulator draws exclusively from one child of ``SeedSequence(seed).spawn()``
-per bet. Adding a bet appends a new child stream and leaves every earlier
-bet's stream untouched, so bet m's outcomes are a function of the seed
-alone. Validation failures are side-effect free: a rejected run consumes no
-draws, so the next run replays a fresh simulation exactly.
+The portfolio spends no draws from the process-global generator. A seeded
+simulator keys each bet's stream by its validated values, so heterogeneous
+survivors keep their outcomes across portfolio edits. Identical duplicates
+use deterministic occurrence ordinals. Validation failures are side-effect
+free: a rejected run consumes no draws, so the next run replays a fresh
+simulation exactly.
 """
 
 import numpy as np
@@ -33,6 +33,7 @@ class _WinOneBetStrategy:
         self._stakes = [0.0] * m
         self._stakes[index] = fraction
         self.won_flags = []
+        self.return_pcts = []
 
     def evaluate(self, _probabilities, _current_bankroll):
         return _validate_stake_fractions(tuple(self._stakes))
@@ -40,8 +41,9 @@ class _WinOneBetStrategy:
     def update_bankroll(self, _current_bankroll):
         pass
 
-    def record_settlement(self, won_bets, _return_pcts):
+    def record_settlement(self, won_bets, return_pcts):
         self.won_flags.append(won_bets)
+        self.return_pcts.append(return_pcts)
 
 
 class _RejectingStrategy:
@@ -84,31 +86,83 @@ def test_seeded_simulation_does_not_consume_global_generators():
     assert before[2] == after[2]
 
 
-def test_bet_streams_are_independent_of_bet_count():
-    # Bet 0's stream must be a function of the seed alone: a two-bet and a
-    # four-bet portfolio staking only bet 0 see the same win/loss sequence
-    # and settle the same ledger. A shifted stream would surface as
-    # diverging histories here.
-    histories = []
-    won_sequences = []
-    for m in (2, 4):
-        simulator = PortfolioSimulator(
-            bets=[(0.5, 2.0, 1.0)] * m,
-            transaction_costs=0.0,
-            trials=60,
-            seed=42,
-        )
-        strategy = _WinOneBetStrategy(m, index=0)
+SURVIVOR = (0.47, 2.3, 1.0)
+OTHER_A = (0.71, 1.4, 0.8)
+OTHER_B = (0.22, 4.1, 1.3)
+INSERTED = (0.63, 1.8, 0.6)
+
+
+def survivor_hook_values(bets, survivor=SURVIVOR):
+    index = bets.index(survivor)
+    simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
+    strategy = _WinOneBetStrategy(len(bets), index=index)
+    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator.evaluate_strategy(strategy, bankroll)
+    values = [
+        (won[index], returns[index])
+        for won, returns in zip(strategy.won_flags, strategy.return_pcts, strict=True)
+    ]
+    assert {won for won, _return_pct in values} == {False, True}
+    return values
+
+
+def test_surviving_bet_stream_is_stable_when_bet_is_inserted_before_it():
+    assert survivor_hook_values([OTHER_A, SURVIVOR, OTHER_B]) == survivor_hook_values(
+        [INSERTED, OTHER_A, SURVIVOR, OTHER_B]
+    )
+
+
+def test_surviving_bet_stream_is_stable_when_bet_is_removed_before_it():
+    assert survivor_hook_values([INSERTED, OTHER_A, SURVIVOR]) == survivor_hook_values(
+        [OTHER_A, SURVIVOR]
+    )
+
+
+def test_surviving_bet_stream_is_stable_when_portfolio_is_reordered():
+    assert survivor_hook_values([OTHER_A, SURVIVOR, OTHER_B]) == survivor_hook_values(
+        [OTHER_B, OTHER_A, SURVIVOR]
+    )
+
+
+def test_distinct_bets_receive_independent_streams():
+    bets = [(0.5, 2.0, 1.0), (0.5, 3.0, 1.0)]
+    simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
+    strategy = _WinOneBetStrategy(2, index=0)
+    strategy._stakes[1] = 0.25
+    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator.evaluate_strategy(strategy, bankroll)
+    first = [won[0] for won in strategy.won_flags]
+    second = [won[1] for won in strategy.won_flags]
+    assert first != second
+    assert set(first) == set(second) == {False, True}
+
+
+def test_stream_identity_distinguishes_exact_validated_float_bits():
+    bets = [(0.5, 2.0, 0.0), (0.5, 2.0, -0.0)]
+    simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
+    strategy = _WinOneBetStrategy(2, index=0)
+    strategy._stakes[1] = 0.25
+    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator.evaluate_strategy(strategy, bankroll)
+    first = [won[0] for won in strategy.won_flags]
+    second = [won[1] for won in strategy.won_flags]
+    assert first != second
+
+
+def test_duplicate_bets_use_replayable_independent_occurrence_streams():
+    bets = [(0.5, 2.0, 1.0)] * 2
+
+    def duplicate_sequences():
+        simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
+        strategy = _WinOneBetStrategy(2, index=0)
+        strategy._stakes[1] = 0.25
         bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
         simulator.evaluate_strategy(strategy, bankroll)
-        histories.append(tuple(bankroll.history))
-        won_sequences.append([won[0] for won in strategy.won_flags])
+        return tuple(zip(*(won for won in strategy.won_flags), strict=True))
 
-    assert won_sequences[0] == won_sequences[1]
-    # Guard against a trivially empty comparison: a fair coin must actually
-    # come up both ways across 60 staked trials.
-    assert any(won_sequences[0]) and not all(won_sequences[0])
-    assert histories[0] == histories[1]
+    first_run = duplicate_sequences()
+    assert first_run == duplicate_sequences()
+    assert first_run[0] != first_run[1]
 
 
 def test_validation_failure_consumes_no_draws():
