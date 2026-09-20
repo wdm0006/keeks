@@ -11,7 +11,9 @@ every staked bet settles on its own draw and the batch nets into one
 bankroll transaction.
 """
 
+import hashlib
 import operator
+import struct
 
 import numpy as np
 
@@ -473,6 +475,22 @@ def _validate_portfolio_strategy_odds(strategy, bets):
             )
 
 
+def _portfolio_rngs(seed, bets):
+    """Build deterministic generators keyed by bet value and occurrence."""
+    occurrences = {}
+    rngs = []
+    for bet in bets:
+        packed_bet = struct.pack(">ddd", *bet)
+        occurrence = occurrences.get(packed_bet, 0)
+        occurrences[packed_bet] = occurrence + 1
+        identity = hashlib.blake2b(packed_bet, digest_size=16).digest()
+        spawn_key = (*struct.unpack(">IIII", identity), occurrence)
+        rngs.append(
+            np.random.default_rng(np.random.SeedSequence(seed, spawn_key=spawn_key))
+        )
+    return rngs
+
+
 class PortfolioSimulator:
     """
     Simulator for a portfolio of simultaneous independent binary bets.
@@ -521,11 +539,14 @@ class PortfolioSimulator:
     Notes
     -----
     **Reproducibility contract (public behavior).** With a ``seed``, every
-    draw comes from a private :class:`numpy.random.Generator` derived as
-    child ``m`` of ``numpy.random.SeedSequence(seed).spawn(len(bets))``: bet
-    ``m`` owns an independent child seed, so its settlement stream is stable
-    no matter how many bets surround it - adding, removing, or reordering
-    other bets never shifts a surviving bet's draws. Rerunning a seeded
+    draw comes from a private :class:`numpy.random.Generator`. Each generator
+    is derived from the simulator seed and a stable BLAKE2 digest of the
+    validated bet's exact three IEEE-754 float values, so a heterogeneous
+    surviving bet keeps its stream when other bets are inserted, removed, or
+    reordered. Identical tuples use their zero-based occurrence ordinal in
+    portfolio order to receive independent deterministic streams; because
+    those bets are indistinguishable, reordering identical duplicates does
+    not attach an ordinal to a particular duplicate. Rerunning a seeded
     construction replays byte-identically: the same bankroll history and the
     same hook calls. Without a seed the draws come from numpy's global
     generator.
@@ -614,10 +635,7 @@ class PortfolioSimulator:
         self.seed: int | None = _validate_simulator_seed(seed)
         self._rngs: list[np.random.Generator] | None
         if self.seed is not None:
-            # One spawned child per bet: bet m's stream is child m of the
-            # seed's spawn tree, independent of every other bet's stream.
-            children = np.random.SeedSequence(self.seed).spawn(len(self.bets))
-            self._rngs = [np.random.default_rng(child) for child in children]
+            self._rngs = _portfolio_rngs(self.seed, self.bets)
         else:
             self._rngs = None
 

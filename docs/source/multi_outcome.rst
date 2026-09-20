@@ -62,15 +62,16 @@ per-stream spawned children:
   from a private :class:`numpy.random.Generator`, never from numpy's global
   state, so rerunning a seeded construction reproduces the same bankroll
   history and the same ``record_settlement`` hook calls.
-- **Streams are spawned children of the seed, not the seed itself.**
+- **Streams are deterministic derivatives of the seed.**
   :class:`RepeatedMultiOutcomeSimulator` derives its single settlement
   stream from the first child of ``numpy.random.SeedSequence(seed).spawn(1)``;
-  :class:`PortfolioSimulator` derives one stream per bet from
-  ``numpy.random.SeedSequence(seed).spawn(len(bets))``, with bet ``m``
-  owning child ``m``. Each stream owns an independent child seed, so a
-  stream added later cannot shift the settlement stream's draws — adding,
-  removing, or reordering portfolio bets never shifts a surviving bet's
-  stream.
+  :class:`PortfolioSimulator` derives each stream from the seed and a stable
+  BLAKE2 digest of the validated bet's exact three IEEE-754 float values.
+  Adding, removing, or reordering heterogeneous bets therefore never shifts
+  a surviving bet's stream. Duplicate identical tuples use zero-based
+  occurrence ordinals in portfolio order to receive independent deterministic
+  streams. Since identical bets are indistinguishable, reordering duplicates
+  need not preserve a distinguishable stream for a particular duplicate.
 - **Without a seed, no replay is promised.** The draws then come from
   numpy's global generator, matching the unseeded binary simulators.
 
