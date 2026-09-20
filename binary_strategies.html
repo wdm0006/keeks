@@ -179,7 +179,7 @@ loss if they lose, and a transaction cost regardless. Bets are not continuous, t
 <h2>Base Strategy<a class="headerlink" href="#base-strategy" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="keeks.binary_strategies.base.BaseStrategy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.base.</span></span><span class="sig-name descname"><span class="pre">BaseStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_cost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.binary_strategies.base.</span></span><span class="sig-name descname"><span class="pre">BaseStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction_cost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Abstract base class for all binary betting strategies.</p>
 <p>This class defines the interface that all binary betting strategies must implement.
@@ -197,10 +197,10 @@ underlying utility functions, this method raises NotImplementedError.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to ≤ 1)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
 than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -208,13 +208,13 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay for the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If the strategy does not have a utility-theoretic basis for
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If the strategy does not have a utility-theoretic basis for
     calculating indifference prices.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – Raised by every shipped implementation if the gamble arrays are
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – Raised by every shipped implementation if the gamble arrays are
     malformed or if any scalar control falls outside the ranges
     documented above. Overrides should validate with
     <code class="docutils literal notranslate"><span class="pre">keeks.utils._validate_entry_price_scalars</span></code> before doing work or
@@ -240,23 +240,23 @@ don’t have utility functions to derive indifference prices from.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="keeks.binary_strategies.base.BaseStrategy.evaluate">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_bankroll</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy.evaluate" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_bankroll</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy.evaluate" title="Link to this definition">¶</a></dt>
 <dd><p>Evaluate the strategy for a given probability.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of winning.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll to use for calculations.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of winning.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll to use for calculations.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The proportion of the bankroll to bet.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">probability</span></code> is not finite and between 0 and 1 inclusive, or
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">probability</span></code> is not finite and between 0 and 1 inclusive, or
     if <code class="docutils literal notranslate"><span class="pre">current_bankroll</span></code> is not finite.</p>
 </dd>
 </dl>
@@ -264,21 +264,21 @@ don’t have utility functions to derive indifference prices from.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet">
-<span class="sig-name descname"><span class="pre">get_max_safe_bet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_bankroll</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy.get_max_safe_bet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_max_safe_bet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_bankroll</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/keeks/binary_strategies/base.html#BaseStrategy.get_max_safe_bet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet" title="Link to this definition">¶</a></dt>
 <dd><p>Calculate the maximum safe bet size based on current bankroll.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll to use for calculations.</p>
+<dd class="field-odd"><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll to use for calculations.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The maximum safe bet size as a proportion of bankroll. Zero when
 there is nothing left to stake (<code class="docutils literal notranslate"><span class="pre">current_bankroll</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">current_bankroll</span></code> is not finite.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">current_bankroll</span></code> is not finite.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -305,9 +305,9 @@ fraction of the bankroll if the expected value is positive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
 </ul>
 </dd>
 </dl>
@@ -321,10 +321,10 @@ fraction of the bankroll if the expected value is positive.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to ≤ 1)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
 still be finite and greater than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -333,10 +333,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <code class="docutils literal notranslate"><span class="pre">current_wealth</span> <span class="pre">*</span> <span class="pre">max_search_fraction</span></code>)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -359,15 +359,15 @@ If EV is negative, do not bet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The proportion of the bankroll to bet.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -388,11 +388,11 @@ for comparison or as a simple approach for risk management.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed fraction of the bankroll to bet (between 0 and 1).</p></li>
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0</em>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
+<li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed fraction of the bankroll to bet (between 0 and 1).</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0</em>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
 </ul>
 </dd>
 </dl>
@@ -406,10 +406,10 @@ for comparison or as a simple approach for risk management.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble (unused)</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (unused)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
 still be finite and greater than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -417,10 +417,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay (fixed fraction of wealth)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -437,15 +437,15 @@ This is a mechanical rule-based approach, not optimization-based.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The fixed fraction if probability &gt;= min_probability, otherwise 0.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -465,13 +465,13 @@ and invests a multiple of the cushion (amount above floor) in each bet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>floor_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fraction of initial bankroll to maintain as a floor.</p></li>
-<li><p><strong>multiplier</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The multiplier to apply to the cushion for determining exposure.</p></li>
-<li><p><strong>initial_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The initial bankroll amount.</p></li>
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
+<li><p><strong>floor_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fraction of initial bankroll to maintain as a floor.</p></li>
+<li><p><strong>multiplier</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The multiplier to apply to the cushion for determining exposure.</p></li>
+<li><p><strong>initial_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The initial bankroll amount.</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
 </ul>
 </dd>
 </dl>
@@ -486,10 +486,10 @@ above the floor, scaled by the multiplier.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble (unused in basic calculation)</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (unused in basic calculation)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
 still be finite and greater than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -497,10 +497,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay (based on cushion above floor)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above. Validation happens before any
     internal bankroll or floor state is updated.</p>
 </dd>
@@ -518,8 +518,8 @@ but never more than the cushion itself (to maintain floor).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -527,7 +527,7 @@ but never more than the cushion itself (to maintain floor).</p>
 the minimum probability threshold.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -538,7 +538,7 @@ the minimum probability threshold.</p>
 <dd><p>Update the current bankroll value and adjust floor based on peak value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current value of the bankroll.</p>
+<dd class="field-odd"><p><strong>new_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current value of the bankroll.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -561,14 +561,14 @@ the minimum probability threshold.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>base_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The base fraction of bankroll to bet.</p></li>
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=10</em>) – The number of recent results to consider for adjustments.</p></li>
-<li><p><strong>max_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.2</em>) – The maximum fraction of bankroll that can be bet.</p></li>
-<li><p><strong>min_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.05</em>) – The minimum fraction of bankroll to bet.</p></li>
-<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet. Below this the
+<li><p><strong>base_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The base fraction of bankroll to bet.</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=10</em>) – The number of recent results to consider for adjustments.</p></li>
+<li><p><strong>max_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.2</em>) – The maximum fraction of bankroll that can be bet.</p></li>
+<li><p><strong>min_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.05</em>) – The minimum fraction of bankroll to bet.</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet. Below this the
 strategy returns 0.0 (no bet).</p></li>
 </ul>
 </dd>
@@ -584,10 +584,10 @@ with no history, we use the base fraction.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble (unused)</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (unused)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance (unused, kept for API consistency). Must
 still be finite and greater than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -595,10 +595,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay (base fraction of wealth)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -615,15 +615,15 @@ This represents a neutral starting point before dynamic adjustments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The proportion of the current bankroll to bet.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -659,8 +659,8 @@ This represents a neutral starting point before dynamic adjustments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>won</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether the bet was won.</p></li>
-<li><p><strong>return_pct</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The return percentage of the bet. If not provided, calculated from won/loss.</p></li>
+<li><p><strong>won</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether the bet was won.</p></li>
+<li><p><strong>return_pct</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The return percentage of the bet. If not provided, calculated from won/loss.</p></li>
 </ul>
 </dd>
 </dl>
@@ -681,10 +681,10 @@ size of a series of bets to maximize long-term growth rate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet. The default is a
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet. The default is a
 lossy gate for better-than-even payoffs: with <code class="docutils literal notranslate"><span class="pre">payoff=10</span></code>,
 <code class="docutils literal notranslate"><span class="pre">loss=1</span></code> and probability 0.3, the true Kelly fraction is about
 0.23, but <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> returns 0.0 because 0.3 is below the gate.
@@ -703,10 +703,10 @@ so this uses log utility to find the indifference price.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to ≤ 1)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
 than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -714,10 +714,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay for the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -743,15 +743,15 @@ formula explicitly accounts for the loss multiplier used by this library.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The optimal proportion of the bankroll to bet.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -771,10 +771,10 @@ which can reduce volatility at the expense of long-term growth rate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fraction of the full Kelly bet to use (typically between 0 and 1).</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fraction of the full Kelly bet to use (typically between 0 and 1).</p></li>
 </ul>
 </dd>
 </dl>
@@ -790,10 +790,10 @@ increased risk aversion beyond log utility.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to ≤ 1)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
 than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -801,10 +801,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay for the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -821,15 +821,15 @@ approximation though not derived from first principles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The optimal proportion of the bankroll to bet, multiplied by the fraction parameter.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -850,10 +850,10 @@ the risk of large drawdowns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>max_acceptable_drawdown</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The maximum acceptable drawdown as a fraction of the bankroll (0 to 1).</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>max_acceptable_drawdown</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The maximum acceptable drawdown as a fraction of the bankroll (0 to 1).</p></li>
 </ul>
 </dd>
 </dl>
@@ -868,10 +868,10 @@ We apply the same scaling factor to the entry price.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to ≤ 1)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
 than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -879,10 +879,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay for the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -900,15 +900,15 @@ bet size and expected drawdown in repeated betting scenarios.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The drawdown-adjusted proportion of the bankroll to bet.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -929,11 +929,11 @@ approach to risk management.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>win_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The historical or expected win rate (between 0 and 1).</p></li>
-<li><p><strong>max_risk_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.2</em>) – The maximum fraction of bankroll that can be risked on a single bet.</p></li>
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>win_rate</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The historical or expected win rate (between 0 and 1).</p></li>
+<li><p><strong>max_risk_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.2</em>) – The maximum fraction of bankroll that can be risked on a single bet.</p></li>
 </ul>
 </dd>
 </dl>
@@ -947,10 +947,10 @@ approach to risk management.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to ≤ 1)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
 than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -958,10 +958,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay for the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -980,9 +980,9 @@ risk-to-reward profile.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, used to decide whether to bet.
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, used to decide whether to bet.
 Probabilities below 0.5 return zero; bet sizing uses <code class="docutils literal notranslate"><span class="pre">win_rate</span></code>.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -991,7 +991,7 @@ optimal f converted from a risk fraction to a stake fraction.
 The two coincide only when <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">+</span> <span class="pre">transaction_cost</span></code> is 1.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1023,15 +1023,15 @@ product of risk aversion and variance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
-<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
-<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=2.0</em>) – The coefficient of relative risk aversion (γ). Common values:
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>transaction_cost</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).</p></li>
+<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=2.0</em>) – The coefficient of relative risk aversion (γ). Common values:
 - 1.0: Low risk aversion
 - 2.0: Moderate risk aversion (most common empirical estimate)
 - 3.0-5.0: High risk aversion</p></li>
-<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
-<li><p><strong>max_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – The maximum fraction of bankroll to bet (safety cap).</p></li>
+<li><p><strong>min_probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – The minimum probability required to place a bet.</p></li>
+<li><p><strong>max_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – The maximum fraction of bankroll to bet (safety cap).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1058,10 +1058,10 @@ risk_aversion parameter (γ) that was set during initialization.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>outcomes</strong> (<em>array-like</em>) – The possible payoffs from the gamble</p></li>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to ≤ 1)</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
 than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be
 finite and non-negative; values above 1.0 are allowed.</p></li>
 </ul>
 </dd>
@@ -1069,10 +1069,10 @@ finite and non-negative; values above 1.0 are allowed.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay for the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -1089,15 +1089,15 @@ Higher γ values indicate more risk aversion and lower willing payments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
-<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
+<li><p><strong>probability</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability of a successful outcome, typically between 0 and 1.</p></li>
+<li><p><strong>current_bankroll</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The current bankroll amount.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The optimal proportion of the bankroll to bet based on Merton’s formula.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>

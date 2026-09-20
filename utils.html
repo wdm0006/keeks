@@ -182,8 +182,8 @@ For γ≠1, uses power utility: U(W) = W^(1-γ) / (1-γ)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>array-like</em>) – The wealth level(s) to evaluate</p></li>
-<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ)
+<li><p><strong>wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>array-like</em>) – The wealth level(s) to evaluate</p></li>
+<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ)
 - γ=1.0: Log utility (Kelly Criterion)
 - γ=1.5-2.0: Moderate risk aversion
 - γ&gt;2.0: High risk aversion</p></li>
@@ -193,7 +193,7 @@ For γ≠1, uses power utility: U(W) = W^(1-γ) / (1-γ)</p>
 <dd class="field-even"><p>The utility value(s)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a> or array-like</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a> or array-like</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -213,11 +213,11 @@ as wealth changes.</p>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to no more than 1, within
 <code class="docutils literal notranslate"><span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>). Any omitted mass is treated as a
 zero-payout outcome.</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>entry_price</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Price to pay to participate in the gamble. Must be finite; its sign is
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>entry_price</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Price to pay to participate in the gamble. Must be finite; its sign is
 unconstrained, because a negative price models being paid to take the
 gamble.</p></li>
-<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ). Must be finite and greater
+<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ). Must be finite and greater
 than 0.</p></li>
 </ul>
 </dd>
@@ -225,10 +225,10 @@ than 0.</p></li>
 <dd class="field-even"><p>The expected utility from participating in the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar argument falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar argument falls
     outside the ranges documented above.</p>
 </dd>
 </dl>
@@ -247,12 +247,12 @@ participating equals the utility of not participating (indifference price).</p>
 <li><p><strong>probabilities</strong> (<em>array-like</em>) – The probability of each outcome (must sum to no more than 1, within
 <code class="docutils literal notranslate"><span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>). Any omitted mass is treated as a
 zero-payout outcome.</p></li>
-<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
-<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ). Must be finite and greater
+<li><p><strong>current_wealth</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Current wealth before the gamble. Must be finite and greater than 0.</p></li>
+<li><p><strong>risk_aversion</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1.0</em>) – Coefficient of relative risk aversion (γ). Must be finite and greater
 than 0.</p></li>
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.01</em>) – Convergence tolerance for binary search. Must be finite and greater
 than 0.</p></li>
-<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be finite
+<li><p><strong>max_search_fraction</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=0.5</em>) – Maximum fraction of wealth to consider as upper bound. Must be finite
 and non-negative; values above 1.0 are allowed and search beyond
 current wealth.</p></li>
 </ul>
@@ -261,10 +261,10 @@ current wealth.</p></li>
 <dd class="field-even"><p>Maximum price willing to pay for the gamble</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the gamble arrays are malformed, or if any scalar control falls
     outside the ranges documented above.</p>
 </dd>
 <dt class="field-odd">Warns<span class="colon">:</span></dt>
@@ -311,7 +311,7 @@ sequence of finite, nonnegative numbers whose sum is at most
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the probabilities are not a non-empty one-dimensional sequence of
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the probabilities are not a non-empty one-dimensional sequence of
     finite nonnegative numbers, or if they sum to more than
     <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>.</p>
 </dd>
@@ -335,7 +335,7 @@ sequence of finite, nonnegative numbers whose sum is at most
 <dl class="py exception">
 <dt class="sig sig-object py" id="keeks.utils.RuinError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.utils.</span></span><span class="sig-name descname"><span class="pre">RuinError</span></span><a class="reference internal" href="_modules/keeks/utils.html#RuinError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.utils.RuinError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Exception raised when a bankroll experiences a drawdown exceeding the maximum allowed limit.</p>
 <p>This exception is typically raised by the BankRoll class when a withdrawal would cause
 the bankroll to drop below the configured maximum drawdown threshold.</p>

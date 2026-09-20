@@ -187,7 +187,9 @@
 <span class="sd">bankroll transaction.</span>
 <span class="sd">"""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -655,6 +657,22 @@
             <span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_portfolio_rngs</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">bets</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build deterministic generators keyed by bet value and occurrence."""</span>
+    <span class="n">occurrences</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">rngs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">bet</span> <span class="ow">in</span> <span class="n">bets</span><span class="p">:</span>
+        <span class="n">packed_bet</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">"&gt;ddd"</span><span class="p">,</span> <span class="o">*</span><span class="n">bet</span><span class="p">)</span>
+        <span class="n">occurrence</span> <span class="o">=</span> <span class="n">occurrences</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">packed_bet</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">occurrences</span><span class="p">[</span><span class="n">packed_bet</span><span class="p">]</span> <span class="o">=</span> <span class="n">occurrence</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">identity</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">blake2b</span><span class="p">(</span><span class="n">packed_bet</span><span class="p">,</span> <span class="n">digest_size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+        <span class="n">spawn_key</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">"&gt;IIII"</span><span class="p">,</span> <span class="n">identity</span><span class="p">),</span> <span class="n">occurrence</span><span class="p">)</span>
+        <span class="n">rngs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">spawn_key</span><span class="o">=</span><span class="n">spawn_key</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">rngs</span>
+
+
 <div class="viewcode-block" id="PortfolioSimulator">
 <a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.simulators.PortfolioSimulator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PortfolioSimulator</span><span class="p">:</span>
@@ -705,11 +723,14 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    **Reproducibility contract (public behavior).** With a ``seed``, every</span>
-<span class="sd">    draw comes from a private :class:`numpy.random.Generator` derived as</span>
-<span class="sd">    child ``m`` of ``numpy.random.SeedSequence(seed).spawn(len(bets))``: bet</span>
-<span class="sd">    ``m`` owns an independent child seed, so its settlement stream is stable</span>
-<span class="sd">    no matter how many bets surround it - adding, removing, or reordering</span>
-<span class="sd">    other bets never shifts a surviving bet's draws. Rerunning a seeded</span>
+<span class="sd">    draw comes from a private :class:`numpy.random.Generator`. Each generator</span>
+<span class="sd">    is derived from the simulator seed and a stable BLAKE2 digest of the</span>
+<span class="sd">    validated bet's exact three IEEE-754 float values, so a heterogeneous</span>
+<span class="sd">    surviving bet keeps its stream when other bets are inserted, removed, or</span>
+<span class="sd">    reordered. Identical tuples use their zero-based occurrence ordinal in</span>
+<span class="sd">    portfolio order to receive independent deterministic streams; because</span>
+<span class="sd">    those bets are indistinguishable, reordering identical duplicates does</span>
+<span class="sd">    not attach an ordinal to a particular duplicate. Rerunning a seeded</span>
 <span class="sd">    construction replays byte-identically: the same bankroll history and the</span>
 <span class="sd">    same hook calls. Without a seed the draws come from numpy's global</span>
 <span class="sd">    generator.</span>
@@ -798,10 +819,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># One spawned child per bet: bet m's stream is child m of the</span>
-            <span class="c1"># seed's spawn tree, independent of every other bet's stream.</span>
-            <span class="n">children</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">child</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span> <span class="o">=</span> <span class="n">_portfolio_rngs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rngs</span> <span class="o">=</span> <span class="kc">None</span>
 
