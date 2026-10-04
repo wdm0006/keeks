@@ -128,6 +128,7 @@ Contents
    binary_strategies
    simulators
    multi_outcome
+   allocation_plots
    bankroll
    utils
 

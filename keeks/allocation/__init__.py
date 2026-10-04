@@ -48,6 +48,15 @@ family in :mod:`keeks.allocation.moments`: :class:`MeanVariance`,
 scenario matrix through the Rockafellar-Uryasev linear program
 (scipy-gated), and :func:`scenarios_to_moments` bridges scenarios to the
 moment-based methods' ``(mean, covariance)`` descriptor.
+
+The visualization helpers live in :mod:`keeks.allocation.plots`:
+deterministic, matplotlib-only figures for the layer's outputs - bankroll
+growth paths, drawdown curves, weight evolution, risk contributions, the
+efficient frontier, correlation heatmaps, the HRP dendrogram, and
+scenario-loss histograms with VaR/CVaR markers. Each helper takes objects
+this package already returns and returns the Axes it drew on: series and
+legends sort by name, colors come from one small fixed palette, and no
+helper touches matplotlib's global state.
 """
 
 from keeks.allocation.base import AllocationResult, BaseAllocationStrategy
@@ -78,15 +87,30 @@ from keeks.allocation.online import (
     FixedWeights,
     OnlineNewtonStep,
 )
+from keeks.allocation.plots import (
+    bankroll_paths,
+    correlation_heatmap,
+    dendrogram,
+    drawdown,
+    efficient_frontier,
+    risk_contributions,
+    scenario_losses,
+    weight_evolution,
+)
 from keeks.allocation.scenarios import MeanCVaR, scenarios_to_moments
 from keeks.allocation.simulators import AllocationSimulator
 
 __all__ = [
     "AllocationResult",
     "AllocationSimulator",
+    "bankroll_paths",
     "BaseAllocationStrategy",
     "BinaryBetsModel",
     "black_litterman_mean",
+    "correlation_heatmap",
+    "dendrogram",
+    "drawdown",
+    "efficient_frontier",
     "ExponentialGradient",
     "FixedWeights",
     "GlobalMinimumVariance",
@@ -101,6 +125,8 @@ __all__ = [
     "OnlineNewtonStep",
     "RiskAversionScaling",
     "RiskBudgeting",
+    "risk_contributions",
+    "scenario_losses",
     "ScenarioModel",
     "binary_bets_model",
     "estimate_moments",
@@ -109,4 +135,5 @@ __all__ = [
     "scenario_model",
     "scenarios_to_moments",
     "shrink_covariance",
+    "weight_evolution",
 ]
