@@ -312,7 +312,8 @@
 <span class="sd">        The fixed probability of each leg for all trials. Must be a non-empty</span>
 <span class="sd">        one-dimensional sequence of finite nonnegative numbers summing to at</span>
 <span class="sd">        most ``1 + PROBABILITY_SUM_TOLERANCE``; probability mass below one is</span>
-<span class="sd">        the chance of a void or push round on which no leg settles.</span>
+<span class="sd">        the chance of a void or push round on which no leg settles. Must have</span>
+<span class="sd">        the same length as ``payoffs``.</span>
 <span class="sd">    trials : int, default=1000</span>
 <span class="sd">        The number of betting trials to simulate.</span>
 <span class="sd">    seed : int or None, default=None</span>
@@ -325,7 +326,8 @@
 <span class="sd">        If ``payoffs`` is not a non-empty one-dimensional sequence of finite</span>
 <span class="sd">        numbers greater than 0, if ``loss`` or ``transaction_costs`` is not</span>
 <span class="sd">        finite and nonnegative, if ``probabilities`` is not a valid probability</span>
-<span class="sd">        vector, or if ``trials`` is not a nonnegative integer, or if ``seed``</span>
+<span class="sd">        vector or differs in length from ``payoffs``, or if ``trials`` is not</span>
+<span class="sd">        a nonnegative integer, or if ``seed``</span>
 <span class="sd">        is not a nonnegative integer or ``None``.</span>
 
 <span class="sd">    Notes</span>
@@ -410,6 +412,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">transaction_costs</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Payoffs and probabilities must have the same length: "</span>
+                <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span><span class="si">}</span><span class="s2"> payoffs and "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span><span class="si">}</span><span class="s2"> probabilities"</span>
+            <span class="p">)</span>
         <span class="c1"># Cumulative bands for the categorical read: leg j realizes when the</span>
         <span class="c1"># trial's uniform falls below cumulative[j] and above cumulative[j-1];</span>
         <span class="c1"># the mass above cumulative[-1] is the void region.</span>

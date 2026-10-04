@@ -425,7 +425,8 @@ which is a per-unit fraction of the stake used for sizing.</p></li>
 <li><p><strong>probabilities</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The fixed probability of each leg for all trials. Must be a non-empty
 one-dimensional sequence of finite nonnegative numbers summing to at
 most <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>; probability mass below one is
-the chance of a void or push round on which no leg settles.</p></li>
+the chance of a void or push round on which no leg settles. Must have
+the same length as <code class="docutils literal notranslate"><span class="pre">payoffs</span></code>.</p></li>
 <li><p><strong>trials</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1000</em>) – The number of betting trials to simulate.</p></li>
 <li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>default=None</em>) – Seed for the private settlement stream. When omitted, numpy’s global
 generator drives the draws and no replay is promised.</p></li>
@@ -435,7 +436,8 @@ generator drives the draws and no replay is promised.</p></li>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">payoffs</span></code> is not a non-empty one-dimensional sequence of finite
     numbers greater than 0, if <code class="docutils literal notranslate"><span class="pre">loss</span></code> or <code class="docutils literal notranslate"><span class="pre">transaction_costs</span></code> is not
     finite and nonnegative, if <code class="docutils literal notranslate"><span class="pre">probabilities</span></code> is not a valid probability
-    vector, or if <code class="docutils literal notranslate"><span class="pre">trials</span></code> is not a nonnegative integer, or if <code class="docutils literal notranslate"><span class="pre">seed</span></code>
+    vector or differs in length from <code class="docutils literal notranslate"><span class="pre">payoffs</span></code>, or if <code class="docutils literal notranslate"><span class="pre">trials</span></code> is not
+    a nonnegative integer, or if <code class="docutils literal notranslate"><span class="pre">seed</span></code>
     is not a nonnegative integer or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
 </dl>
