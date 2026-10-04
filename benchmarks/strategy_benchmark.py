@@ -2,7 +2,10 @@
 
 Runs every strategy exported from ``keeks.binary_strategies`` through
 ``RepeatedBinarySimulator`` over a fixed scenario matrix and writes the growth,
-drawdown and early-stop metrics to ``benchmarks/output/``.
+drawdown and early-stop metrics to ``benchmarks/output/``. It then races the
+portfolio-allocation families through ``AllocationSimulator`` on a synthetic
+six-asset factor market and writes their growth comparison with the
+``keeks.allocation`` plots helpers.
 
 Reproduce with::
 
@@ -41,8 +44,20 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
+from keeks import (  # noqa: E402
+    AllocationSimulator,
+    ExponentialGradient,
+    FixedWeights,
+    GlobalMinimumVariance,
+    HierarchicalRiskParity,
+    MeanVariance,
+    RiskBudgeting,
+    bankroll_paths,
+    scenario_model,
+)
 from keeks.bankroll import BankRoll  # noqa: E402
 from keeks.binary_strategies import (  # noqa: E402
     CPPIStrategy,
@@ -541,6 +556,90 @@ def chart_early_stops(frame, path):
     plt.close(fig)
 
 
+def build_allocation_market(observations=500, assets=6):
+    """A deterministic six-asset market with one common risk factor.
+
+    Returns share a factor with asset-specific loadings plus idiosyncratic
+    noise, so the covariance the risk-based allocators read is structured
+    rather than diagonal, and every draw comes from one seeded generator.
+    """
+    rng = np.random.default_rng(SEED)
+    loadings = np.linspace(0.6, 1.4, assets)
+    means = np.linspace(0.0002, 0.0006, assets)
+    factor = rng.normal(0.0004, 0.008, size=observations)
+    idiosyncratic = rng.normal(0.0, 0.01, size=(observations, assets))
+    # (T, 1) * (1, N): each asset loads the common factor by its own beta.
+    returns = means[None, :] + loadings[None, :] * factor[:, None] + idiosyncratic
+    return scenario_model(returns)
+
+
+def run_allocation_comparison(model, trials=1_000):
+    """Race the allocation families through ``AllocationSimulator``.
+
+    Common random numbers: every allocator sees its own simulator seeded
+    with the same seed, so trial *t* draws the same scenario row for all
+    of them and the growth comparison is matched. scipy-gated allocators
+    are skipped with a note when the optional extra is absent.
+    """
+    mean, covariance = model.moments()
+    option_count = covariance.shape[0]
+    allocators = {
+        "Equal weight": FixedWeights([1.0 / option_count] * option_count),
+        "RiskBudgeting (ERC)": RiskBudgeting(covariance),
+        "HierarchicalRiskParity": HierarchicalRiskParity(covariance),
+        "ExponentialGradient": ExponentialGradient(option_count, learning_rate=0.05),
+    }
+    try:
+        allocators["Global min variance"] = GlobalMinimumVariance(covariance)
+        allocators["MeanVariance (lambda=1)"] = MeanVariance(
+            mean, covariance, risk_aversion=1.0
+        )
+    except ImportError as error:
+        print(f"skipping the scipy-gated allocators: {error}")
+    histories = {}
+    for name, allocation in allocators.items():
+        bankroll = BankRoll(initial_funds=1_000.0, max_draw_down=None)
+        simulator = AllocationSimulator(model, trials=trials, seed=SEED)
+        simulator.evaluate_strategy(allocation, bankroll)
+        histories[name] = [float(value) for value in bankroll.history]
+    return histories
+
+
+def allocation_metrics(histories):
+    """Growth, volatility, and drawdown per allocator, as a frame."""
+    records = []
+    for name, history in histories.items():
+        values = np.asarray(history, dtype=float)
+        previous = values[:-1]
+        returns = np.divide(
+            values[1:] - previous,
+            previous,
+            out=np.zeros_like(values[1:]),
+            where=previous > 0,
+        )
+        records.append(
+            {
+                "strategy": name,
+                "final": values[-1],
+                "growth": values[-1] / values[0],
+                "vol/period": (float(returns.std(ddof=1)) if returns.size > 1 else 0.0),
+                "max dd": float(np.max(1.0 - values / np.maximum.accumulate(values))),
+            }
+        )
+    return pd.DataFrame(records).set_index("strategy")
+
+
+def chart_allocation_growth(histories, path, trials):
+    """Growth-path comparison, via the allocation plots helper."""
+    axes = bankroll_paths(histories)
+    axes.set_title(
+        "Allocation strategies through AllocationSimulator\n"
+        f"six-asset factor market, {trials} periods, seed {SEED}",
+        fontsize=11,
+    )
+    axes.figure.savefig(path, dpi=200)
+
+
 def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     print(
@@ -554,6 +653,31 @@ def main():
     chart_growth_vs_drawdown(frame, OUTPUT_DIR / "growth_vs_drawdown.png")
     chart_early_stops(frame, OUTPUT_DIR / "early_stops_by_drawdown_limit.png")
     print(f"wrote {csv_path} and 3 charts to {OUTPUT_DIR}")
+
+    # Allocation-layer comparison: same benchmark discipline (fresh state,
+    # common random numbers, one seeded generator) applied to the
+    # portfolio allocators, with the growth chart drawn by the plots
+    # helpers the layer ships.
+    allocation_model = build_allocation_market()
+    allocation_histories = run_allocation_comparison(allocation_model)
+    allocation_frame = allocation_metrics(allocation_histories)
+    print(
+        "\n=== Allocation comparison (AllocationSimulator, common random numbers) ==="
+    )
+    print(
+        allocation_frame.to_string(
+            float_format=lambda value: f"{value:,.4f}",
+        )
+    )
+    chart_allocation_growth(
+        allocation_histories,
+        OUTPUT_DIR / "allocation_growth_comparison.png",
+        trials=1_000,
+    )
+    print(
+        f"wrote {OUTPUT_DIR / 'allocation_growth_comparison.png'} "
+        "(allocation comparison chart)"
+    )
 
 
 if __name__ == "__main__":

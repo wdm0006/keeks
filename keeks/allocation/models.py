@@ -758,7 +758,7 @@ class MarginalModel(JointReturnModel):
 
     Parameters
     ----------
-    marginals : sequence of (family, *parameters) tuples
+    marginals : sequence of (family, ``*parameters``) tuples
         One spec per option: ``("normal", mean, sd)``,
         ``("student_t", nu)`` or ``("student_t", nu, loc, scale)``,
         ``("laplace", loc, scale)``, ``("lognormal", mean, sd)`` (the
@@ -879,7 +879,7 @@ def marginals_model(marginals, dependence=None):
 
     Parameters
     ----------
-    marginals : sequence of (family, *parameters) tuples
+    marginals : sequence of (family, ``*parameters``) tuples
         One spec per option.
     dependence : array-like, optional
         The Gaussian copula's correlation matrix. ``None`` means

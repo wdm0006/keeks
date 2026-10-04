@@ -70,6 +70,10 @@ dev = [
     "wheel",
     "ruff",
     "tox",
+    # yfinance refreshes the ETF returns fixture behind
+    # examples/allocation_etfs.py's --refresh flag. It is never imported at
+    # keeks runtime — the test suite pins that import guard.
+    "yfinance",
 ]
 
 [tool.hatch.version]

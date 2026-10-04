@@ -11,6 +11,9 @@ import ast
 from pathlib import Path
 
 import keeks
+import keeks.allocation
+import keeks.allocation.plots
+import keeks.allocation.simulators
 import keeks.bankroll
 import keeks.binary_strategies
 import keeks.binary_strategies.base
@@ -49,6 +52,18 @@ def test_reexports_are_the_documented_classes():
     assert keeks.RepeatedBinarySimulator is keeks.simulators.RepeatedBinarySimulator
     assert keeks.RuinError is keeks.utils.RuinError
     assert keeks.crra_utility is keeks.utils.crra_utility
+
+
+def test_allocation_reexports_are_the_documented_classes():
+    assert keeks.BaseAllocationStrategy is keeks.allocation.BaseAllocationStrategy
+    assert keeks.AllocationSimulator is keeks.allocation.simulators.AllocationSimulator
+    assert keeks.MeanVariance is keeks.allocation.MeanVariance
+    assert keeks.MeanCVaR is keeks.allocation.MeanCVaR
+    assert keeks.HierarchicalRiskParity is keeks.allocation.HierarchicalRiskParity
+    assert keeks.ExponentialGradient is keeks.allocation.ExponentialGradient
+    assert keeks.scenario_model is keeks.allocation.scenario_model
+    assert keeks.fit_marginals_model is keeks.allocation.fit_marginals_model
+    assert keeks.bankroll_paths is keeks.allocation.plots.bankroll_paths
 
 
 def test_all_names_resolve():
