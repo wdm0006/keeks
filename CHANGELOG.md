@@ -1,6 +1,16 @@
 Unreleased
 ==========
 
+**Estimator introspection and typing (sklearn conventions):**
+
+ * Every public class, method, and function is now fully type-annotated — the eleven allocation constructors, all twenty-four module functions, the binary and multi-outcome strategies, the six simulators, `BankRoll`, and the utilities — matching the base classes and `AllocationResult` that already carried hints
+ * New sklearn-style parameter introspection on every strategy and allocator through `get_params`/`set_params`: `get_params(deep=True)` reads constructor parameters back from their same-named public attributes and expands nested estimators (e.g. `RiskAversionScaling`'s `inner__learning_rate`), `set_params(**params)` writes them and returns `self`, and unknown names raise a `ValueError` listing the valid ones; the online family's hyperparameters are now public (`learning_rate`, `epsilon`, and the `weights`/`option_count` properties — `option_count` is structural and re-assignable only to its current count) instead of the private `_weights`/`_learning_rate`/`_epsilon`
+ * Allocators expose the fitted allocation state under sklearn's trailing-underscore convention: `weights_` on `BaseAllocationStrategy` aliases the solved `.weights` (which keeps its name as the primary accessor) and, on the online family, the current adaptation state; `RiskAversionScaling`, which holds no solve of its own, raises a pointing `AttributeError`
+ * `help()` now shows constructor parameters for `BankRoll` and all three binary simulators: real `__init__` docstrings documenting every parameter's meaning and unit — funds in currency, `percent_bettable` and `max_transaction_loss` as fractions of funds, `fee_per_bet` in currency per bet — plus each simulator's RNG family and seeded-replay behavior (stdlib `random.Random` for `RepeatedBinarySimulator`, numpy Generators for the rest)
+ * Export fixes: `BaseStrategy` is importable from `keeks.binary_strategies` (matching every other generation's ABC), the numeric-discipline constants `PROBABILITY_SUM_TOLERANCE`, `COVARIANCE_SYMMETRY_TOLERANCE`, and `EIGENVALUE_FLOOR` are exported from the package root, and `PALETTE`/`COLORMAP` are importable from `keeks.allocation` (one level down from `keeks.allocation.plots`)
+ * `CPPIStrategy` stores `initial_bankroll` as a public attribute, so constructor introspection reads it back
+ * Sphinx documentation gains a contract-checks page for the `keeks.checks` harness
+
 **Breaking changes — naming and contract sweep (one meaning per name):**
 
  * Strategy sizing parameters renamed: `transaction_cost` → `transaction_cost_rate` everywhere a per-unit fraction of stake is meant (all binary strategies, the multi-outcome surface, and `BinaryBetsModel`), so the fraction and the flat fee no longer share near-identical names

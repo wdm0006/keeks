@@ -1,6 +1,8 @@
 import random
 import warnings
+from typing import TYPE_CHECKING
 
+from keeks.binary_strategies.base import BaseStrategy
 from keeks.utils import (
     RuinError,
     _validate_simulator_controls,
@@ -9,6 +11,9 @@ from keeks.utils import (
     _validate_stake_fraction,
     _validate_strategy_odds,
 )
+
+if TYPE_CHECKING:
+    from keeks.bankroll import BankRoll
 
 
 class RepeatedBinarySimulator:
@@ -46,9 +51,64 @@ class RepeatedBinarySimulator:
         ``fee_per_bet`` is not finite and nonnegative, if ``probability``
         is not finite within ``[0, 1]``, or if ``trials`` is not a nonnegative
         integer, or if ``seed`` is not a nonnegative integer or ``None``.
+
+    Notes
+    -----
+    **RNG family and seeding.** All outcome draws come from Python's
+    :class:`random.Random` - this is the one simulator in the package on the
+    stdlib generator family; the multi-outcome and allocation simulators
+    draw from private numpy :class:`numpy.random.Generator` instances on
+    spawned ``SeedSequence`` children, so cross-generation seeded
+    comparisons are not aligned by seed alone. With a ``seed`` the outcome
+    generator is private and a seeded run replays byte-identically; without
+    one, the process-global ``random`` generator drives the draws.
     """
 
-    def __init__(self, payoff, loss, fee_per_bet, probability, trials=1000, seed=None):
+    def __init__(
+        self,
+        payoff: float,
+        loss: float,
+        fee_per_bet: float,
+        probability: float,
+        trials: int = 1000,
+        seed: int | None = None,
+    ) -> None:
+        """
+        Initialize the simulator.
+
+        Parameters
+        ----------
+        payoff : float
+            The amount won per unit bet on a successful outcome: the *net*
+            win, excluding the stake's return - decimal odds minus one.
+        loss : float
+            The amount lost per unit bet on an unsuccessful outcome: a
+            positive multiplier on the staked amount.
+        fee_per_bet : float
+            The flat fee charged once per settled bet, in currency - an
+            absolute bankroll amount, not a fraction of the stake, so it
+            does not scale with bet size. This differs in unit from the
+            singular ``transaction_cost_rate`` taken by strategies in
+            ``keeks.binary_strategies``, which is a per-unit fraction of
+            the stake used for sizing.
+        probability : float
+            The fixed win probability shared by every trial, in ``[0, 1]``.
+        trials : int, default=1000
+            The number of betting trials to simulate.
+        seed : int or None, default=None
+            Seed for the simulator's private outcome generator. When
+            omitted, the process-global ``random`` generator is used for
+            backward compatibility and no replay is promised.
+
+        Raises
+        ------
+        ValueError
+            If ``payoff`` is not finite and positive, if ``loss`` or
+            ``fee_per_bet`` is not finite and nonnegative, if ``probability``
+            is not finite within ``[0, 1]``, or if ``trials`` is not a
+            nonnegative integer, or if ``seed`` is not a nonnegative integer
+            or ``None``.
+        """
         (
             self.payoff,
             self.loss,
@@ -59,7 +119,7 @@ class RepeatedBinarySimulator:
         self.seed = _validate_simulator_seed(seed)
         self._outcome_rng = random.Random(self.seed) if self.seed is not None else None
 
-    def evaluate_strategy(self, strategy, bankroll):
+    def evaluate_strategy(self, strategy: BaseStrategy, bankroll: "BankRoll") -> None:
         """
         Evaluate a betting strategy over multiple trials with fixed probability.
 

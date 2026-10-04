@@ -24,7 +24,9 @@ class RuinError(Exception):
     pass
 
 
-def crra_utility(wealth, risk_aversion=1.0):
+def crra_utility(
+    wealth: np.typing.ArrayLike, risk_aversion: float = 1.0
+) -> float | np.ndarray:
     """
     Calculate CRRA (Constant Relative Risk Aversion) utility.
 
@@ -74,7 +76,7 @@ def crra_utility(wealth, risk_aversion=1.0):
     return (wealth ** (1 - risk_aversion)) / (1 - risk_aversion)
 
 
-def validate_probabilities(probabilities):
+def validate_probabilities(probabilities: np.typing.ArrayLike) -> np.ndarray:
     """
     Validate a probability vector and return it as a float array.
 
@@ -385,8 +387,12 @@ def _expected_utility(
 
 
 def expected_utility(
-    outcomes, probabilities, current_wealth, entry_price, risk_aversion=1.0
-):
+    outcomes: np.typing.ArrayLike,
+    probabilities: np.typing.ArrayLike,
+    current_wealth: float,
+    entry_price: float,
+    risk_aversion: float = 1.0,
+) -> float:
     """
     Calculate expected utility of a gamble.
 
@@ -429,13 +435,13 @@ def expected_utility(
 
 
 def find_indifference_price(
-    outcomes,
-    probabilities,
-    current_wealth,
-    risk_aversion=1.0,
-    tolerance=0.01,
-    max_search_fraction=0.5,
-):
+    outcomes: np.typing.ArrayLike,
+    probabilities: np.typing.ArrayLike,
+    current_wealth: float,
+    risk_aversion: float = 1.0,
+    tolerance: float = 0.01,
+    max_search_fraction: float = 0.5,
+) -> float:
     """
     Find maximum price willing to pay for a gamble using binary search.
 

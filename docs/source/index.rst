@@ -134,6 +134,7 @@ Contents
    allocation_plots
    bankroll
    utils
+   checks
 
 Indices and tables
 ==================

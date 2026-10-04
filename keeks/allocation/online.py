@@ -42,6 +42,8 @@ the count from.
 Every update here is closed-form numpy; nothing in this module needs scipy.
 """
 
+from collections.abc import Sequence
+
 import numpy as np
 
 from keeks.allocation.base import BaseAllocationStrategy, _validate_weights
@@ -233,11 +235,52 @@ class _OnlineAllocator(BaseAllocationStrategy):
     pure reads.
     """
 
-    def __init__(self, weights):
+    def __init__(self, weights: np.typing.ArrayLike) -> None:
         self._weights = np.asarray(_validate_weights(weights), dtype=float)
         self._option_count = self._weights.size
 
-    def evaluate(self, current_bankroll):
+    @property
+    def weights(self) -> np.ndarray:
+        """
+        The allocator's current weight vector.
+
+        The bound weights for :class:`FixedWeights`; for the adaptive
+        members, the adaptation state - the vector the settlements so far
+        produced. Also the readback for the constructor parameter of the
+        same name, per the ``ParameterMixin`` convention; assigning through
+        it validates like construction does.
+        """
+        return self._weights
+
+    @weights.setter
+    def weights(self, value: np.typing.ArrayLike) -> None:
+        self._weights = np.asarray(
+            _validate_weights(value, option_count=self._option_count), dtype=float
+        )
+
+    @property
+    def option_count(self) -> int:
+        """
+        The number of options the allocator sizes across.
+
+        Structural: the count binds at construction because ``evaluate``
+        must return one weight per option from its very first call, so
+        ``set_params`` can only re-assign the current count, never change
+        it - reprice by fresh construction.
+        """
+        return self._option_count
+
+    @option_count.setter
+    def option_count(self, value: int) -> None:
+        count = _validate_option_count(value)
+        if count != self._option_count:
+            raise ValueError(
+                f"option_count is structural: it binds at construction, so it "
+                f"cannot change from {self._option_count} to {count}; rebind "
+                "by fresh construction"
+            )
+
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Evaluate the strategy for the current bankroll.
 
@@ -280,10 +323,12 @@ class FixedWeights(_OnlineAllocator):
     (0.0, 0.0, 0.0)
     """
 
-    def __init__(self, weights):
+    def __init__(self, weights: np.typing.ArrayLike) -> None:
         super().__init__(weights)
 
-    def record_settlement(self, won, realized_returns):
+    def record_settlement(
+        self, won: Sequence[bool] | None, realized_returns: Sequence[float]
+    ) -> None:
         """
         Validate the settlement; the benchmark holds no state.
 
@@ -350,12 +395,14 @@ class ExponentialGradient(_OnlineAllocator):
     True
     """
 
-    def __init__(self, option_count, learning_rate=0.05):
+    def __init__(self, option_count: int, learning_rate: float = 0.05) -> None:
         count = _validate_option_count(option_count)
         super().__init__(np.full(count, 1.0 / count))
-        self._learning_rate = _validate_positive_finite(learning_rate, "Learning rate")
+        self.learning_rate = _validate_positive_finite(learning_rate, "Learning rate")
 
-    def record_settlement(self, won, realized_returns):
+    def record_settlement(
+        self, won: Sequence[bool] | None, realized_returns: Sequence[float]
+    ) -> None:
         """
         Advance the weights with the settled joint simple returns.
 
@@ -378,9 +425,7 @@ class ExponentialGradient(_OnlineAllocator):
         returns = _validate_realized_returns(
             realized_returns, option_count=self._option_count
         )
-        log_tilt = np.clip(
-            -self._learning_rate * returns, -_MAX_LOG_TILT, _MAX_LOG_TILT
-        )
+        log_tilt = np.clip(-self.learning_rate * returns, -_MAX_LOG_TILT, _MAX_LOG_TILT)
         tilted = self._weights * np.exp(log_tilt)
         self._weights = tilted / tilted.sum()
         # Fail loudly at the settlement site if the update ever produced
@@ -441,14 +486,18 @@ class OnlineNewtonStep(_OnlineAllocator):
     True
     """
 
-    def __init__(self, option_count, learning_rate=0.5, epsilon=1e-6):
+    def __init__(
+        self, option_count: int, learning_rate: float = 0.5, epsilon: float = 1e-6
+    ) -> None:
         count = _validate_option_count(option_count)
         super().__init__(np.full(count, 1.0 / count))
-        self._learning_rate = _validate_positive_finite(learning_rate, "Learning rate")
-        self._epsilon = _validate_positive_finite(epsilon, "Epsilon")
+        self.learning_rate = _validate_positive_finite(learning_rate, "Learning rate")
+        self.epsilon = _validate_positive_finite(epsilon, "Epsilon")
         self._outer_products = np.zeros((count, count))
 
-    def record_settlement(self, won, realized_returns):
+    def record_settlement(
+        self, won: Sequence[bool] | None, realized_returns: Sequence[float]
+    ) -> None:
         """
         Advance the weights with the settled joint simple returns.
 
@@ -472,9 +521,9 @@ class OnlineNewtonStep(_OnlineAllocator):
             realized_returns, option_count=self._option_count
         )
         self._outer_products += np.outer(returns, returns)
-        gram = self._epsilon * np.eye(self._option_count) + self._outer_products
+        gram = self.epsilon * np.eye(self._option_count) + self._outer_products
         newton_direction = np.linalg.pinv(gram) @ returns
-        candidate = self._weights - self._learning_rate * newton_direction
+        candidate = self._weights - self.learning_rate * newton_direction
         self._weights = _project_to_simplex(candidate)
         # Fail loudly at the settlement site if the update ever produced
         # something outside the weight contract.

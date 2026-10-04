@@ -42,7 +42,9 @@ def test_every_exported_strategy_is_benchmarked():
         type(factory(BENCHMARK.BASE)).__name__
         for factory in BENCHMARK.STRATEGY_FACTORIES.values()
     }
-    assert built == set(binary_strategies.__all__)
+    # BaseStrategy is exported (like every generation's ABC) but is abstract,
+    # so it builds nothing and benchmarks nothing.
+    assert built == set(binary_strategies.__all__) - {"BaseStrategy"}
 
 
 @pytest.mark.parametrize("strategy_name", list(BENCHMARK.STRATEGY_FACTORIES))

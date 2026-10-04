@@ -23,17 +23,25 @@ through the same hook.
 
 import operator
 import warnings
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-from keeks.allocation.base import _validate_strategy_scenarios, _validate_weights
-from keeks.allocation.models import _validate_draws
+from keeks.allocation.base import (
+    BaseAllocationStrategy,
+    _validate_strategy_scenarios,
+    _validate_weights,
+)
+from keeks.allocation.models import JointReturnModel, _validate_draws
 from keeks.utils import (
     RuinError,
     _require_finite,
     _validate_simulator_seed,
     validate_probabilities,
 )
+
+if TYPE_CHECKING:
+    from keeks.bankroll import BankRoll
 
 __author__ = "willmcginnis"
 
@@ -245,12 +253,12 @@ class AllocationSimulator:
 
     def __init__(
         self,
-        model,
-        probabilities=None,
-        fee_per_bet=0.0,
-        trials=1000,
-        seed=None,
-    ):
+        model: JointReturnModel,
+        probabilities: np.typing.ArrayLike | None = None,
+        fee_per_bet: float = 0.0,
+        trials: int = 1000,
+        seed: int | None = None,
+    ) -> None:
         self.model = _validate_model(model)
         if probabilities is None:
             self.probabilities: np.ndarray | None = None
@@ -277,7 +285,7 @@ class AllocationSimulator:
         )
         self._option_count: int | None = _model_option_count(model)
 
-    def _draw_realizations(self, rng):
+    def _draw_realizations(self, rng: np.random.Generator) -> np.ndarray:
         """
         Draw the run's realizations from the model in one sampling call.
 
@@ -297,7 +305,9 @@ class AllocationSimulator:
             )
         return draws
 
-    def evaluate_strategy(self, allocation, bankroll) -> None:
+    def evaluate_strategy(
+        self, allocation: BaseAllocationStrategy, bankroll: "BankRoll"
+    ) -> None:
         """
         Replay the allocation over the simulator's realizations, in place.
 

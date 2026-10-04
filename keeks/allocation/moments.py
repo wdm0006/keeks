@@ -50,6 +50,8 @@ construction, matching the multi-outcome convention.
 """
 
 import math
+from collections.abc import Callable, Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -60,8 +62,16 @@ from keeks.allocation.base import (
     _validate_mean,
     _validate_weights,
 )
-from keeks.allocation.models import ModelInputMixin, _require_scipy, estimate_moments
+from keeks.allocation.models import (
+    JointReturnModel,
+    ModelInputMixin,
+    _require_scipy,
+    estimate_moments,
+)
 from keeks.utils import _require_finite
+
+if TYPE_CHECKING:
+    from scipy.optimize import OptimizeResult
 
 __author__ = "willmcginnis"
 
@@ -79,7 +89,9 @@ _CCD_TOLERANCE = 1e-12
 _CCD_MAX_SWEEPS = 10_000
 
 
-def _scale_free_weights(weights, option_count, current_bankroll):
+def _scale_free_weights(
+    weights: np.ndarray, option_count: int, current_bankroll: float
+) -> tuple[float, ...]:
     """
     The house scale-free ``evaluate``: the weights at any positive bankroll,
     all zeros at zero or below.
@@ -103,7 +115,9 @@ def _scale_free_weights(weights, option_count, current_bankroll):
     return _validate_weights(weights, option_count=option_count)
 
 
-def _validated_solver_weights(raw, option_count, upper=1.0):
+def _validated_solver_weights(
+    raw: np.ndarray, option_count: int, upper: float = 1.0
+) -> np.ndarray:
     """
     Clean a solver's raw weight vector and enforce the house weight contract.
 
@@ -142,7 +156,7 @@ def _validated_solver_weights(raw, option_count, upper=1.0):
     return np.asarray(_validate_weights(weights, option_count=option_count))
 
 
-def _normalized_direction_weights(raw, option_count):
+def _normalized_direction_weights(raw: np.ndarray, option_count: int) -> np.ndarray:
     """
     Read a reformulation's unbounded solution as long-only weights.
 
@@ -168,7 +182,9 @@ def _normalized_direction_weights(raw, option_count):
     return np.asarray(_validate_weights(solution / total, option_count=option_count))
 
 
-def _model_covariance(model, n_samples, seed):
+def _model_covariance(
+    model: JointReturnModel, n_samples: int, seed: int | None
+) -> np.ndarray:
     """
     The covariance a joint-return model implies, dropping its mean.
 
@@ -216,7 +232,13 @@ class _CovarianceOnlyModelInput(ModelInputMixin):
     """
 
     @classmethod
-    def from_model(cls, model, n_samples=10_000, seed=None, **kwargs):
+    def from_model(
+        cls,
+        model: JointReturnModel,
+        n_samples: int = 10_000,
+        seed: int | None = None,
+        **kwargs,
+    ) -> BaseAllocationStrategy:
         """
         Build ``cls`` from a joint-return model's covariance.
 
@@ -244,7 +266,14 @@ class _CovarianceOnlyModelInput(ModelInputMixin):
         return cls(covariance, **kwargs)
 
 
-def _run_slsqp(objective, gradient, initial, constraints, label, unbounded):
+def _run_slsqp(
+    objective: Callable[[np.ndarray], float],
+    gradient: Callable[[np.ndarray], np.ndarray],
+    initial: np.ndarray,
+    constraints: Sequence[dict],
+    label: str,
+    unbounded: bool,
+) -> "OptimizeResult":
     """
     Run SLSQP with analytic gradients under the house solver discipline.
 
@@ -298,7 +327,12 @@ def _run_slsqp(objective, gradient, initial, constraints, label, unbounded):
     return result
 
 
-def _solve_simplex_qp(matrix, linear, label, fully_invested=False):
+def _solve_simplex_qp(
+    matrix: np.ndarray,
+    linear: np.ndarray,
+    label: str,
+    fully_invested: bool = False,
+) -> "OptimizeResult":
     """
     Minimize ``0.5 * w' matrix w - linear' w`` over the long-only budget
     simplex ``{w : w >= 0, sum(w) <= 1}``, or - with ``fully_invested`` -
@@ -361,7 +395,9 @@ def _solve_simplex_qp(matrix, linear, label, fully_invested=False):
     )
 
 
-def _solve_ratio_qp(matrix, direction, label):
+def _solve_ratio_qp(
+    matrix: np.ndarray, direction: np.ndarray, label: str
+) -> "OptimizeResult":
     """
     Maximize ``direction'w / sqrt(w' matrix w)`` over the budget simplex.
 
@@ -417,7 +453,9 @@ def _solve_ratio_qp(matrix, direction, label):
     )
 
 
-def _risk_budget_weights(covariance, budgets):
+def _risk_budget_weights(
+    covariance: np.ndarray, budgets: np.ndarray
+) -> tuple[np.ndarray, int]:
     """
     Solve the Spinu risk-budgeting objective by cyclical coordinate descent.
 
@@ -549,7 +587,12 @@ class MeanVariance(ModelInputMixin, BaseAllocationStrategy):
     [0.01]
     """
 
-    def __init__(self, mean, covariance, risk_aversion=1.0):
+    def __init__(
+        self,
+        mean: np.typing.ArrayLike,
+        covariance: np.typing.ArrayLike,
+        risk_aversion: float = 1.0,
+    ) -> None:
         _require_scipy("MeanVariance")
         self.mean = _validate_mean(mean)
         self.covariance = _validate_covariance(covariance, option_count=self.mean.size)
@@ -567,7 +610,7 @@ class MeanVariance(ModelInputMixin, BaseAllocationStrategy):
         self.converged = True
         self.iterations = int(result.nit)
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the allocation with its solver diagnostics.
 
@@ -607,7 +650,7 @@ class MeanVariance(ModelInputMixin, BaseAllocationStrategy):
             volatility=float(np.sqrt(quadratic)),
         )
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one long-only weight per option.
 
@@ -673,7 +716,7 @@ class GlobalMinimumVariance(_CovarianceOnlyModelInput, BaseAllocationStrategy):
     0.008
     """
 
-    def __init__(self, covariance):
+    def __init__(self, covariance: np.typing.ArrayLike) -> None:
         _require_scipy("GlobalMinimumVariance")
         self.covariance = _validate_covariance(covariance)
         option_count = self.covariance.shape[0]
@@ -687,7 +730,7 @@ class GlobalMinimumVariance(_CovarianceOnlyModelInput, BaseAllocationStrategy):
         self.converged = True
         self.iterations = int(result.nit)
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the allocation with its solver diagnostics.
 
@@ -715,7 +758,7 @@ class GlobalMinimumVariance(_CovarianceOnlyModelInput, BaseAllocationStrategy):
             volatility=math.sqrt(quadratic),
         )
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one long-only weight per option.
 
@@ -793,7 +836,12 @@ class MaximumSharpe(ModelInputMixin, BaseAllocationStrategy):
     0.2236
     """
 
-    def __init__(self, mean, covariance, risk_free=0.0):
+    def __init__(
+        self,
+        mean: np.typing.ArrayLike,
+        covariance: np.typing.ArrayLike,
+        risk_free: float = 0.0,
+    ) -> None:
         _require_scipy("MaximumSharpe")
         self.mean = _validate_mean(mean)
         self.covariance = _validate_covariance(covariance, option_count=self.mean.size)
@@ -810,7 +858,7 @@ class MaximumSharpe(ModelInputMixin, BaseAllocationStrategy):
         self.converged = True
         self.iterations = int(result.nit)
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the allocation with its solver diagnostics.
 
@@ -844,7 +892,7 @@ class MaximumSharpe(ModelInputMixin, BaseAllocationStrategy):
             volatility=float(np.sqrt(quadratic)),
         )
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one long-only weight per option.
 
@@ -910,7 +958,7 @@ class MaximumDiversification(_CovarianceOnlyModelInput, BaseAllocationStrategy):
     1.291
     """
 
-    def __init__(self, covariance):
+    def __init__(self, covariance: np.typing.ArrayLike) -> None:
         _require_scipy("MaximumDiversification")
         self.covariance = _validate_covariance(covariance)
         option_count = self.covariance.shape[0]
@@ -927,7 +975,7 @@ class MaximumDiversification(_CovarianceOnlyModelInput, BaseAllocationStrategy):
         self.converged = True
         self.iterations = int(result.nit)
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the allocation with its solver diagnostics.
 
@@ -959,7 +1007,7 @@ class MaximumDiversification(_CovarianceOnlyModelInput, BaseAllocationStrategy):
             volatility=math.sqrt(quadratic),
         )
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one long-only weight per option.
 
@@ -1034,7 +1082,11 @@ class RiskBudgeting(_CovarianceOnlyModelInput, BaseAllocationStrategy):
     [0.4641, 0.5359]
     """
 
-    def __init__(self, covariance, risk_budgets=None):
+    def __init__(
+        self,
+        covariance: np.typing.ArrayLike,
+        risk_budgets: np.typing.ArrayLike | None = None,
+    ) -> None:
         self.covariance = _validate_covariance(covariance)
         option_count = self.covariance.shape[0]
         variances = np.diag(self.covariance)
@@ -1069,7 +1121,7 @@ class RiskBudgeting(_CovarianceOnlyModelInput, BaseAllocationStrategy):
         self.converged = True
         self.iterations = sweeps
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the allocation with its solver diagnostics.
 
@@ -1100,7 +1152,7 @@ class RiskBudgeting(_CovarianceOnlyModelInput, BaseAllocationStrategy):
             volatility=float(np.sqrt(self.weights @ self.covariance @ self.weights)),
         )
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one long-only weight per option.
 
@@ -1166,7 +1218,7 @@ class RiskAversionScaling(BaseAllocationStrategy):
     [0.25]
     """
 
-    def __init__(self, inner, factor=1.0):
+    def __init__(self, inner: BaseAllocationStrategy, factor: float = 1.0) -> None:
         if not isinstance(inner, BaseAllocationStrategy):
             raise ValueError("RiskAversionScaling must wrap a BaseAllocationStrategy")
         factor = _require_finite(factor, "Scaling factor")
@@ -1175,7 +1227,7 @@ class RiskAversionScaling(BaseAllocationStrategy):
         self.inner = inner
         self.factor = factor
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the shrunk allocation with the inner solver's diagnostics.
 
@@ -1213,7 +1265,7 @@ class RiskAversionScaling(BaseAllocationStrategy):
             volatility=volatility,
         )
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one scaled long-only weight per option.
 

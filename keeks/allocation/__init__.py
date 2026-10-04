@@ -90,6 +90,8 @@ from keeks.allocation.online import (
     OnlineNewtonStep,
 )
 from keeks.allocation.plots import (
+    COLORMAP,
+    PALETTE,
     bankroll_paths,
     correlation_heatmap,
     dendrogram,
@@ -103,6 +105,8 @@ from keeks.allocation.scenarios import MeanCVaR, scenarios_to_moments
 from keeks.allocation.simulators import AllocationSimulator
 
 __all__ = [
+    "COLORMAP",
+    "PALETTE",
     "AllocationResult",
     "AllocationSimulator",
     "bankroll_paths",

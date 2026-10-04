@@ -18,7 +18,9 @@ are safe to call inside simulation loops and headless (Agg) test runs.
 
 import operator
 from collections.abc import Mapping
+from typing import TYPE_CHECKING
 
+import matplotlib.axes
 import matplotlib.figure
 import numpy as np
 
@@ -30,6 +32,9 @@ from keeks.allocation.base import (
 )
 from keeks.allocation.moments import MeanVariance
 from keeks.utils import PROBABILITY_SUM_TOLERANCE, _require_finite
+
+if TYPE_CHECKING:
+    from keeks.bankroll import BankRoll
 
 __author__ = "willmcginnis"
 
@@ -64,7 +69,7 @@ __all__ = [
 ]
 
 
-def _new_axes(xlabel, ylabel):
+def _new_axes(xlabel: str, ylabel: str) -> matplotlib.axes.Axes:
     """
     Open a fresh figure and label its axes, touching no global state.
 
@@ -80,7 +85,9 @@ def _new_axes(xlabel, ylabel):
     return axes
 
 
-def _history_array(history, label="History"):
+def _history_array(
+    history: "np.typing.ArrayLike | BankRoll", label: str = "History"
+) -> np.ndarray:
     """
     Coerce a bankroll history to a validated one-dimensional float array.
 
@@ -129,7 +136,7 @@ def _history_array(history, label="History"):
     return values
 
 
-def _validate_weight_history(weights):
+def _validate_weight_history(weights: np.typing.ArrayLike) -> np.ndarray:
     """
     Validate a per-period weight matrix and return it as a float array.
 
@@ -175,7 +182,7 @@ def _validate_weight_history(weights):
     return weights
 
 
-def _validate_grid(grid):
+def _validate_grid(grid: np.typing.ArrayLike) -> np.ndarray:
     """
     Validate a grid of risk-aversion values and return it as a float array.
 
@@ -207,7 +214,7 @@ def _validate_grid(grid):
     return grid
 
 
-def _validate_linkage(linkage):
+def _validate_linkage(linkage: np.typing.ArrayLike) -> np.ndarray:
     """
     Validate an agglomerative linkage matrix and return it as a float array.
 
@@ -251,7 +258,7 @@ def _validate_linkage(linkage):
     return linkage
 
 
-def _leaf_positions(linkage, option_count):
+def _leaf_positions(linkage: np.ndarray, option_count: int) -> dict[int, float]:
     """
     Lay out every node of the linkage tree on the x-axis, iteratively.
 
@@ -281,7 +288,11 @@ def _leaf_positions(linkage, option_count):
     return positions
 
 
-def bankroll_paths(histories, log_scale=True):
+def bankroll_paths(
+    histories: "Mapping[str, np.typing.ArrayLike | BankRoll]"
+    " | np.typing.ArrayLike | BankRoll",
+    log_scale: bool = True,
+) -> matplotlib.axes.Axes:
     """
     Plot the growth curves of one or more bankroll histories.
 
@@ -350,7 +361,7 @@ def bankroll_paths(histories, log_scale=True):
     return axes
 
 
-def drawdown_history(history):
+def drawdown_history(history: "np.typing.ArrayLike | BankRoll") -> matplotlib.axes.Axes:
     """
     Plot the peak-to-trough drawdown curve of a bankroll history.
 
@@ -403,7 +414,7 @@ def drawdown_history(history):
     return axes
 
 
-def weight_evolution(weights):
+def weight_evolution(weights: np.typing.ArrayLike) -> matplotlib.axes.Axes:
     """
     Plot long-only weights through time as a stacked area.
 
@@ -457,7 +468,9 @@ def weight_evolution(weights):
     return axes
 
 
-def risk_contributions(weights, covariance):
+def risk_contributions(
+    weights: np.typing.ArrayLike, covariance: np.typing.ArrayLike
+) -> matplotlib.axes.Axes:
     """
     Plot each option's share of the portfolio's risk as a bar chart.
 
@@ -522,7 +535,11 @@ def risk_contributions(weights, covariance):
     return axes
 
 
-def efficient_frontier(mean, covariance, grid):
+def efficient_frontier(
+    mean: np.typing.ArrayLike,
+    covariance: np.typing.ArrayLike,
+    grid: np.typing.ArrayLike,
+) -> matplotlib.axes.Axes:
     """
     Plot the long-only mean-variance efficient frontier with the options.
 
@@ -601,7 +618,7 @@ def efficient_frontier(mean, covariance, grid):
     return axes
 
 
-def correlation_heatmap(covariance):
+def correlation_heatmap(covariance: np.typing.ArrayLike) -> matplotlib.axes.Axes:
     """
     Plot a covariance matrix as a correlation heatmap.
 
@@ -654,7 +671,7 @@ def correlation_heatmap(covariance):
     return axes
 
 
-def dendrogram(linkage):
+def dendrogram(linkage: np.typing.ArrayLike) -> matplotlib.axes.Axes:
     """
     Plot the cluster tree an agglomerative linkage matrix describes.
 
@@ -730,7 +747,13 @@ def dendrogram(linkage):
     return axes
 
 
-def scenario_losses(scenarios, weights, var=None, cvar=None, bins=30):
+def scenario_losses(
+    scenarios: np.typing.ArrayLike,
+    weights: np.typing.ArrayLike,
+    var: float | None = None,
+    cvar: float | None = None,
+    bins: int = 30,
+) -> matplotlib.axes.Axes:
     """
     Plot a histogram of portfolio losses over scenarios with tail markers.
 

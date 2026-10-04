@@ -1,5 +1,7 @@
 import warnings
 
+import numpy as np
+
 from keeks.binary_strategies.base import BaseStrategy
 from keeks.utils import _require_finite, _validate_probability, find_indifference_price
 
@@ -49,7 +51,13 @@ class KellyCriterion(BaseStrategy):
     0
     """
 
-    def __init__(self, payoff, loss, transaction_cost_rate, min_probability=None):
+    def __init__(
+        self,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float,
+        min_probability: float | None = None,
+    ) -> None:
         """
         Initialize the Kelly Criterion strategy.
 
@@ -76,7 +84,7 @@ class KellyCriterion(BaseStrategy):
         super().__init__(payoff, loss, transaction_cost_rate)
         self.min_probability = min_probability
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the optimal Kelly bet size.
 
@@ -146,12 +154,12 @@ class KellyCriterion(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -218,7 +226,9 @@ class FractionalKellyCriterion(BaseStrategy):
         The fraction of the full Kelly bet to use (typically between 0 and 1).
     """
 
-    def __init__(self, payoff, loss, transaction_cost_rate, fraction):
+    def __init__(
+        self, payoff: float, loss: float, transaction_cost_rate: float, fraction: float
+    ) -> None:
         if not 0 <= fraction <= 1:
             raise ValueError("Fraction must be between 0 and 1")
 
@@ -228,7 +238,7 @@ class FractionalKellyCriterion(BaseStrategy):
         # constructor arguments, and strategies are immutable after init.
         self._kelly = KellyCriterion(payoff, loss, transaction_cost_rate)
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the fractional Kelly bet size.
 
@@ -250,12 +260,12 @@ class FractionalKellyCriterion(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -327,7 +337,13 @@ class DrawdownAdjustedKelly(BaseStrategy):
         keys off, not peak-to-trough drawdown monitoring.
     """
 
-    def __init__(self, payoff, loss, transaction_cost_rate, max_transaction_loss=0.2):
+    def __init__(
+        self,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float,
+        max_transaction_loss: float = 0.2,
+    ) -> None:
         """
         Initialize the DrawdownAdjustedKelly strategy.
 
@@ -362,7 +378,7 @@ class DrawdownAdjustedKelly(BaseStrategy):
         self._kelly = KellyCriterion(payoff, loss, transaction_cost_rate)
         self._drawdown_factor = min(1.0, max_transaction_loss / 0.5)
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the drawdown-adjusted Kelly bet size.
 
@@ -395,12 +411,12 @@ class DrawdownAdjustedKelly(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
