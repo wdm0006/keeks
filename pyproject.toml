@@ -60,6 +60,11 @@ dev = [
     "pandas",
     "pytest",
     "pytest-cov",
+    # scipy ships in the dev environment so the allocation layer's
+    # scipy-gated paths (Gaussian-copula dependence, Student-t fitting, and
+    # the QP/LP solvers) are exercised by the test suite everywhere; it is
+    # still an optional runtime extra (keeks[allocation]).
+    "scipy",
     "sphinx",
     "sphinxcontrib-googleanalytics",
     "wheel",
