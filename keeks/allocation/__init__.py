@@ -24,6 +24,10 @@ bets, parametric marginals, and user callables. Moment-based allocators
 consume exact model moments when available and Monte Carlo estimates
 otherwise.
 
+The estimators also live here (:mod:`keeks.allocation.estimators`):
+:func:`shrink_covariance` and :func:`black_litterman_mean` preprocess Σ
+and μ for any optimizer, numpy-only.
+
 Subsequent modules in this subpackage add the remaining method families
 (mean-variance, minimum variance, maximum Sharpe, risk budgeting,
 mean-CVaR), and the allocation simulator; solvers that need scipy arrive
@@ -34,6 +38,7 @@ weights through the ``record_settlement`` hook alone, numpy-only.
 """
 
 from keeks.allocation.base import AllocationResult, BaseAllocationStrategy
+from keeks.allocation.estimators import black_litterman_mean, shrink_covariance
 from keeks.allocation.hierarchical import HierarchicalRiskParity
 from keeks.allocation.models import (
     BinaryBetsModel,
@@ -57,6 +62,7 @@ __all__ = [
     "AllocationResult",
     "BaseAllocationStrategy",
     "BinaryBetsModel",
+    "black_litterman_mean",
     "ExponentialGradient",
     "FixedWeights",
     "HierarchicalRiskParity",
@@ -70,4 +76,5 @@ __all__ = [
     "fit_marginals_model",
     "marginals_model",
     "scenario_model",
+    "shrink_covariance",
 ]
