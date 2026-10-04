@@ -179,7 +179,7 @@ class RepeatedMultiOutcomeSimulator:
        the bankroll as it stood when the trial began, so settlements within
        the batch never resize later legs. Each staked leg settles through the
        same net-settlement flow the binary simulators use: the realized leg
-       pays ``payoff * stake - transaction_costs`` (deposited, or withdrawn
+       nets ``(payoff - 1) * stake - transaction_costs`` (deposited, or withdrawn
        when the fee dominates) and every other staked leg is charged
        ``loss * stake + transaction_costs``.
     6. When a bankroll safeguard refuses a settlement (:class:`RuinError`),
@@ -343,7 +343,7 @@ class RepeatedMultiOutcomeSimulator:
                 stake = bettable_funds * fraction
                 try:
                     if leg == won_leg:
-                        amt = (self.payoffs[leg] * stake) - self.transaction_costs
+                        amt = ((self.payoffs[leg] - 1) * stake) - self.transaction_costs
                         if amt >= 0:
                             bankroll.deposit(amt)
                         else:
@@ -570,7 +570,7 @@ class PortfolioSimulator:
        stream, and read it against the bet's win probability:
        ``outcome < probability`` wins. A bet staked at probability 0 never
        wins; at probability 1 it always wins. Declined bets draw nothing.
-    5. Settle the batch net. Each staked bet wins ``payoff * stake -
+    5. Settle the batch net. Each staked bet wins ``(payoff - 1) * stake -
        transaction_costs`` or loses ``loss * stake + transaction_costs``;
        the signed amounts sum to one net delta and the bankroll receives
        exactly one deposit (net gain) or withdrawal (net loss) - one
@@ -726,7 +726,7 @@ class PortfolioSimulator:
                 )
                 if outcome < probability:
                     won_bets[index] = True
-                    amounts[index] = (payoff * stake) - self.transaction_costs
+                    amounts[index] = ((payoff - 1) * stake) - self.transaction_costs
                 else:
                     won_bets[index] = False
                     amounts[index] = -((loss * stake) + self.transaction_costs)
