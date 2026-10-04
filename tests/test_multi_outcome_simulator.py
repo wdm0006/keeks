@@ -75,7 +75,7 @@ def _expected_history(initial_funds, fractions, payoff, loss, fee, trials, won_l
 
     Stakes are fractions of the bankroll as it stood when each trial began
     (rounded to cents, as BankRoll reports it); the realized leg pays
-    ``payoff * stake - fee`` and every other staked leg is charged
+    ``(payoff - 1) * stake - fee`` and every other staked leg is charged
     ``loss * stake + fee``. One history entry lands per settled leg, in leg
     order, and a ``won_leg`` of ``None`` refunds every stake.
     """
@@ -90,7 +90,7 @@ def _expected_history(initial_funds, fractions, payoff, loss, fee, trials, won_l
                 continue
             stake = bettable * fraction
             if leg == won_leg:
-                bank += payoff * stake - fee
+                bank += (payoff - 1) * stake - fee
             else:
                 bank -= loss * stake + fee
             history.append(round(bank, 2))
@@ -323,7 +323,7 @@ def test_flat_fee_is_charged_per_settled_leg():
     simulator = build_simulator(probabilities=(0.0, 1.0, 0.0), transaction_costs=1.0)
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
 
-    # Leg 1 realizes: leg 0 loses stake + fee, leg 1 wins payoff * stake -
+    # Leg 1 realizes: leg 0 loses stake + fee, leg 1 wins (payoff - 1) * stake -
     # fee. Two settled legs, two fees, one history entry each.
     simulator.evaluate_strategy(strategy, bankroll)
 
@@ -422,10 +422,10 @@ def test_hook_traffic_follows_the_documented_order():
     assert strategy.events == [
         ("update_bankroll", 1000),
         ("evaluate", (1.0, 0.0, 0.0), 1000),
-        ("record_settlement", 0, (0.2, 0.0, 0.0)),
-        ("update_bankroll", 1200.0),
-        ("evaluate", (1.0, 0.0, 0.0), 1200.0),
-        ("record_settlement", 0, (0.2, 0.0, 0.0)),
+        ("record_settlement", 0, (0.1, 0.0, 0.0)),
+        ("update_bankroll", 1100.0),
+        ("evaluate", (1.0, 0.0, 0.0), 1100.0),
+        ("record_settlement", 0, (0.1, 0.0, 0.0)),
     ]
 
 
@@ -447,7 +447,7 @@ def test_record_settlement_reports_every_leg():
     stake1 = round(1000.0, 2) * 0.1
     expected_returns = (
         -(1.0 * stake0 + 1.0) / 1000.0,
-        (3.0 * stake1 - 1.0) / 1000.0,
+        (2.0 * stake1 - 1.0) / 1000.0,
         0.0,
     )
     assert strategy.events == [
@@ -583,11 +583,11 @@ def test_ruin_error_after_a_win_still_reports_the_win():
     # then refused by the drawdown limit; the batch reports both and stops.
     simulator.evaluate_strategy(strategy, bankroll)
 
-    assert bankroll.history == [1000.0, 1020.0]
+    assert bankroll.history == [1000.0, 1010.0]
     assert strategy.events == [
         ("update_bankroll", 1000),
         ("evaluate", (1.0, 0.0, 0.0), 1000),
-        ("record_settlement", 0, (0.02, 0.0, 0.0)),
+        ("record_settlement", 0, (0.01, 0.0, 0.0)),
     ]
 
 
@@ -611,3 +611,19 @@ def test_unseeded_runs_replay_when_the_global_generator_is_pinned():
     first = run()
     np.random.seed(20260907)
     assert run() == first
+
+
+def test_decimal_odds_win_nets_one_stake_less_than_payoff():
+    # Odds 3.2 on a 100 stake return 320 including the stake: net +220. A
+    # losing leg at the same stake costs 100.
+    strategy = _FixedStakesStrategy(
+        payoffs=(3.2, 3.4, 2.4), loss=1.0, stakes=(0.1, 0.0, 0.0)
+    )
+    for won_leg, change in ((0, 220.0), (1, -100.0)):
+        probabilities = tuple(1.0 if leg == won_leg else 0.0 for leg in range(3))
+        simulator = build_simulator(
+            payoffs=(3.2, 3.4, 2.4), probabilities=probabilities, trials=1
+        )
+        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        simulator.evaluate_strategy(strategy, bankroll)
+        assert bankroll.total_funds == pytest.approx(1000.0 + change)

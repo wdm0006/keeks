@@ -124,6 +124,7 @@ Contents
    getting_started
    kelly-criterion-python
    fractional-kelly-vs-kelly
+   keeks-vs-betting-math-kit
    strategy_benchmark
    binary_strategies
    simulators
