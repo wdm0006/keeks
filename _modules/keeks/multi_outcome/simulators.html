@@ -16,7 +16,7 @@
     
     <title>keeks.multi_outcome.simulators &#8212; Keeks</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
     <script src="../../../_static/documentation_options.js?v=486e5634"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
@@ -357,7 +357,7 @@
 <span class="sd">       the bankroll as it stood when the trial began, so settlements within</span>
 <span class="sd">       the batch never resize later legs. Each staked leg settles through the</span>
 <span class="sd">       same net-settlement flow the binary simulators use: the realized leg</span>
-<span class="sd">       pays ``payoff * stake - transaction_costs`` (deposited, or withdrawn</span>
+<span class="sd">       nets ``(payoff - 1) * stake - transaction_costs`` (deposited, or withdrawn</span>
 <span class="sd">       when the fee dominates) and every other staked leg is charged</span>
 <span class="sd">       ``loss * stake + transaction_costs``.</span>
 <span class="sd">    6. When a bankroll safeguard refuses a settlement (:class:`RuinError`),</span>
@@ -523,7 +523,7 @@
                 <span class="n">stake</span> <span class="o">=</span> <span class="n">bettable_funds</span> <span class="o">*</span> <span class="n">fraction</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">leg</span> <span class="o">==</span> <span class="n">won_leg</span><span class="p">:</span>
-                        <span class="n">amt</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
+                        <span class="n">amt</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
                         <span class="k">if</span> <span class="n">amt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
                             <span class="n">bankroll</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
@@ -754,7 +754,7 @@
 <span class="sd">       stream, and read it against the bet's win probability:</span>
 <span class="sd">       ``outcome &lt; probability`` wins. A bet staked at probability 0 never</span>
 <span class="sd">       wins; at probability 1 it always wins. Declined bets draw nothing.</span>
-<span class="sd">    5. Settle the batch net. Each staked bet wins ``payoff * stake -</span>
+<span class="sd">    5. Settle the batch net. Each staked bet wins ``(payoff - 1) * stake -</span>
 <span class="sd">       transaction_costs`` or loses ``loss * stake + transaction_costs``;</span>
 <span class="sd">       the signed amounts sum to one net delta and the bankroll receives</span>
 <span class="sd">       exactly one deposit (net gain) or withdrawal (net loss) - one</span>
@@ -912,7 +912,7 @@
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">outcome</span> <span class="o">&lt;</span> <span class="n">probability</span><span class="p">:</span>
                     <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">payoff</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
+                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">payoff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">loss</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">)</span>

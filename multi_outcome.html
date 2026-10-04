@@ -17,7 +17,7 @@
     
     <title>Multi-Outcome Strategies and Simulators &#8212; Keeks</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
-    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=501c8ac3" />
+    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
     <script src="_static/documentation_options.js?v=486e5634"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
@@ -466,7 +466,7 @@ and the trial’s draw is still consumed.</p></li>
 the bankroll as it stood when the trial began, so settlements within
 the batch never resize later legs. Each staked leg settles through the
 same net-settlement flow the binary simulators use: the realized leg
-pays <code class="docutils literal notranslate"><span class="pre">payoff</span> <span class="pre">*</span> <span class="pre">stake</span> <span class="pre">-</span> <span class="pre">transaction_costs</span></code> (deposited, or withdrawn
+nets <code class="docutils literal notranslate"><span class="pre">(payoff</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">stake</span> <span class="pre">-</span> <span class="pre">transaction_costs</span></code> (deposited, or withdrawn
 when the fee dominates) and every other staked leg is charged
 <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">*</span> <span class="pre">stake</span> <span class="pre">+</span> <span class="pre">transaction_costs</span></code>.</p></li>
 <li><p>When a bankroll safeguard refuses a settlement (<code class="xref py py-class docutils literal notranslate"><span class="pre">RuinError</span></code>),
@@ -609,7 +609,7 @@ is consumed, no fee is charged.</p></li>
 stream, and read it against the bet’s win probability:
 <code class="docutils literal notranslate"><span class="pre">outcome</span> <span class="pre">&lt;</span> <span class="pre">probability</span></code> wins. A bet staked at probability 0 never
 wins; at probability 1 it always wins. Declined bets draw nothing.</p></li>
-<li><p>Settle the batch net. Each staked bet wins <code class="docutils literal notranslate"><span class="pre">payoff</span> <span class="pre">*</span> <span class="pre">stake</span> <span class="pre">-</span>
+<li><p>Settle the batch net. Each staked bet wins <code class="docutils literal notranslate"><span class="pre">(payoff</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">stake</span> <span class="pre">-</span>
 <span class="pre">transaction_costs</span></code> or loses <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">*</span> <span class="pre">stake</span> <span class="pre">+</span> <span class="pre">transaction_costs</span></code>;
 the signed amounts sum to one net delta and the bankroll receives
 exactly one deposit (net gain) or withdrawal (net loss) - one
