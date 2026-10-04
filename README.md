@@ -279,6 +279,7 @@ uv run python examples/allocation_etfs.py --refresh  # re-download via yfinance
 - [Simulators](https://keeks.mcginniscommawill.com/simulators.html)
 - [Portfolio allocation](https://keeks.mcginniscommawill.com/allocation.html)
 - [Allocation visualization helpers](https://keeks.mcginniscommawill.com/allocation_plots.html)
+- [Contract checks](https://keeks.mcginniscommawill.com/checks.html)
 - [Nine-strategy risk benchmark](https://keeks.mcginniscommawill.com/strategy_benchmark.html)
 - [`examples/strategy_comparison.py`](examples/strategy_comparison.py)
 - [`examples/st_petersburg_paradox.py`](examples/st_petersburg_paradox.py)
@@ -315,5 +316,14 @@ Build the documentation with:
 ```bash
 make docs
 ```
+
+`make docs` first installs `docs/requirements.txt` — Sphinx plus the `wabi`
+theme, which is pulled from a git URL rather than PyPI — mirroring the docs
+CI recipe.
+
+Extending a strategy, allocator, or model? Verify it against the library's
+contracts before opening a PR: `keeks.checks` ships runnable harnesses
+(`check_strategy`, `check_allocation_strategy`, `check_model`) — see the
+[Contract checks](https://keeks.mcginniscommawill.com/checks.html) page.
 
 Keeks is available under the [MIT License](LICENSE.md).

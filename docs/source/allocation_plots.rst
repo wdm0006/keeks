@@ -23,7 +23,7 @@ Bankroll growth and drawdown
 
 .. autofunction:: keeks.allocation.plots.bankroll_paths
 
-.. autofunction:: keeks.allocation.plots.drawdown
+.. autofunction:: keeks.allocation.plots.drawdown_history
 
 Weights and risk
 ----------------

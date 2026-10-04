@@ -84,8 +84,9 @@ rates separately.
 
 **Fixed inputs.** $1,000 starting bankroll, 500 bets, 200 paths, even money
 (``payoff = 1.0``, ``loss = 1.0``), ``percent_bettable = 1.0``. The base scenario
-is a 55% win probability, a zero cost input, no estimate error, and the library's
-default ``max_transaction_loss = 0.3``.
+is a 55% win probability, a zero cost input, no estimate error, and an explicit
+``max_transaction_loss = 0.3`` — the library default is ``None`` (no
+per-settlement cap), so the benchmark passes the cap it studies.
 
 The strategies are configured once each: full Kelly; fractional Kelly at 0.5;
 drawdown-adjusted Kelly at ``max_transaction_loss = 0.2``; Optimal f with
@@ -224,7 +225,7 @@ that makes it behave as a switch rather than a dial:
          with four distinct hatch patterns. Every bar is either 0 percent or 100
          percent. At a cap of 0.03 all strategies except Fixed fraction 2% stop on
          every path. At a cap of 0.08 only Kelly, Optimal f and Naive stop, again
-         on every path. At the default cap of 0.30 and with no cap at
+         on every path. At a cap of 0.30 and with no cap at
          all, no strategy stops and every bar is zero.
    :width: 100%
 
@@ -234,8 +235,9 @@ Every bar is either zero or full height. A strategy stakes a roughly fixed
 fraction, so the cap either sits above that fraction and never binds, or sits
 below it and kills the run on the first losing bet — at a cap of 0.08 the Kelly
 group stops after a median of 2 bets.
-The default ``max_transaction_loss = 0.3`` never binds for any of the
-nine at a 55% edge, because none of them stakes more than 10%.
+The explicit ``max_transaction_loss = 0.3`` never binds for any of the
+nine at a 55% edge, because none of them stakes more than 10% — the library
+default is ``None`` (uncapped), which is the study's "no cap" bar.
 
 There is a second-order trap: a stopped run has a *lower* measured maximum
 drawdown than a completed one, because the losing settlement is refused rather
