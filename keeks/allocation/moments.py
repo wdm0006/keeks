@@ -539,13 +539,14 @@ class MeanVariance(ModelInputMixin, BaseAllocationStrategy):
 
     And keeks-native binary bets enter through the model door - the exact
     closed-form moments of a thin-edge even-money bet give the second-order
-    Kelly stake, near Thorp's ``f* = (2p - 1) / a`` at unit risk aversion:
+    Kelly stake, near Thorp's ``f* = (2p - 1) / a`` with ``a`` the net win
+    per unit staked (at odds 2.0, ``a = 1``):
 
     >>> from keeks.allocation.models import binary_bets_model
-    >>> model = binary_bets_model([(0.505, 0.02, 0.02)])
+    >>> model = binary_bets_model([(0.505, 2.0, 1.0)])
     >>> kelly = MeanVariance.from_model(model)
     >>> [round(weight, 4) for weight in kelly.evaluate(1000.0)]
-    [0.5001]
+    [0.01]
     """
 
     def __init__(self, mean, covariance, risk_aversion=1.0):

@@ -89,7 +89,7 @@ def _expected_history(initial_funds, fractions, bets, fee, trials):
             probability, payoff, loss = bet
             stake = bettable * fraction
             if probability == 1.0:
-                net += (payoff * stake) - fee
+                net += ((payoff - 1) * stake) - fee
             else:
                 net -= (loss * stake) + fee
         if net >= 0:
@@ -242,9 +242,9 @@ def test_always_lose_bets_settle_through_the_loss_leg():
 
 
 def test_fee_dominated_win_settles_as_a_net_withdrawal():
-    # payoff * stake = 50 < fee = 60: the winning bet still costs the
+    # (payoff - 1) * stake = 50 < fee = 60: the winning bet still costs the
     # portfolio 10, and the net batch settles through one withdrawal.
-    bets = ((1.0, 0.5, 1.0),)
+    bets = ((1.0, 1.5, 1.0),)
     simulator = build_simulator(bets=bets, transaction_costs=60.0, trials=1, seed=7)
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
     simulator.evaluate_strategy(_DuckTypedStrategy((0.1,)), bankroll)
@@ -252,14 +252,14 @@ def test_fee_dominated_win_settles_as_a_net_withdrawal():
 
 
 def test_batch_nets_into_exactly_one_transaction():
-    # One winning and one losing bet: the batch's signed amounts (+595 and
-    # -205) net to +390 and cross the bankroll as a single deposit - one
+    # One winning and one losing bet: the batch's signed amounts (+295 and
+    # -205) net to +90 and cross the bankroll as a single deposit - one
     # history entry for the whole portfolio, not one per bet.
     bets = ((1.0, 2.0, 1.0), (0.0, 3.0, 1.0))
     simulator = build_simulator(bets=bets, transaction_costs=5.0, trials=1, seed=7)
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
     simulator.evaluate_strategy(_DuckTypedStrategy((0.3, 0.2)), bankroll)
-    assert bankroll.history == [1000.0, 1390.0]
+    assert bankroll.history == [1000.0, 1090.0]
     assert len(bankroll.history) == 2
 
 
@@ -283,12 +283,12 @@ def test_declined_bets_pay_no_fee_and_draw_nothing():
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
     simulator.evaluate_strategy(strategy, bankroll)
     # Bet 0 declined: no fee, no draw, won flag None, return 0.0. Bet 1 wins:
-    # 2 * 250 - 25 = 475.
-    assert bankroll.history == [1000.0, 1475.0]
+    # (2 - 1) * 250 - 25 = 225.
+    assert bankroll.history == [1000.0, 1225.0]
     assert strategy.events[-1] == (
         "record_settlement",
         (None, True),
-        (0.0, 475 / 1000),
+        (0.0, 225 / 1000),
     )
 
 
@@ -370,7 +370,7 @@ def test_exposure_over_bound_is_rejected_not_reduced():
 
 def test_exposure_bound_holds_in_the_placement_arithmetic():
     # With no fee the settled return determines each stake exactly: a won
-    # bet returned payoff * stake / before, a lost bet -loss * stake /
+    # bet returned (payoff - 1) * stake / before, a lost bet -loss * stake /
     # before. The bound is asserted against that recovered placement
     # arithmetic, not the strategy's intentions.
     bets = ((1.0, 2.0, 1.0), (0.0, 3.0, 1.0), (1.0, 2.4, 1.0))
@@ -401,18 +401,18 @@ def test_exposure_bound_holds_in_the_placement_arithmetic():
 # ---------------------------------------------------------------------------
 def test_batch_drawdown_evaluates_the_net_total_once():
     # max_draw_down = 0.07 caps one withdrawal at 70. Each leg alone (a 500
-    # loss) would breach it, but the batch nets to -40, so the single
+    # loss) would breach it, but the batch nets to -60, so the single
     # batch-level check lets the portfolio settle.
-    bets = ((0.0, 1.1, 1.0), (1.0, 1.15, 1.0))
+    bets = ((0.0, 1.1, 1.0), (1.0, 2.1, 1.0))
     simulator = build_simulator(bets=bets, trials=1, seed=7)
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.07)
-    strategy = _RecordingStrategy(payoffs=(1.1, 1.15), loss=1.0, stakes=(0.5, 0.4))
+    strategy = _RecordingStrategy(payoffs=(1.1, 2.1), loss=1.0, stakes=(0.5, 0.4))
     simulator.evaluate_strategy(strategy, bankroll)
-    assert bankroll.history == [1000.0, 960.0]
+    assert bankroll.history == [1000.0, 940.0]
     won_bets, returns = strategy.events[-1][1:]
     assert won_bets == (False, True)
     assert returns[0] == -0.5
-    assert returns[1] == pytest.approx(0.46)
+    assert returns[1] == pytest.approx(0.44)
 
 
 def test_batch_over_drawdown_is_refused_and_stops_the_run():
@@ -476,7 +476,7 @@ def test_hooks_fire_in_documented_order_per_trial():
     assert first_eval[2] == 1000.0
     won_bets, returns = first_settlement[1:]
     assert won_bets == (True, False)
-    assert returns == (0.2, -0.1)
+    assert returns == (0.1, -0.1)
 
 
 def test_strategy_without_hooks_runs_quietly():
