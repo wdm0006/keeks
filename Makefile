@@ -98,6 +98,7 @@ test-all:
 # Run example scripts
 examples:
 	uv run python examples/strategy_comparison.py
+	uv run python examples/allocation_etfs.py
 
 # Regenerate the published strategy benchmark (CSV + charts)
 benchmark:
