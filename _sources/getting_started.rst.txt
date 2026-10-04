@@ -22,18 +22,18 @@ Here's a simple example of how to use keeks to simulate a betting strategy:
     from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 
     # Create a bankroll with initial funds
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.3)
 
     # Create a Kelly Criterion strategy
-    # Parameters: payoff, loss, transaction_cost
-    strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
+    # Parameters: payoff, loss, transaction_cost_rate
+    strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.01)
 
     # Create a simulator with a fixed probability
-    # Parameters: payoff, loss, transaction_costs, probability, trials
+    # Parameters: payoff, loss, fee_per_bet, probability, trials
     simulator = RepeatedBinarySimulator(
         payoff=1.0, 
         loss=1.0, 
-        transaction_costs=0.01, 
+        fee_per_bet=0.01, 
         probability=0.55,  # 55% chance of winning
         trials=1000
     )
@@ -54,28 +54,28 @@ Keeks provides several betting strategies:
    .. code-block:: python
    
       from keeks.binary_strategies import KellyCriterion
-      strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
+      strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.01)
    
 2. **Fractional Kelly**: A more conservative version of Kelly
    
    .. code-block:: python
    
       from keeks.binary_strategies import FractionalKellyCriterion
-      strategy = FractionalKellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01, fraction=0.5)
+      strategy = FractionalKellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.01, fraction=0.5)
    
 3. **Drawdown-Adjusted Kelly**: Kelly variant that accounts for drawdown tolerance
    
    .. code-block:: python
    
       from keeks.binary_strategies import DrawdownAdjustedKelly
-      strategy = DrawdownAdjustedKelly(payoff=1.0, loss=1.0, transaction_cost=0.01, max_acceptable_drawdown=0.2)
+      strategy = DrawdownAdjustedKelly(payoff=1.0, loss=1.0, transaction_cost_rate=0.01, max_transaction_loss=0.2)
    
 4. **OptimalF**: Ralph Vince's method for maximizing geometric growth rate
    
    .. code-block:: python
    
       from keeks.binary_strategies.simple import OptimalF
-      strategy = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.55)
+      strategy = OptimalF(payoff=1.0, loss=1.0, transaction_cost_rate=0.01, win_rate=0.55)
    
 5. **Fixed Fraction**: Simple strategy that bets a constant percentage
    
@@ -86,7 +86,7 @@ Keeks provides several betting strategies:
           fraction=0.05,
           payoff=1.0,
           loss=1.0,
-          transaction_cost=0.01,
+          transaction_cost_rate=0.01,
           min_probability=0.5,
       )
    
@@ -101,7 +101,7 @@ Keeks provides several betting strategies:
           initial_bankroll=1000.0,
           payoff=1.0,
           loss=1.0,
-          transaction_cost=0.01,
+          transaction_cost_rate=0.01,
       )
       
       # Remember to update the CPPI strategy with the current bankroll value
@@ -114,18 +114,19 @@ Keeks provides several betting strategies:
    
       from keeks.binary_strategies import DynamicBankrollManagement
       strategy = DynamicBankrollManagement(
-          base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01
+          base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.01
       )
 
-      # After each bet, update the strategy with the result
-      strategy.record_result(won=True, return_pct=0.05)
+      # After each settled bet, update the strategy with the outcome
+      # (one-entry won and realized-return vectors for a single bet)
+      strategy.record_settlement((True,), (0.05,))
    
 8. **Naive Strategy**: Simple strategy that bets full amount when expected value is positive
    
    .. code-block:: python
    
       from keeks.binary_strategies import NaiveStrategy
-      strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.01)
+      strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.01)
 
 Using Different Simulators
 --------------------------

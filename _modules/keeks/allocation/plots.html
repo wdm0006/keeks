@@ -1,0 +1,1114 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.allocation.plots &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.allocation.plots - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.allocation.plots">
+<meta property="og:description" content="keeks.allocation.plots - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/plots.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.allocation.plots">
+<meta name="twitter:description" content="keeks.allocation.plots - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/plots.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.allocation.plots</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.allocation.plots</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Deterministic visualization helpers for the allocation layer.</span>
+
+<span class="sd">Every helper here takes objects the allocation API already returns - a</span>
+<span class="sd">bankroll history (or the :class:`~keeks.bankroll.BankRoll` that owns one),</span>
+<span class="sd">an :class:`~keeks.allocation.base.AllocationResult`, a weight matrix, a</span>
+<span class="sd">covariance matrix, the hand-rolled HRP linkage, a scenario matrix - and</span>
+<span class="sd">draws one figure, returning the :class:`matplotlib.axes.Axes` it drew on so</span>
+<span class="sd">callers can style further, save, or embed.</span>
+
+<span class="sd">The helpers are deterministic by construction: series and legends sort by</span>
+<span class="sd">name, colors come from one small fixed :data:`PALETTE`, and nothing reads or</span>
+<span class="sd">writes matplotlib's global state. Figures are plain</span>
+<span class="sd">:class:`matplotlib.figure.Figure` objects - never pyplot-managed - so</span>
+<span class="sd">repeated calls never leak figures into pyplot's registry, and the helpers</span>
+<span class="sd">are safe to call inside simulation loops and headless (Agg) test runs.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.axes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.figure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_validate_covariance</span><span class="p">,</span>
+    <span class="n">_validate_mean</span><span class="p">,</span>
+    <span class="n">_validate_scenarios</span><span class="p">,</span>
+    <span class="n">_validate_weights</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.moments</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeanVariance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">,</span> <span class="n">_require_finite</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.bankroll</span><span class="w"> </span><span class="kn">import</span> <span class="n">BankRoll</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+<span class="c1"># One small fixed palette: helpers draw from these in order, so a figure is</span>
+<span class="c1"># a pure function of its inputs and repeated runs replay identically.</span>
+<span class="n">PALETTE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"#1f77b4"</span><span class="p">,</span>  <span class="c1"># blue</span>
+    <span class="s2">"#d62728"</span><span class="p">,</span>  <span class="c1"># red</span>
+    <span class="s2">"#2ca02c"</span><span class="p">,</span>  <span class="c1"># green</span>
+    <span class="s2">"#9467bd"</span><span class="p">,</span>  <span class="c1"># purple</span>
+    <span class="s2">"#ff7f0e"</span><span class="p">,</span>  <span class="c1"># orange</span>
+    <span class="s2">"#8c564b"</span><span class="p">,</span>  <span class="c1"># brown</span>
+    <span class="s2">"#e377c2"</span><span class="p">,</span>  <span class="c1"># pink</span>
+    <span class="s2">"#7f7f7f"</span><span class="p">,</span>  <span class="c1"># gray</span>
+<span class="p">)</span>
+
+<span class="c1"># The fixed diverging colormap for correlation heatmaps: symmetric around</span>
+<span class="c1"># zero, matching the correlation scale the color reads.</span>
+<span class="n">COLORMAP</span> <span class="o">=</span> <span class="s2">"RdBu_r"</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"COLORMAP"</span><span class="p">,</span>
+    <span class="s2">"PALETTE"</span><span class="p">,</span>
+    <span class="s2">"bankroll_paths"</span><span class="p">,</span>
+    <span class="s2">"correlation_heatmap"</span><span class="p">,</span>
+    <span class="s2">"dendrogram"</span><span class="p">,</span>
+    <span class="s2">"drawdown_history"</span><span class="p">,</span>
+    <span class="s2">"efficient_frontier"</span><span class="p">,</span>
+    <span class="s2">"risk_contributions"</span><span class="p">,</span>
+    <span class="s2">"scenario_losses"</span><span class="p">,</span>
+    <span class="s2">"weight_evolution"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_new_axes</span><span class="p">(</span><span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Open a fresh figure and label its axes, touching no global state.</span>
+
+<span class="sd">    The figure is a bare :class:`matplotlib.figure.Figure`, not a pyplot</span>
+<span class="sd">    figure: nothing registers it in pyplot's global manager, so a helper</span>
+<span class="sd">    called inside a simulation loop cannot leak figures and a headless run</span>
+<span class="sd">    needs no close bookkeeping.</span>
+<span class="sd">    """</span>
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">()</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_history_array</span><span class="p">(</span>
+    <span class="n">history</span><span class="p">:</span> <span class="s2">"np.typing.ArrayLike | BankRoll"</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"History"</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Coerce a bankroll history to a validated one-dimensional float array.</span>
+
+<span class="sd">    A :class:`~keeks.bankroll.BankRoll` (or any object exposing a</span>
+<span class="sd">    ``history`` attribute) is unwrapped first, so callers can pass either</span>
+<span class="sd">    the recorded list or the bankroll that owns it. Histories are</span>
+<span class="sd">    nonnegative by construction - a bankroll never settles below zero -</span>
+<span class="sd">    and anything else is rejected loudly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    history : sequence of float or object</span>
+<span class="sd">        The bankroll history, or the object whose ``history`` attribute</span>
+<span class="sd">        holds one.</span>
+<span class="sd">    label : str</span>
+<span class="sd">        The name the validation errors carry.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated history as a one-dimensional nonnegative float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the history is not a non-empty one-dimensional sequence of</span>
+<span class="sd">        finite nonnegative numbers.</span>
+<span class="sd">    """</span>
+    <span class="n">attribute</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="s2">"history"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">attribute</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> must be one-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> must be non-empty"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">values</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">values</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> must be nonnegative: a bankroll never goes below zero"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">values</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_weight_history</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a per-period weight matrix and return it as a float array.</span>
+
+<span class="sd">    One row per period, one column per option, every entry in ``[0, 1]``</span>
+<span class="sd">    and every row summing to no more than one within</span>
+<span class="sd">    ``PROBABILITY_SUM_TOLERANCE`` - the same long-only contract</span>
+<span class="sd">    :func:`keeks.allocation.base._validate_weights` enforces on a single</span>
+<span class="sd">    vector, read across time.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    weights : array-like</span>
+<span class="sd">        The ``(periods, options)`` weight matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated matrix as a two-dimensional float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is not a non-empty two-dimensional sequence of finite</span>
+<span class="sd">        numbers, any entry falls outside ``[0, 1]``, or any row sums above</span>
+<span class="sd">        ``1 + PROBABILITY_SUM_TOLERANCE``.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Weights must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">weights</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Weights must be two-dimensional: one row per period, one column per option"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">weights</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Weights must be non-empty"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">weights</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Weights must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">weights</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">weights</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Weights must be between 0 and 1"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Weights must sum to no more than one in every period"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">weights</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a grid of risk-aversion values and return it as a float array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : sequence of float</span>
+<span class="sd">        The risk aversions the efficient frontier sweeps. Must be a</span>
+<span class="sd">        non-empty one-dimensional sequence of finite positive numbers.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated grid as a one-dimensional float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the grid is not a non-empty one-dimensional sequence of finite</span>
+<span class="sd">        positive numbers.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Grid must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">grid</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Grid must be a non-empty one-dimensional sequence"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">grid</span><span class="p">))</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">grid</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Grid must contain only positive finite risk aversions"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">grid</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate an agglomerative linkage matrix and return it as a float array.</span>
+
+<span class="sd">    The ``(n - 1, 4)`` matrix</span>
+<span class="sd">    :func:`keeks.allocation.hierarchical._agglomerative_linkage` produces:</span>
+<span class="sd">    one row per merge, ``[first_id, second_id, distance, size]``, where</span>
+<span class="sd">    leaves carry their option index and the merge on row ``k`` forms</span>
+<span class="sd">    cluster ``n + k``. A single option has nothing to merge - the empty</span>
+<span class="sd">    ``(0, 4)`` matrix - and is the one empty shape accepted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    linkage : array-like</span>
+<span class="sd">        The linkage matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated linkage as a two-dimensional float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is not two-dimensional with four columns, is not</span>
+<span class="sd">        finite, or carries a negative merge distance.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">linkage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Linkage must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">linkage</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">linkage</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Linkage must have four columns: [first_id, second_id, distance, size]"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">linkage</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">linkage</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">linkage</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Linkage must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">linkage</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Linkage distances must be nonnegative"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">linkage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_leaf_positions</span><span class="p">(</span><span class="n">linkage</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">option_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Lay out every node of the linkage tree on the x-axis, iteratively.</span>
+
+<span class="sd">    Leaves sit at consecutive integer positions in the tree's left-to-right</span>
+<span class="sd">    order - the quasi-diagonal order the linkage encodes - and each cluster</span>
+<span class="sd">    sits at the midpoint of its two children. The walk is an explicit-stack</span>
+<span class="sd">    post-order, so deep trees cannot overflow the recursion limit.</span>
+
+<span class="sd">    Returns a dict mapping every node id (leaves ``0..n-1``, clusters</span>
+<span class="sd">    ``n..2n-2``) to its x position; every node is reachable from the root,</span>
+<span class="sd">    which is why no unknown id can survive.</span>
+<span class="sd">    """</span>
+    <span class="n">positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">option_count</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="p">[(</span><span class="n">root</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]</span>
+    <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+        <span class="n">node</span><span class="p">,</span> <span class="n">expanded</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="o">&lt;</span> <span class="n">option_count</span><span class="p">:</span>
+            <span class="n">positions</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">expanded</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">linkage</span><span class="p">[</span><span class="n">node</span> <span class="o">-</span> <span class="n">option_count</span><span class="p">]</span>
+            <span class="n">positions</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">+</span> <span class="n">positions</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">linkage</span><span class="p">[</span><span class="n">node</span> <span class="o">-</span> <span class="n">option_count</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="kc">False</span><span class="p">))</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">linkage</span><span class="p">[</span><span class="n">node</span> <span class="o">-</span> <span class="n">option_count</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="kc">False</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">positions</span>
+
+
+<div class="viewcode-block" id="bankroll_paths">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.bankroll_paths">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">bankroll_paths</span><span class="p">(</span>
+    <span class="n">histories</span><span class="p">:</span> <span class="s2">"Mapping[str, np.typing.ArrayLike | BankRoll]"</span>
+    <span class="s2">" | np.typing.ArrayLike | BankRoll"</span><span class="p">,</span>
+    <span class="n">log_scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot the growth curves of one or more bankroll histories.</span>
+
+<span class="sd">    Each history becomes one line against its period index. Series sort by</span>
+<span class="sd">    name - draw order and legend alike - so a figure is a pure function of</span>
+<span class="sd">    its inputs, and colors cycle through :data:`PALETTE`. The y-axis is</span>
+<span class="sd">    logarithmic by default: compounding bankrolls span orders of magnitude,</span>
+<span class="sd">    and zero entries (a bankrupt period) are simply clipped off a log axis.</span>
+<span class="sd">    Pass ``log_scale=False`` for a linear axis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    histories : mapping or sequence</span>
+<span class="sd">        Either a mapping of series name to history - each history a</span>
+<span class="sd">        sequence of nonnegative bankroll values, or the</span>
+<span class="sd">        :class:`~keeks.bankroll.BankRoll` whose ``history`` attribute holds</span>
+<span class="sd">        one - or a single bare history, which plots under the name</span>
+<span class="sd">        ``"bankroll"``.</span>
+<span class="sd">    log_scale : bool, default=True</span>
+<span class="sd">        Whether the y-axis is logarithmic.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the paths were drawn on, one line per series, legend</span>
+<span class="sd">        sorted by name.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If a history is not a non-empty one-dimensional sequence of finite</span>
+<span class="sd">        nonnegative numbers, or the mapping is empty.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks import BankRoll</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import bankroll_paths</span>
+<span class="sd">    &gt;&gt;&gt; bankroll = BankRoll(initial_funds=1000.0)</span>
+<span class="sd">    &gt;&gt;&gt; bankroll.deposit(250.0)</span>
+<span class="sd">    &gt;&gt;&gt; axes = bankroll_paths({"fixed": bankroll})</span>
+<span class="sd">    &gt;&gt;&gt; [text.get_text() for text in axes.get_legend().get_texts()]</span>
+<span class="sd">    ['fixed']</span>
+<span class="sd">    &gt;&gt;&gt; axes.get_yscale()</span>
+<span class="sd">    'log'</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">histories</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">series</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="n">_history_array</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"History for </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">history</span> <span class="ow">in</span> <span class="n">histories</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">series</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one bankroll history is required"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">series</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bankroll"</span><span class="p">:</span> <span class="n">_history_array</span><span class="p">(</span><span class="n">histories</span><span class="p">)}</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Period"</span><span class="p">,</span> <span class="s2">"Bankroll"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">items</span><span class="p">())):</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+            <span class="n">values</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="n">index</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">PALETTE</span><span class="p">)],</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">log_scale</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">"log"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="drawdown_history">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.drawdown_history">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">drawdown_history</span><span class="p">(</span><span class="n">history</span><span class="p">:</span> <span class="s2">"np.typing.ArrayLike | BankRoll"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot the peak-to-trough drawdown curve of a bankroll history.</span>
+
+<span class="sd">    The drawdown at each entry is the fractional loss from the best</span>
+<span class="sd">    bankroll seen so far - zero at every new peak, one at a total wipeout -</span>
+<span class="sd">    read as ``(running_peak - value) / running_peak``. Entries before the</span>
+<span class="sd">    first positive value (an unfunded bankroll) carry a zero drawdown:</span>
+<span class="sd">    with nothing ever banked there is nothing to lose.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    history : sequence of float or object</span>
+<span class="sd">        The bankroll history - a sequence of nonnegative values, or the</span>
+<span class="sd">        :class:`~keeks.bankroll.BankRoll` whose ``history`` attribute holds</span>
+<span class="sd">        one.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the curve was drawn on, with the drawdown line and a light</span>
+<span class="sd">        fill beneath it.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the history is not a non-empty one-dimensional sequence of</span>
+<span class="sd">        finite nonnegative numbers.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import drawdown_history</span>
+<span class="sd">    &gt;&gt;&gt; axes = drawdown_history([1000.0, 1250.0, 1000.0])</span>
+<span class="sd">    &gt;&gt;&gt; len(axes.lines)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; round(float(axes.lines[0].get_ydata().max()), 4)</span>
+<span class="sd">    0.2</span>
+<span class="sd">    """</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">_history_array</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+    <span class="n">peaks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="c1"># Masked assignment, not np.where: dividing inside np.where still</span>
+    <span class="c1"># evaluates every element, and 0/0 on an unfunded prefix would warn.</span>
+    <span class="n">drawdowns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">positive</span> <span class="o">=</span> <span class="n">peaks</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">drawdowns</span><span class="p">[</span><span class="n">positive</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">peaks</span><span class="p">[</span><span class="n">positive</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="n">positive</span><span class="p">])</span> <span class="o">/</span> <span class="n">peaks</span><span class="p">[</span><span class="n">positive</span><span class="p">]</span>
+    <span class="n">periods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Period"</span><span class="p">,</span> <span class="s2">"Drawdown"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">drawdowns</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">periods</span><span class="p">,</span> <span class="n">drawdowns</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Drawdown"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="weight_evolution">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.weight_evolution">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">weight_evolution</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot long-only weights through time as a stacked area.</span>
+
+<span class="sd">    One band per option, stacked bottom-up in option order: the stack's top</span>
+<span class="sd">    edge is the total invested fraction, and the gap down to one is the</span>
+<span class="sd">    cash held at zero return. The form fits the layer's weight contract</span>
+<span class="sd">    exactly - weights are nonnegative and sum to no more than one - which</span>
+<span class="sd">    is why the y-axis is pinned to ``[0, 1]``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    weights : array-like</span>
+<span class="sd">        The ``(periods, options)`` matrix of long-only weights, every entry</span>
+<span class="sd">        in ``[0, 1]`` and every row summing to no more than one within</span>
+<span class="sd">        ``PROBABILITY_SUM_TOLERANCE``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the areas were drawn on, one labeled band per option with</span>
+<span class="sd">        colors cycling through :data:`PALETTE`.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is not a non-empty two-dimensional sequence of finite</span>
+<span class="sd">        numbers, any entry falls outside ``[0, 1]``, or any row sums above</span>
+<span class="sd">        ``1 + PROBABILITY_SUM_TOLERANCE``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import weight_evolution</span>
+<span class="sd">    &gt;&gt;&gt; axes = weight_evolution([[0.5, 0.25], [0.25, 0.5]])</span>
+<span class="sd">    &gt;&gt;&gt; [text.get_text() for text in axes.get_legend().get_texts()]</span>
+<span class="sd">    ['Option 0', 'Option 1']</span>
+<span class="sd">    &gt;&gt;&gt; axes.get_ylim() == (0.0, 1.0)</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">_validate_weight_history</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">option_count</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">periods</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Period"</span><span class="p">,</span> <span class="s2">"Weight"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">stackplot</span><span class="p">(</span>
+        <span class="n">periods</span><span class="p">,</span>
+        <span class="n">matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"Option </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">)],</span>
+        <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="n">PALETTE</span><span class="p">[</span><span class="n">index</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">PALETTE</span><span class="p">)]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">)],</span>
+    <span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper right"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="risk_contributions">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.risk_contributions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">risk_contributions</span><span class="p">(</span>
+    <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot each option's share of the portfolio's risk as a bar chart.</span>
+
+<span class="sd">    The risk contribution of option ``i`` is</span>
+<span class="sd">    ``w_i (Sigma w)_i / (w' Sigma w)`` - the share of the portfolio variance</span>
+<span class="sd">    the option's own exposure drives. The shares sum to one, and the equal</span>
+<span class="sd">    risk contribution portfolio (:class:`~keeks.allocation.moments.RiskBudgeting`</span>
+<span class="sd">    with equal budgets) is the book where every bar reads ``1 / N``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    weights : array-like</span>
+<span class="sd">        The long-only weight vector - an</span>
+<span class="sd">        :class:`~keeks.allocation.base.AllocationResult`'s ``weights`` or</span>
+<span class="sd">        any equivalent sequence, validated like every allocation weight.</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns, matching the</span>
+<span class="sd">        weight vector's length.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the bars were drawn on, one bar per option in option</span>
+<span class="sd">        order.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the weights or the covariance are invalid, they disagree on the</span>
+<span class="sd">        option count, or the portfolio carries no variance to attribute.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Equal weights on diagonal-variance options of 4% and 1% put 80% of the</span>
+<span class="sd">    risk in the riskier option:</span>
+
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import risk_contributions</span>
+<span class="sd">    &gt;&gt;&gt; axes = risk_contributions([0.5, 0.5], [[0.04, 0.0], [0.0, 0.01]])</span>
+<span class="sd">    &gt;&gt;&gt; len(axes.patches)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; round(float(sum(patch.get_height() for patch in axes.patches)), 12)</span>
+<span class="sd">    1.0</span>
+<span class="sd">    """</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_validate_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span>
+    <span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">weights</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">marginal</span> <span class="o">=</span> <span class="n">covariance</span> <span class="o">@</span> <span class="n">weights</span>
+    <span class="n">variance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">weights</span> <span class="o">@</span> <span class="n">marginal</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">variance</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Portfolio variance must be positive to attribute risk: the "</span>
+            <span class="s2">"weights carry no exposure or the covariance carries no variance"</span>
+        <span class="p">)</span>
+    <span class="n">shares</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">marginal</span> <span class="o">/</span> <span class="n">variance</span>
+    <span class="n">option_count</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Option"</span><span class="p">,</span> <span class="s2">"Risk contribution share"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+        <span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">),</span>
+        <span class="n">shares</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">tick_label</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"Option </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">)],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="efficient_frontier">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.efficient_frontier">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">efficient_frontier</span><span class="p">(</span>
+    <span class="n">mean</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">grid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot the long-only mean-variance efficient frontier with the options.</span>
+
+<span class="sd">    The frontier curve solves :class:`~keeks.allocation.moments.MeanVariance`</span>
+<span class="sd">    at every risk aversion in ``grid`` and reads each optimum's</span>
+<span class="sd">    ``(volatility, expected return)`` pair; the points sort by volatility,</span>
+<span class="sd">    so the curve is drawn low-volatility first regardless of the grid's</span>
+<span class="sd">    order. The individual options plot as a scatter at their own</span>
+<span class="sd">    ``(volatility, expected return)``. Like every scipy-gated method,</span>
+<span class="sd">    solving requires the ``keeks[allocation]`` optional extra - the first</span>
+<span class="sd">    :class:`MeanVariance` construction raises the pointed ``ImportError``</span>
+<span class="sd">    without it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean : array-like</span>
+<span class="sd">        The expected simple return of each option.</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns, matching the</span>
+<span class="sd">        mean's length.</span>
+<span class="sd">    grid : sequence of float</span>
+<span class="sd">        The positive risk aversions to sweep, one frontier point each.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the frontier was drawn on: the frontier line plus one</span>
+<span class="sd">        labeled point per option.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When scipy is not installed; install the ``keeks[allocation]``</span>
+<span class="sd">        extra.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the mean, the covariance, or the grid is invalid.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import efficient_frontier</span>
+<span class="sd">    &gt;&gt;&gt; axes = efficient_frontier(</span>
+<span class="sd">    ...     [0.02, 0.01], [[0.04, 0.0], [0.0, 0.01]], [0.5, 1.0, 2.0]</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; [text.get_text() for text in axes.get_legend().get_texts()]</span>
+<span class="sd">    ['Frontier', 'Option 0', 'Option 1']</span>
+<span class="sd">    """</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">_validate_mean</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+    <span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">mean</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">_validate_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="n">frontier</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">risk_aversion</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">MeanVariance</span><span class="p">(</span>
+            <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">risk_aversion</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
+        <span class="n">frontier</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">volatility</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="n">mean</span><span class="p">)))</span>
+    <span class="c1"># Sweeping the risk aversion moves the optimum monotonically toward</span>
+    <span class="c1"># lower volatility; sorting makes the drawn curve monotone too, immune</span>
+    <span class="c1"># to the grid's order or solver noise at the rounding level.</span>
+    <span class="n">frontier</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Volatility"</span><span class="p">,</span> <span class="s2">"Expected return"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">frontier</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">frontier</span><span class="p">],</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"Frontier"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">volatilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">covariance</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">volatilities</span><span class="p">[</span><span class="n">index</span><span class="p">]],</span>
+            <span class="p">[</span><span class="n">mean</span><span class="p">[</span><span class="n">index</span><span class="p">]],</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Option </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="correlation_heatmap">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.correlation_heatmap">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">correlation_heatmap</span><span class="p">(</span><span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot a covariance matrix as a correlation heatmap.</span>
+
+<span class="sd">    The covariance rescales to a correlation matrix through the diagonal</span>
+<span class="sd">    volatilities (clipped to ``[-1, 1]`` against floating-point noise) and</span>
+<span class="sd">    draws as a square image on the fixed ``"RdBu_r"`` diverging colormap,</span>
+<span class="sd">    symmetric about zero on the ``[-1, 1]`` color scale.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns. Must have</span>
+<span class="sd">        strictly positive variances - the correlation divides by each</span>
+<span class="sd">        option's volatility.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the heatmap was drawn on, with the colorbar attached.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the covariance is invalid or carries a zero variance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import correlation_heatmap</span>
+<span class="sd">    &gt;&gt;&gt; axes = correlation_heatmap([[0.04, 0.004], [0.004, 0.01]])</span>
+<span class="sd">    &gt;&gt;&gt; len(axes.images)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; axes.images[0].get_clim()</span>
+<span class="sd">    (-1.0, 1.0)</span>
+<span class="sd">    """</span>
+    <span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+    <span class="n">variances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">variances</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Covariance must have strictly positive variances: the "</span>
+            <span class="s2">"correlation divides by each option's volatility"</span>
+        <span class="p">)</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variances</span><span class="p">)</span>
+    <span class="n">correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">covariance</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="n">std</span><span class="p">),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Option"</span><span class="p">,</span> <span class="s2">"Option"</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">correlation</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">COLORMAP</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="dendrogram">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.dendrogram">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dendrogram</span><span class="p">(</span><span class="n">linkage</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot the cluster tree an agglomerative linkage matrix describes.</span>
+
+<span class="sd">    The input is the ``(n - 1, 4)`` linkage matrix</span>
+<span class="sd">    :func:`keeks.allocation.hierarchical._agglomerative_linkage` produces</span>
+<span class="sd">    and :class:`~keeks.allocation.hierarchical.HierarchicalRiskParity`</span>
+<span class="sd">    exposes as its ``linkage`` attribute - one row per merge, leaves at</span>
+<span class="sd">    height zero. Each merge draws its u-shaped connector between the two</span>
+<span class="sd">    children at the merge distance; leaves sit at consecutive integer</span>
+<span class="sd">    positions in the tree's left-to-right (quasi-diagonal) order. A single</span>
+<span class="sd">    option has no merges - the empty ``(0, 4)`` matrix - and draws as one</span>
+<span class="sd">    tick at height zero.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    linkage : array-like</span>
+<span class="sd">        The ``(n - 1, 4)`` linkage matrix, one row per merge:</span>
+<span class="sd">        ``[first_id, second_id, distance, size]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the tree was drawn on, with one tick per option labeled by</span>
+<span class="sd">        its option index.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is not two-dimensional with four columns, is not</span>
+<span class="sd">        finite, or carries a negative merge distance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation import HierarchicalRiskParity</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import dendrogram</span>
+<span class="sd">    &gt;&gt;&gt; strategy = HierarchicalRiskParity([[0.04, 0.004], [0.004, 0.01]])</span>
+<span class="sd">    &gt;&gt;&gt; axes = dendrogram(strategy.linkage)</span>
+<span class="sd">    &gt;&gt;&gt; len(axes.lines)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; [text.get_text() for text in axes.get_xticklabels()]</span>
+<span class="sd">    ['0', '1']</span>
+<span class="sd">    """</span>
+    <span class="n">linkage</span> <span class="o">=</span> <span class="n">_validate_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+    <span class="n">option_count</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">_leaf_positions</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">option_count</span><span class="p">)</span>
+    <span class="c1"># Node heights: leaves sit at zero, each cluster at its merge distance.</span>
+    <span class="n">heights</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">linkage</span><span class="p">):</span>
+        <span class="n">heights</span><span class="p">[</span><span class="n">option_count</span> <span class="o">+</span> <span class="n">row_index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Option"</span><span class="p">,</span> <span class="s2">"Linkage distance"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row_index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">linkage</span><span class="p">):</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">second</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">heights</span><span class="p">[</span><span class="n">option_count</span> <span class="o">+</span> <span class="n">row_index</span><span class="p">]</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">positions</span><span class="p">[</span><span class="n">first</span><span class="p">],</span>
+                <span class="n">positions</span><span class="p">[</span><span class="n">first</span><span class="p">],</span>
+                <span class="n">positions</span><span class="p">[</span><span class="n">second</span><span class="p">],</span>
+                <span class="n">positions</span><span class="p">[</span><span class="n">second</span><span class="p">],</span>
+            <span class="p">],</span>
+            <span class="p">[</span><span class="n">heights</span><span class="p">[</span><span class="n">first</span><span class="p">],</span> <span class="n">height</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">heights</span><span class="p">[</span><span class="n">second</span><span class="p">]],</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="n">leaves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">positions</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">leaves</span><span class="p">],</span>
+        <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">leaves</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">option_count</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">heights</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">top</span> <span class="o">*</span> <span class="mf">1.02</span> <span class="k">if</span> <span class="n">top</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<div class="viewcode-block" id="scenario_losses">
+<a class="viewcode-back" href="../../../allocation_plots.html#keeks.allocation.plots.scenario_losses">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scenario_losses</span><span class="p">(</span>
+    <span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">var</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">cvar</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Plot a histogram of portfolio losses over scenarios with tail markers.</span>
+
+<span class="sd">    The portfolio's simple returns read off the scenario matrix as</span>
+<span class="sd">    ``scenarios @ weights``; losses are their negation. When given, ``var``</span>
+<span class="sd">    and ``cvar`` draw vertical markers - the natural callers are the tail</span>
+<span class="sd">    statistics of the same distribution, e.g.</span>
+<span class="sd">    :attr:`keeks.allocation.scenarios.MeanCVaR.cvar` for the expected tail</span>
+<span class="sd">    loss.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scenarios : array-like</span>
+<span class="sd">        The ``(observations, options)`` matrix of joint simple returns.</span>
+<span class="sd">    weights : array-like</span>
+<span class="sd">        The long-only weight vector, one entry per scenario column.</span>
+<span class="sd">    var : float, optional</span>
+<span class="sd">        Where to draw the VaR marker, when given.</span>
+<span class="sd">    cvar : float, optional</span>
+<span class="sd">        Where to draw the CVaR marker, when given.</span>
+<span class="sd">    bins : int, default=30</span>
+<span class="sd">        The histogram's bin count.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        The axes the histogram was drawn on, with a legend when at least</span>
+<span class="sd">        one marker was drawn.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the scenarios or weights are invalid, they disagree on the</span>
+<span class="sd">        option count, the bins are not a positive integer, or a given</span>
+<span class="sd">        marker is not finite.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.plots import scenario_losses</span>
+<span class="sd">    &gt;&gt;&gt; scenarios = [[0.03, 0.01], [-0.01, 0.02], [0.01, -0.01], [-0.02, -0.02]]</span>
+<span class="sd">    &gt;&gt;&gt; axes = scenario_losses(scenarios, [0.5, 0.5], var=0.005, cvar=0.015)</span>
+<span class="sd">    &gt;&gt;&gt; [text.get_text() for text in axes.get_legend().get_texts()]</span>
+<span class="sd">    ['VaR', 'CVaR']</span>
+<span class="sd">    """</span>
+    <span class="n">scenarios</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_validate_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_validate_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">weights</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Weights must carry exactly </span><span class="si">{</span><span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> entries, one "</span>
+            <span class="sa">f</span><span class="s2">"per option, got </span><span class="si">{</span><span class="n">weights</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Bins must be a positive integer"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">bins</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Bins must be a positive integer"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s2">"VaR"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cvar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cvar</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">cvar</span><span class="p">,</span> <span class="s2">"CVaR"</span><span class="p">)</span>
+    <span class="n">losses</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">scenarios</span> <span class="o">@</span> <span class="n">weights</span><span class="p">)</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">_new_axes</span><span class="p">(</span><span class="s2">"Portfolio loss"</span><span class="p">,</span> <span class="s2">"Scenarios"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"VaR"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cvar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cvar</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">PALETTE</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"CVaR"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cvar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

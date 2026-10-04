@@ -1,0 +1,699 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.allocation.estimators &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.allocation.estimators - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.allocation.estimators">
+<meta property="og:description" content="keeks.allocation.estimators - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/estimators.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.allocation.estimators">
+<meta name="twitter:description" content="keeks.allocation.estimators - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/estimators.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.allocation.estimators</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.allocation.estimators</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Covariance and mean estimators for the allocation layer.</span>
+
+<span class="sd">Two numpy-only estimators prepare allocation inputs without sizing anything</span>
+<span class="sd">themselves - neither is a :class:`BaseAllocationStrategy`; both compose with</span>
+<span class="sd">any optimizer that consumes the moments they produce:</span>
+
+<span class="sd">- :func:`shrink_covariance` shrinks a sample covariance toward a structured</span>
+<span class="sd">  target (Ledoit &amp; Wolf 2004): a convex combination that trades the sample</span>
+<span class="sd">  matrix's noise for the target's stability, with the shrinkage intensity</span>
+<span class="sd">  either fixed by the caller or estimated from the samples. It fixes Σ only,</span>
+<span class="sd">  never μ - pair it with whatever mean estimate the caller trusts.</span>
+<span class="sd">- :func:`black_litterman_mean` blends equilibrium market returns with</span>
+<span class="sd">  discrete views into one posterior mean (Black &amp; Litterman 1992). It fixes</span>
+<span class="sd">  μ only, never Σ - the posterior mean feeds any optimizer that consumes a</span>
+<span class="sd">  mean vector, with the covariance left untouched.</span>
+
+<span class="sd">Both honor the subpackage's numeric discipline: matrices are validated with</span>
+<span class="sd">the shared covariance gate, and nothing here imports scipy.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_validate_covariance</span><span class="p">,</span> <span class="n">_validate_weights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.online</span><span class="w"> </span><span class="kn">import</span> <span class="n">_validate_positive_finite</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate an estimation sample matrix and return it as a float array.</span>
+
+<span class="sd">    One row per observation, one column per option, at least two rows - a</span>
+<span class="sd">    covariance is not defined from fewer.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    samples : array-like</span>
+<span class="sd">        The (observations, options) matrix of joint simple returns.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated samples as a two-dimensional float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the samples are not a two-dimensional sequence of at least two</span>
+<span class="sd">        rows of finite numbers.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _validate_samples([[0.01, -0.01], [0.03, 0.01]]).shape</span>
+<span class="sd">    (2, 2)</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Estimation samples must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Estimation samples must be two-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Estimation samples must be non-empty"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">samples</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Estimation samples must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Estimation samples need at least two observations"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">samples</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_shrinkage_intensity</span><span class="p">(</span><span class="n">alpha</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate an explicit shrinkage intensity and return it as a ``float``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        The shrinkage intensity, in ``[0, 1]``: 0 keeps the sample</span>
+<span class="sd">        covariance, 1 replaces it with the target.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The validated intensity.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the intensity is not a finite number in ``[0, 1]``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _validate_shrinkage_intensity(0.25)</span>
+<span class="sd">    0.25</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Shrinkage intensity must be a finite number between 0 and 1"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">alpha</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Shrinkage intensity must be a finite number between 0 and 1"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">alpha</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ledoit_wolf_intensity</span><span class="p">(</span><span class="n">centered</span><span class="p">,</span> <span class="n">sample_covariance</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Estimate the Ledoit-Wolf shrinkage intensity toward ``target``.</span>
+
+<span class="sd">    The intensity is the ratio of the estimation noise to the distance the</span>
+<span class="sd">    shrinkage would travel (Ledoit &amp; Wolf 2004, theorem 2): squared Frobenius</span>
+<span class="sd">    norms of the rank-one scatter matrices around the sample covariance,</span>
+<span class="sd">    over the squared distance from the sample covariance to the target.</span>
+<span class="sd">    Because the samples here are centered by their own mean and the sample</span>
+<span class="sd">    covariance uses the unbiased ``(n - 1)`` denominator, the noise</span>
+<span class="sd">    numerator is ``sum_i (z_i'z_i)^2 - (n - 2) * trace(S^2)`` - the identity</span>
+<span class="sd">    ``sum_i ||z_i z_i' - S||^2 = sum_i (z_i'z_i)^2 - (n - 2) trace(S^2)``</span>
+<span class="sd">    for centered ``z_i`` and the unbiased ``S``. The ratio is capped to</span>
+<span class="sd">    ``[0, 1]``: never shrink past the target, never shrink away from it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    centered : numpy.ndarray</span>
+<span class="sd">        The samples with their column means removed.</span>
+<span class="sd">    sample_covariance : numpy.ndarray</span>
+<span class="sd">        The unbiased sample covariance of ``centered``.</span>
+<span class="sd">    target : numpy.ndarray</span>
+<span class="sd">        The structured shrinkage target.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The estimated intensity in ``[0, 1]``. Zero when the sample</span>
+<span class="sd">        covariance already equals the target, where the ratio is undefined</span>
+<span class="sd">        and there is nothing to shrink.</span>
+<span class="sd">    """</span>
+    <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_options</span> <span class="o">=</span> <span class="n">centered</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">deviation</span> <span class="o">=</span> <span class="n">sample_covariance</span> <span class="o">-</span> <span class="n">target</span>
+    <span class="n">distance_squared</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">deviation</span> <span class="o">@</span> <span class="n">deviation</span><span class="p">))</span> <span class="o">/</span> <span class="n">n_options</span>
+    <span class="k">if</span> <span class="n">distance_squared</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="n">squared_samples</span> <span class="o">=</span> <span class="n">centered</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">squared_norm_total</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">squared_samples</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">squared_samples</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">trace_covariance_squared</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">sample_covariance</span> <span class="o">@</span> <span class="n">sample_covariance</span><span class="p">))</span>
+    <span class="n">estimation_noise</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">squared_norm_total</span> <span class="o">-</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">trace_covariance_squared</span>
+    <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_samples</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_options</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">estimation_noise</span> <span class="o">/</span> <span class="n">distance_squared</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="shrink_covariance">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.estimators.shrink_covariance">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">shrink_covariance</span><span class="p">(</span>
+    <span class="n">samples</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Ledoit-Wolf shrinkage estimate of a covariance matrix.</span>
+
+<span class="sd">    The estimate is a convex combination of the unbiased sample covariance</span>
+<span class="sd">    ``S`` and the structured target ``F = m * I``, where ``m`` is the</span>
+<span class="sd">    average variance ``trace(S) / N`` (Ledoit &amp; Wolf 2004)::</span>
+
+<span class="sd">        shrunk = (1 - alpha) * S + alpha * F</span>
+
+<span class="sd">    ``alpha = 0`` returns the sample covariance exactly and ``alpha = 1``</span>
+<span class="sd">    the target exactly; in between, the blend trades the sample matrix's</span>
+<span class="sd">    noise for the target's stability. When ``alpha`` is omitted, the</span>
+<span class="sd">    intensity is estimated from the samples by the Ledoit-Wolf formula -</span>
+<span class="sd">    the ratio of estimated estimation noise to the distance to the target,</span>
+<span class="sd">    capped to ``[0, 1]`` - so the estimate adapts: trusted samples shrink</span>
+<span class="sd">    barely, noisy ones shrink toward the average variance.</span>
+
+<span class="sd">    The samples are centered by their own column means first, so the</span>
+<span class="sd">    estimate describes dispersion around the observed means. Only the</span>
+<span class="sd">    covariance is touched - there is no mean output, and no μ is consumed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    samples : array-like</span>
+<span class="sd">        The (observations, options) matrix of joint simple returns. At</span>
+<span class="sd">        least two rows - a covariance needs them.</span>
+<span class="sd">    alpha : float, optional</span>
+<span class="sd">        The shrinkage intensity in ``[0, 1]``. When omitted, the</span>
+<span class="sd">        Ledoit-Wolf intensity is estimated from the samples.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of numpy.ndarray and float</span>
+<span class="sd">        The shrunk covariance as an ``(N, N)`` positive semidefinite matrix,</span>
+<span class="sd">        and the intensity used (the estimated one when ``alpha`` is</span>
+<span class="sd">        ``None``).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the samples are not a two-dimensional sequence of at least two</span>
+<span class="sd">        rows of finite numbers, or ``alpha`` is given and is not a finite</span>
+<span class="sd">        number in ``[0, 1]``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; samples = rng.normal(scale=0.02, size=(128, 4))</span>
+<span class="sd">    &gt;&gt;&gt; shrunk, alpha = shrink_covariance(samples)</span>
+<span class="sd">    &gt;&gt;&gt; shrunk.shape</span>
+<span class="sd">    (4, 4)</span>
+<span class="sd">    &gt;&gt;&gt; 0.0 &lt;= alpha &lt;= 1.0</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; sample_only, _ = shrink_covariance(samples, alpha=0.0)</span>
+<span class="sd">    &gt;&gt;&gt; bool(np.allclose(sample_only, np.cov(samples, rowvar=False)))</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; fully_shrunk, _ = shrink_covariance(samples, alpha=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; target = np.eye(4) * np.trace(sample_only) / 4</span>
+<span class="sd">    &gt;&gt;&gt; bool(np.allclose(fully_shrunk, target))</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">_validate_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+    <span class="n">centered</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">-</span> <span class="n">samples</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_options</span> <span class="o">=</span> <span class="n">centered</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">sample_covariance</span> <span class="o">=</span> <span class="n">centered</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">centered</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">mean_variance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">sample_covariance</span><span class="p">))</span> <span class="o">/</span> <span class="n">n_options</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">mean_variance</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_options</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">_ledoit_wolf_intensity</span><span class="p">(</span><span class="n">centered</span><span class="p">,</span> <span class="n">sample_covariance</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">_validate_shrinkage_intensity</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+
+    <span class="n">shrunk</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">sample_covariance</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">target</span>
+    <span class="k">return</span> <span class="n">shrunk</span><span class="p">,</span> <span class="n">alpha</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_views</span><span class="p">(</span><span class="n">views</span><span class="p">,</span> <span class="n">option_count</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate the ``(P, q)`` view pair and return it as float arrays.</span>
+
+<span class="sd">    ``P`` is the ``(K, N)`` matrix of view loadings - one row per view, one</span>
+<span class="sd">    column per option, each row spelling out the portfolio the view is</span>
+<span class="sd">    about - and ``q`` is the ``(K,)`` vector of simple returns each view</span>
+<span class="sd">    expects for its portfolio.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    views : tuple of array-like</span>
+<span class="sd">        The ``(P, q)`` pair.</span>
+<span class="sd">    option_count : int</span>
+<span class="sd">        The number of options the view matrix must have one column per.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of numpy.ndarray</span>
+<span class="sd">        The validated ``(P, q)`` pair.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``views`` is not a two-element pair, ``P`` is not a</span>
+<span class="sd">        two-dimensional finite matrix with one column per option, or ``q``</span>
+<span class="sd">        is not a one-dimensional finite vector with one entry per view row.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; matrix, returns = _validate_views(</span>
+<span class="sd">    ...     ([[1.0, -1.0]], [0.01]), 2</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; matrix.shape</span>
+<span class="sd">    (1, 2)</span>
+<span class="sd">    &gt;&gt;&gt; returns.shape</span>
+<span class="sd">    (1,)</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">view_matrix</span><span class="p">,</span> <span class="n">view_returns</span> <span class="o">=</span> <span class="n">views</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Views must be a (P, q) pair: the (K, N) view matrix and the "</span>
+            <span class="s2">"(K,) view returns"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">view_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">view_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"View matrix must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">view_matrix</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"View matrix must be two-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">view_matrix</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"View matrix must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">view_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">option_count</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"View matrix must have exactly </span><span class="si">{</span><span class="n">option_count</span><span class="si">}</span><span class="s2"> columns, "</span>
+            <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="n">view_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">view_returns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">view_returns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"View returns must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">view_returns</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"View returns must be one-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">view_returns</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"View returns must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">view_returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">view_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"View returns must have one entry per view row"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">view_matrix</span><span class="p">,</span> <span class="n">view_returns</span>
+
+
+<div class="viewcode-block" id="black_litterman_mean">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.estimators.black_litterman_mean">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">black_litterman_mean</span><span class="p">(</span>
+    <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">market_weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">risk_aversion</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">views</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">omega</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Black-Litterman posterior mean: equilibrium returns blended with views.</span>
+
+<span class="sd">    The equilibrium (prior) mean is the one implied by the market weights</span>
+<span class="sd">    through reverse optimization, ``prior = risk_aversion * covariance @</span>
+<span class="sd">    market_weights``. Each view - a row ``P_k`` of the view matrix whose</span>
+<span class="sd">    portfolio the holder expects to return ``q_k`` - is a noisy observation</span>
+<span class="sd">    of that portfolio's mean return, with uncertainty ``omega``. The</span>
+<span class="sd">    posterior precision-weights the prior against the views (Black &amp;</span>
+<span class="sd">    Litterman 1992)::</span>
+
+<span class="sd">        mu = [(tau * covariance)^-1 + P' omega^-1 P]^-1</span>
+<span class="sd">             [(tau * covariance)^-1 prior + P' omega^-1 q]</span>
+
+<span class="sd">    ``tau`` scales how much the prior is trusted relative to the views, and</span>
+<span class="sd">    ``omega``'s diagonal how noisy each view is: a confident view (small</span>
+<span class="sd">    uncertainty) pulls the posterior toward ``q``, an uninformative one</span>
+<span class="sd">    leaves the prior standing. With no views the posterior is exactly the</span>
+<span class="sd">    prior.</span>
+
+<span class="sd">    The result is a mean preprocessor, not an allocator: it fixes μ only,</span>
+<span class="sd">    never Σ - feed the posterior to any optimizer that consumes a mean</span>
+<span class="sd">    vector and keep the covariance it was built from.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The ``(N, N)`` covariance of the options' simple returns. Must be</span>
+<span class="sd">        invertible - the posterior precision needs ``(tau * covariance)^-1``.</span>
+<span class="sd">    market_weights : sequence of float</span>
+<span class="sd">        One weight per option under the same long-only budget contract as</span>
+<span class="sd">        strategy weights (each in ``[0, 1]``, summing to no more than one);</span>
+<span class="sd">        the conventional fully-invested market portfolio passes with sum</span>
+<span class="sd">        exactly one.</span>
+<span class="sd">    risk_aversion : float</span>
+<span class="sd">        The market risk aversion ``delta`` turning the market weights into</span>
+<span class="sd">        equilibrium returns. Positive.</span>
+<span class="sd">    views : tuple of array-like or None</span>
+<span class="sd">        The ``(P, q)`` pair: the ``(K, N)`` view matrix and the ``(K,)``</span>
+<span class="sd">        view returns. ``None``, or a pair whose matrix has zero rows</span>
+<span class="sd">        (with ``omega`` an empty ``(0, 0)`` matrix), means no views.</span>
+<span class="sd">    omega : array-like or None</span>
+<span class="sd">        The ``(K, K)`` uncertainty covariance of the view returns.</span>
+<span class="sd">        Provided together with ``views`` - both ``None`` or both set.</span>
+<span class="sd">    tau : float</span>
+<span class="sd">        The prior scaling. Positive.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The posterior mean, one entry per option.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the covariance, view inputs, or omega fail the shared numeric</span>
+<span class="sd">        gates; if exactly one of ``views`` and ``omega`` is ``None``; if</span>
+<span class="sd">        either matrix is singular where an inverse is needed.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; covariance = np.array([[0.02, 0.004], [0.004, 0.03]])</span>
+<span class="sd">    &gt;&gt;&gt; weights = [0.6, 0.4]</span>
+<span class="sd">    &gt;&gt;&gt; prior = black_litterman_mean(</span>
+<span class="sd">    ...     covariance, weights, risk_aversion=2.5, views=None, omega=None,</span>
+<span class="sd">    ...     tau=1.0,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; prior.shape</span>
+<span class="sd">    (2,)</span>
+<span class="sd">    &gt;&gt;&gt; views = (np.array([[1.0, -1.0]]), np.array([0.01]))</span>
+<span class="sd">    &gt;&gt;&gt; posterior = black_litterman_mean(</span>
+<span class="sd">    ...     covariance, weights, risk_aversion=2.5, views=views,</span>
+<span class="sd">    ...     omega=np.array([[0.001]]), tau=1.0,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; posterior.shape</span>
+<span class="sd">    (2,)</span>
+<span class="sd">    """</span>
+    <span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+    <span class="n">market_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+        <span class="n">_validate_weights</span><span class="p">(</span><span class="n">market_weights</span><span class="p">,</span> <span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+    <span class="p">)</span>
+    <span class="n">risk_aversion</span> <span class="o">=</span> <span class="n">_validate_positive_finite</span><span class="p">(</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="s2">"Risk aversion"</span><span class="p">)</span>
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">_validate_positive_finite</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="s2">"Tau"</span><span class="p">)</span>
+
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">risk_aversion</span> <span class="o">*</span> <span class="p">(</span><span class="n">covariance</span> <span class="o">@</span> <span class="n">market_weights</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">views</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">omega</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">prior</span>
+    <span class="k">if</span> <span class="n">views</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">omega</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Views and omega must be provided together"</span><span class="p">)</span>
+
+    <span class="n">view_matrix</span><span class="p">,</span> <span class="n">view_returns</span> <span class="o">=</span> <span class="n">_validate_views</span><span class="p">(</span><span class="n">views</span><span class="p">,</span> <span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">view_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">prior</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="n">view_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">prior_precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">tau</span> <span class="o">*</span> <span class="n">covariance</span><span class="p">)</span>
+        <span class="n">omega_inverse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">omega</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Black-Litterman needs an invertible covariance and view uncertainty matrix"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+    <span class="n">posterior_precision</span> <span class="o">=</span> <span class="n">prior_precision</span> <span class="o">+</span> <span class="n">view_matrix</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">omega_inverse</span> <span class="o">@</span> <span class="n">view_matrix</span>
+    <span class="n">posterior_rhs</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">prior_precision</span> <span class="o">@</span> <span class="n">prior</span> <span class="o">+</span> <span class="n">view_matrix</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">omega_inverse</span> <span class="o">@</span> <span class="n">view_returns</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">posterior_precision</span><span class="p">,</span> <span class="n">posterior_rhs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Black-Litterman posterior precision is singular; check the "</span>
+            <span class="s2">"covariance, omega, and tau"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

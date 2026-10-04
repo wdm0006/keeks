@@ -1,0 +1,1454 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.allocation.models &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.allocation.models - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.allocation.models">
+<meta property="og:description" content="keeks.allocation.models - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/models.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.allocation.models">
+<meta name="twitter:description" content="keeks.allocation.models - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/models.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.allocation.models</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.allocation.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Joint-return input models: the allocation layer's universal input currency.</span>
+
+<span class="sd">Every allocator consumes one of two descriptors - a ``(mean, covariance)``</span>
+<span class="sd">pair or a scenario matrix - and this module supplies the single abstraction</span>
+<span class="sd">both come from: a :class:`JointReturnModel`, a source of joint simple-return</span>
+<span class="sd">draws across N options. The model object, not its hyperparameters, is the</span>
+<span class="sd">currency (decision D8 of the allocation spec): keeks binary bets, empirical</span>
+<span class="sd">scenario rows, per-option parametric marginals, and user samplers all enter</span>
+<span class="sd">the allocators through one sampling contract, so "kelly style binary bets in</span>
+<span class="sd">the allocation context" and "incredibly fat tailed distributions" are the</span>
+<span class="sd">same kind of input.</span>
+
+<span class="sd">The adapters:</span>
+
+<span class="sd">- :func:`scenario_model` wraps empirical rows (an iid bootstrap when</span>
+<span class="sd">  resampled with a seeded :class:`numpy.random.Generator`), so a historical</span>
+<span class="sd">  returns series is a one-liner.</span>
+<span class="sd">- :func:`binary_bets_model` turns ``(probability, payoff, loss)`` triples</span>
+<span class="sd">  into per-period simple returns with the settlement arithmetic</span>
+<span class="sd">  :class:`keeks.multi_outcome.PortfolioSimulator` uses, and keys each bet's</span>
+<span class="sd">  stream by its exact values the same way the portfolio simulator does.</span>
+<span class="sd">- :func:`marginals_model` builds a model from per-option marginals - normal,</span>
+<span class="sd">  Student-t, Laplace, lognormal, binary - independent (numpy-only) or joined</span>
+<span class="sd">  by a Gaussian copula (scipy-gated behind ``keeks[allocation]``).</span>
+<span class="sd">- :func:`fit_marginals_model` fits those marginals to a historical returns</span>
+<span class="sd">  series (moment-matched for the thin-tailed families, maximum likelihood</span>
+<span class="sd">  via ``scipy.stats`` for the Student-t).</span>
+<span class="sd">- Anything exposing ``sample(n_samples, rng)`` works as-is: the estimators</span>
+<span class="sd">  below duck-type the sampling contract, which is the escape hatch for</span>
+<span class="sd">  user-supplied samplers.</span>
+
+<span class="sd">Models are deterministic given a :class:`numpy.random.Generator`; models</span>
+<span class="sd">whose hyperparameters give closed-form moments expose them exactly through</span>
+<span class="sd">``moments()``, and the rest return ``None`` and are estimated by sampling</span>
+<span class="sd">(:func:`estimate_moments`). Moment-based methods assume finite second</span>
+<span class="sd">moments and say so; fat-tailed books are the intended territory of the</span>
+<span class="sd">scenario methods, where sample-CVaR stays well defined where variance does</span>
+<span class="sd">not.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseAllocationStrategy</span><span class="p">,</span>
+    <span class="n">_validate_covariance</span><span class="p">,</span>
+    <span class="n">_validate_scenarios</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.multi_outcome.simulators</span><span class="w"> </span><span class="kn">import</span> <span class="n">_validate_bets</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validate_simulator_seed</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+
+<div class="viewcode-block" id="JointReturnModel">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.JointReturnModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JointReturnModel</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Source of joint simple-return draws across N options.</span>
+
+<span class="sd">    The allocation layer's universal input: scenario-based methods consume</span>
+<span class="sd">    draws directly, moment-based methods consume moments estimated from</span>
+<span class="sd">    draws, and a model that knows its moments exactly exposes them so no</span>
+<span class="sd">    estimation is needed. Implementations are deterministic given a</span>
+<span class="sd">    :class:`numpy.random.Generator` - the same generator state produces the</span>
+<span class="sd">    same draws.</span>
+
+<span class="sd">    Row convention matches the scenario validators: one row per observation,</span>
+<span class="sd">    one column per option, values are per-period simple returns.</span>
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="JointReturnModel.sample">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.JointReturnModel.sample">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return joint simple-return draws.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_samples : int</span>
+<span class="sd">            The number of joint draws to produce. Must be a positive integer.</span>
+<span class="sd">        rng : numpy.random.Generator</span>
+<span class="sd">            The generator driving the draws. Implementations consume it</span>
+<span class="sd">            deterministically: the same generator state yields the same</span>
+<span class="sd">            draws.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            An ``(n_samples, N)`` matrix of finite simple returns, one row</span>
+<span class="sd">            per draw and one column per option.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="JointReturnModel.moments">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.JointReturnModel.moments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the model's exact ``(mean, covariance)`` when it knows them.</span>
+
+<span class="sd">        A binary bet, for instance, has closed-form moments in its</span>
+<span class="sd">        hyperparameters, so its adapter returns them exactly and allocators</span>
+<span class="sd">        built through ``from_model`` skip estimation entirely. Models without</span>
+<span class="sd">        closed-form moments - Student-t marginals with ``nu &lt;= 2`` (infinite</span>
+<span class="sd">        variance), Gaussian-copula dependence (no closed-form Pearson</span>
+<span class="sd">        covariance for non-Gaussian marginals), user samplers - return</span>
+<span class="sd">        ``None`` and are estimated from draws instead.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of numpy.ndarray or None</span>
+<span class="sd">            The exact ``(mean, covariance)`` - a shape ``(N,)`` mean vector</span>
+<span class="sd">            and an ``(N, N)`` covariance matrix - or ``None`` when the model</span>
+<span class="sd">            does not know its moments exactly.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_n_samples</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a draw count, which must be a positive integer.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_samples : int</span>
+<span class="sd">        The requested number of joint draws.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        The validated count.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the count is not an integer or is not positive.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _validate_n_samples("12")</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    ValueError: Sample count must be a positive integer</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sample count must be a positive integer"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">n_samples</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sample count must be a positive integer"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">n_samples</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_draws</span><span class="p">(</span><span class="n">draws</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a model's draws against the sampling contract.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    draws : array-like</span>
+<span class="sd">        The joint simple-return draws a model produced.</span>
+<span class="sd">    n_samples : int</span>
+<span class="sd">        The requested draw count; the draws must carry exactly this many</span>
+<span class="sd">        rows, one column per option.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated draws as a two-dimensional float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the draws are not a two-dimensional ``(n_samples, N)`` matrix</span>
+<span class="sd">        with ``N &gt;= 1`` and only finite values.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">draws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">draws</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Joint-return draws must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">draws</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Joint-return draws must be two-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">draws</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">n_samples</span> <span class="ow">or</span> <span class="n">draws</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Joint-return draws must have shape (</span><span class="si">{</span><span class="n">n_samples</span><span class="si">}</span><span class="s2">, N) with N &gt;= 1, "</span>
+            <span class="sa">f</span><span class="s2">"got shape </span><span class="si">{</span><span class="n">draws</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">draws</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Joint-return draws must contain only finite values"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">draws</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_scipy</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Raise a pointed ImportError when scipy is missing.</span>
+
+<span class="sd">    The allocation layer gates its scipy-using features behind the</span>
+<span class="sd">    ``keeks[allocation]`` optional extra (spec decision D3); every gate</span>
+<span class="sd">    names the extra so the fix is one install away.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    feature : str</span>
+<span class="sd">        The feature requesting scipy, named in the error message.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When scipy is not installed.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>  <span class="c1"># noqa: F401</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">feature</span><span class="si">}</span><span class="s2"> requires scipy, which is not installed; install the "</span>
+            <span class="s2">"optional solver backend with `pip install keeks[allocation]` "</span>
+            <span class="s2">"(or add scipy to your environment directly)."</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_dependence</span><span class="p">(</span><span class="n">dependence</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate a Gaussian-copula correlation matrix and return it as an array.</span>
+
+<span class="sd">    A correlation matrix is a covariance with a unit diagonal, so the</span>
+<span class="sd">    square/symmetry/PSD gates are the covariance ones; the unit diagonal is</span>
+<span class="sd">    checked separately.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dependence : array-like</span>
+<span class="sd">        The (N, N) correlation matrix of the Gaussian copula.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The validated correlation matrix as a two-dimensional float array.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the matrix is not a valid correlation matrix.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">correlation</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">dependence</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Dependence must be a valid correlation matrix: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">correlation</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Dependence must be a correlation matrix with a unit diagonal"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">correlation</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Marginal</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""One option's marginal: how to sample it, invert it, and moment it."""</span>
+
+    <span class="n">family</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">sample</span><span class="p">:</span> <span class="n">Callable</span>  <span class="c1"># (rng, n_samples) -&gt; (n_samples,) column</span>
+    <span class="n">ppf</span><span class="p">:</span> <span class="n">Callable</span>  <span class="c1"># (u) -&gt; (n_samples,) column from copula uniforms</span>
+    <span class="n">moments</span><span class="p">:</span> <span class="n">Callable</span>  <span class="c1"># () -&gt; (mean, variance) | None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normal_marginal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build the ``("normal", mean, sd)`` marginal."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
+
+        <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sd</span> <span class="o">*</span> <span class="n">sd</span>
+
+    <span class="k">return</span> <span class="n">_Marginal</span><span class="p">(</span><span class="s2">"normal"</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">ppf</span><span class="p">,</span> <span class="n">moments</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_student_t_marginal</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build the ``("student_t", nu[, loc, scale])`` marginal."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">loc</span> <span class="o">+</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_t</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
+
+        <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">nu</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Infinite variance: the model honestly cannot produce one.</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">nu</span> <span class="o">/</span> <span class="p">(</span><span class="n">nu</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_Marginal</span><span class="p">(</span><span class="s2">"student_t"</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">ppf</span><span class="p">,</span> <span class="n">moments</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_laplace_marginal</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build the ``("laplace", loc, scale)`` marginal."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">laplace</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
+
+        <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">laplace</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">loc</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">scale</span>
+
+    <span class="k">return</span> <span class="n">_Marginal</span><span class="p">(</span><span class="s2">"laplace"</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">ppf</span><span class="p">,</span> <span class="n">moments</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_lognormal_marginal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build the ``("lognormal", mean, sd)`` marginal (the variable's own moments)."""</span>
+    <span class="n">sigma_squared</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log1p</span><span class="p">((</span><span class="n">sd</span> <span class="o">/</span> <span class="n">mean</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span> <span class="o">-</span> <span class="n">sigma_squared</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_squared</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
+
+        <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">lognorm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span>
+            <span class="n">u</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_squared</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sd</span> <span class="o">*</span> <span class="n">sd</span>
+
+    <span class="k">return</span> <span class="n">_Marginal</span><span class="p">(</span><span class="s2">"lognormal"</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">ppf</span><span class="p">,</span> <span class="n">moments</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_binary_marginal</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build the ``("binary", probability, payoff, loss)`` marginal."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="o">-</span><span class="n">loss</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ppf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">u</span> <span class="o">&lt;</span> <span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="o">-</span><span class="n">loss</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">():</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">*</span> <span class="n">payoff</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="n">loss</span>
+        <span class="n">second</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">*</span> <span class="n">payoff</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="n">loss</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">second</span> <span class="o">-</span> <span class="n">mean</span> <span class="o">*</span> <span class="n">mean</span>
+
+    <span class="k">return</span> <span class="n">_Marginal</span><span class="p">(</span><span class="s2">"binary"</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">ppf</span><span class="p">,</span> <span class="n">moments</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_marginal</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Parse one marginal specification into a :class:`_Marginal`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spec : tuple</span>
+<span class="sd">        A ``(family, *parameters)`` tuple naming one of the built-in</span>
+<span class="sd">        families: ``("normal", mean, sd)``, ``("student_t", nu)`` or</span>
+<span class="sd">        ``("student_t", nu, loc, scale)``, ``("laplace", loc, scale)``,</span>
+<span class="sd">        ``("lognormal", mean, sd)`` (the lognormal variable's own mean and</span>
+<span class="sd">        standard deviation), or ``("binary", probability, payoff, loss)``.</span>
+<span class="sd">    index : int</span>
+<span class="sd">        The option position, named in error messages.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    _Marginal</span>
+<span class="sd">        The parsed marginal.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the spec is not a tuple naming a built-in family with valid</span>
+<span class="sd">        parameters.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">spec</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a (family, *parameters) tuple naming one "</span>
+            <span class="sa">f</span><span class="s2">"of the built-in families: normal, student_t, laplace, lognormal, binary"</span>
+        <span class="p">)</span>
+    <span class="n">family</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"normal"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a ('normal', mean, sd) tuple"</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> mean"</span><span class="p">)</span>
+        <span class="n">sd</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> sd"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> sd must be non-negative"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_normal_marginal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"student_t"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a ('student_t', nu) or "</span>
+                <span class="s2">"('student_t', nu, loc, scale) tuple"</span>
+            <span class="p">)</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> nu"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nu</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> nu must be positive"</span><span class="p">)</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> loc"</span><span class="p">)</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> scale"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scale</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> scale must be non-negative"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_student_t_marginal</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"laplace"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a ('laplace', loc, scale) tuple"</span>
+            <span class="p">)</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> loc"</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> scale"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> scale must be non-negative"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_laplace_marginal</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"lognormal"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a ('lognormal', mean, sd) tuple"</span>
+            <span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> mean"</span><span class="p">)</span>
+        <span class="n">sd</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> sd"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mean</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> mean must be positive"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> sd must be non-negative"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_lognormal_marginal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"binary"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a ('binary', probability, payoff, loss) tuple"</span>
+            <span class="p">)</span>
+        <span class="n">probability</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> probability"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> probability must be between 0 and 1"</span><span class="p">)</span>
+        <span class="n">payoff</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> payoff"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">payoff</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> payoff must be greater than 0"</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> loss"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> loss must be non-negative"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_binary_marginal</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Marginal </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> names an unknown family </span><span class="si">{</span><span class="n">family</span><span class="si">!r}</span><span class="s2">; the built-in "</span>
+        <span class="s2">"families are 'normal', 'student_t', 'laplace', 'lognormal', and 'binary'"</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="ScenarioModel">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.ScenarioModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScenarioModel</span><span class="p">(</span><span class="n">JointReturnModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Empirical scenario rows as a joint-return model.</span>
+
+<span class="sd">    The rows of the scenario matrix are the model's outcomes: sampling picks</span>
+<span class="sd">    rows. Equally-weighted rows resample through the generator as an iid</span>
+<span class="sd">    bootstrap of the observations; weighted rows draw by probability, and</span>
+<span class="sd">    any probability mass below one is an all-cash period at zero return (a</span>
+<span class="sd">    row of zeros), never renormalized away.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scenarios : array-like</span>
+<span class="sd">        The ``(observations, options)`` matrix of joint simple returns.</span>
+<span class="sd">    probabilities : array-like, optional</span>
+<span class="sd">        The probability of each scenario row, validated like every keeks</span>
+<span class="sd">        probability vector. Omitted mass is cash at zero return.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; model = ScenarioModel([[0.01, 0.02], [-0.01, 0.0]])</span>
+<span class="sd">    &gt;&gt;&gt; model.sample(2, np.random.default_rng(5)).shape</span>
+<span class="sd">    (2, 2)</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span> <span class="o">=</span> <span class="n">_validate_scenarios</span><span class="p">(</span>
+            <span class="n">scenarios</span><span class="p">,</span> <span class="n">probabilities</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ScenarioModel.sample">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.ScenarioModel.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Resample scenario rows.</span>
+
+<span class="sd">        Equally-weighted rows draw uniform row indices; weighted rows draw</span>
+<span class="sd">        uniforms against the cumulative probabilities, mapping the residual</span>
+<span class="sd">        mass to the all-cash zero row.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_samples : int</span>
+<span class="sd">            The number of joint draws to produce.</span>
+<span class="sd">        rng : numpy.random.Generator</span>
+<span class="sd">            The generator driving the draws.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            An ``(n_samples, N)`` matrix of simple returns.</span>
+<span class="sd">        """</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">_validate_n_samples</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
+            <span class="n">draws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cumulative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span>
+            <span class="n">extended</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))]</span>
+            <span class="p">)</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">cumulative</span><span class="p">,</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_samples</span><span class="p">),</span> <span class="n">side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+            <span class="n">draws</span> <span class="o">=</span> <span class="n">extended</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">_validate_draws</span><span class="p">(</span><span class="n">draws</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ScenarioModel.moments">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.ScenarioModel.moments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the exact probability-weighted empirical moments.</span>
+
+<span class="sd">        The model's distribution is the discrete one over its rows, so the</span>
+<span class="sd">        moments are exact sums - and when probabilities leave residual mass,</span>
+<span class="sd">        the all-cash zero row carries it.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of numpy.ndarray</span>
+<span class="sd">            The exact ``(mean, covariance)`` of the empirical distribution.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))])</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">@</span> <span class="n">rows</span>
+        <span class="n">centered</span> <span class="o">=</span> <span class="n">rows</span> <span class="o">-</span> <span class="n">mean</span>
+        <span class="n">covariance</span> <span class="o">=</span> <span class="p">(</span><span class="n">centered</span> <span class="o">*</span> <span class="n">weights</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">centered</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="scenario_model">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.scenario_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scenario_model</span><span class="p">(</span>
+    <span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScenarioModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Build a joint-return model from empirical scenario rows.</span>
+
+<span class="sd">    The thin factory over :class:`ScenarioModel`; see there for the</span>
+<span class="sd">    semantics. A historical returns series passed as ``scenarios`` becomes a</span>
+<span class="sd">    first-class input: resample it with a seeded generator and the model is</span>
+<span class="sd">    an iid bootstrap of the observations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scenarios : array-like</span>
+<span class="sd">        The ``(observations, options)`` matrix of joint simple returns.</span>
+<span class="sd">    probabilities : array-like, optional</span>
+<span class="sd">        The probability of each scenario row. Omitted mass is cash at zero</span>
+<span class="sd">        return.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ScenarioModel</span>
+<span class="sd">        The empirical model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; model = scenario_model([[0.02, 0.01], [-0.01, 0.03], [0.0, -0.02]])</span>
+<span class="sd">    &gt;&gt;&gt; model.sample(4, np.random.default_rng(9)).shape</span>
+<span class="sd">    (4, 2)</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">ScenarioModel</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_bet_spawn_key</span><span class="p">(</span><span class="n">bet</span><span class="p">,</span> <span class="n">occurrences</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Build a bet's BLAKE2b-keyed ``spawn_key`` and count its occurrence.</span>
+
+<span class="sd">    Mirrors the portfolio simulator's stream family: the key digests the</span>
+<span class="sd">    bet's exact three float values, and identical tuples disambiguate by</span>
+<span class="sd">    their zero-based occurrence ordinal in bet order - so a heterogeneous</span>
+<span class="sd">    bet keeps its stream when other bets are inserted, removed, or</span>
+<span class="sd">    reordered.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bet : tuple of float</span>
+<span class="sd">        The validated ``(probability, payoff, loss)`` triple.</span>
+<span class="sd">    occurrences : dict</span>
+<span class="sd">        Running occurrence counts keyed by the packed bet bytes.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of int</span>
+<span class="sd">        The ``SeedSequence`` spawn key for this bet.</span>
+<span class="sd">    """</span>
+    <span class="n">packed_bet</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">"&gt;ddd"</span><span class="p">,</span> <span class="o">*</span><span class="n">bet</span><span class="p">)</span>
+    <span class="n">occurrence</span> <span class="o">=</span> <span class="n">occurrences</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">packed_bet</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">occurrences</span><span class="p">[</span><span class="n">packed_bet</span><span class="p">]</span> <span class="o">=</span> <span class="n">occurrence</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">identity</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">blake2b</span><span class="p">(</span><span class="n">packed_bet</span><span class="p">,</span> <span class="n">digest_size</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">"&gt;IIII"</span><span class="p">,</span> <span class="n">identity</span><span class="p">),</span> <span class="n">occurrence</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BinaryBetsModel">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.BinaryBetsModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BinaryBetsModel</span><span class="p">(</span><span class="n">JointReturnModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Keeks-native binary bets as a joint-return model.</span>
+
+<span class="sd">    Each ``(probability, payoff, loss)`` triple becomes one option whose</span>
+<span class="sd">    per-period simple return is the bet's settlement per unit staked:</span>
+<span class="sd">    ``(payoff - 1) - transaction_cost_rate`` on a win, ``-(loss + transaction_cost_rate)``</span>
+<span class="sd">    on a loss. This is the arithmetic :class:`keeks.multi_outcome.PortfolioSimulator`</span>
+<span class="sd">    settles with - a win adds ``(payoff - 1) * stake`` to the bankroll</span>
+<span class="sd">    (``payoff`` is decimal-odds gross including the returned stake) minus the</span>
+<span class="sd">    fee - so allocation weights over these options replay portfolio stakes.</span>
+<span class="sd">    Unlike here, the ``keeks.binary_strategies`` strategies read ``payoff`` as</span>
+<span class="sd">    the *net* win per unit staked (decimal odds minus one): a</span>
+<span class="sd">    ``KellyCriterion(payoff=2.0)`` bet is this model's ``(p, 3.0, loss)``.</span>
+<span class="sd">    ``transaction_cost_rate`` here is a per-unit-staked fee (the strategy-side</span>
+<span class="sd">    fractional unit): it matches the portfolio simulator's flat absolute fee</span>
+<span class="sd">    on a unit stake.</span>
+
+<span class="sd">    Bets are independent: each settles on its own draw from its own stream,</span>
+<span class="sd">    keyed by the bet's exact values (BLAKE2b digest plus the occurrence</span>
+<span class="sd">    ordinal of identical duplicates) beneath one per-call child seed drawn</span>
+<span class="sd">    from the caller's generator - so the same generator seed replays</span>
+<span class="sd">    byte-identically, different seeds diverge, and adding, removing, or</span>
+<span class="sd">    reordering bets never shifts a surviving bet's stream.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bets : sequence of (probability, payoff, loss) triples</span>
+<span class="sd">        One triple per independent bet, validated like the portfolio</span>
+<span class="sd">        simulator's bets.</span>
+<span class="sd">    transaction_cost_rate : float, default=0.0</span>
+<span class="sd">        The per-unit-staked fee, subtracted from a win and added to a loss.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; model = BinaryBetsModel([(0.5, 2.0, 1.0), (0.25, 3.0, 1.0)])</span>
+<span class="sd">    &gt;&gt;&gt; mean, covariance = model.moments()</span>
+<span class="sd">    &gt;&gt;&gt; mean.tolist()</span>
+<span class="sd">    [0.0, -0.25]</span>
+<span class="sd">    &gt;&gt;&gt; covariance.diagonal().tolist()</span>
+<span class="sd">    [1.0, 1.6875]</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+        <span class="n">transaction_cost_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">_validate_bets</span><span class="p">(</span><span class="n">bets</span><span class="p">)</span>
+        <span class="n">transaction_cost_rate</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span>
+            <span class="n">transaction_cost_rate</span><span class="p">,</span> <span class="s2">"Transaction cost rate"</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">transaction_cost_rate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction cost rate must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">transaction_cost_rate</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bet_returns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uniforms</span><span class="p">,</span> <span class="n">bet</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Map one bet's uniforms to its per-period simple returns."""</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">bet</span>
+        <span class="n">win_return</span> <span class="o">=</span> <span class="p">(</span><span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost_rate</span>
+        <span class="n">loss_return</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">loss</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost_rate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">uniforms</span> <span class="o">&lt;</span> <span class="n">bet</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">win_return</span><span class="p">,</span> <span class="n">loss_return</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BinaryBetsModel.sample">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.BinaryBetsModel.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Draw every bet's per-period returns.</span>
+
+<span class="sd">        One uniform per bet per draw, from the bet's own value-keyed stream;</span>
+<span class="sd">        the per-call child seed consumes the caller's generator, so repeated</span>
+<span class="sd">        calls draw fresh independent streams while staying deterministic</span>
+<span class="sd">        given the generator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_samples : int</span>
+<span class="sd">            The number of joint draws to produce.</span>
+<span class="sd">        rng : numpy.random.Generator</span>
+<span class="sd">            The generator driving the draws.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            An ``(n_samples, N)`` matrix of simple returns, one column per</span>
+<span class="sd">            bet.</span>
+<span class="sd">        """</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">_validate_n_samples</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="n">child_entropy</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="s2">"big"</span><span class="p">)</span>
+        <span class="n">occurrences</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">bet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">:</span>
+            <span class="n">spawn_key</span> <span class="o">=</span> <span class="n">_bet_spawn_key</span><span class="p">(</span><span class="n">bet</span><span class="p">,</span> <span class="n">occurrences</span><span class="p">)</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span><span class="p">(</span><span class="n">child_entropy</span><span class="p">,</span> <span class="n">spawn_key</span><span class="o">=</span><span class="n">spawn_key</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bet_returns</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_samples</span><span class="p">),</span> <span class="n">bet</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">_validate_draws</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BinaryBetsModel.moments">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.BinaryBetsModel.moments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the exact closed-form moments of the independent bets.</span>
+
+<span class="sd">        Per bet: ``mean = p * ((payoff - 1) - tc) - (1 - p) * (loss + tc)`` and</span>
+<span class="sd">        variance from the second moment; independence across bets makes the</span>
+<span class="sd">        covariance diagonal.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of numpy.ndarray</span>
+<span class="sd">            The exact ``(mean, covariance)``.</span>
+<span class="sd">        """</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">variances</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">probability</span><span class="p">,</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">:</span>
+            <span class="n">win_return</span> <span class="o">=</span> <span class="p">(</span><span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost_rate</span>
+            <span class="n">loss_return</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost_rate</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">*</span> <span class="n">win_return</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="n">loss_return</span>
+            <span class="n">second</span> <span class="o">=</span> <span class="n">probability</span> <span class="o">*</span> <span class="n">win_return</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">probability</span><span class="p">)</span> <span class="o">*</span> <span class="n">loss_return</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+            <span class="n">variances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">second</span> <span class="o">-</span> <span class="n">mean</span> <span class="o">*</span> <span class="n">mean</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variances</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="binary_bets_model">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.binary_bets_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">binary_bets_model</span><span class="p">(</span>
+    <span class="n">bets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">transaction_cost_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryBetsModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Build a joint-return model from keeks-native binary bets.</span>
+
+<span class="sd">    The thin factory over :class:`BinaryBetsModel`; see there for the</span>
+<span class="sd">    settlement arithmetic and the stream-keying contract.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bets : sequence of (probability, payoff, loss) triples</span>
+<span class="sd">        One triple per independent bet.</span>
+<span class="sd">    transaction_cost_rate : float, default=0.0</span>
+<span class="sd">        The per-unit-staked fee.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    BinaryBetsModel</span>
+<span class="sd">        The binary-bets model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; model = binary_bets_model([(0.5, 2.0, 1.0), (0.25, 3.0, 1.0)])</span>
+<span class="sd">    &gt;&gt;&gt; model.sample(3, np.random.default_rng(11)).shape</span>
+<span class="sd">    (3, 2)</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">BinaryBetsModel</span><span class="p">(</span><span class="n">bets</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MarginalModel">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.MarginalModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MarginalModel</span><span class="p">(</span><span class="n">JointReturnModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Per-option parametric marginals joined by a configurable dependence.</span>
+
+<span class="sd">    Each option carries one built-in marginal family - ``normal``,</span>
+<span class="sd">    ``student_t``, ``laplace``, ``lognormal``, or ``binary`` - and the</span>
+<span class="sd">    dependence model joins them: ``None`` (the default) samples the</span>
+<span class="sd">    marginals independently, which is numpy-only, and an ``(N, N)``</span>
+<span class="sd">    correlation matrix joins them through a Gaussian copula, which needs</span>
+<span class="sd">    scipy and is gated behind ``keeks[allocation]`` at construction (spec</span>
+<span class="sd">    decision D3).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    marginals : sequence of (family, ``*parameters``) tuples</span>
+<span class="sd">        One spec per option: ``("normal", mean, sd)``,</span>
+<span class="sd">        ``("student_t", nu)`` or ``("student_t", nu, loc, scale)``,</span>
+<span class="sd">        ``("laplace", loc, scale)``, ``("lognormal", mean, sd)`` (the</span>
+<span class="sd">        lognormal variable's own mean and standard deviation), or</span>
+<span class="sd">        ``("binary", probability, payoff, loss)``.</span>
+<span class="sd">    dependence : array-like, optional</span>
+<span class="sd">        The Gaussian copula's correlation matrix. ``None`` means</span>
+<span class="sd">        independent.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When ``dependence`` is given and scipy is not installed.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; model = MarginalModel([("normal", 0.01, 0.02), ("binary", 0.5, 2.0, 1.0)])</span>
+<span class="sd">    &gt;&gt;&gt; model.sample(3, np.random.default_rng(3)).shape</span>
+<span class="sd">    (3, 2)</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">marginals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span>
+        <span class="n">dependence</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">specs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">marginals</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Marginals must be a non-empty sequence of (family, *parameters) tuples"</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">specs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Marginals must be a non-empty sequence of (family, *parameters) tuples"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">_Marginal</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">_parse_marginal</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">specs</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">dependence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dependence</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Gate at construction, like every scipy-gated feature: a model</span>
+            <span class="c1"># that cannot be sampled should never finish building.</span>
+            <span class="n">_require_scipy</span><span class="p">(</span><span class="s2">"Gaussian-copula dependence"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dependence</span> <span class="o">=</span> <span class="n">_validate_dependence</span><span class="p">(</span><span class="n">dependence</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MarginalModel.sample">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.MarginalModel.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Draw the joint simple returns.</span>
+
+<span class="sd">        Independent models draw each marginal's column from the shared</span>
+<span class="sd">        generator in option order; the Gaussian copula draws correlated</span>
+<span class="sd">        normals from the generator, maps them to uniforms through the normal</span>
+<span class="sd">        CDF, and maps those through each marginal's inverse CDF.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_samples : int</span>
+<span class="sd">            The number of joint draws to produce.</span>
+<span class="sd">        rng : numpy.random.Generator</span>
+<span class="sd">            The generator driving the draws.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            An ``(n_samples, N)`` matrix of simple returns.</span>
+<span class="sd">        """</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">_validate_n_samples</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">marginal</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span> <span class="k">for</span> <span class="n">marginal</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
+
+            <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">)</span>
+            <span class="n">normals</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">count</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependence</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span>
+            <span class="p">)</span>
+            <span class="n">uniforms</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">normals</span><span class="p">)</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">marginal</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">uniforms</span><span class="p">[:,</span> <span class="n">index</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">marginal</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="k">return</span> <span class="n">_validate_draws</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MarginalModel.moments">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.MarginalModel.moments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the exact marginal moments when the model knows them.</span>
+
+<span class="sd">        Independence makes the joint moments the per-option ones (a diagonal</span>
+<span class="sd">        covariance); any option with infinite variance - a Student-t with</span>
+<span class="sd">        ``nu &lt;= 2`` - leaves the joint covariance undefined and returns</span>
+<span class="sd">        ``None``. A Gaussian copula preserves every marginal's mean and</span>
+<span class="sd">        variance but not the Pearson covariances, which have no closed form</span>
+<span class="sd">        for non-Gaussian marginals, so copula models return ``None`` too.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of numpy.ndarray or None</span>
+<span class="sd">            The exact ``(mean, covariance)``, or ``None`` when the model</span>
+<span class="sd">            does not know its joint moments exactly.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">variances</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">marginal</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">marginals</span><span class="p">:</span>
+            <span class="n">option</span> <span class="o">=</span> <span class="n">marginal</span><span class="o">.</span><span class="n">moments</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">option</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">option</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">variances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">option</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variances</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="marginals_model">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.marginals_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">marginals_model</span><span class="p">(</span>
+    <span class="n">marginals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="n">dependence</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MarginalModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Build a joint-return model from per-option parametric marginals.</span>
+
+<span class="sd">    The thin factory over :class:`MarginalModel`; see there for the family</span>
+<span class="sd">    specs and the dependence gating.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    marginals : sequence of (family, ``*parameters``) tuples</span>
+<span class="sd">        One spec per option.</span>
+<span class="sd">    dependence : array-like, optional</span>
+<span class="sd">        The Gaussian copula's correlation matrix. ``None`` means</span>
+<span class="sd">        independent.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    MarginalModel</span>
+<span class="sd">        The marginals model.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; model = marginals_model([("normal", 0.01, 0.02), ("binary", 0.5, 2.0, 1.0)])</span>
+<span class="sd">    &gt;&gt;&gt; mean, covariance = model.moments()</span>
+<span class="sd">    &gt;&gt;&gt; mean.tolist()</span>
+<span class="sd">    [0.01, 0.5]</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">MarginalModel</span><span class="p">(</span><span class="n">marginals</span><span class="p">,</span> <span class="n">dependence</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="fit_marginals_model">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.fit_marginals_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fit_marginals_model</span><span class="p">(</span>
+    <span class="n">returns</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">family</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"student_t"</span><span class="p">,</span>
+    <span class="n">dependence</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MarginalModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Fit per-option parametric marginals to a historical returns series.</span>
+
+<span class="sd">    The "bring your own history" counterpart to :func:`marginals_model`:</span>
+<span class="sd">    each column of the series is fitted to one built-in family and the</span>
+<span class="sd">    fitted specs build a :class:`MarginalModel`. The thin-tailed families</span>
+<span class="sd">    are moment-matched to the column's mean and (population) standard</span>
+<span class="sd">    deviation; the Student-t is fitted by maximum likelihood through</span>
+<span class="sd">    ``scipy.stats``, which gates on the ``keeks[allocation]`` extra.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    returns : array-like</span>
+<span class="sd">        The ``(observations, options)`` matrix of historical simple returns.</span>
+<span class="sd">    family : str, default="student_t"</span>
+<span class="sd">        One of ``"normal"``, ``"student_t"``, ``"laplace"``, or</span>
+<span class="sd">        ``"lognormal"``.</span>
+<span class="sd">    dependence : array-like, optional</span>
+<span class="sd">        The Gaussian copula's correlation matrix for the fitted marginals.</span>
+<span class="sd">        ``None`` means independent.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    MarginalModel</span>
+<span class="sd">        The fitted model.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When ``family`` is ``"student_t"`` and scipy is not installed.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        When the returns are invalid, the family is unknown, or a</span>
+<span class="sd">        lognormal fit is asked for nonpositive observations.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; returns = [[0.01, 0.03], [0.03, -0.01], [-0.01, 0.01]]</span>
+<span class="sd">    &gt;&gt;&gt; model = fit_marginals_model(returns, family="normal")</span>
+<span class="sd">    &gt;&gt;&gt; mean, _ = model.moments()</span>
+<span class="sd">    &gt;&gt;&gt; bool(np.allclose(mean, [0.01, 0.01]))</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="n">scenarios</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_validate_scenarios</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"normal"</span><span class="p">:</span>
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">"normal"</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">std</span><span class="p">()))</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">T</span>
+        <span class="p">]</span>
+    <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"laplace"</span><span class="p">:</span>
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">"laplace"</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)))</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">T</span>
+        <span class="p">]</span>
+    <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"lognormal"</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">scenarios</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Lognormal marginals require strictly positive returns"</span><span class="p">)</span>
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">"lognormal"</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">std</span><span class="p">()))</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">T</span>
+        <span class="p">]</span>
+    <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">"student_t"</span><span class="p">:</span>
+        <span class="n">_require_scipy</span><span class="p">(</span><span class="s2">"Fitting Student-t marginals"</span><span class="p">)</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span>
+
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+            <span class="n">nu</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+            <span class="n">specs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"student_t"</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">nu</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">loc</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">scale</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Unknown family </span><span class="si">{</span><span class="n">family</span><span class="si">!r}</span><span class="s2">; fit_marginals_model fits 'normal', "</span>
+            <span class="s2">"'student_t', 'laplace', or 'lognormal'"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">marginals_model</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span> <span class="n">dependence</span><span class="o">=</span><span class="n">dependence</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="estimate_moments">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.estimate_moments">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">estimate_moments</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">JointReturnModel</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Estimate a model's ``(mean, covariance)`` from its own draws.</span>
+
+<span class="sd">    The fallback for models whose :meth:`JointReturnModel.moments` is</span>
+<span class="sd">    ``None``: draw and take the sample mean and the unbiased sample</span>
+<span class="sd">    covariance. Works on any object implementing the sampling contract -</span>
+<span class="sd">    the escape hatch for user-supplied samplers.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : JointReturnModel</span>
+<span class="sd">        The model to draw from. Any object with ``sample(n_samples, rng)``</span>
+<span class="sd">        works.</span>
+<span class="sd">    n_samples : int</span>
+<span class="sd">        The number of draws; at least two, since a covariance needs them.</span>
+<span class="sd">    seed : int, optional</span>
+<span class="sd">        Seed for the private estimation stream. When omitted, a fresh</span>
+<span class="sd">        generator drives the draws and no replay is promised.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of numpy.ndarray</span>
+<span class="sd">        The estimated ``(mean, covariance)``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``n_samples`` is not an integer of at least two, the seed is not</span>
+<span class="sd">        a nonnegative integer or ``None``, or the model's draws violate the</span>
+<span class="sd">        sampling contract.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; model = scenario_model([[0.01, -0.01], [0.03, 0.01]])</span>
+<span class="sd">    &gt;&gt;&gt; mean, covariance = estimate_moments(model, 512, seed=0)</span>
+<span class="sd">    &gt;&gt;&gt; mean.shape</span>
+<span class="sd">    (2,)</span>
+<span class="sd">    &gt;&gt;&gt; mean2, _ = estimate_moments(model, 512, seed=0)</span>
+<span class="sd">    &gt;&gt;&gt; bool(np.array_equal(mean, mean2))</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="n">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="n">_validate_n_samples</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_samples</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Estimating a covariance needs at least two samples"</span><span class="p">)</span>
+    <span class="n">draws</span> <span class="o">=</span> <span class="n">_validate_draws</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">rng</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">draws</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">centered</span> <span class="o">=</span> <span class="n">draws</span> <span class="o">-</span> <span class="n">mean</span>
+    <span class="n">covariance</span> <span class="o">=</span> <span class="n">centered</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">centered</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span></div>
+
+
+
+<div class="viewcode-block" id="ModelInputMixin">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.ModelInputMixin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModelInputMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Mixin giving moment-based allocators a ``from_model`` constructor.</span>
+
+<span class="sd">    Allocators consume ``(mean, covariance)`` or scenario descriptors bound</span>
+<span class="sd">    at construction; this mixin builds those descriptors from any</span>
+<span class="sd">    :class:`JointReturnModel` - keeks binary bets, fitted marginals, user</span>
+<span class="sd">    samplers - so every allocator accepts every input through one door. The</span>
+<span class="sd">    classmethod prefers the model's exact ``moments()`` and falls back to</span>
+<span class="sd">    :func:`estimate_moments` when the model cannot produce them.</span>
+
+<span class="sd">    Scenario-bound allocators consume draws rather than moments and override</span>
+<span class="sd">    ``from_model``; the constructor keyword arguments pass through to</span>
+<span class="sd">    ``cls`` either way.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; class EqualWeights(ModelInputMixin):</span>
+<span class="sd">    ...     def __init__(self, mean, covariance):</span>
+<span class="sd">    ...         self.mean = mean</span>
+<span class="sd">    ...         self.covariance = covariance</span>
+<span class="sd">    &gt;&gt;&gt; model = binary_bets_model([(0.5, 2.0, 1.0)])</span>
+<span class="sd">    &gt;&gt;&gt; EqualWeights.from_model(model).mean.tolist()</span>
+<span class="sd">    [0.0]</span>
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="ModelInputMixin.from_model">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.models.ModelInputMixin.from_model">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_model</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">JointReturnModel</span><span class="p">,</span>
+        <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseAllocationStrategy</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Build ``cls`` from a joint-return model's inputs.</span>
+
+<span class="sd">        Exact moments win when the model carries them, so a binary-bets or</span>
+<span class="sd">        thin-tailed parametric model needs no Monte Carlo at all;</span>
+<span class="sd">        ``n_samples`` and ``seed`` are only consumed on the estimation</span>
+<span class="sd">        fallback.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : JointReturnModel</span>
+<span class="sd">            The model to build inputs from. Any object with</span>
+<span class="sd">            ``sample(n_samples, rng)`` (and optionally ``moments()``) works.</span>
+<span class="sd">        n_samples : int, default=10000</span>
+<span class="sd">            The draw count for the estimation fallback.</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Seed for the estimation fallback's private stream.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Extra constructor keyword arguments for ``cls`` (a risk</span>
+<span class="sd">            aversion, risk budgets, ...).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        BaseAllocationStrategy</span>
+<span class="sd">            The allocator built from the model's inputs.</span>
+<span class="sd">        """</span>
+        <span class="n">moments</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">"moments"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">exact</span> <span class="o">=</span> <span class="n">moments</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">exact</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exact</span> <span class="o">=</span> <span class="n">estimate_moments</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span> <span class="o">=</span> <span class="n">exact</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

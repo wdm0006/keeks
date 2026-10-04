@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e0ab7682" />
-    <script src="../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -174,7 +174,8 @@
           <div class="body" role="main">
             
   <h1>Source code for keeks.utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -189,10 +190,13 @@
 <a class="viewcode-back" href="../../utils.html#keeks.utils.RuinError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RuinError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Exception raised when a bankroll experiences a drawdown exceeding the maximum allowed limit.</span>
+<span class="sd">    Exception raised when a bankroll safeguard refuses a removal.</span>
 
-<span class="sd">    This exception is typically raised by the BankRoll class when a withdrawal would cause</span>
-<span class="sd">    the bankroll to drop below the configured maximum drawdown threshold.</span>
+<span class="sd">    Raised by the BankRoll class in two cases: a removal would take the</span>
+<span class="sd">    funds below zero (bankruptcy), or a removal exceeds the configured</span>
+<span class="sd">    ``max_transaction_loss`` fraction of current funds. The message names the</span>
+<span class="sd">    attempted amount, the configured limit, and the current funds; the</span>
+<span class="sd">    simulators re-report it as a ``UserWarning`` when a refusal stops a run.</span>
 <span class="sd">    """</span>
 
     <span class="k">pass</span></div>
@@ -201,7 +205,9 @@
 
 <div class="viewcode-block" id="crra_utility">
 <a class="viewcode-back" href="../../utils.html#keeks.utils.crra_utility">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">crra_utility</span><span class="p">(</span><span class="n">wealth</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crra_utility</span><span class="p">(</span>
+    <span class="n">wealth</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate CRRA (Constant Relative Risk Aversion) utility.</span>
 
@@ -252,9 +258,9 @@
 
 
 
-<div class="viewcode-block" id="normalize_probabilities">
-<a class="viewcode-back" href="../../utils.html#keeks.utils.normalize_probabilities">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_probabilities">
+<a class="viewcode-back" href="../../utils.html#keeks.utils.validate_probabilities">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validate a probability vector and return it as a float array.</span>
 
@@ -287,12 +293,12 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; normalize_probabilities([0.25, 0.75])</span>
+<span class="sd">    &gt;&gt;&gt; validate_probabilities([0.25, 0.75])</span>
 <span class="sd">    array([0.25, 0.75])</span>
 
 <span class="sd">    A sum above one by more than the tolerance is rejected:</span>
 
-<span class="sd">    &gt;&gt;&gt; normalize_probabilities([0.5, 0.6])</span>
+<span class="sd">    &gt;&gt;&gt; validate_probabilities([0.5, 0.6])</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">        ...</span>
 <span class="sd">    ValueError: Probabilities must sum to no more than one</span>
@@ -329,7 +335,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must contain only finite values"</span><span class="p">)</span>
 
-    <span class="n">probabilities</span> <span class="o">=</span> <span class="n">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+    <span class="n">probabilities</span> <span class="o">=</span> <span class="n">validate_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">outcomes</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Outcomes and probabilities must have equal length"</span><span class="p">)</span>
@@ -406,18 +412,18 @@
         <span class="n">_require_finite</span><span class="p">(</span><span class="n">entry_price</span><span class="p">,</span> <span class="s2">"Entry price"</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_controls</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_costs</span><span class="p">,</span> <span class="n">trials</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_controls</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">fee_per_bet</span><span class="p">,</span> <span class="n">trials</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validate the controls shared by every simulator constructor.</span>
 
 <span class="sd">    ``payoff`` must be finite and positive, ``loss`` and the flat</span>
-<span class="sd">    ``transaction_costs`` fee must be finite and nonnegative, and ``trials`` must</span>
+<span class="sd">    ``fee_per_bet`` fee must be finite and nonnegative, and ``trials`` must</span>
 <span class="sd">    be a nonnegative integer.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tuple</span>
-<span class="sd">        The validated ``(payoff, loss, transaction_costs, trials)``, with the</span>
+<span class="sd">        The validated ``(payoff, loss, fee_per_bet, trials)``, with the</span>
 <span class="sd">        numeric controls coerced to ``float``.</span>
 
 <span class="sd">    Raises</span>
@@ -431,9 +437,9 @@
     <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">"Loss"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Loss must be non-negative"</span><span class="p">)</span>
-    <span class="n">transaction_costs</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_costs</span><span class="p">,</span> <span class="s2">"Transaction costs"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">transaction_costs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction costs must be non-negative"</span><span class="p">)</span>
+    <span class="n">fee_per_bet</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">fee_per_bet</span><span class="p">,</span> <span class="s2">"Fee per bet"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fee_per_bet</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Fee per bet must be non-negative"</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">trials</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">trials</span><span class="p">)</span>
@@ -442,7 +448,7 @@
     <span class="k">if</span> <span class="n">trials</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Trials must be a nonnegative integer"</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_costs</span><span class="p">,</span> <span class="n">trials</span>
+    <span class="k">return</span> <span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">fee_per_bet</span><span class="p">,</span> <span class="n">trials</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
@@ -484,8 +490,8 @@
 <span class="sd">    instances are checked; a duck-typed strategy needs no ``payoff``/``loss`` at</span>
 <span class="sd">    all and its compatibility stays the caller's responsibility.</span>
 
-<span class="sd">    The strategies' fractional ``transaction_cost`` and the simulators' flat</span>
-<span class="sd">    ``transaction_costs`` fee are deliberately different units and are never</span>
+<span class="sd">    The strategies' fractional ``transaction_cost_rate`` and the simulators' flat</span>
+<span class="sd">    ``fee_per_bet`` fee are deliberately different units and are never</span>
 <span class="sd">    compared.</span>
 
 <span class="sd">    Raises</span>
@@ -528,6 +534,30 @@
         <span class="n">update_bankroll</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_validated_evaluate</span><span class="p">(</span><span class="n">evaluate</span><span class="p">,</span> <span class="n">validate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Wrap a concrete strategy's ``evaluate`` so its returned vector meets the contract.</span>
+
+<span class="sd">    ``validate`` is the strategy generation's vector gate (the stake-fraction</span>
+<span class="sd">    or weight validator); its message names the expectation, and the wrapper</span>
+<span class="sd">    appends the returned vector so a failure names the received values too.</span>
+<span class="sd">    The wrapper is idempotent for implementations that already validate</span>
+<span class="sd">    internally, and the ``_keeks_contract_validated`` marker lets</span>
+<span class="sd">    ``__init_subclass__`` skip wrapping an already-wrapped method.</span>
+<span class="sd">    """</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">evaluate</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">validate</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">; got </span><span class="si">{</span><span class="n">result</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">_keeks_contract_validated</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_expected_utility</span><span class="p">(</span>
     <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">entry_price</span><span class="p">,</span> <span class="n">risk_aversion</span>
 <span class="p">):</span>
@@ -544,8 +574,12 @@
 <div class="viewcode-block" id="expected_utility">
 <a class="viewcode-back" href="../../utils.html#keeks.utils.expected_utility">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">expected_utility</span><span class="p">(</span>
-    <span class="n">outcomes</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">current_wealth</span><span class="p">,</span> <span class="n">entry_price</span><span class="p">,</span> <span class="n">risk_aversion</span><span class="o">=</span><span class="mf">1.0</span>
-<span class="p">):</span>
+    <span class="n">outcomes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">current_wealth</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">entry_price</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">risk_aversion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate expected utility of a gamble.</span>
 
@@ -591,13 +625,13 @@
 <div class="viewcode-block" id="find_indifference_price">
 <a class="viewcode-back" href="../../utils.html#keeks.utils.find_indifference_price">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_indifference_price</span><span class="p">(</span>
-    <span class="n">outcomes</span><span class="p">,</span>
-    <span class="n">probabilities</span><span class="p">,</span>
-    <span class="n">current_wealth</span><span class="p">,</span>
-    <span class="n">risk_aversion</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-    <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-<span class="p">):</span>
+    <span class="n">outcomes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">current_wealth</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">risk_aversion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">max_search_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find maximum price willing to pay for a gamble using binary search.</span>
 
@@ -719,8 +753,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

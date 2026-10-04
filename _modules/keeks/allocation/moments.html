@@ -1,0 +1,1602 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.allocation.moments &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.allocation.moments - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.allocation.moments">
+<meta property="og:description" content="keeks.allocation.moments - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/moments.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.allocation.moments">
+<meta name="twitter:description" content="keeks.allocation.moments - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/moments.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.allocation.moments</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.allocation.moments</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Moment-based allocation methods: the mean-variance family.</span>
+
+<span class="sd">The static optimizers here size a portfolio from a ``(mean, covariance)``</span>
+<span class="sd">descriptor - or, for the covariance-only members, from the covariance alone -</span>
+<span class="sd">and return one long-only weight per option through the shared</span>
+<span class="sd">:class:`keeks.allocation.base.BaseAllocationStrategy` contract: weights in</span>
+<span class="sd">``[0, 1]`` summing to no more than one, the residual held as cash at zero</span>
+<span class="sd">return, and all zeros for a nonpositive bankroll.</span>
+
+<span class="sd">The family:</span>
+
+<span class="sd">- :class:`MeanVariance` - maximize ``w'mu - (l / 2) w'Sigma w``. At unit risk</span>
+<span class="sd">  aversion the objective is the second-order approximation of expected log</span>
+<span class="sd">  growth, ``E[log(1 + w'R)] ~ w'mu - w'Sigma w / 2``, so the optimum is the</span>
+<span class="sd">  second-order Kelly allocation - the bridge between keeks' bet sizing and</span>
+<span class="sd">  portfolio allocation.</span>
+<span class="sd">- :class:`GlobalMinimumVariance` - minimize ``w'Sigma w``; no expected</span>
+<span class="sd">  returns needed.</span>
+<span class="sd">- :class:`MaximumSharpe` - the tangency portfolio, through the</span>
+<span class="sd">  Cornuejols-Tutuncu convex reformulation.</span>
+<span class="sd">- :class:`MaximumDiversification` - maximize the diversification ratio</span>
+<span class="sd">  ``w'sigma / sqrt(w'Sigma w)``, through the same reformulation.</span>
+<span class="sd">- :class:`RiskBudgeting` - the Spinu convex risk-budgeting objective, solved</span>
+<span class="sd">  by cyclical coordinate descent; equal budgets give the equal risk</span>
+<span class="sd">  contribution portfolio. Numpy-only, no scipy.</span>
+<span class="sd">- :class:`RiskAversionScaling` - wrap any allocator and shrink its weights</span>
+<span class="sd">  toward cash, ``w -&gt; factor * w``: the fractional-Kelly dial (a ``kappa``</span>
+<span class="sd">  fraction of the Kelly portfolio corresponds to CRRA risk aversion</span>
+<span class="sd">  ``1 / kappa``).</span>
+
+<span class="sd">The four quadratic programs are convex and solved with scipy's SLSQP behind</span>
+<span class="sd">the ``keeks[allocation]`` optional extra (spec decision D3): constructing</span>
+<span class="sd">any of them without scipy raises an ImportError that names the extra.</span>
+<span class="sd">Everything else - validation, the risk-budgeting solver, the wrapper - is</span>
+<span class="sd">numpy-only. Mean-variance methods assume finite second moments (a covariance</span>
+<span class="sd">that exists); books with infinite-variance marginals are the territory of</span>
+<span class="sd">the scenario-based methods, where sample-CVaR stays well defined where</span>
+<span class="sd">variance does not.</span>
+
+<span class="sd">Every allocator also accepts joint-return models through</span>
+<span class="sd">:class:`keeks.allocation.models.ModelInputMixin`: ``from_model`` prefers the</span>
+<span class="sd">model's exact ``moments()`` and falls back to Monte Carlo estimation</span>
+<span class="sd">(:func:`keeks.allocation.models.estimate_moments`). The covariance-only</span>
+<span class="sd">members drop the mean a model reports - it never enters their formulation.</span>
+
+<span class="sd">Descriptors bind at construction and the solve runs there too, so a solver</span>
+<span class="sd">pathology surfaces where the inputs do; an allocator reprices by fresh</span>
+<span class="sd">construction, matching the multi-outcome convention.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AllocationResult</span><span class="p">,</span>
+    <span class="n">BaseAllocationStrategy</span><span class="p">,</span>
+    <span class="n">_validate_covariance</span><span class="p">,</span>
+    <span class="n">_validate_mean</span><span class="p">,</span>
+    <span class="n">_validate_weights</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">JointReturnModel</span><span class="p">,</span>
+    <span class="n">ModelInputMixin</span><span class="p">,</span>
+    <span class="n">_require_scipy</span><span class="p">,</span>
+    <span class="n">estimate_moments</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptimizeResult</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+<span class="c1"># Solver discipline for the scipy-gated quadratic programs: a tight function</span>
+<span class="c1"># tolerance (the programs are convex quadratics SLSQP solves exactly at</span>
+<span class="c1"># convergence) and a generous iteration cap; a non-converged solve raises</span>
+<span class="c1"># rather than shipping an approximate allocation.</span>
+<span class="n">_SLSQP_FUNCTION_TOLERANCE</span> <span class="o">=</span> <span class="mf">1e-12</span>
+<span class="n">_SLSQP_MAX_ITERATIONS</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Cyclical coordinate descent for the Spinu risk-budgeting objective: sweep</span>
+<span class="c1"># until the largest weight move in a full sweep is this small relative to the</span>
+<span class="c1"># weights' own scale, or give up loudly.</span>
+<span class="n">_CCD_TOLERANCE</span> <span class="o">=</span> <span class="mf">1e-12</span>
+<span class="n">_CCD_MAX_SWEEPS</span> <span class="o">=</span> <span class="mi">10_000</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_scale_free_weights</span><span class="p">(</span>
+    <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">option_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The house scale-free ``evaluate``: the weights at any positive bankroll,</span>
+<span class="sd">    all zeros at zero or below.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    weights : numpy.ndarray</span>
+<span class="sd">        The bankroll-independent weight vector the allocator solved for.</span>
+<span class="sd">    option_count : int</span>
+<span class="sd">        The number of options; the zero vector must match its length.</span>
+<span class="sd">    current_bankroll : float</span>
+<span class="sd">        The bankroll the strategy is evaluated at.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of float</span>
+<span class="sd">        The validated weight tuple, one weight per option.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_validate_weights</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">option_count</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validated_solver_weights</span><span class="p">(</span>
+    <span class="n">raw</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">option_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Clean a solver's raw weight vector and enforce the house weight contract.</span>
+
+<span class="sd">    Clips at zero (SLSQP satisfies bounds only to solver tolerance, so a</span>
+<span class="sd">    weight can come back ``-1e-17``), absorbs feasibility slack - a total</span>
+<span class="sd">    above one by floating-point noise scales into the budget - and then runs</span>
+<span class="sd">    the loud validator: solver output that cannot pass the same gate a</span>
+<span class="sd">    hand-written vector would is a bug, not a rounding note.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw : array-like</span>
+<span class="sd">        The solver's raw solution vector.</span>
+<span class="sd">    option_count : int</span>
+<span class="sd">        The number of options the vector must carry.</span>
+<span class="sd">    upper : float or None, default=1.0</span>
+<span class="sd">        The per-coordinate upper bound to clip at. The simplex programs use</span>
+<span class="sd">        ``1.0``; unbounded reformulation solutions are normalized separately</span>
+<span class="sd">        by :func:`_normalized_direction_weights`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The cleaned, validated weights.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the cleaned vector still violates the weight contract (a</span>
+<span class="sd">        non-finite solution, for instance).</span>
+<span class="sd">    """</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">upper</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">total</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_validate_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalized_direction_weights</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">option_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Read a reformulation's unbounded solution as long-only weights.</span>
+
+<span class="sd">    The Cornuejols-Tutuncu substitution's optimum ``y`` is a direction, not</span>
+<span class="sd">    a budget: clip at zero and normalize by its strictly positive sum (the</span>
+<span class="sd">    equality constraint guarantees one) to land the fully invested</span>
+<span class="sd">    representative of the same ratio.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw : array-like</span>
+<span class="sd">        The reformulation's raw solution vector.</span>
+<span class="sd">    option_count : int</span>
+<span class="sd">        The number of options the vector must carry.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The normalized, validated weights, summing to one.</span>
+<span class="sd">    """</span>
+    <span class="n">solution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_validate_weights</span><span class="p">(</span><span class="n">solution</span> <span class="o">/</span> <span class="n">total</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_model_covariance</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">JointReturnModel</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The covariance a joint-return model implies, dropping its mean.</span>
+
+<span class="sd">    Exact when the model knows its moments, a Monte Carlo estimate otherwise</span>
+<span class="sd">    - the same extraction :meth:`ModelInputMixin.from_model` performs, minus</span>
+<span class="sd">    the mean, which covariance-only allocators never consume.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : JointReturnModel</span>
+<span class="sd">        Any object implementing the sampling contract, optionally with an</span>
+<span class="sd">        exact ``moments()`` hook.</span>
+<span class="sd">    n_samples : int</span>
+<span class="sd">        The draw count for the estimation fallback.</span>
+<span class="sd">    seed : int or None</span>
+<span class="sd">        Seed for the estimation fallback's private stream.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The (exact or estimated) covariance matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.models import scenario_model</span>
+<span class="sd">    &gt;&gt;&gt; model = scenario_model([[0.01, 0.02], [-0.01, 0.0]])</span>
+<span class="sd">    &gt;&gt;&gt; np.round(_model_covariance(model, 8, seed=0), 12).tolist()</span>
+<span class="sd">    [[0.0001, 0.0001], [0.0001, 0.0001]]</span>
+<span class="sd">    """</span>
+    <span class="n">moments</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">"moments"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">exact</span> <span class="o">=</span> <span class="n">moments</span><span class="p">()</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">exact</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">exact</span> <span class="o">=</span> <span class="n">estimate_moments</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exact</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CovarianceOnlyModelInput</span><span class="p">(</span><span class="n">ModelInputMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    :class:`ModelInputMixin` variant for covariance-only allocators.</span>
+
+<span class="sd">    The shared ``from_model`` constructor builds ``(mean, covariance)``</span>
+<span class="sd">    descriptors and passes both; these allocators' formulations consume the</span>
+<span class="sd">    covariance alone, so their ``from_model`` drops the mean and constructs</span>
+<span class="sd">    with the covariance positional.</span>
+<span class="sd">    """</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_model</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">JointReturnModel</span><span class="p">,</span>
+        <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseAllocationStrategy</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Build ``cls`` from a joint-return model's covariance.</span>
+
+<span class="sd">        Exact model moments win when the model carries them; ``n_samples``</span>
+<span class="sd">        and ``seed`` are only consumed on the estimation fallback. Extra</span>
+<span class="sd">        keyword arguments pass through to the constructor.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : JointReturnModel</span>
+<span class="sd">            The model to build the covariance from.</span>
+<span class="sd">        n_samples : int, default=10000</span>
+<span class="sd">            The draw count for the estimation fallback.</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Seed for the estimation fallback's private stream.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Extra constructor keyword arguments for ``cls``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        BaseAllocationStrategy</span>
+<span class="sd">            The allocator built from the model's covariance.</span>
+<span class="sd">        """</span>
+        <span class="n">covariance</span> <span class="o">=</span> <span class="n">_model_covariance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_run_slsqp</span><span class="p">(</span>
+    <span class="n">objective</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">gradient</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">initial</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">constraints</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">unbounded</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"OptimizeResult"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Run SLSQP with analytic gradients under the house solver discipline.</span>
+
+<span class="sd">    The function tolerance is tight and a non-converged solve is a</span>
+<span class="sd">    RuntimeError, never an approximate allocation: a vector that looks like</span>
+<span class="sd">    weights but is not the optimum is worse than a loud failure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    objective : callable</span>
+<span class="sd">        The scalar objective, minimized.</span>
+<span class="sd">    gradient : callable</span>
+<span class="sd">        The objective's analytic gradient.</span>
+<span class="sd">    initial : numpy.ndarray</span>
+<span class="sd">        A feasible starting point.</span>
+<span class="sd">    constraints : sequence of dict</span>
+<span class="sd">        SciPy constraint specifications.</span>
+<span class="sd">    label : str</span>
+<span class="sd">        The solver's owner, named in the failure message.</span>
+<span class="sd">    unbounded : bool</span>
+<span class="sd">        Whether coordinates may exceed one (the reformulated programs' ``y``</span>
+<span class="sd">        unbounded above); otherwise coordinates are bounded at one.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scipy.optimize.OptimizeResult</span>
+<span class="sd">        The converged result.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        When SLSQP does not converge.</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span>
+
+    <span class="n">upper</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">unbounded</span> <span class="k">else</span> <span class="mf">1.0</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span>
+        <span class="n">objective</span><span class="p">,</span>
+        <span class="n">initial</span><span class="p">,</span>
+        <span class="n">jac</span><span class="o">=</span><span class="n">gradient</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">"SLSQP"</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">upper</span><span class="p">)]</span> <span class="o">*</span> <span class="n">initial</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+        <span class="n">constraints</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">constraints</span><span class="p">),</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">"maxiter"</span><span class="p">:</span> <span class="n">_SLSQP_MAX_ITERATIONS</span><span class="p">,</span>
+            <span class="s2">"ftol"</span><span class="p">:</span> <span class="n">_SLSQP_FUNCTION_TOLERANCE</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> solver did not converge: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_solve_simplex_qp</span><span class="p">(</span>
+    <span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">fully_invested</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"OptimizeResult"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Minimize ``0.5 * w' matrix w - linear' w`` over the long-only budget</span>
+<span class="sd">    simplex ``{w : w &gt;= 0, sum(w) &lt;= 1}``, or - with ``fully_invested`` -</span>
+<span class="sd">    over the invested simplex ``{w : w &gt;= 0, sum(w) = 1}``.</span>
+
+<span class="sd">    Every long-only quadratic program in this module - mean-variance and</span>
+<span class="sd">    global minimum variance alike - is this problem with different</span>
+<span class="sd">    coefficients, solved from the uniform feasible start with analytic</span>
+<span class="sd">    gradients. The invested variant exists for variance-only objectives:</span>
+<span class="sd">    with a cash option available, minimizing variance over the budget</span>
+<span class="sd">    simplex just holds all cash (the origin), so those programs pin the</span>
+<span class="sd">    budget with an equality instead.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matrix : numpy.ndarray</span>
+<span class="sd">        The quadratic coefficient matrix (symmetric positive semidefinite).</span>
+<span class="sd">    linear : numpy.ndarray</span>
+<span class="sd">        The linear coefficient vector.</span>
+<span class="sd">    label : str</span>
+<span class="sd">        The solver's owner, named in the failure message.</span>
+<span class="sd">    fully_invested : bool, default=False</span>
+<span class="sd">        Replace the budget inequality with the equality ``sum(w) = 1``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scipy.optimize.OptimizeResult</span>
+<span class="sd">        The converged result.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">weights</span> <span class="o">@</span> <span class="n">matrix</span> <span class="o">@</span> <span class="n">weights</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">linear</span> <span class="o">@</span> <span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">gradient</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">matrix</span> <span class="o">@</span> <span class="n">weights</span> <span class="o">-</span> <span class="n">linear</span>
+
+    <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"ineq"</span><span class="p">,</span>
+            <span class="s2">"fun"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">weights</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+            <span class="s2">"jac"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">weights</span><span class="p">:</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">fully_invested</span><span class="p">:</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"eq"</span><span class="p">,</span>
+                <span class="s2">"fun"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">weights</span><span class="p">:</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span>
+                <span class="s2">"jac"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">_run_slsqp</span><span class="p">(</span>
+        <span class="n">objective</span><span class="p">,</span>
+        <span class="n">gradient</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="nb">tuple</span><span class="p">(</span><span class="n">constraints</span><span class="p">),</span>
+        <span class="n">label</span><span class="p">,</span>
+        <span class="n">unbounded</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_solve_ratio_qp</span><span class="p">(</span>
+    <span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"OptimizeResult"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Maximize ``direction'w / sqrt(w' matrix w)`` over the budget simplex.</span>
+
+<span class="sd">    The Cornuejols-Tutuncu substitution: a ratio that is invariant to</span>
+<span class="sd">    scaling the portfolio (``direction'w`` positive somewhere, so only such</span>
+<span class="sd">    portfolios can be optimal) turns into the convex quadratic program</span>
+<span class="sd">    ``min y'matrix y`` subject to ``direction'y = 1`` and ``y &gt;= 0`` via</span>
+<span class="sd">    ``y = w / (direction'w)``. The optimum reads back as ``w = y / sum(y)``,</span>
+<span class="sd">    and the maximized ratio is ``1 / sqrt(y'matrix y)``; the caller</span>
+<span class="sd">    normalizes and reads the ratio off the weights.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matrix : numpy.ndarray</span>
+<span class="sd">        The quadratic coefficient matrix (symmetric positive semidefinite).</span>
+<span class="sd">    direction : numpy.ndarray</span>
+<span class="sd">        The ratio's numerator vector, with at least one strictly positive</span>
+<span class="sd">        entry - the substitution needs a positive excess return or a</span>
+<span class="sd">        positive volatility to normalize by.</span>
+<span class="sd">    label : str</span>
+<span class="sd">        The solver's owner, named in the failure message.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scipy.optimize.OptimizeResult</span>
+<span class="sd">        The converged result.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span> <span class="o">@</span> <span class="n">matrix</span> <span class="o">@</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">gradient</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># A feasible equality start: everything on the direction's largest</span>
+    <span class="c1"># entry, scaled to satisfy the constraint exactly.</span>
+    <span class="n">pivot</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span>
+    <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">direction</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">initial</span><span class="p">[</span><span class="n">pivot</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">direction</span><span class="p">[</span><span class="n">pivot</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">_run_slsqp</span><span class="p">(</span>
+        <span class="n">objective</span><span class="p">,</span>
+        <span class="n">gradient</span><span class="p">,</span>
+        <span class="n">initial</span><span class="p">,</span>
+        <span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"eq"</span><span class="p">,</span>
+                <span class="s2">"fun"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">direction</span> <span class="o">@</span> <span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span>
+                <span class="s2">"jac"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">_y</span><span class="p">:</span> <span class="n">direction</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">),</span>
+        <span class="n">label</span><span class="p">,</span>
+        <span class="n">unbounded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_risk_budget_weights</span><span class="p">(</span>
+    <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">budgets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Solve the Spinu risk-budgeting objective by cyclical coordinate descent.</span>
+
+<span class="sd">    Minimizing ``0.5 x'Sigma x - sum_i b_i log x_i`` over strictly positive</span>
+<span class="sd">    ``x`` is the convex program whose first-order condition ties each</span>
+<span class="sd">    option's risk contribution to its budget: ``x_i (Sigma x)_i = b_i``.</span>
+<span class="sd">    One coordinate update solves the per-coordinate minimization exactly,</span>
+
+<span class="sd">        ``x_i &lt;- (-s_i + sqrt(s_i^2 + 4 * Sigma_ii * b_i)) / (2 * Sigma_ii)``</span>
+
+<span class="sd">    with ``s_i`` the off-diagonal part of ``(Sigma x)_i``, so a sweep is N</span>
+<span class="sd">    closed-form updates in place; sweeps repeat until the largest move is</span>
+<span class="sd">    within :data:`_CCD_TOLERANCE` of the weights' own scale. The returned</span>
+<span class="sd">    ``x`` is normalized once, by the caller, into weights.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : numpy.ndarray</span>
+<span class="sd">        The validated covariance matrix, strictly positive variances.</span>
+<span class="sd">    budgets : numpy.ndarray</span>
+<span class="sd">        The strictly positive risk budgets, one per option.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of (numpy.ndarray, int)</span>
+<span class="sd">        The optimal solution ``x`` (positive, satisfying</span>
+<span class="sd">        ``x_i (Sigma x)_i = b_i``) and the number of sweeps it took.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        When the sweeps do not converge.</span>
+<span class="sd">    """</span>
+    <span class="n">variances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+    <span class="c1"># The diagonal program's exact solution - each coordinate alone would</span>
+    <span class="c1"># sit at sqrt(b_i / Sigma_ii) - is the warm start.</span>
+    <span class="n">solution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">budgets</span> <span class="o">/</span> <span class="n">variances</span><span class="p">)</span>
+    <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">sweeps</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">converged</span> <span class="ow">and</span> <span class="n">sweeps</span> <span class="o">&lt;</span> <span class="n">_CCD_MAX_SWEEPS</span><span class="p">:</span>
+        <span class="n">sweeps</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">previous</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">off_diagonal</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">covariance</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">@</span> <span class="n">solution</span><span class="p">)</span> <span class="o">-</span> <span class="n">variances</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*</span> <span class="n">solution</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">solution</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="o">-</span><span class="n">off_diagonal</span>
+                <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="n">off_diagonal</span> <span class="o">*</span> <span class="n">off_diagonal</span>
+                    <span class="o">+</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">variances</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*</span> <span class="n">budgets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">variances</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">change</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">solution</span> <span class="o">-</span> <span class="n">previous</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">change</span> <span class="o">&lt;=</span> <span class="n">_CCD_TOLERANCE</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">previous</span><span class="p">)))):</span>
+            <span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">converged</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"The risk-budgeting coordinate descent did not converge within "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_CCD_MAX_SWEEPS</span><span class="si">}</span><span class="s2"> sweeps"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">solution</span><span class="p">,</span> <span class="n">sweeps</span>
+
+
+<div class="viewcode-block" id="MeanVariance">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MeanVariance">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MeanVariance</span><span class="p">(</span><span class="n">ModelInputMixin</span><span class="p">,</span> <span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Long-only mean-variance allocation: maximize ``w'mu - (l / 2) w'Sigma w``.</span>
+
+<span class="sd">    The classic Markowitz problem over the long-only budget simplex: every</span>
+<span class="sd">    weight in ``[0, 1]``, the weights summing to no more than one, the</span>
+<span class="sd">    residual held as cash at zero return. The risk aversion ``l`` prices</span>
+<span class="sd">    variance against expected return; at ``l = 1`` the objective is the</span>
+<span class="sd">    second-order approximation of expected log growth, so the optimum is</span>
+<span class="sd">    the second-order Kelly allocation - :meth:`optimize` reports the</span>
+<span class="sd">    weights' implied growth as ``expected_growth``, and at unit risk</span>
+<span class="sd">    aversion it is the maximized objective itself. Larger lambdas shrink the</span>
+<span class="sd">    optimum toward all cash - with a cash option available, zero exposure</span>
+<span class="sd">    minimizes variance - so :class:`RiskAversionScaling` is the post-hoc way</span>
+<span class="sd">    to dial any solved allocation toward cash while the risk aversion itself</span>
+<span class="sd">    prices the growth-variance trade.</span>
+
+<span class="sd">    The quadratic program is convex and solved with scipy's SLSQP behind</span>
+<span class="sd">    the ``keeks[allocation]`` optional extra. Mean-variance methods assume</span>
+<span class="sd">    finite second moments - a covariance that exists - so books with</span>
+<span class="sd">    infinite-variance marginals belong to the scenario-based methods.</span>
+
+<span class="sd">    Weights are scale-free: they ignore the bankroll level and are all</span>
+<span class="sd">    zeros for a nonpositive bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean : array-like</span>
+<span class="sd">        The expected simple return of each option.</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns, matching the</span>
+<span class="sd">        mean's length.</span>
+<span class="sd">    risk_aversion : float, default=1.0</span>
+<span class="sd">        The positive variance price ``l`` in the objective above.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When scipy is not installed; install the ``keeks[allocation]``</span>
+<span class="sd">        extra.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the mean, the covariance, or the risk aversion is invalid.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    One option with expected return 2% and variance 4%: the unit</span>
+<span class="sd">    risk-aversion optimum is ``mean / variance = 0.5``, the rest cash:</span>
+
+<span class="sd">    &gt;&gt;&gt; strategy = MeanVariance([0.02], [[0.04]], risk_aversion=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in strategy.evaluate(1000.0)]</span>
+<span class="sd">    [0.5]</span>
+<span class="sd">    &gt;&gt;&gt; strategy.evaluate(0.0)</span>
+<span class="sd">    (0.0,)</span>
+
+<span class="sd">    And keeks-native binary bets enter through the model door - the exact</span>
+<span class="sd">    closed-form moments of a thin-edge even-money bet give the second-order</span>
+<span class="sd">    Kelly stake, near Thorp's ``f* = (2p - 1) / a`` with ``a`` the net win</span>
+<span class="sd">    per unit staked (at odds 2.0, ``a = 1``):</span>
+
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.models import binary_bets_model</span>
+<span class="sd">    &gt;&gt;&gt; model = binary_bets_model([(0.505, 2.0, 1.0)])</span>
+<span class="sd">    &gt;&gt;&gt; kelly = MeanVariance.from_model(model)</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in kelly.evaluate(1000.0)]</span>
+<span class="sd">    [0.01]</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">risk_aversion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_require_scipy</span><span class="p">(</span><span class="s2">"MeanVariance"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">_validate_mean</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">risk_aversion</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="s2">"Risk aversion"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">risk_aversion</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Risk aversion must be positive"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">risk_aversion</span> <span class="o">=</span> <span class="n">risk_aversion</span>
+        <span class="c1"># Minimizing the negated utility is the same problem, and dividing</span>
+        <span class="c1"># the whole objective by the risk aversion (the same argmin) keeps</span>
+        <span class="c1"># the solver's numbers on the covariance's scale for every lambda.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_solve_simplex_qp</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">risk_aversion</span><span class="p">,</span> <span class="s2">"MeanVariance"</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">_validated_solver_weights</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MeanVariance.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MeanVariance.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the allocation with its solver diagnostics.</span>
+
+<span class="sd">        ``objective`` is the maximized utility ``w'mu - (l / 2) w'Sigma w``</span>
+<span class="sd">        at the returned weights; ``expected_growth`` is the second-order</span>
+<span class="sd">        estimate ``w'mu - w'Sigma w / 2`` of ``E[log(1 + w'R)]`` - the same</span>
+<span class="sd">        number at unit risk aversion, the Kelly bridge; ``volatility`` is</span>
+<span class="sd">        the portfolio standard deviation ``sqrt(w'Sigma w)``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The optimal weights and the diagnostics above.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        The unconstrained optimum of this two-option book sits inside the</span>
+<span class="sd">        simplex (it holds about 68% cash), which is the budget constraint</span>
+<span class="sd">        doing its job:</span>
+
+<span class="sd">        &gt;&gt;&gt; result = MeanVariance(</span>
+<span class="sd">        ...     [0.004, 0.005], [[0.02, 0.004], [0.004, 0.03]]</span>
+<span class="sd">        ... ).optimize()</span>
+<span class="sd">        &gt;&gt;&gt; result.converged</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; [round(weight, 3) for weight in result.weights.tolist()]</span>
+<span class="sd">        [0.171, 0.144]</span>
+<span class="sd">        """</span>
+        <span class="n">linear</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+        <span class="n">quadratic</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">objective</span><span class="o">=</span><span class="n">linear</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">risk_aversion</span> <span class="o">*</span> <span class="n">quadratic</span><span class="p">,</span>
+            <span class="n">converged</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">expected_growth</span><span class="o">=</span><span class="n">linear</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">quadratic</span><span class="p">,</span>
+            <span class="n">volatility</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">quadratic</span><span class="p">)),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeanVariance.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MeanVariance.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll. Weights are scale-free fractions: the</span>
+<span class="sd">            same vector at every positive bankroll, all zeros at zero or</span>
+<span class="sd">            below.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple, one weight per option.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">_scale_free_weights</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">current_bankroll</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GlobalMinimumVariance">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.GlobalMinimumVariance">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GlobalMinimumVariance</span><span class="p">(</span><span class="n">_CovarianceOnlyModelInput</span><span class="p">,</span> <span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The long-only global minimum variance portfolio.</span>
+
+<span class="sd">    Minimizes ``w'Sigma w`` over the fully invested simplex ``{w : w &gt;= 0,</span>
+<span class="sd">    sum(w) = 1}`` - no expected returns, the one Markowitz corner that</span>
+<span class="sd">    ignores ``mu`` entirely, which makes it the reference point when</span>
+<span class="sd">    expected returns are untrustworthy. The equality is the formulation,</span>
+<span class="sd">    not a restriction: under keeks' budget contract a variance-only</span>
+<span class="sd">    objective with a cash option available would simply hold all cash, so</span>
+<span class="sd">    the classical fully invested anchor portfolio is the object worth</span>
+<span class="sd">    naming. The unconstrained closed form ``w = Sigma^-1 1 / (1' Sigma^-1</span>
+<span class="sd">    1)`` solves the problem when it happens to land inside the simplex;</span>
+<span class="sd">    the convex program handles the general long-only case.</span>
+
+<span class="sd">    Solved with scipy's SLSQP behind the ``keeks[allocation]`` extra.</span>
+
+<span class="sd">    Weights are scale-free: they ignore the bankroll level and are all</span>
+<span class="sd">    zeros for a nonpositive bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When scipy is not installed; install the ``keeks[allocation]``</span>
+<span class="sd">        extra.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the covariance is invalid.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Two uncorrelated options with variances 4% and 1%: inverse-variance</span>
+<span class="sd">    weights, one fifth and four fifths:</span>
+
+<span class="sd">    &gt;&gt;&gt; result = GlobalMinimumVariance([[0.04, 0.0], [0.0, 0.01]]).optimize()</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in result.weights.tolist()]</span>
+<span class="sd">    [0.2, 0.8]</span>
+<span class="sd">    &gt;&gt;&gt; round(result.objective, 6)</span>
+<span class="sd">    0.008</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_require_scipy</span><span class="p">(</span><span class="s2">"GlobalMinimumVariance"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+        <span class="n">option_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_solve_simplex_qp</span><span class="p">(</span>
+            <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">option_count</span><span class="p">),</span>
+            <span class="s2">"GlobalMinimumVariance"</span><span class="p">,</span>
+            <span class="n">fully_invested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">_validated_solver_weights</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">option_count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GlobalMinimumVariance.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.GlobalMinimumVariance.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the allocation with its solver diagnostics.</span>
+
+<span class="sd">        ``objective`` is the minimized portfolio variance ``w'Sigma w``,</span>
+<span class="sd">        and ``volatility`` its square root; there is no expected growth -</span>
+<span class="sd">        the formulation never sees a mean.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The optimal weights and the diagnostics above.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; result = GlobalMinimumVariance([[0.04, 0.0], [0.0, 0.01]]).optimize()</span>
+<span class="sd">        &gt;&gt;&gt; round(result.volatility, 4)</span>
+<span class="sd">        0.0894</span>
+<span class="sd">        """</span>
+        <span class="n">quadratic</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">objective</span><span class="o">=</span><span class="n">quadratic</span><span class="p">,</span>
+            <span class="n">converged</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">volatility</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">quadratic</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GlobalMinimumVariance.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.GlobalMinimumVariance.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll. Weights are scale-free fractions: the</span>
+<span class="sd">            same vector at every positive bankroll, all zeros at zero or</span>
+<span class="sd">            below.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple, one weight per option.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">_scale_free_weights</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">current_bankroll</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MaximumSharpe">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MaximumSharpe">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MaximumSharpe</span><span class="p">(</span><span class="n">ModelInputMixin</span><span class="p">,</span> <span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The tangency portfolio: maximize the Sharpe ratio over the budget simplex.</span>
+
+<span class="sd">    The Sharpe ratio ``(w'mu - r) / sqrt(w'Sigma w)`` is invariant to</span>
+<span class="sd">    scaling a portfolio (cash at the risk-free rate scales both numerator</span>
+<span class="sd">    and denominator), so the budget constraint never binds and the answer</span>
+<span class="sd">    is a direction. The Cornuejols-Tutuncu reformulation turns "maximize</span>
+<span class="sd">    the ratio" into the convex quadratic ``min y'Sigma y`` subject to</span>
+<span class="sd">    ``(mu - r)'y = 1`` and ``y &gt;= 0`` through ``y = w / ((mu - r)'w)``, and</span>
+<span class="sd">    the optimum reads back normalized to the fully invested representative</span>
+<span class="sd">    ``w = y / sum(y)``. The reformulation needs at least one option with</span>
+<span class="sd">    expected return above the risk-free rate - with none, cash dominates</span>
+<span class="sd">    every option and no tangency exists.</span>
+
+<span class="sd">    Solved with scipy's SLSQP behind the ``keeks[allocation]`` extra.</span>
+<span class="sd">    Mean-variance methods assume finite second moments; see</span>
+<span class="sd">    :class:`MeanVariance` for the note.</span>
+
+<span class="sd">    Weights are scale-free: they ignore the bankroll level and are all</span>
+<span class="sd">    zeros for a nonpositive bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean : array-like</span>
+<span class="sd">        The expected simple return of each option.</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns, matching the</span>
+<span class="sd">        mean's length.</span>
+<span class="sd">    risk_free : float, default=0.0</span>
+<span class="sd">        The per-period risk-free (cash) rate the excess return is measured</span>
+<span class="sd">        against.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When scipy is not installed; install the ``keeks[allocation]``</span>
+<span class="sd">        extra.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the mean, the covariance, or the risk-free rate is invalid, or</span>
+<span class="sd">        no option's expected return is above the risk-free rate.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Two uncorrelated equal-variance options with returns 1% and 2%: the</span>
+<span class="sd">    tangency holds them in proportion to their excess returns, one third</span>
+<span class="sd">    and two thirds:</span>
+
+<span class="sd">    &gt;&gt;&gt; result = MaximumSharpe(</span>
+<span class="sd">    ...     [0.01, 0.02], [[0.01, 0.0], [0.0, 0.01]]</span>
+<span class="sd">    ... ).optimize()</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in result.weights.tolist()]</span>
+<span class="sd">    [0.3333, 0.6667]</span>
+<span class="sd">    &gt;&gt;&gt; round(result.objective, 4)</span>
+<span class="sd">    0.2236</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">risk_free</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_require_scipy</span><span class="p">(</span><span class="s2">"MaximumSharpe"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">_validate_mean</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">risk_free</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">risk_free</span><span class="p">,</span> <span class="s2">"Risk-free rate"</span><span class="p">)</span>
+        <span class="n">excess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">risk_free</span>
+        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">excess</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"MaximumSharpe needs at least one option with expected return "</span>
+                <span class="s2">"above the risk-free rate: cash dominates every option, and "</span>
+                <span class="s2">"no tangency portfolio exists"</span>
+            <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_solve_ratio_qp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span> <span class="n">excess</span><span class="p">,</span> <span class="s2">"MaximumSharpe"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">_normalized_direction_weights</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MaximumSharpe.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MaximumSharpe.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the allocation with its solver diagnostics.</span>
+
+<span class="sd">        ``objective`` is the maximized Sharpe ratio of the returned</span>
+<span class="sd">        weights; ``expected_growth`` is the second-order estimate</span>
+<span class="sd">        ``w'mu - w'Sigma w / 2`` of ``E[log(1 + w'R)]``; ``volatility`` is</span>
+<span class="sd">        the portfolio standard deviation ``sqrt(w'Sigma w)``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The optimal weights and the diagnostics above.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; result = MaximumSharpe(</span>
+<span class="sd">        ...     [0.01, 0.02], [[0.01, 0.0], [0.0, 0.01]]</span>
+<span class="sd">        ... ).optimize()</span>
+<span class="sd">        &gt;&gt;&gt; round(result.expected_growth, 4)</span>
+<span class="sd">        0.0139</span>
+<span class="sd">        """</span>
+        <span class="n">excess</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">risk_free</span><span class="p">))</span>
+        <span class="n">quadratic</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">linear</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">objective</span><span class="o">=</span><span class="n">excess</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">quadratic</span><span class="p">),</span>
+            <span class="n">converged</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">expected_growth</span><span class="o">=</span><span class="n">linear</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">quadratic</span><span class="p">,</span>
+            <span class="n">volatility</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">quadratic</span><span class="p">)),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MaximumSharpe.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MaximumSharpe.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll. Weights are scale-free fractions: the</span>
+<span class="sd">            same vector at every positive bankroll, all zeros at zero or</span>
+<span class="sd">            below.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple, one weight per option.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">_scale_free_weights</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">current_bankroll</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MaximumDiversification">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MaximumDiversification">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MaximumDiversification</span><span class="p">(</span><span class="n">_CovarianceOnlyModelInput</span><span class="p">,</span> <span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Maximize the diversification ratio ``w'sigma / sqrt(w'Sigma w)``.</span>
+
+<span class="sd">    Choueifaty-Coignard's ratio: the weighted average volatility over the</span>
+<span class="sd">    portfolio volatility. The ratio is scale-invariant and the numerator is</span>
+<span class="sd">    positive for any nonzero long-only ``w`` (volatilities are), so the</span>
+<span class="sd">    same Cornuejols-Tutuncu substitution :class:`MaximumSharpe` uses</span>
+<span class="sd">    applies with the volatilities in the direction's place - and like the</span>
+<span class="sd">    tangency, the formulation never sees a mean. The answer is the fully</span>
+<span class="sd">    invested representative of the most diversified direction.</span>
+
+<span class="sd">    Solved with scipy's SLSQP behind the ``keeks[allocation]`` extra.</span>
+
+<span class="sd">    Weights are scale-free: they ignore the bankroll level and are all</span>
+<span class="sd">    zeros for a nonpositive bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns; strictly</span>
+<span class="sd">        positive variances, since the ratio divides by them.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When scipy is not installed; install the ``keeks[allocation]``</span>
+<span class="sd">        extra.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the covariance is invalid or carries a zero variance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Two correlated options with volatilities 20% and 10%: the most</span>
+<span class="sd">    diversified long-only book holds a third and two thirds:</span>
+
+<span class="sd">    &gt;&gt;&gt; result = MaximumDiversification(</span>
+<span class="sd">    ...     [[0.04, 0.004], [0.004, 0.01]]</span>
+<span class="sd">    ... ).optimize()</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in result.weights.tolist()]</span>
+<span class="sd">    [0.3333, 0.6667]</span>
+<span class="sd">    &gt;&gt;&gt; round(result.objective, 3)</span>
+<span class="sd">    1.291</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_require_scipy</span><span class="p">(</span><span class="s2">"MaximumDiversification"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+        <span class="n">option_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">)))</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Covariance must have strictly positive variances: the "</span>
+                <span class="s2">"diversification ratio divides by each option's volatility"</span>
+            <span class="p">)</span>
+        <span class="n">volatilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_solve_ratio_qp</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span> <span class="n">volatilities</span><span class="p">,</span> <span class="s2">"MaximumDiversification"</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">_normalized_direction_weights</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">option_count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MaximumDiversification.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MaximumDiversification.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the allocation with its solver diagnostics.</span>
+
+<span class="sd">        ``objective`` is the maximized diversification ratio of the</span>
+<span class="sd">        returned weights and ``volatility`` the portfolio standard</span>
+<span class="sd">        deviation ``sqrt(w'Sigma w)``; there is no expected growth - the</span>
+<span class="sd">        formulation never sees a mean.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The optimal weights and the diagnostics above.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; result = MaximumDiversification(</span>
+<span class="sd">        ...     [[0.04, 0.004], [0.004, 0.01]]</span>
+<span class="sd">        ... ).optimize()</span>
+<span class="sd">        &gt;&gt;&gt; round(result.volatility, 4)</span>
+<span class="sd">        0.1033</span>
+<span class="sd">        """</span>
+        <span class="n">weighted_volatility</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">)))</span>
+        <span class="n">quadratic</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">objective</span><span class="o">=</span><span class="n">weighted_volatility</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">quadratic</span><span class="p">),</span>
+            <span class="n">converged</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">volatility</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">quadratic</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MaximumDiversification.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.MaximumDiversification.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll. Weights are scale-free fractions: the</span>
+<span class="sd">            same vector at every positive bankroll, all zeros at zero or</span>
+<span class="sd">            below.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple, one weight per option.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">_scale_free_weights</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">current_bankroll</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RiskBudgeting">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.RiskBudgeting">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RiskBudgeting</span><span class="p">(</span><span class="n">_CovarianceOnlyModelInput</span><span class="p">,</span> <span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Spinu's risk budgeting: give each option its targeted share of the risk.</span>
+
+<span class="sd">    Minimizes the convex objective ``0.5 x'Sigma x - sum_i b_i log x_i``</span>
+<span class="sd">    over strictly positive ``x``; the first-order condition</span>
+<span class="sd">    ``x_i (Sigma x)_i = b_i`` ties every option's risk contribution</span>
+<span class="sd">    ``w_i (Sigma w)_i`` to its budget ``b_i``. Normalized budgets are</span>
+<span class="sd">    therefore the risk contribution shares, and equal budgets - the</span>
+<span class="sd">    default - give the equal risk contribution portfolio. Budgets are</span>
+<span class="sd">    scale-free: rescaling them rescales ``x`` but not the returned weights.</span>
+
+<span class="sd">    Solved by cyclical coordinate descent - one closed-form coordinate</span>
+<span class="sd">    update at a time, numpy-only, no scipy, deterministic. The solve runs</span>
+<span class="sd">    at construction and normalizes once into weights summing to one.</span>
+
+<span class="sd">    Weights are scale-free: they ignore the bankroll level and are all</span>
+<span class="sd">    zeros for a nonpositive bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns; strictly</span>
+<span class="sd">        positive variances, since the coordinate updates divide by them.</span>
+<span class="sd">    risk_budgets : array-like, optional</span>
+<span class="sd">        The strictly positive risk budget of each option, scale-free.</span>
+<span class="sd">        Defaults to equal budgets (the ERC portfolio).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the covariance or the budgets are invalid.</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        When the coordinate descent does not converge.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Two uncorrelated options with volatilities 20% and 10%: equal risk</span>
+<span class="sd">    budgets weight the quieter option twice as heavy, one third and two</span>
+<span class="sd">    thirds:</span>
+
+<span class="sd">    &gt;&gt;&gt; result = RiskBudgeting([[0.04, 0.0], [0.0, 0.01]]).optimize()</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in result.weights.tolist()]</span>
+<span class="sd">    [0.3333, 0.6667]</span>
+
+<span class="sd">    And the budgets are the risk contribution shares - here 75/25:</span>
+
+<span class="sd">    &gt;&gt;&gt; budgeted = RiskBudgeting(</span>
+<span class="sd">    ...     [[0.04, 0.0], [0.0, 0.01]], risk_budgets=[0.75, 0.25]</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in budgeted.weights.tolist()]</span>
+<span class="sd">    [0.4641, 0.5359]</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">risk_budgets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+        <span class="n">option_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">variances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">variances</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Covariance must have strictly positive variances: the "</span>
+                <span class="s2">"risk-budgeting coordinate updates divide by each option's "</span>
+                <span class="s2">"variance"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">risk_budgets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">budgets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">option_count</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">option_count</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">budgets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">risk_budgets</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Risk budgets must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+            <span class="k">if</span> <span class="n">budgets</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">budgets</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">option_count</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Risk budgets must carry exactly </span><span class="si">{</span><span class="n">option_count</span><span class="si">}</span><span class="s2"> entries, "</span>
+                    <span class="sa">f</span><span class="s2">"one per option, got shape </span><span class="si">{</span><span class="n">budgets</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">budgets</span><span class="p">))</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">budgets</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Risk budgets must be positive finite numbers"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">risk_budgets</span> <span class="o">=</span> <span class="n">budgets</span>
+        <span class="n">solution</span><span class="p">,</span> <span class="n">sweeps</span> <span class="o">=</span> <span class="n">_risk_budget_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span> <span class="n">budgets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="n">_validate_weights</span><span class="p">(</span><span class="n">solution</span> <span class="o">/</span> <span class="n">solution</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">solution</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="n">solution</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">budgets</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="n">sweeps</span>
+
+<div class="viewcode-block" id="RiskBudgeting.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.RiskBudgeting.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the allocation with its solver diagnostics.</span>
+
+<span class="sd">        ``objective`` is the minimized Spinu objective</span>
+<span class="sd">        ``0.5 x'Sigma x - sum_i b_i log x_i`` at the solver's solution</span>
+<span class="sd">        (before the single normalization into weights), ``converged`` and</span>
+<span class="sd">        ``iterations`` the coordinate descent's outcome and sweep count,</span>
+<span class="sd">        and ``volatility`` the portfolio standard deviation</span>
+<span class="sd">        ``sqrt(w'Sigma w)``. There is no expected growth - the formulation</span>
+<span class="sd">        never sees a mean.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The optimal weights and the diagnostics above.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; result = RiskBudgeting([[0.04, 0.0], [0.0, 0.01]]).optimize()</span>
+<span class="sd">        &gt;&gt;&gt; result.converged, result.iterations &gt; 0</span>
+<span class="sd">        (True, True)</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">objective</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span>
+            <span class="n">converged</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">volatility</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RiskBudgeting.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.RiskBudgeting.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll. Weights are scale-free fractions: the</span>
+<span class="sd">            same vector at every positive bankroll, all zeros at zero or</span>
+<span class="sd">            below.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple, one weight per option.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">_scale_free_weights</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">current_bankroll</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="RiskAversionScaling">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.RiskAversionScaling">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RiskAversionScaling</span><span class="p">(</span><span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Shrink any allocator's weights toward cash: ``w -&gt; factor * w``.</span>
+
+<span class="sd">    The fractional-Kelly dial for the whole layer: a ``factor`` of</span>
+<span class="sd">    ``kappa`` stakes ``kappa`` of the wrapped allocator's every weight and</span>
+<span class="sd">    holds the rest as cash - the fractional-Kelly construction (a</span>
+<span class="sd">    ``kappa`` fraction of the Kelly portfolio corresponds to CRRA risk</span>
+<span class="sd">    aversion ``1 / kappa``), applicable to any allocator the layer can</span>
+<span class="sd">    produce without a new solver. For an unconstrained interior</span>
+<span class="sd">    mean-variance optimum, shrinking by ``kappa`` is exactly re-solving</span>
+<span class="sd">    with ``kappa`` times the risk aversion; once the budget or bounds</span>
+<span class="sd">    bind, the shrunk portfolio is the honest "same portfolio, less of it"</span>
+<span class="sd">    answer.</span>
+
+<span class="sd">    The wrapped allocator stays in charge of its own state: settlements</span>
+<span class="sd">    flow to it (an online allocator inside the wrapper keeps adapting),</span>
+<span class="sd">    and ``evaluate`` is a pure read of the wrapped weights, scaled.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    inner : BaseAllocationStrategy</span>
+<span class="sd">        The allocator whose weights are scaled.</span>
+<span class="sd">    factor : float, default=1.0</span>
+<span class="sd">        The scale ``kappa`` in ``[0, 1]``: 1 leaves the allocator</span>
+<span class="sd">        untouched, 0 is the all-cash portfolio.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``inner`` is not a :class:`BaseAllocationStrategy` or the</span>
+<span class="sd">        factor is not a finite number in ``[0, 1]``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Half-Kelly over the unit-risk-aversion mean-variance stake:</span>
+
+<span class="sd">    &gt;&gt;&gt; inner = MeanVariance([0.02], [[0.04]], risk_aversion=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; half_kelly = RiskAversionScaling(inner, factor=0.5)</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in half_kelly.evaluate(1000.0)]</span>
+<span class="sd">    [0.25]</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in half_kelly.optimize().weights.tolist()]</span>
+<span class="sd">    [0.25]</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner</span><span class="p">:</span> <span class="n">BaseAllocationStrategy</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"RiskAversionScaling must wrap a BaseAllocationStrategy"</span><span class="p">)</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="s2">"Scaling factor"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">factor</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Scaling factor must be between 0 and 1"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner</span> <span class="o">=</span> <span class="n">inner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">=</span> <span class="n">factor</span>
+
+<div class="viewcode-block" id="RiskAversionScaling.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.RiskAversionScaling.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the shrunk allocation with the inner solver's diagnostics.</span>
+
+<span class="sd">        The weights are the inner allocator's optimum scaled by the</span>
+<span class="sd">        factor; ``converged`` and ``iterations`` are the inner solve's,</span>
+<span class="sd">        and ``volatility`` scales exactly (``sqrt((k w)'Sigma (k w)) ==</span>
+<span class="sd">        k sqrt(w'Sigma w)``). ``objective`` and ``expected_growth``</span>
+<span class="sd">        describe the inner allocator's unshrunk problem, so they stay</span>
+<span class="sd">        ``None`` here. An inner allocator without an ``optimize`` - the</span>
+<span class="sd">        online family, whose state is its settlement history - returns</span>
+<span class="sd">        the shrunk current weights with no diagnostics.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The scaled weights and whatever diagnostics transfer.</span>
+<span class="sd">        """</span>
+        <span class="n">inner_optimize</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">,</span> <span class="s2">"optimize"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inner_optimize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Weights are scale-free, so any positive bankroll reads the</span>
+            <span class="c1"># online allocator's current weights.</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_validate_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">inner_optimize</span><span class="p">()</span>
+        <span class="n">volatility</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">result</span><span class="o">.</span><span class="n">volatility</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">volatility</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">result</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span>
+            <span class="n">converged</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">volatility</span><span class="o">=</span><span class="n">volatility</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RiskAversionScaling.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.moments.RiskAversionScaling.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one scaled long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll, passed through to the wrapped allocator.</span>
+<span class="sd">            All zeros when it is nonpositive, like every keeks strategy.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple: the wrapped allocator's weights,</span>
+<span class="sd">            each scaled by the factor.</span>
+<span class="sd">        """</span>
+        <span class="n">inner_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_validate_weights</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">inner_weights</span><span class="p">])</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

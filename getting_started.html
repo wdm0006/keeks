@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -188,18 +188,18 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.simulators.repeated_binary</span><span class="w"> </span><span class="kn">import</span> <span class="n">RepeatedBinarySimulator</span>
 
 <span class="c1"># Create a bankroll with initial funds</span>
-<span class="n">bankroll</span> <span class="o">=</span> <span class="n">BankRoll</span><span class="p">(</span><span class="n">initial_funds</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">max_draw_down</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">bankroll</span> <span class="o">=</span> <span class="n">BankRoll</span><span class="p">(</span><span class="n">initial_funds</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">max_transaction_loss</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 
 <span class="c1"># Create a Kelly Criterion strategy</span>
-<span class="c1"># Parameters: payoff, loss, transaction_cost</span>
-<span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="c1"># Parameters: payoff, loss, transaction_cost_rate</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 
 <span class="c1"># Create a simulator with a fixed probability</span>
-<span class="c1"># Parameters: payoff, loss, transaction_costs, probability, trials</span>
+<span class="c1"># Parameters: payoff, loss, fee_per_bet, probability, trials</span>
 <span class="n">simulator</span> <span class="o">=</span> <span class="n">RepeatedBinarySimulator</span><span class="p">(</span>
     <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">transaction_costs</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">fee_per_bet</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
     <span class="n">probability</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span>  <span class="c1"># 55% chance of winning</span>
     <span class="n">trials</span><span class="o">=</span><span class="mi">1000</span>
 <span class="p">)</span>
@@ -218,25 +218,25 @@
 <ol class="arabic">
 <li><p><strong>Kelly Criterion</strong>: Optimal bet sizing based on probability and odds</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies</span><span class="w"> </span><span class="kn">import</span> <span class="n">KellyCriterion</span>
-<span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Fractional Kelly</strong>: A more conservative version of Kelly</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies</span><span class="w"> </span><span class="kn">import</span> <span class="n">FractionalKellyCriterion</span>
-<span class="n">strategy</span> <span class="o">=</span> <span class="n">FractionalKellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">FractionalKellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Drawdown-Adjusted Kelly</strong>: Kelly variant that accounts for drawdown tolerance</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies</span><span class="w"> </span><span class="kn">import</span> <span class="n">DrawdownAdjustedKelly</span>
-<span class="n">strategy</span> <span class="o">=</span> <span class="n">DrawdownAdjustedKelly</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_acceptable_drawdown</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">DrawdownAdjustedKelly</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_transaction_loss</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>OptimalF</strong>: Ralph Vince’s method for maximizing geometric growth rate</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.simple</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptimalF</span>
-<span class="n">strategy</span> <span class="o">=</span> <span class="n">OptimalF</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">win_rate</span><span class="o">=</span><span class="mf">0.55</span><span class="p">)</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">OptimalF</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">win_rate</span><span class="o">=</span><span class="mf">0.55</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -246,7 +246,7 @@
     <span class="n">fraction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
     <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
     <span class="n">min_probability</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -260,7 +260,7 @@
     <span class="n">initial_bankroll</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
     <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Remember to update the CPPI strategy with the current bankroll value</span>
@@ -272,17 +272,18 @@
 <li><p><strong>Dynamic Bankroll Management</strong>: Adaptive allocation based on recent performance</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies</span><span class="w"> </span><span class="kn">import</span> <span class="n">DynamicBankrollManagement</span>
 <span class="n">strategy</span> <span class="o">=</span> <span class="n">DynamicBankrollManagement</span><span class="p">(</span>
-    <span class="n">base_fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span>
+    <span class="n">base_fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span>
 <span class="p">)</span>
 
-<span class="c1"># After each bet, update the strategy with the result</span>
-<span class="n">strategy</span><span class="o">.</span><span class="n">record_result</span><span class="p">(</span><span class="n">won</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_pct</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="c1"># After each settled bet, update the strategy with the outcome</span>
+<span class="c1"># (one-entry won and realized-return vectors for a single bet)</span>
+<span class="n">strategy</span><span class="o">.</span><span class="n">record_settlement</span><span class="p">((</span><span class="kc">True</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,))</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Naive Strategy</strong>: Simple strategy that bets full amount when expected value is positive</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies</span><span class="w"> </span><span class="kn">import</span> <span class="n">NaiveStrategy</span>
-<span class="n">strategy</span> <span class="o">=</span> <span class="n">NaiveStrategy</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">NaiveStrategy</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -323,8 +324,11 @@
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

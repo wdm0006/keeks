@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -266,7 +266,7 @@ final bankroll, median maximum drawdown, and growth rate
 </tr>
 <tr class="row-odd"><td><p>Bankroll and drawdown safeguards</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">BankRoll</span></code> can hold back part of the funds and refuses any single
-withdrawal larger than <code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> times current funds, raising
+withdrawal larger than <code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> times current funds, raising
 <code class="docutils literal notranslate"><span class="pre">RuinError</span></code> that the simulators catch. This is a per-settlement cap,
 not a cumulative drawdown budget, and it does not protect against loss
 (<a class="reference internal" href="bankroll.html"><span class="doc">Bankroll</span></a>).</p></td>
@@ -361,15 +361,15 @@ resulting probability and payoff to Keeks to compare sizing policies.</p>
 <span class="n">payoff</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">/</span> <span class="mi">110</span>
 
 <span class="n">strategies</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"kelly"</span><span class="p">:</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span>
+    <span class="s2">"kelly"</span><span class="p">:</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span>
     <span class="s2">"half kelly"</span><span class="p">:</span> <span class="n">FractionalKellyCriterion</span><span class="p">(</span>
-        <span class="n">payoff</span><span class="o">=</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.0</span>
+        <span class="n">payoff</span><span class="o">=</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.0</span>
     <span class="p">),</span>
 <span class="p">}</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="n">strategies</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">bankroll</span> <span class="o">=</span> <span class="n">BankRoll</span><span class="p">(</span><span class="n">initial_funds</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">max_draw_down</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">bankroll</span> <span class="o">=</span> <span class="n">BankRoll</span><span class="p">(</span><span class="n">initial_funds</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">max_transaction_loss</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
     <span class="n">simulator</span> <span class="o">=</span> <span class="n">RepeatedBinarySimulator</span><span class="p">(</span>
-        <span class="n">payoff</span><span class="o">=</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_costs</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">payoff</span><span class="o">=</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">fee_per_bet</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
         <span class="n">probability</span><span class="o">=</span><span class="n">model_prob</span><span class="p">,</span> <span class="n">trials</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">evaluate_strategy</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">)</span>
@@ -378,8 +378,10 @@ resulting probability and payoff to Keeks to compare sizing policies.</p>
 </div>
 <p>Two cautions that apply to any such pairing. First, Keeks does not check that a
 strategy’s payoff and loss agree with the simulator’s, so pass the same values
-to both. Second, Kelly-family strategies in Keeks return <code class="docutils literal notranslate"><span class="pre">0.0</span></code> below a
-<code class="docutils literal notranslate"><span class="pre">min_probability</span></code> of 0.5 by default, regardless of payoff.</p>
+to both. Second, Kelly-family strategies in Keeks refuse bets their formula
+prices negatively: <code class="docutils literal notranslate"><span class="pre">min_probability</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> (edge-aware
+sizing), not a fixed 0.5 probability floor — a below-0.5 win probability is
+still staked when the payoff makes it positive expected value.</p>
 </section>
 <section id="sources-for-betting-math-kit-statements">
 <span id="bmk-sources"></span><h2>Sources for betting-math-kit statements<a class="headerlink" href="#sources-for-betting-math-kit-statements" title="Link to this heading">¶</a></h2>
@@ -422,8 +424,11 @@ author.</p>
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

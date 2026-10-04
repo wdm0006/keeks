@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.checks &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e0ab7682" />
+    <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.checks - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.checks">
+<meta property="og:description" content="keeks.checks - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/checks.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.checks">
+<meta name="twitter:description" content="keeks.checks - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/checks.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.checks</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.checks</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Contract checks for strategies and joint-return models, on the</span>
+<span class="sd">``check_estimator`` pattern.</span>
+
+<span class="sd">The strategy contracts are enforced at the base classes: a concrete</span>
+<span class="sd">``evaluate`` returning a contract-violating vector fails loudly at its own</span>
+<span class="sd">call site. A contributor implementing</span>
+<span class="sd">:class:`keeks.binary_strategies.BaseStrategy`,</span>
+<span class="sd">:class:`keeks.allocation.BaseAllocationStrategy`, or</span>
+<span class="sd">:class:`keeks.allocation.models.JointReturnModel` has nonetheless had no way</span>
+<span class="sd">to verify an implementation against the documented contract without running</span>
+<span class="sd">a simulator. The checks here are that harness: each runs the contract's</span>
+<span class="sd">probes and raises - ``ValueError`` naming the expectation and the received</span>
+<span class="sd">value for a contract violation, ``TypeError`` for a subject outside the</span>
+<span class="sd">check's ABC - and passes silently when everything holds.</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">&gt;&gt;&gt; from keeks import FixedWeights, check_allocation_strategy</span>
+<span class="sd">&gt;&gt;&gt; check_allocation_strategy(FixedWeights([0.25, 0.75]))</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseAllocationStrategy</span><span class="p">,</span> <span class="n">_validate_weights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointReturnModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"check_allocation_strategy"</span><span class="p">,</span> <span class="s2">"check_model"</span><span class="p">,</span> <span class="s2">"check_strategy"</span><span class="p">]</span>
+
+<span class="n">_PROBE_BANKROLL</span> <span class="o">=</span> <span class="mf">1000.0</span>
+<span class="n">_PROBE_PROBABILITIES</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="check_strategy">
+<a class="viewcode-back" href="../../checks.html#keeks.checks.check_strategy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_strategy</span><span class="p">(</span><span class="n">strategy</span><span class="p">:</span> <span class="n">BaseStrategy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Verify a binary strategy against the documented ``BaseStrategy`` contract.</span>
+
+<span class="sd">    Runs the contract probes: ``evaluate`` returns a single finite bankroll</span>
+<span class="sd">    fraction within ``[0, 1]`` across a probability grid; a nonpositive</span>
+<span class="sd">    bankroll returns exactly ``0.0`` - there is nothing left to stake;</span>
+<span class="sd">    ``get_max_safe_bet`` stays a fraction within ``[0, 1]`` and answers</span>
+<span class="sd">    ``0.0`` for a nonpositive bankroll; and the optional simulator hooks</span>
+<span class="sd">    ``update_bankroll`` and ``record_settlement``, when defined, are callable -</span>
+<span class="sd">    the shapes the simulators resolve ``getattr``-style.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    strategy : BaseStrategy</span>
+<span class="sd">        The binary strategy to check.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If ``strategy`` is not a :class:`keeks.binary_strategies.BaseStrategy`</span>
+<span class="sd">        subclass.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If any probe violates the contract.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks import KellyCriterion, check_strategy</span>
+<span class="sd">    &gt;&gt;&gt; check_strategy(KellyCriterion(payoff=2.0, loss=1.0, transaction_cost_rate=0.01))</span>
+
+<span class="sd">    A contract violation raises with the expectation and the received value:</span>
+
+<span class="sd">    &gt;&gt;&gt; class _Reckless(KellyCriterion):</span>
+<span class="sd">    ...     def evaluate(self, probability, current_bankroll):</span>
+<span class="sd">    ...         return 1.5</span>
+<span class="sd">    &gt;&gt;&gt; check_strategy(_Reckless(payoff=2.0, loss=1.0, transaction_cost_rate=0.01))</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    ValueError: evaluate(0.0, 1000.0) must return a bankroll fraction between 0 and 1, got 1.5</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">BaseStrategy</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"check_strategy expects a keeks binary strategy (a BaseStrategy "</span>
+            <span class="sa">f</span><span class="s2">"subclass), got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">strategy</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">probability</span> <span class="ow">in</span> <span class="n">_PROBE_PROBABILITIES</span><span class="p">:</span>
+        <span class="n">fraction</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">_PROBE_BANKROLL</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fraction</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"evaluate(</span><span class="si">{</span><span class="n">probability</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">_PROBE_BANKROLL</span><span class="si">}</span><span class="s2">) must return a "</span>
+                <span class="sa">f</span><span class="s2">"single bankroll fraction, got </span><span class="si">{</span><span class="n">fraction</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">fraction</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"evaluate(</span><span class="si">{</span><span class="n">probability</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">_PROBE_BANKROLL</span><span class="si">}</span><span class="s2">) must return a "</span>
+                <span class="sa">f</span><span class="s2">"finite bankroll fraction, got </span><span class="si">{</span><span class="n">fraction</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">fraction</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"evaluate(</span><span class="si">{</span><span class="n">probability</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">_PROBE_BANKROLL</span><span class="si">}</span><span class="s2">) must return a "</span>
+                <span class="sa">f</span><span class="s2">"bankroll fraction between 0 and 1, got </span><span class="si">{</span><span class="n">fraction</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">bankroll</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">_PROBE_BANKROLL</span><span class="p">):</span>
+        <span class="n">fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">fraction</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"evaluate(0.6, </span><span class="si">{</span><span class="n">bankroll</span><span class="si">}</span><span class="s2">) must return 0.0 - a nonpositive "</span>
+                <span class="sa">f</span><span class="s2">"bankroll has nothing left to stake, got </span><span class="si">{</span><span class="n">fraction</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+    <span class="n">safe</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="n">_PROBE_BANKROLL</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">safe</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"get_max_safe_bet(</span><span class="si">{</span><span class="n">_PROBE_BANKROLL</span><span class="si">}</span><span class="s2">) must return a bankroll "</span>
+            <span class="sa">f</span><span class="s2">"fraction between 0 and 1, got </span><span class="si">{</span><span class="n">safe</span><span class="si">!r}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">get_max_safe_bet</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"get_max_safe_bet(0.0) must return 0.0 - a nonpositive bankroll "</span>
+            <span class="s2">"has no safe stake"</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">hook</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"update_bankroll"</span><span class="p">,</span> <span class="s2">"record_settlement"</span><span class="p">):</span>
+        <span class="n">resolved</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">hook</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resolved</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">resolved</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hook</span><span class="si">}</span><span class="s2"> must be callable when defined - the simulators "</span>
+                <span class="s2">"resolve it getattr-style and fire it around each settled "</span>
+                <span class="sa">f</span><span class="s2">"bet, got </span><span class="si">{</span><span class="n">resolved</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_allocation_strategy">
+<a class="viewcode-back" href="../../checks.html#keeks.checks.check_allocation_strategy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_allocation_strategy</span><span class="p">(</span><span class="n">strategy</span><span class="p">:</span> <span class="n">BaseAllocationStrategy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Verify an allocator against the documented weight contract.</span>
+
+<span class="sd">    Runs the contract probes: ``evaluate`` at a positive bankroll returns a</span>
+<span class="sd">    valid long-only weight vector (one finite weight per option, each within</span>
+<span class="sd">    ``[0, 1]``, summing to no more than one within</span>
+<span class="sd">    ``PROBABILITY_SUM_TOLERANCE``); a nonpositive bankroll returns all zeros</span>
+<span class="sd">    - there is nothing left to allocate - with one weight per option at</span>
+<span class="sd">    every bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    strategy : BaseAllocationStrategy</span>
+<span class="sd">        The allocation strategy to check.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If ``strategy`` is not a</span>
+<span class="sd">        :class:`keeks.allocation.BaseAllocationStrategy` subclass.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If any probe violates the contract.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks import BaseAllocationStrategy, check_allocation_strategy</span>
+<span class="sd">    &gt;&gt;&gt; class _OverBudget(BaseAllocationStrategy):</span>
+<span class="sd">    ...     def evaluate(self, current_bankroll):</span>
+<span class="sd">    ...         return (0.6, 0.6)</span>
+<span class="sd">    &gt;&gt;&gt; check_allocation_strategy(_OverBudget())</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    ValueError: Strategy weights must sum to no more than one; got (0.6, 0.6)</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"check_allocation_strategy expects a keeks allocation strategy "</span>
+            <span class="sa">f</span><span class="s2">"(a BaseAllocationStrategy subclass), got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">strategy</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Defense in depth: the base class wraps every concrete evaluate with</span>
+    <span class="c1"># this same validator, so a violation raises at the evaluate call itself.</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">_PROBE_BANKROLL</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">bankroll</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="n">_PROBE_BANKROLL</span><span class="p">):</span>
+        <span class="n">zeros</span> <span class="o">=</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">bankroll</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">weight</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">zeros</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"evaluate(</span><span class="si">{</span><span class="n">bankroll</span><span class="si">}</span><span class="s2">) must return all zeros - a nonpositive "</span>
+                <span class="sa">f</span><span class="s2">"bankroll has nothing left to allocate, got </span><span class="si">{</span><span class="n">zeros</span><span class="si">!r}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">zeros</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"evaluate must return one weight per option at every "</span>
+                <span class="sa">f</span><span class="s2">"bankroll: evaluate(</span><span class="si">{</span><span class="n">_PROBE_BANKROLL</span><span class="si">}</span><span class="s2">) returned "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="si">}</span><span class="s2">, evaluate(</span><span class="si">{</span><span class="n">bankroll</span><span class="si">}</span><span class="s2">) returned </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">zeros</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_model">
+<a class="viewcode-back" href="../../checks.html#keeks.checks.check_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_model</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">JointReturnModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Verify a joint-return model against the documented sampling contract.</span>
+
+<span class="sd">    Runs the contract probes: ``sample(n_samples, rng)`` returns a finite</span>
+<span class="sd">    ``(n_samples, N)`` matrix of joint simple returns with ``N &gt;= 1``; the</span>
+<span class="sd">    same generator state produces the same draws (the house reproducibility</span>
+<span class="sd">    contract); every sample count carries one column per option; and</span>
+<span class="sd">    ``moments()``, when the model knows them, returns a shape ``(N,)`` mean</span>
+<span class="sd">    and ``(N, N)`` covariance - ``None`` is the documented answer for a</span>
+<span class="sd">    model without closed-form moments.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : JointReturnModel</span>
+<span class="sd">        The joint-return model to check.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If ``model`` is not a :class:`keeks.allocation.models.JointReturnModel`</span>
+<span class="sd">        subclass.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If any probe violates the contract.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks import binary_bets_model, check_model</span>
+<span class="sd">    &gt;&gt;&gt; check_model(binary_bets_model([(0.55, 2.0, 1.0), (0.30, 2.5, 1.0)]))</span>
+
+<span class="sd">    A model that ignores its generator breaks reproducibility:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.models import JointReturnModel</span>
+<span class="sd">    &gt;&gt;&gt; class _DriftingModel(JointReturnModel):</span>
+<span class="sd">    ...     def sample(self, n_samples, rng):</span>
+<span class="sd">    ...         return np.random.default_rng().uniform(size=(n_samples, 2))</span>
+<span class="sd">    &gt;&gt;&gt; check_model(_DriftingModel())</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    ValueError: sample must be deterministic given a generator's state - the same generator state must produce the same draws (the house reproducibility contract), but two identically-seeded generators diverged</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">JointReturnModel</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">"check_model expects a keeks joint-return model (a "</span>
+            <span class="sa">f</span><span class="s2">"JointReturnModel subclass), got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="n">first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">first</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"sample(8, rng) must return an (8, N) matrix of joint simple "</span>
+            <span class="sa">f</span><span class="s2">"returns, got shape </span><span class="si">{</span><span class="n">first</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="n">option_count</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">option_count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"sample must return at least one option column, got </span><span class="si">{</span><span class="n">first</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">first</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"sample must return finite simple returns"</span><span class="p">)</span>
+
+    <span class="n">replay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">replay</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"sample must be deterministic given a generator's state - the "</span>
+            <span class="s2">"same generator state must produce the same draws (the house "</span>
+            <span class="s2">"reproducibility contract), but two identically-seeded "</span>
+            <span class="s2">"generators diverged"</span>
+        <span class="p">)</span>
+
+    <span class="n">second</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">second</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">option_count</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"sample(3, rng) must return shape (3, </span><span class="si">{</span><span class="n">option_count</span><span class="si">}</span><span class="s2">) - one "</span>
+            <span class="sa">f</span><span class="s2">"column per option at every sample count, got </span><span class="si">{</span><span class="n">second</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+
+    <span class="n">moments</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">moments</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">moments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span> <span class="o">=</span> <span class="n">moments</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"moments() must return a (mean, covariance) pair when the model "</span>
+            <span class="sa">f</span><span class="s2">"knows them, got </span><span class="si">{</span><span class="n">moments</span><span class="si">!r}</span><span class="s2">"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="n">expected_shapes</span> <span class="o">=</span> <span class="p">((</span><span class="n">option_count</span><span class="p">,),</span> <span class="p">(</span><span class="n">option_count</span><span class="p">,</span> <span class="n">option_count</span><span class="p">))</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="n">expected_shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="ow">or</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="n">expected_shapes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"moments() must return a shape (</span><span class="si">{</span><span class="n">option_count</span><span class="si">}</span><span class="s2">,) mean and a "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">option_count</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">option_count</span><span class="si">}</span><span class="s2">) covariance when it knows "</span>
+            <span class="sa">f</span><span class="s2">"them, got shapes </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

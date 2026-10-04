@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -203,7 +203,7 @@ fraction of the current bankroll to stake on a repeated binary bet:</p>
 <span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span>
     <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">fraction</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="o">=</span><span class="n">bankroll</span><span class="p">)</span>
@@ -231,7 +231,7 @@ fraction of the current bankroll to stake on a repeated binary bet:</p>
 <span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span>
     <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">fraction</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="o">=</span><span class="n">bankroll</span><span class="p">)</span>
@@ -261,14 +261,14 @@ simulation or your own accounting.</p>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">p</span></code> is the win probability, <code class="docutils literal notranslate"><span class="pre">payoff</span></code> and <code class="docutils literal notranslate"><span class="pre">loss</span></code> are the
 per-unit multipliers for a win and a loss, and <code class="docutils literal notranslate"><span class="pre">cost</span></code> is
-<code class="docutils literal notranslate"><span class="pre">transaction_cost</span></code>. The cost is added to the loss side and subtracted from
+<code class="docutils literal notranslate"><span class="pre">transaction_cost_rate</span></code>. The cost is added to the loss side and subtracted from
 the payoff side before the ratio is taken, so it makes both a win pay a
 little less and a loss cost a little more.</p>
-<p><code class="docutils literal notranslate"><span class="pre">transaction_cost</span></code> is Keeks’ normalized, per-unit fractional model input —
+<p><code class="docutils literal notranslate"><span class="pre">transaction_cost_rate</span></code> is Keeks’ normalized, per-unit fractional model input —
 not a synonym for a broker commission, a bid-ask spread, or slippage. It does
 not model market impact, venue-specific fees, correlated positions, or
 portfolio rebalancing. It is also not the same quantity as the <code class="docutils literal notranslate"><span class="pre">keeks.simulators</span></code>
-classes’ <code class="docutils literal notranslate"><span class="pre">transaction_costs</span></code> (plural): that one is a flat, absolute
+classes’ <code class="docutils literal notranslate"><span class="pre">fee_per_bet</span></code> (plural): that one is a flat, absolute
 bankroll amount charged once per settled bet, independent of stake size.
 Passing the same number to both does not mean the same real-world cost, and
 Keeks does not convert between them.</p>
@@ -280,12 +280,16 @@ what the bankroll can safely support. <code class="docutils literal notranslate"
 two adjustments after the formula:</p>
 <ul class="simple">
 <li><p><strong>Zero floor.</strong> If the win probability is below the strategy’s
-<code class="docutils literal notranslate"><span class="pre">min_probability</span></code> (0.5 by default), or if the cost-adjusted payoff or
-loss is not positive, the strategy returns <code class="docutils literal notranslate"><span class="pre">0.0</span></code> rather than a negative
-or undefined fraction.</p></li>
+<code class="docutils literal notranslate"><span class="pre">min_probability</span></code>, or if the cost-adjusted payoff or loss is not
+positive, the strategy returns <code class="docutils literal notranslate"><span class="pre">0.0</span></code> rather than a negative or
+undefined fraction. <code class="docutils literal notranslate"><span class="pre">min_probability</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> — the gate
+is edge-aware, so any bet the Kelly formula itself prices positively is
+placed. Setting an explicit <code class="docutils literal notranslate"><span class="pre">min_probability</span></code> refuses below-gate bets
+and emits a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> naming the suppressed fraction whenever the
+gate zeroes a bet the formula would size.</p></li>
 <li><p><strong>Maximum-safe-bet clamp.</strong> The result is capped at
 <code class="docutils literal notranslate"><span class="pre">get_max_safe_bet(current_bankroll)</span></code>, the largest stake that cannot drive
-the bankroll negative given <code class="docutils literal notranslate"><span class="pre">loss</span></code> and <code class="docutils literal notranslate"><span class="pre">transaction_cost</span></code>. A
+the bankroll negative given <code class="docutils literal notranslate"><span class="pre">loss</span></code> and <code class="docutils literal notranslate"><span class="pre">transaction_cost_rate</span></code>. A
 non-positive bankroll has no safe stake at all, so the clamp returns
 <code class="docutils literal notranslate"><span class="pre">0.0</span></code> in that case too.</p></li>
 </ul>
@@ -359,8 +363,11 @@ quarter Kelly with identical inputs.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

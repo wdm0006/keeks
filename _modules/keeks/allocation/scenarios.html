@@ -1,0 +1,792 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.allocation.scenarios &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.allocation.scenarios - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.allocation.scenarios">
+<meta property="og:description" content="keeks.allocation.scenarios - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/scenarios.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.allocation.scenarios">
+<meta name="twitter:description" content="keeks.allocation.scenarios - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/scenarios.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.allocation.scenarios</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.allocation.scenarios</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Mean-CVaR: the scenario-based tail-risk family.</span>
+
+<span class="sd">:class:`MeanCVaR` sizes a portfolio against a scenario matrix - a sample of</span>
+<span class="sd">joint simple-return vectors that can come from anywhere (empirical history,</span>
+<span class="sd">:class:`keeks.allocation.models.JointReturnModel` draws, a user sampler) -</span>
+<span class="sd">and that is the point: sample-CVaR is defined for any finite sample, so</span>
+<span class="sd">books with fat-tailed marginals, mixture jumps, or no finite variance have</span>
+<span class="sd">a working optimizer here, where the moment-based families' second-moment</span>
+<span class="sd">assumption would already be meaningless.</span>
+
+<span class="sd">The objective is the unit-risk-aversion mean-CVaR tradeoff: maximize the</span>
+<span class="sd">scenarios' expected return minus the expected loss in the worst</span>
+<span class="sd">``tail_alpha`` fraction of scenarios. Through the Rockafellar-Uryasev</span>
+<span class="sd">auxiliary-variable trick it is exactly a linear program, solved with</span>
+<span class="sd">``scipy.optimize.linprog`` under the HiGHS backend - which is why the class</span>
+<span class="sd">gates on the ``keeks[allocation]`` optional extra.</span>
+
+<span class="sd">Also here: :func:`scenarios_to_moments`, the bridge that turns a scenario</span>
+<span class="sd">matrix (with optional row probabilities) into the ``(mean, covariance)``</span>
+<span class="sd">descriptor the moment-based methods consume - the two halves of the layer</span>
+<span class="sd">share one scenario vocabulary.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AllocationResult</span><span class="p">,</span>
+    <span class="n">BaseAllocationStrategy</span><span class="p">,</span>
+    <span class="n">_validate_scenarios</span><span class="p">,</span>
+    <span class="n">_validate_weights</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">JointReturnModel</span><span class="p">,</span>
+    <span class="n">ModelInputMixin</span><span class="p">,</span>
+    <span class="n">ScenarioModel</span><span class="p">,</span>
+    <span class="n">_require_scipy</span><span class="p">,</span>
+    <span class="n">_validate_draws</span><span class="p">,</span>
+    <span class="n">_validate_n_samples</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">,</span> <span class="n">_validate_simulator_seed</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_tail_alpha</span><span class="p">(</span><span class="n">tail_alpha</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate the tail fraction, which must lie strictly between 0 and 1.</span>
+
+<span class="sd">    The tail fraction is the share of scenarios whose average loss the</span>
+<span class="sd">    optimizer minimizes: 0 would divide by zero in the Rockafellar-Uryasev</span>
+<span class="sd">    objective and 1 would make the "tail" the whole distribution, so both</span>
+<span class="sd">    ends are rejected along with anything non-finite.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tail_alpha : float</span>
+<span class="sd">        The requested tail fraction.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The validated tail fraction.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the fraction is not a finite number strictly between 0 and 1.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _validate_tail_alpha(0.05)</span>
+<span class="sd">    0.05</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tail_alpha</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tail_alpha</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Tail alpha must be a finite number strictly between 0 and 1"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">tail_alpha</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">tail_alpha</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Tail alpha must be a finite number strictly between 0 and 1"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tail_alpha</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mean_cvar_lp</span><span class="p">(</span>
+    <span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">tail_alpha</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Solve the unit-risk-aversion mean-CVaR program over ``scenarios``.</span>
+
+<span class="sd">    The Rockafellar-Uryasev reformulation turns ``maximize w'mu - CVaR(w)``</span>
+<span class="sd">    into the linear program</span>
+
+<span class="sd">        minimize    alpha + (1 / (tail_alpha * T)) * sum_t u_t - w' mu</span>
+<span class="sd">        subject to  u_t &gt;= -r_t . w - alpha    (one tail surplus per scenario)</span>
+<span class="sd">                    u_t &gt;= 0</span>
+<span class="sd">                    w &gt;= 0,  sum(w) &lt;= 1       (the house long-only budget)</span>
+
+<span class="sd">    over the variables ``(w, alpha, u)``: ``r_t`` is scenario row ``t``,</span>
+<span class="sd">    ``mu`` the scenarios' mean vector, and at the optimum ``alpha`` is the</span>
+<span class="sd">    tail's loss threshold while ``u_t`` carries the loss above it - so the</span>
+<span class="sd">    first objective block is exactly the tail's expected loss.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scenarios : numpy.ndarray</span>
+<span class="sd">        The validated ``(T, N)`` scenario matrix.</span>
+<span class="sd">    tail_alpha : float</span>
+<span class="sd">        The validated tail fraction.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        ``(weights, cvar, objective, converged, iterations)``: the optimal</span>
+<span class="sd">        long-only weight vector, the tail's expected loss under it, the</span>
+<span class="sd">        minimized program value (``cvar - w' mu``), and the solver's</span>
+<span class="sd">        convergence flag and iteration count.</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span>
+
+    <span class="n">observation_count</span><span class="p">,</span> <span class="n">option_count</span> <span class="o">=</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">scenarios</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Variables: the N weights, the tail threshold alpha, and one tail</span>
+    <span class="c1"># surplus per scenario.</span>
+    <span class="n">objective</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="o">-</span><span class="n">mean</span><span class="p">,</span>
+            <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">observation_count</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">tail_alpha</span> <span class="o">*</span> <span class="n">observation_count</span><span class="p">)),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="c1"># u_t &gt;= -r_t . w - alpha, rewritten as -r_t . w - alpha - u_t &lt;= 0.</span>
+    <span class="n">tail_block</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="o">-</span><span class="n">scenarios</span><span class="p">),</span>
+            <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">observation_count</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)),</span>
+            <span class="o">-</span><span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">observation_count</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"csr"</span><span class="p">),</span>
+        <span class="p">],</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">"csr"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">budget_block</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">option_count</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">observation_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])[</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="p">:</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">constraints</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tail_block</span><span class="p">,</span> <span class="n">budget_block</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"csr"</span><span class="p">)</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]</span> <span class="o">*</span> <span class="n">option_count</span> <span class="o">+</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">observation_count</span>
+    <span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">linprog</span><span class="p">(</span>
+        <span class="n">objective</span><span class="p">,</span>
+        <span class="n">A_ub</span><span class="o">=</span><span class="n">constraints</span><span class="p">,</span>
+        <span class="n">b_ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">observation_count</span><span class="p">),</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]]),</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">"highs"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+        <span class="c1"># The program is always feasible (all-cash) and bounded below, so a</span>
+        <span class="c1"># failure is the solver's, not the caller's - surface it rather than</span>
+        <span class="c1"># quietly return a suboptimal allocation.</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The mean-CVaR linear program failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[:</span><span class="n">option_count</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="c1"># HiGHS satisfies the budget to its feasibility tolerance (about</span>
+        <span class="c1"># 1e-7); the house weight contract is tighter (1e-12), so scale the</span>
+        <span class="c1"># rounding noise back inside it.</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">total</span>
+    <span class="n">cvar</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">fun</span> <span class="o">+</span> <span class="n">mean</span> <span class="o">@</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[:</span><span class="n">option_count</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">weights</span><span class="p">,</span> <span class="n">cvar</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">fun</span><span class="p">),</span> <span class="nb">bool</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nit</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MeanCVaR">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.scenarios.MeanCVaR">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MeanCVaR</span><span class="p">(</span><span class="n">BaseAllocationStrategy</span><span class="p">,</span> <span class="n">ModelInputMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Mean-CVaR allocation over a scenario matrix.</span>
+
+<span class="sd">    Sizes the portfolio against a sample of joint simple-return vectors -</span>
+<span class="sd">    empirical rows, model draws, anything shape ``(T, N)`` - by maximizing</span>
+<span class="sd">    the unit-risk-aversion tradeoff between expected return and tail risk:</span>
+
+<span class="sd">        ``maximize  w' mu - CVaR_tail(w)``</span>
+
+<span class="sd">    where ``mu`` is the scenarios' mean vector and ``CVaR_tail`` the</span>
+<span class="sd">    expected portfolio loss in the worst ``tail_alpha`` fraction of</span>
+<span class="sd">    scenarios, losses read as negative simple returns. The scenarios are</span>
+<span class="sd">    the whole story: sample-CVaR is defined for any finite sample, so</span>
+<span class="sd">    fat-tailed marginals, mixture jumps, and distributions without a finite</span>
+<span class="sd">    variance all size here - the territory where the moment-based methods'</span>
+<span class="sd">    second-moment assumption would already be meaningless. The price is the</span>
+<span class="sd">    empirical estimate's sampling noise: the scenarios are the distribution</span>
+<span class="sd">    as far as this allocator knows.</span>
+
+<span class="sd">    Through the Rockafellar-Uryasev auxiliary-variable trick the tradeoff</span>
+<span class="sd">    is exactly a linear program - one tail threshold ``alpha``, one</span>
+<span class="sd">    nonnegative surplus ``u_t`` per scenario, and the house long-only</span>
+<span class="sd">    budget - solved with ``scipy.optimize.linprog`` under the HiGHS</span>
+<span class="sd">    backend, which is why the class is gated on the ``keeks[allocation]``</span>
+<span class="sd">    optional extra. Unit risk aversion is the v1 posture: the objective</span>
+<span class="sd">    trades expected return against CVaR one-for-one, and a risk-aversion</span>
+<span class="sd">    dial is a documented follow-up, not a v1 parameter (spec decision D2).</span>
+
+<span class="sd">    The derivation is public and inspectable: ``scenarios`` (the validated</span>
+<span class="sd">    descriptor, also the key the simulator's descriptor-equality gate</span>
+<span class="sd">    reads), ``tail_alpha``, ``weights``, ``cvar`` (the optimal tail</span>
+<span class="sd">    expectation), ``objective`` (the minimized program value),</span>
+<span class="sd">    ``converged``, and ``iterations`` are exposed attributes.</span>
+
+<span class="sd">    Weights are long-only and sum to no more than one - the residual is</span>
+<span class="sd">    cash at zero return - and are scale-free: all zeros for a nonpositive</span>
+<span class="sd">    bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scenarios : array-like</span>
+<span class="sd">        The ``(observations, options)`` matrix of joint simple returns.</span>
+<span class="sd">        Validated like every scenario descriptor: non-empty,</span>
+<span class="sd">        two-dimensional, finite.</span>
+<span class="sd">    tail_alpha : float, default=0.05</span>
+<span class="sd">        The tail fraction, strictly between 0 and 1: ``0.05`` averages the</span>
+<span class="sd">        worst one in twenty scenarios.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        When scipy is not installed - the linear program is the method, so</span>
+<span class="sd">        there is no numpy-only fallback. Install the optional solver</span>
+<span class="sd">        backend with ``pip install keeks[allocation]``; the first example</span>
+<span class="sd">        below demonstrates the pointed error.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The scipy gate points at the optional extra, not a deep traceback:</span>
+
+<span class="sd">    &gt;&gt;&gt; import builtins</span>
+<span class="sd">    &gt;&gt;&gt; real_import = builtins.__import__</span>
+<span class="sd">    &gt;&gt;&gt; def without_scipy(name, *args, **kwargs):</span>
+<span class="sd">    ...     if name.startswith("scipy"):</span>
+<span class="sd">    ...         raise ImportError(f"No module named {name!r}")</span>
+<span class="sd">    ...     return real_import(name, *args, **kwargs)</span>
+<span class="sd">    &gt;&gt;&gt; builtins.__import__ = without_scipy</span>
+<span class="sd">    &gt;&gt;&gt; try:</span>
+<span class="sd">    ...     MeanCVaR([[0.01], [-0.01]])</span>
+<span class="sd">    ... except ImportError as error:</span>
+<span class="sd">    ...     print("points at the extra:", "keeks[allocation]" in str(error))</span>
+<span class="sd">    ... finally:</span>
+<span class="sd">    ...     builtins.__import__ = real_import</span>
+<span class="sd">    points at the extra: True</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; scenarios = np.array([</span>
+<span class="sd">    ...     [0.03, 0.01],</span>
+<span class="sd">    ...     [-0.01, 0.02],</span>
+<span class="sd">    ...     [0.01, -0.01],</span>
+<span class="sd">    ...     [-0.02, -0.02],</span>
+<span class="sd">    ... ])</span>
+<span class="sd">    &gt;&gt;&gt; strategy = MeanCVaR(scenarios)</span>
+<span class="sd">    &gt;&gt;&gt; weights = strategy.evaluate(1000.0)</span>
+<span class="sd">    &gt;&gt;&gt; len(weights)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; all(0.0 &lt;= weight &lt;= 1.0 for weight in weights)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; sum(weights) &lt;= 1 + 1e-12</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; strategy.evaluate(0.0)</span>
+<span class="sd">    (0.0, 0.0)</span>
+
+<span class="sd">    ``optimize()`` carries the solver's diagnostics on the result object:</span>
+
+<span class="sd">    &gt;&gt;&gt; result = strategy.optimize()</span>
+<span class="sd">    &gt;&gt;&gt; result.converged</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; result.iterations &gt;= 0</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Any joint-return model builds a scenario-bound allocator through</span>
+<span class="sd">    ``from_model`` - keeks binary bets, fitted marginals, user samplers:</span>
+
+<span class="sd">    &gt;&gt;&gt; from keeks.allocation.models import binary_bets_model</span>
+<span class="sd">    &gt;&gt;&gt; model = binary_bets_model([(0.5, 2.0, 1.0), (0.25, 3.0, 1.0)])</span>
+<span class="sd">    &gt;&gt;&gt; strategy = MeanCVaR.from_model(model, n_samples=256, seed=7)</span>
+<span class="sd">    &gt;&gt;&gt; strategy.scenarios.shape</span>
+<span class="sd">    (256, 2)</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">tail_alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># The linear program is the method: gate before anything else, so a</span>
+        <span class="c1"># caller without scipy gets the pointed install hint, not a deep</span>
+        <span class="c1"># traceback from the solver import.</span>
+        <span class="n">_require_scipy</span><span class="p">(</span><span class="s2">"Mean-CVaR optimization"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tail_alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">_validate_tail_alpha</span><span class="p">(</span><span class="n">tail_alpha</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_validate_scenarios</span><span class="p">(</span><span class="n">scenarios</span><span class="p">)</span>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cvar</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">_mean_cvar_lp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_alpha</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MeanCVaR.from_model">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.scenarios.MeanCVaR.from_model">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_model</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">JointReturnModel</span><span class="p">,</span>
+        <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"MeanCVaR"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Build a scenario-bound allocator from a joint-return model's draws.</span>
+
+<span class="sd">        The scenario-bound override of the moment-based mixin: draws, not</span>
+<span class="sd">        moments, are this allocator's descriptor, so ``from_model`` samples</span>
+<span class="sd">        the model and binds the draw matrix - the model's exact ``moments()``</span>
+<span class="sd">        hook, when it has one, is never consulted. A</span>
+<span class="sd">        :class:`keeks.allocation.models.ScenarioModel` carrying residual</span>
+<span class="sd">        probability mass contributes all-cash zero rows proportionally, and</span>
+<span class="sd">        the program reads them like any other scenario.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : JointReturnModel</span>
+<span class="sd">            The model to draw from. Any object with</span>
+<span class="sd">            ``sample(n_samples, rng)`` works.</span>
+<span class="sd">        n_samples : int, default=10000</span>
+<span class="sd">            The number of scenarios to draw; the program has one surplus</span>
+<span class="sd">            variable per scenario, so very large counts cost solve time.</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Seed for the private sampling stream; omit it for fresh draws</span>
+<span class="sd">            with no replay promised.</span>
+<span class="sd">        ``**kwargs``</span>
+<span class="sd">            Extra constructor keyword arguments for ``cls`` (a tail</span>
+<span class="sd">            fraction, ...).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MeanCVaR</span>
+<span class="sd">            The allocator bound to the model's draws.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from keeks.allocation.models import scenario_model</span>
+<span class="sd">        &gt;&gt;&gt; strategy = MeanCVaR.from_model(</span>
+<span class="sd">        ...     scenario_model([[0.02], [-0.01], [0.01]]), n_samples=3, seed=1</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; strategy.scenarios.shape</span>
+<span class="sd">        (3, 1)</span>
+<span class="sd">        """</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="n">_validate_simulator_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">_validate_n_samples</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">draws</span> <span class="o">=</span> <span class="n">_validate_draws</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">rng</span><span class="p">),</span> <span class="n">n_samples</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">draws</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeanCVaR.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.scenarios.MeanCVaR.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the allocation with its solver diagnostics.</span>
+
+<span class="sd">        ``objective`` is the minimized program value (the tail expectation</span>
+<span class="sd">        minus the scenarios' expected return under the optimal weights) and</span>
+<span class="sd">        ``cvar`` the tail expectation itself; ``expected_growth`` estimates</span>
+<span class="sd">        ``E[log(1 + w'R)]`` under the scenarios - ``None`` when the optimal</span>
+<span class="sd">        portfolio wipes out in some scenario, where the log is undefined -</span>
+<span class="sd">        and ``volatility`` reads the weights against the scenarios'</span>
+<span class="sd">        empirical covariance from :func:`scenarios_to_moments`.</span>
+
+<span class="sd">        When the program's optimum is full cash - every weight effectively</span>
+<span class="sd">        zero, as on daily-frequency market data under the</span>
+<span class="sd">        unit-risk-aversion objective - ``all_cash_reason`` carries that</span>
+<span class="sd">        explanation on the result, in the result object rather than only in</span>
+<span class="sd">        example output.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The weight vector with the program's diagnostics.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; scenarios = np.array([</span>
+<span class="sd">        ...     [0.03, 0.01],</span>
+<span class="sd">        ...     [-0.01, 0.02],</span>
+<span class="sd">        ...     [0.01, -0.01],</span>
+<span class="sd">        ...     [-0.02, -0.02],</span>
+<span class="sd">        ... ])</span>
+<span class="sd">        &gt;&gt;&gt; result = MeanCVaR(scenarios).optimize()</span>
+<span class="sd">        &gt;&gt;&gt; result.converged</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; result.weights.shape</span>
+<span class="sd">        (2,)</span>
+
+<span class="sd">        Daily-frequency scenarios hold full cash, and the result says why:</span>
+
+<span class="sd">        &gt;&gt;&gt; daily = np.array([</span>
+<span class="sd">        ...     [0.0002, 0.0001],</span>
+<span class="sd">        ...     [-0.0002, -0.0001],</span>
+<span class="sd">        ...     [0.0001, -0.0001],</span>
+<span class="sd">        ...     [-0.0001, 0.0002],</span>
+<span class="sd">        ... ])</span>
+<span class="sd">        &gt;&gt;&gt; MeanCVaR(daily).optimize().all_cash_reason is not None</span>
+<span class="sd">        True</span>
+<span class="sd">        """</span>
+        <span class="n">portfolio_returns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">portfolio_returns</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">):</span>
+            <span class="n">expected_growth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">portfolio_returns</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expected_growth</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">covariance</span> <span class="o">=</span> <span class="n">scenarios_to_moments</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="p">)</span>
+        <span class="c1"># The empirical covariance is PSD by construction, but rank-</span>
+        <span class="c1"># deficient books can leave the quadratic form at -1e-18 float</span>
+        <span class="c1"># noise; a variance cannot be negative, so clamp before the root.</span>
+        <span class="n">variance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="n">covariance</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">volatility</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">variance</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)))</span>
+        <span class="n">all_cash_reason</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">):</span>
+            <span class="n">all_cash_reason</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">"The optimal portfolio holds full cash: the "</span>
+                <span class="s2">"unit-risk-aversion objective (maximize w'mu - CVaR) trades "</span>
+                <span class="s2">"expected return against the tail's expected loss "</span>
+                <span class="s2">"one-for-one and is scale-homogeneous, so on "</span>
+                <span class="s2">"daily-frequency market data - expected return far below "</span>
+                <span class="s2">"the tail's expected loss - the honest optimum is all cash. "</span>
+                <span class="s2">"The risk-aversion dial is a documented follow-up (spec "</span>
+                <span class="s2">"decision D2)."</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">objective</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span>
+            <span class="n">converged</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">converged</span><span class="p">,</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="n">expected_growth</span><span class="o">=</span><span class="n">expected_growth</span><span class="p">,</span>
+            <span class="n">volatility</span><span class="o">=</span><span class="n">volatility</span><span class="p">,</span>
+            <span class="n">all_cash_reason</span><span class="o">=</span><span class="n">all_cash_reason</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeanCVaR.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.scenarios.MeanCVaR.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll. Weights are scale-free fractions: the</span>
+<span class="sd">            same vector at every positive bankroll, all zeros at zero or</span>
+<span class="sd">            below.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple, one weight per option.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; scenarios = [[0.03, 0.01], [-0.01, 0.02], [0.01, -0.01]]</span>
+<span class="sd">        &gt;&gt;&gt; MeanCVaR(scenarios).evaluate(0.0)</span>
+<span class="sd">        (0.0, 0.0)</span>
+<span class="sd">        """</span>
+        <span class="n">option_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scenarios</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_validate_weights</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">option_count</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="scenarios_to_moments">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.scenarios.scenarios_to_moments">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scenarios_to_moments</span><span class="p">(</span>
+    <span class="n">scenarios</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Bridge a scenario matrix to the ``(mean, covariance)`` moment descriptor.</span>
+
+<span class="sd">    The exact moments of the discrete distribution over the scenario rows -</span>
+<span class="sd">    equally weighted, or weighted by ``probabilities`` - computed through</span>
+<span class="sd">    :class:`keeks.allocation.ScenarioModel`, so the validation and the</span>
+<span class="sd">    residual-probability semantics are the model's: probability mass below</span>
+<span class="sd">    one is an all-cash period at zero return, never renormalized away. This</span>
+<span class="sd">    is the door moment-based methods (``MeanVariance``, minimum variance,</span>
+<span class="sd">    ...) walk through to consume scenario inputs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scenarios : array-like</span>
+<span class="sd">        The ``(observations, options)`` matrix of joint simple returns.</span>
+<span class="sd">    probabilities : array-like, optional</span>
+<span class="sd">        The probability of each scenario row, validated like every keeks</span>
+<span class="sd">        probability vector. Omitted mass is cash at zero return.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of numpy.ndarray</span>
+<span class="sd">        The exact ``(mean, covariance)`` of the scenario distribution - a</span>
+<span class="sd">        shape ``(N,)`` mean vector and an ``(N, N)`` covariance matrix.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the scenarios or the probabilities are invalid.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; mean, covariance = scenarios_to_moments(</span>
+<span class="sd">    ...     [[0.02, 0.01], [-0.01, 0.01]], probabilities=[0.25, 0.25]</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; mean.tolist()  # the other half of the mass is an all-cash period</span>
+<span class="sd">    [0.0025, 0.005]</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">ScenarioModel</span><span class="p">(</span><span class="n">scenarios</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span><span class="o">.</span><span class="n">moments</span><span class="p">()</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

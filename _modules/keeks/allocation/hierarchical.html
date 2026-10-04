@@ -1,0 +1,660 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.allocation.hierarchical &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.allocation.hierarchical - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.allocation.hierarchical">
+<meta property="og:description" content="keeks.allocation.hierarchical - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/hierarchical.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.allocation.hierarchical">
+<meta name="twitter:description" content="keeks.allocation.hierarchical - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/allocation/hierarchical.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.allocation.hierarchical</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.allocation.hierarchical</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Hierarchical risk parity - the covariance-only family that never inverts.</span>
+
+<span class="sd">:class:`HierarchicalRiskParity` builds a portfolio from a covariance matrix</span>
+<span class="sd">alone (Lopez de Prado, 2016): options are clustered by correlation distance,</span>
+<span class="sd">the cluster tree is read as a leaf permutation that concentrates similar</span>
+<span class="sd">options together (quasi-diagonalization), and a top-down bisection allocates</span>
+<span class="sd">each cluster's mass between its two halves in inverse-variance proportion.</span>
+<span class="sd">The correlation structure only decides which options share a split; the</span>
+<span class="sd">allocation itself is inverse-variance, so the matrix is never inverted and no</span>
+<span class="sd">expected returns are needed.</span>
+
+<span class="sd">Everything is hand-rolled and deterministic by construction: the linkage is a</span>
+<span class="sd">single-linkage agglomeration whose ties break to the lexicographically</span>
+<span class="sd">smallest cluster-id pair, the quasi-diagonalization expands cluster ids in a</span>
+<span class="sd">fixed left-to-right order, and the bisection splits odd clusters with the</span>
+<span class="sd">first half taking the floor. No solver, no randomness, no scipy - repeated</span>
+<span class="sd">constructions from the same covariance replay bit-identically.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AllocationResult</span><span class="p">,</span>
+    <span class="n">BaseAllocationStrategy</span><span class="p">,</span>
+    <span class="n">_validate_covariance</span><span class="p">,</span>
+    <span class="n">_validate_weights</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_correlation_distance</span><span class="p">(</span><span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Correlation-distance matrix: ``d_ij = sqrt((1 - rho_ij) / 2)``.</span>
+
+<span class="sd">    The correlation is rescaled from the covariance through the diagonal</span>
+<span class="sd">    volatilities, clipped to ``[-1, 1]`` (floating-point noise can push a</span>
+<span class="sd">    perfect correlation one ulp past its bound), and mapped so that perfect</span>
+<span class="sd">    correlation is distance zero and perfect anticorrelation is distance one.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : numpy.ndarray</span>
+<span class="sd">        A covariance matrix with strictly positive diagonal variances.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The symmetric distance matrix, zeros on the diagonal.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; covariance = np.array([[4.0, 2.0], [2.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; _correlation_distance(covariance)</span>
+<span class="sd">    array([[0. , 0.5],</span>
+<span class="sd">           [0.5, 0. ]])</span>
+<span class="sd">    """</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">covariance</span><span class="p">))</span>
+    <span class="n">correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">covariance</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="n">std</span><span class="p">),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">correlation</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">distance</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_agglomerative_linkage</span><span class="p">(</span><span class="n">distance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Single-linkage agglomerative clustering in the scipy linkage layout.</span>
+
+<span class="sd">    Starts from one cluster per option and repeatedly merges the two active</span>
+<span class="sd">    clusters with the smallest linkage distance - for single linkage, the</span>
+<span class="sd">    smallest pairwise option distance across the two clusters' members -</span>
+<span class="sd">    until one cluster holds every option. Returns an ``(n - 1, 4)`` matrix,</span>
+<span class="sd">    one row per merge: ``[first_id, second_id, distance, size]``. Leaves</span>
+<span class="sd">    carry their option index as id; the merge recorded on row ``k`` forms</span>
+<span class="sd">    cluster ``n + k``.</span>
+
+<span class="sd">    Deterministic by construction: candidate pairs iterate in cluster-id</span>
+<span class="sd">    order and only a strictly smaller distance replaces the incumbent, so</span>
+<span class="sd">    equal distances break to the lexicographically smallest id pair.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distance : numpy.ndarray</span>
+<span class="sd">        Symmetric distance matrix, zeros on the diagonal.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        The ``(n - 1, 4)`` linkage matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; distance = np.array([[0.0, 0.5, 1.0], [0.5, 0.0, 1.0], [1.0, 1.0, 0.0]])</span>
+<span class="sd">    &gt;&gt;&gt; _agglomerative_linkage(distance).tolist()</span>
+<span class="sd">    [[0.0, 1.0, 0.5, 2.0], [2.0, 3.0, 1.0, 3.0]]</span>
+
+<span class="sd">    An all-tie distance matrix still clusters deterministically - every</span>
+<span class="sd">    candidate distance is equal, so the lexicographically smallest pair</span>
+<span class="sd">    merges first:</span>
+
+<span class="sd">    &gt;&gt;&gt; distance = np.array([[0.0, 0.5, 0.5], [0.5, 0.0, 0.5], [0.5, 0.5, 0.0]])</span>
+<span class="sd">    &gt;&gt;&gt; _agglomerative_linkage(distance).tolist()</span>
+<span class="sd">    [[0.0, 1.0, 0.5, 2.0], [2.0, 3.0, 0.5, 3.0]]</span>
+<span class="sd">    """</span>
+    <span class="n">option_count</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pair_distances</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">option_count</span><span class="p">):</span>
+            <span class="n">pair_distances</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">distance</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">active</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">))</span>
+    <span class="n">linkage</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cluster_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">option_count</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">option_count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">pair_distances</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="n">pair_distances</span><span class="p">[</span><span class="n">pair</span><span class="p">],</span> <span class="n">pair</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">linkage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">first</span><span class="p">,</span>
+                <span class="n">second</span><span class="p">,</span>
+                <span class="n">pair_distances</span><span class="p">[(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)],</span>
+                <span class="n">sizes</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">+</span> <span class="n">sizes</span><span class="p">[</span><span class="n">second</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">del</span> <span class="n">pair_distances</span><span class="p">[(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)]</span>
+        <span class="c1"># Single linkage: the merged cluster's distance to another cluster is</span>
+        <span class="c1"># the smaller of its parents' distances (Lance-Williams update).</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">other</span> <span class="ow">in</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">to_first</span> <span class="o">=</span> <span class="n">pair_distances</span><span class="o">.</span><span class="n">pop</span><span class="p">((</span><span class="nb">min</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">other</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">other</span><span class="p">)))</span>
+            <span class="n">to_second</span> <span class="o">=</span> <span class="n">pair_distances</span><span class="o">.</span><span class="n">pop</span><span class="p">((</span><span class="nb">min</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">other</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">other</span><span class="p">)))</span>
+            <span class="n">merged</span><span class="p">[(</span><span class="n">other</span><span class="p">,</span> <span class="n">cluster_id</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">to_first</span><span class="p">,</span> <span class="n">to_second</span><span class="p">)</span>
+        <span class="n">pair_distances</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
+        <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="n">other</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">active</span> <span class="k">if</span> <span class="n">other</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)]</span>
+        <span class="n">active</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">)</span>
+        <span class="n">sizes</span><span class="p">[</span><span class="n">cluster_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">+</span> <span class="n">sizes</span><span class="p">[</span><span class="n">second</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">sizes</span><span class="p">[</span><span class="n">first</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">sizes</span><span class="p">[</span><span class="n">second</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">linkage</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_quasi_diagonal</span><span class="p">(</span><span class="n">linkage</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Leaf permutation that concentrates correlated options together.</span>
+
+<span class="sd">    Reads the linkage tree left-to-right: the root's two children, then each</span>
+<span class="sd">    child expanded the same way, until only leaves remain. The result is a</span>
+<span class="sd">    permutation of the option indices - Lopez de Prado's quasi-diagonalization,</span>
+<span class="sd">    which reorders the options so similar ones sit together and the bisection</span>
+<span class="sd">    splits happen inside correlated groups.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    linkage : numpy.ndarray</span>
+<span class="sd">        The ``(n - 1, 4)`` linkage matrix from :func:`_agglomerative_linkage`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of int</span>
+<span class="sd">        One option index per position, in quasi-diagonal order.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; distance = np.array([[0.0, 0.5, 1.0], [0.5, 0.0, 1.0], [1.0, 1.0, 0.0]])</span>
+<span class="sd">    &gt;&gt;&gt; _quasi_diagonal(_agglomerative_linkage(distance))</span>
+<span class="sd">    [2, 0, 1]</span>
+
+<span class="sd">    A single option has nothing to reorder:</span>
+
+<span class="sd">    &gt;&gt;&gt; _quasi_diagonal(np.empty((0, 4)))</span>
+<span class="sd">    [0]</span>
+<span class="sd">    """</span>
+    <span class="n">option_count</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">option_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">linkage</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">linkage</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])]</span>
+    <span class="k">while</span> <span class="nb">any</span><span class="p">(</span><span class="n">item</span> <span class="o">&gt;=</span> <span class="n">option_count</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">order</span><span class="p">):</span>
+        <span class="n">expanded</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="o">&gt;=</span> <span class="n">option_count</span><span class="p">:</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">linkage</span><span class="p">[</span><span class="n">item</span> <span class="o">-</span> <span class="n">option_count</span><span class="p">]</span>
+                <span class="n">expanded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">expanded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">expanded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">expanded</span>
+    <span class="k">return</span> <span class="n">order</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_cluster_variance</span><span class="p">(</span><span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Inverse-variance-weighted variance of one cluster.</span>
+
+<span class="sd">    The cluster's slice of the covariance is weighted by the inverse of its</span>
+<span class="sd">    diagonal variances (normalized to sum to one) and read as a quadratic</span>
+<span class="sd">    form - the risk the bisection balances.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : numpy.ndarray</span>
+<span class="sd">        The full covariance matrix.</span>
+<span class="sd">    indices : list of int</span>
+<span class="sd">        The option indices of the cluster, in quasi-diagonal order.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The cluster's inverse-variance-weighted variance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; covariance = np.array([[4.0, 0.0], [0.0, 1.0]])</span>
+<span class="sd">    &gt;&gt;&gt; round(_cluster_variance(covariance, [0, 1]), 12)</span>
+<span class="sd">    0.8</span>
+<span class="sd">    """</span>
+    <span class="n">slice_</span> <span class="o">=</span> <span class="n">covariance</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">indices</span><span class="p">)]</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">slice_</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">weights</span> <span class="o">@</span> <span class="n">slice_</span> <span class="o">@</span> <span class="n">weights</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_recursive_bisection</span><span class="p">(</span><span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Top-down allocation over the quasi-diagonal order.</span>
+
+<span class="sd">    Splits every cluster at the midpoint of its quasi-diagonal slice (odd</span>
+<span class="sd">    clusters give the first half the floor), computes each half's</span>
+<span class="sd">    inverse-variance cluster variance, and scales the two halves' weights so</span>
+<span class="sd">    the split is inverse-variance proportional: the less risky half keeps the</span>
+<span class="sd">    larger share. Singletons are leaves and keep their accumulated share, so</span>
+<span class="sd">    the weights always sum to one.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : numpy.ndarray</span>
+<span class="sd">        The full covariance matrix.</span>
+<span class="sd">    order : list of int</span>
+<span class="sd">        The quasi-diagonal permutation from :func:`_quasi_diagonal`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        One weight per option, in option order, all positive and summing to</span>
+<span class="sd">        one within floating-point tolerance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; covariance = np.array([[0.125, 0.0], [0.0, 0.375]])</span>
+<span class="sd">    &gt;&gt;&gt; _recursive_bisection(covariance, [0, 1]).tolist()</span>
+<span class="sd">    [0.75, 0.25]</span>
+<span class="sd">    """</span>
+    <span class="n">option_count</span> <span class="o">=</span> <span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">option_count</span><span class="p">)</span>
+    <span class="n">clusters</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">order</span><span class="p">)]</span>
+    <span class="k">while</span> <span class="n">clusters</span><span class="p">:</span>
+        <span class="n">next_clusters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">clusters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">half</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="n">first</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">[:</span><span class="n">half</span><span class="p">],</span> <span class="n">cluster</span><span class="p">[</span><span class="n">half</span><span class="p">:]</span>
+                <span class="n">first_variance</span> <span class="o">=</span> <span class="n">_cluster_variance</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="n">first</span><span class="p">)</span>
+                <span class="n">second_variance</span> <span class="o">=</span> <span class="n">_cluster_variance</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">first_variance</span> <span class="o">+</span> <span class="n">second_variance</span>
+                <span class="c1"># Both halves carrying zero cluster variance leaves no risk</span>
+                <span class="c1"># information to balance, so split evenly.</span>
+                <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">first_variance</span> <span class="o">/</span> <span class="n">total</span> <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.5</span>
+                <span class="n">weights</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">*=</span> <span class="n">alpha</span>
+                <span class="n">weights</span><span class="p">[</span><span class="n">second</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">alpha</span>
+                <span class="n">next_clusters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+                <span class="n">next_clusters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
+        <span class="n">clusters</span> <span class="o">=</span> <span class="n">next_clusters</span>
+    <span class="k">return</span> <span class="n">weights</span>
+
+
+<div class="viewcode-block" id="HierarchicalRiskParity">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.hierarchical.HierarchicalRiskParity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HierarchicalRiskParity</span><span class="p">(</span><span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Hierarchical risk parity over a covariance matrix.</span>
+
+<span class="sd">    Sizes the portfolio from the covariance alone (Lopez de Prado, 2016):</span>
+<span class="sd">    correlation distance clusters the options, the cluster tree is read as a</span>
+<span class="sd">    quasi-diagonal leaf permutation, and a recursive bisection allocates each</span>
+<span class="sd">    split in inverse-variance proportion. No expected returns, no solver, no</span>
+<span class="sd">    matrix inversion - and no randomness, so repeated constructions from the</span>
+<span class="sd">    same covariance replay bit-identically.</span>
+
+<span class="sd">    The derivation is public and inspectable: ``distance`` (the</span>
+<span class="sd">    correlation-distance matrix), ``linkage`` (the agglomeration), and</span>
+<span class="sd">    ``order`` (the quasi-diagonal permutation) are exposed attributes.</span>
+
+<span class="sd">    Weights are long-only and sum to one - the hierarchy fully invests the</span>
+<span class="sd">    budget, leaving no cash residual - and are scale-free: all zeros for a</span>
+<span class="sd">    nonpositive bankroll.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    covariance : array-like</span>
+<span class="sd">        The covariance matrix of the options' simple returns. Validated like</span>
+<span class="sd">        every allocation descriptor (square, finite, symmetric, positive</span>
+<span class="sd">        semidefinite), and additionally required to have strictly positive</span>
+<span class="sd">        variances: the bisection's inverse-variance splits are undefined for</span>
+<span class="sd">        a zero-variance option.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; covariance = np.array([[0.04, 0.004], [0.004, 0.04]])</span>
+<span class="sd">    &gt;&gt;&gt; strategy = HierarchicalRiskParity(covariance)</span>
+<span class="sd">    &gt;&gt;&gt; strategy.evaluate(1000.0)</span>
+<span class="sd">    (0.5, 0.5)</span>
+<span class="sd">    &gt;&gt;&gt; strategy.evaluate(0.0)</span>
+<span class="sd">    (0.0, 0.0)</span>
+
+<span class="sd">    Two equally risky options split the budget evenly regardless of their</span>
+<span class="sd">    correlation; an asymmetric covariance splits by inverse variance:</span>
+
+<span class="sd">    &gt;&gt;&gt; risky = np.array([[0.04, 0.002], [0.002, 0.01]])</span>
+<span class="sd">    &gt;&gt;&gt; result = HierarchicalRiskParity(risky).optimize()</span>
+<span class="sd">    &gt;&gt;&gt; [round(weight, 4) for weight in result.weights.tolist()]</span>
+<span class="sd">    [0.2, 0.8]</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">covariance</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">covariance</span> <span class="o">=</span> <span class="n">_validate_covariance</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Covariance must have strictly positive variances: the "</span>
+                <span class="s2">"inverse-variance splits of hierarchical risk parity are "</span>
+                <span class="s2">"undefined for a zero-variance option"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">covariance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">_correlation_distance</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linkage</span> <span class="o">=</span> <span class="n">_agglomerative_linkage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">_quasi_diagonal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linkage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">_recursive_bisection</span><span class="p">(</span><span class="n">covariance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HierarchicalRiskParity.optimize">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.hierarchical.HierarchicalRiskParity.optimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AllocationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return the allocation with its diagnostics.</span>
+
+<span class="sd">        Hierarchical risk parity runs no solver, so ``objective``,</span>
+<span class="sd">        ``converged``, ``iterations``, and ``expected_growth`` stay ``None``;</span>
+<span class="sd">        ``volatility`` is ``sqrt(w' Sigma w)`` under the construction</span>
+<span class="sd">        covariance.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        AllocationResult</span>
+<span class="sd">            The weight vector and the portfolio volatility it implies.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; covariance = np.array([[0.04, 0.004], [0.004, 0.04]])</span>
+<span class="sd">        &gt;&gt;&gt; result = HierarchicalRiskParity(covariance).optimize()</span>
+<span class="sd">        &gt;&gt;&gt; result.weights.tolist()</span>
+<span class="sd">        [0.5, 0.5]</span>
+<span class="sd">        &gt;&gt;&gt; round(result.volatility, 4)</span>
+<span class="sd">        0.1483</span>
+<span class="sd">        """</span>
+        <span class="n">volatility</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">AllocationResult</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">volatility</span><span class="o">=</span><span class="n">volatility</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HierarchicalRiskParity.evaluate">
+<a class="viewcode-back" href="../../../allocation.html#keeks.allocation.hierarchical.HierarchicalRiskParity.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Return one long-only weight per option.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        current_bankroll : float</span>
+<span class="sd">            The current bankroll. Weights are scale-free fractions: the same</span>
+<span class="sd">            vector at every positive bankroll, all zeros at zero or below.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            The validated weight tuple, one weight per option.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; covariance = np.array([[0.04, 0.004], [0.004, 0.04]])</span>
+<span class="sd">        &gt;&gt;&gt; HierarchicalRiskParity(covariance).evaluate(250.0)</span>
+<span class="sd">        (0.5, 0.5)</span>
+<span class="sd">        """</span>
+        <span class="n">option_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">current_bankroll</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_validate_weights</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">option_count</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_validate_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">option_count</span><span class="o">=</span><span class="n">option_count</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

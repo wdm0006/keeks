@@ -19,13 +19,13 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Utilities" href="utils.html" />
-    <link rel="prev" title="Multi-Outcome Strategies and Simulators" href="multi_outcome.html" />
+    <link rel="prev" title="Allocation Visualization Helpers" href="allocation_plots.html" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -181,9 +181,12 @@ and in the future may include risk free rate investments, interest and concepts 
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.utils.</span></span><span class="sig-name descname"><span class="pre">RuinError</span></span><a class="reference internal" href="_modules/keeks/utils.html#RuinError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
-<p>Exception raised when a bankroll experiences a drawdown exceeding the maximum allowed limit.</p>
-<p>This exception is typically raised by the BankRoll class when a withdrawal would cause
-the bankroll to drop below the configured maximum drawdown threshold.</p>
+<p>Exception raised when a bankroll safeguard refuses a removal.</p>
+<p>Raised by the BankRoll class in two cases: a removal would take the
+funds below zero (bankruptcy), or a removal exceeds the configured
+<code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> fraction of current funds. The message names the
+attempted amount, the configured limit, and the current funds; the
+simulators re-report it as a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> when a refusal stops a run.</p>
 </dd></dl>
 
 </section>
@@ -207,11 +210,14 @@ the bankroll to drop below the configured maximum drawdown threshold.</p>
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Bankroll</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

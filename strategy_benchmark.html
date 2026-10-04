@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -243,10 +243,11 @@ reason a settlement was refused, and reports the drawdown-cap and bankruptcy
 rates separately.</p>
 <p><strong>Fixed inputs.</strong> $1,000 starting bankroll, 500 bets, 200 paths, even money
 (<code class="docutils literal notranslate"><span class="pre">payoff</span> <span class="pre">=</span> <span class="pre">1.0</span></code>, <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">1.0</span></code>), <code class="docutils literal notranslate"><span class="pre">percent_bettable</span> <span class="pre">=</span> <span class="pre">1.0</span></code>. The base scenario
-is a 55% win probability, a zero cost input, no estimate error, and the library’s
-default <code class="docutils literal notranslate"><span class="pre">max_draw_down</span> <span class="pre">=</span> <span class="pre">0.3</span></code>.</p>
+is a 55% win probability, a zero cost input, no estimate error, and an explicit
+<code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span> <span class="pre">=</span> <span class="pre">0.3</span></code> — the library default is <code class="docutils literal notranslate"><span class="pre">None</span></code> (no
+per-settlement cap), so the benchmark passes the cap it studies.</p>
 <p>The strategies are configured once each: full Kelly; fractional Kelly at 0.5;
-drawdown-adjusted Kelly at <code class="docutils literal notranslate"><span class="pre">max_acceptable_drawdown</span> <span class="pre">=</span> <span class="pre">0.2</span></code>; Optimal f with
+drawdown-adjusted Kelly at <code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span> <span class="pre">=</span> <span class="pre">0.2</span></code>; Optimal f with
 <code class="docutils literal notranslate"><span class="pre">win_rate</span></code> set to the scenario’s true probability and
 <code class="docutils literal notranslate"><span class="pre">max_risk_fraction</span> <span class="pre">=</span> <span class="pre">0.2</span></code>; the naive expected-value rule; a flat 2% fixed
 fraction; CPPI with an 80% floor and a multiplier of 2; dynamic bankroll
@@ -255,7 +256,7 @@ management with a 5% base fraction; and the Merton share at
 </section>
 <section id="base-scenario">
 <h2>Base scenario<a class="headerlink" href="#base-scenario" title="Link to this heading">¶</a></h2>
-<p>55% win probability, even money, no cost, no estimate error, <code class="docutils literal notranslate"><span class="pre">max_draw_down</span> <span class="pre">=</span>
+<p>55% win probability, even money, no cost, no estimate error, <code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span> <span class="pre">=</span>
 <span class="pre">0.3</span></code>. All figures are dollars unless marked otherwise; “Stake” is the fraction
 of the bankroll wagered on the first bet, “MDD” is maximum drawdown.</p>
 <table class="docutils align-default">
@@ -438,9 +439,9 @@ the flat 2% rule stakes, so four of the nine produce the same path.</p>
 </section>
 <section id="what-the-cost-input-actually-does">
 <h2>What the cost input actually does<a class="headerlink" href="#what-the-cost-input-actually-does" title="Link to this heading">¶</a></h2>
-<p>Strategies treat <code class="docutils literal notranslate"><span class="pre">transaction_cost</span></code> as a <strong>per-unit fractional</strong> cost, folded
+<p>Strategies treat <code class="docutils literal notranslate"><span class="pre">transaction_cost_rate</span></code> as a <strong>per-unit fractional</strong> cost, folded
 into the payoff and loss multipliers before the growth optimum is computed.
-Simulators treat <code class="docutils literal notranslate"><span class="pre">transaction_costs</span></code> as a <strong>flat fee per settled bet</strong>. The same
+Simulators treat <code class="docutils literal notranslate"><span class="pre">fee_per_bet</span></code> as a <strong>flat fee per settled bet</strong>. The same
 number means different things on the two sides, and at a $1,000 bankroll the
 difference is three orders of magnitude:</p>
 <table class="docutils align-default">
@@ -505,18 +506,18 @@ makes a strategy, not how much friction erodes the bankroll. Two strategies igno
 the parameter for sizing entirely: <code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code> by design, and
 <code class="docutils literal notranslate"><span class="pre">DynamicBankrollManagement</span></code> because its <code class="docutils literal notranslate"><span class="pre">min_fraction</span></code> floor holds it at 5%
 regardless.</p>
-<p>If you want to model real friction, scale the flat <code class="docutils literal notranslate"><span class="pre">transaction_costs</span></code> against
+<p>If you want to model real friction, scale the flat <code class="docutils literal notranslate"><span class="pre">fee_per_bet</span></code> against
 the bankroll and stake sizes you actually expect, and do not assume the same
 number on the strategy side is doing comparable work.</p>
 </section>
-<section id="max-draw-down-is-a-per-settlement-cap-not-a-risk-budget">
-<h2><code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> is a per-settlement cap, not a risk budget<a class="headerlink" href="#max-draw-down-is-a-per-settlement-cap-not-a-risk-budget" title="Link to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">BankRoll</span></code> refuses any single withdrawal larger than <code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> times
+<section id="max-transaction-loss-is-a-per-settlement-cap-not-a-risk-budget">
+<h2><code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> is a per-settlement cap, not a risk budget<a class="headerlink" href="#max-transaction-loss-is-a-per-settlement-cap-not-a-risk-budget" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BankRoll</span></code> refuses any single withdrawal larger than <code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> times
 current funds and raises <code class="docutils literal notranslate"><span class="pre">RuinError</span></code>; the simulator catches it and stops the
 run. It is a cap on one settlement, not on cumulative peak-to-trough loss, and
 that makes it behave as a switch rather than a dial:</p>
 <figure class="align-default" id="id3">
-<a class="reference internal image-reference" href="_images/early_stops_by_drawdown_limit.png"><img alt="Grouped bar chart of the percentage of runs that stopped before 500 bets, for nine strategies at four values of max_draw_down, drawn in greyscale with four distinct hatch patterns. Every bar is either 0 percent or 100 percent. At a cap of 0.03 all strategies except Fixed fraction 2% stop on every path. At a cap of 0.08 only Kelly, Optimal f and Naive stop, again on every path. At the default cap of 0.30 and with no cap at all, no strategy stops and every bar is zero." src="_images/early_stops_by_drawdown_limit.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="_images/early_stops_by_drawdown_limit.png"><img alt="Grouped bar chart of the percentage of runs that stopped before 500 bets, for nine strategies at four values of max_transaction_loss, drawn in greyscale with four distinct hatch patterns. Every bar is either 0 percent or 100 percent. At a cap of 0.03 all strategies except Fixed fraction 2% stop on every path. At a cap of 0.08 only Kelly, Optimal f and Naive stop, again on every path. At a cap of 0.30 and with no cap at all, no strategy stops and every bar is zero." src="_images/early_stops_by_drawdown_limit.png" style="width: 100%;" />
 </a>
 <figcaption>
 <p><span class="caption-text">Early stops by per-settlement loss cap, 55% edge, no cost, no estimate error.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
@@ -526,15 +527,16 @@ that makes it behave as a switch rather than a dial:</p>
 fraction, so the cap either sits above that fraction and never binds, or sits
 below it and kills the run on the first losing bet — at a cap of 0.08 the Kelly
 group stops after a median of 2 bets.
-The default <code class="docutils literal notranslate"><span class="pre">max_draw_down</span> <span class="pre">=</span> <span class="pre">0.3</span></code> never binds for any of the
-nine at a 55% edge, because none of them stakes more than 10%.</p>
+The explicit <code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span> <span class="pre">=</span> <span class="pre">0.3</span></code> never binds for any of the
+nine at a 55% edge, because none of them stakes more than 10% — the library
+default is <code class="docutils literal notranslate"><span class="pre">None</span></code> (uncapped), which is the study’s “no cap” bar.</p>
 <p>There is a second-order trap: a stopped run has a <em>lower</em> measured maximum
 drawdown than a completed one, because the losing settlement is refused rather
 than applied. At a cap of 0.08 the Kelly group’s median maximum drawdown is 0%,
 which is a number produced by not playing.</p>
 <p>If you want a cumulative drawdown budget, use <code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code>, which
 shrinks the bet fraction, or <code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code>, which holds a floor. Do not read
-<code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> as one.</p>
+<code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> as one.</p>
 </section>
 <section id="how-each-axis-moves-the-result">
 <h2>How each axis moves the result<a class="headerlink" href="#how-each-axis-moves-the-result" title="Link to this heading">¶</a></h2>
@@ -793,7 +795,7 @@ repeats the table above.</p>
 </tr>
 </tbody>
 </table>
-<p>Every early stop in this matrix is a <code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> breach. No path in any
+<p>Every early stop in this matrix is a <code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> breach. No path in any
 scenario reached bankruptcy, which is what the drawdown cap is there to prevent.</p>
 <p><strong>Edge.</strong> Growth is extremely sensitive to it. Moving from a 55% to a 60% win
 probability takes Kelly’s median from $12,234 to $23.6 million; moving down to
@@ -838,7 +840,7 @@ cap on every path; Half Kelly did not. Fractional Kelly’s usual justification 
 that it buys robustness to estimation error rather than just lower variance —
 is visible in this matrix.</p></li>
 <li><p><strong>If you want a cumulative drawdown budget</strong>, use <code class="docutils literal notranslate"><span class="pre">DrawdownAdjustedKelly</span></code> or
-<code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code>. <code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> will not give you one.</p></li>
+<code class="docutils literal notranslate"><span class="pre">CPPIStrategy</span></code>. <code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> will not give you one.</p></li>
 <li><p><strong>If you want a control to measure a strategy against</strong>, use
 <code class="docutils literal notranslate"><span class="pre">FixedFractionStrategy</span></code>. <code class="docutils literal notranslate"><span class="pre">NaiveStrategy</span></code> is Kelly for a standard binary bet.</p></li>
 <li><p><strong>If capital preservation dominates</strong>, CPPI had the tightest distribution of the
@@ -891,7 +893,7 @@ column used above.</p>
 <li class="toctree-l2"><a class="reference internal" href="#base-scenario">Base scenario</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#three-strategies-are-the-same-rule-here">Three strategies are the same rule here</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-the-cost-input-actually-does">What the cost input actually does</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#max-draw-down-is-a-per-settlement-cap-not-a-risk-budget"><code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> is a per-settlement cap, not a risk budget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#max-transaction-loss-is-a-per-settlement-cap-not-a-risk-budget"><code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> is a per-settlement cap, not a risk budget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-each-axis-moves-the-result">How each axis moves the result</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#seed-stability">Seed stability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#choosing-a-strategy">Choosing a strategy</a></li>
@@ -901,8 +903,11 @@ column used above.</p>
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

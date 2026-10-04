@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
-    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -181,8 +181,8 @@
 <span class="sd">fractions ``f_1..f_N`` of the bankroll on legs quoted at decimal odds</span>
 <span class="sd">``payoff_i`` (a winning leg pays ``payoff_i`` times its stake, stake</span>
 <span class="sd">included), the net win per unit staked on leg ``i`` is</span>
-<span class="sd">``a_i = payoff_i - 1 - transaction_cost`` and every losing leg costs</span>
-<span class="sd">``l = loss + transaction_cost`` per unit. Exactly one leg realizes, so the</span>
+<span class="sd">``a_i = payoff_i - 1 - transaction_cost_rate`` and every losing leg costs</span>
+<span class="sd">``l = loss + transaction_cost_rate`` per unit. Exactly one leg realizes, so the</span>
 <span class="sd">bankroll multiplier when leg ``j`` wins is</span>
 <span class="sd">``1 + a_j f_j - l * sum_{k != j} f_k`` and the log-growth optimal allocation</span>
 <span class="sd">maximizes::</span>
@@ -211,7 +211,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">,</span>
     <span class="n">_require_finite</span><span class="p">,</span>
-    <span class="n">normalize_probabilities</span><span class="p">,</span>
+    <span class="n">validate_probabilities</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
@@ -562,10 +562,10 @@
 
 <span class="sd">    Sizes one stake fraction per leg to maximize the expected log growth of</span>
 <span class="sd">    the bankroll: ``sum_i p_i * log(1 + a_i f_i - l * sum_{k != i} f_k)``</span>
-<span class="sd">    where ``a_i = payoff_i - 1 - transaction_cost`` is the net win per unit</span>
+<span class="sd">    where ``a_i = payoff_i - 1 - transaction_cost_rate`` is the net win per unit</span>
 <span class="sd">    staked on leg ``i`` (the payoffs are decimal odds: a winning leg pays its</span>
 <span class="sd">    payoff times its stake, stake included) and ``l = loss +</span>
-<span class="sd">    transaction_cost`` is the per-unit charge on every losing leg. Exactly one</span>
+<span class="sd">    transaction_cost_rate`` is the per-unit charge on every losing leg. Exactly one</span>
 <span class="sd">    leg realizes per round, so staking two legs is a hedge inside one market,</span>
 <span class="sd">    not two independent bets.</span>
 
@@ -594,15 +594,15 @@
 <span class="sd">        The decimal-odds multiplier paid by each mutually exclusive leg, in</span>
 <span class="sd">        leg order, on top of the stake's own return. Every payoff must be</span>
 <span class="sd">        finite and greater than 0; a leg whose payoff cannot beat its costs</span>
-<span class="sd">        (``payoff &lt;= 1 + transaction_cost``) is never staked.</span>
+<span class="sd">        (``payoff &lt;= 1 + transaction_cost_rate``) is never staked.</span>
 <span class="sd">    loss : float</span>
 <span class="sd">        The loss multiplier applied to every losing leg's stake.</span>
-<span class="sd">    transaction_cost : float, optional</span>
+<span class="sd">    transaction_cost_rate : float, optional</span>
 <span class="sd">        The transaction cost as a fraction of each unit staked, by default 0.</span>
 <span class="sd">        This is a per-unit *fractional* cost that enters the sizing formulas</span>
 <span class="sd">        alongside ``payoffs`` and ``loss``, so ``0.01`` means one percent of</span>
 <span class="sd">        the stake. Note this differs in unit from the simulators' flat</span>
-<span class="sd">        per-settlement ``transaction_costs`` fee.</span>
+<span class="sd">        per-settlement ``fee_per_bet`` flat fee.</span>
 <span class="sd">    min_probability : float, default=0.5</span>
 <span class="sd">        The minimum leg probability for the two-leg binary fallback to place</span>
 <span class="sd">        a stake, mirroring</span>
@@ -613,8 +613,8 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If ``payoffs`` is not a non-empty one-dimensional sequence of finite</span>
-<span class="sd">        numbers greater than 0, if ``loss`` or ``transaction_cost`` is not a</span>
-<span class="sd">        finite nonnegative number with ``loss + transaction_cost &gt; 0``, or if</span>
+<span class="sd">        numbers greater than 0, if ``loss`` or ``transaction_cost_rate`` is not a</span>
+<span class="sd">        finite nonnegative number with ``loss + transaction_cost_rate &gt; 0``, or if</span>
 <span class="sd">        ``min_probability`` is outside ``[0, 1]``.</span>
 
 <span class="sd">    Examples</span>
@@ -627,7 +627,7 @@
 <span class="sd">    &gt;&gt;&gt; strategy = MultiOutcomeKellyCriterion(payoffs=(3.0, 1.5), loss=1.0)</span>
 <span class="sd">    &gt;&gt;&gt; strategy.evaluate([0.5, 0.5], 1000.0)</span>
 <span class="sd">    (0.25, 0.0)</span>
-<span class="sd">    &gt;&gt;&gt; KellyCriterion(payoff=2.0, loss=1.0, transaction_cost=0).evaluate(0.5, 1000.0)</span>
+<span class="sd">    &gt;&gt;&gt; KellyCriterion(payoff=2.0, loss=1.0, transaction_cost_rate=0).evaluate(0.5, 1000.0)</span>
 <span class="sd">    0.25</span>
 
 <span class="sd">    A 1X2 market where only leg 0 has a standalone edge still splits the</span>
@@ -640,7 +640,7 @@
 <span class="sd">    &gt;&gt;&gt; stakes = strategy.evaluate([0.42, 0.27, 0.28], 1000.0)</span>
 <span class="sd">    &gt;&gt;&gt; tuple(round(stake, 6) for stake in stakes)</span>
 <span class="sd">    (0.203681, 0.06253, 0.0)</span>
-<span class="sd">    &gt;&gt;&gt; KellyCriterion(payoff=2.2, loss=1.0, transaction_cost=0, min_probability=0.4).evaluate(0.42, 1000.0)</span>
+<span class="sd">    &gt;&gt;&gt; KellyCriterion(payoff=2.2, loss=1.0, transaction_cost_rate=0, min_probability=0.4).evaluate(0.42, 1000.0)</span>
 <span class="sd">    0.15636363636363632</span>
 <span class="sd">    """</span>
 
@@ -648,7 +648,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payoffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
         <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">transaction_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">transaction_cost_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">min_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
@@ -661,7 +661,7 @@
 <span class="sd">            in leg order. Every payoff must be finite and greater than 0.</span>
 <span class="sd">        loss : float</span>
 <span class="sd">            The loss multiplier applied to every losing leg's stake.</span>
-<span class="sd">        transaction_cost : float, optional</span>
+<span class="sd">        transaction_cost_rate : float, optional</span>
 <span class="sd">            The transaction cost as a fraction of each unit staked, by default 0.</span>
 <span class="sd">        min_probability : float, default=0.5</span>
 <span class="sd">            The minimum leg probability for the two-leg binary fallback to</span>
@@ -672,7 +672,7 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If any constructor argument is outside its documented range.</span>
 <span class="sd">        """</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">payoffs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">min_probability</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Minimum probability must be between 0 and 1"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_probability</span> <span class="o">=</span> <span class="n">min_probability</span>
@@ -680,16 +680,18 @@
         <span class="c1"># the per-unit fractional cost. Shared per-unit charge on every</span>
         <span class="c1"># losing leg.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_net_gains</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">transaction_cost</span> <span class="k">for</span> <span class="n">payoff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span>
+            <span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">transaction_cost_rate</span> <span class="k">for</span> <span class="n">payoff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_total_cost</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_cost</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost_rate</span>
         <span class="c1"># At N=2 the allocation is exact binary Kelly per leg, scored by the</span>
         <span class="c1"># same class the golden tests pin. A leg whose decimal payoff cannot</span>
         <span class="c1"># return a positive profit has no scorer and is never staked.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_scorers</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">KellyCriterion</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_binary_scorers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-                <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">,</span> <span class="n">min_probability</span><span class="p">)</span>
+                <span class="n">KellyCriterion</span><span class="p">(</span>
+                    <span class="n">payoff</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="p">,</span> <span class="n">min_probability</span>
+                <span class="p">)</span>
                 <span class="k">if</span> <span class="n">payoff</span> <span class="o">&gt;</span> <span class="mf">1.0</span>
                 <span class="k">else</span> <span class="kc">None</span>
                 <span class="k">for</span> <span class="n">payoff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span>
@@ -708,7 +710,7 @@
 <span class="sd">        probabilities : sequence of float</span>
 <span class="sd">            The probability of each mutually exclusive leg, in leg order.</span>
 <span class="sd">            Must be a valid probability vector per</span>
-<span class="sd">            :func:`keeks.utils.normalize_probabilities` and match the number</span>
+<span class="sd">            :func:`keeks.utils.validate_probabilities` and match the number</span>
 <span class="sd">            of payoffs.</span>
 <span class="sd">        current_bankroll : float</span>
 <span class="sd">            The current bankroll amount. The optimal fractions do not depend</span>
@@ -728,7 +730,7 @@
 <span class="sd">            match the number of payoffs, or if ``current_bankroll`` is not</span>
 <span class="sd">            finite.</span>
 <span class="sd">        """</span>
-        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">validate_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
         <span class="n">current_bankroll</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">current_bankroll</span><span class="p">,</span> <span class="s2">"Current bankroll"</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -812,8 +814,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

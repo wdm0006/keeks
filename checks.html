@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>Contract Checks &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Utilities" href="utils.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="Contract Checks - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Contract Checks">
+<meta property="og:description" content="Contract Checks - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/checks.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Contract Checks">
+<meta name="twitter:description" content="Contract Checks - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/checks.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="index.html">Docs</a>
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>Contract Checks</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="contract-checks">
+<h1>Contract Checks<a class="headerlink" href="#contract-checks" title="Link to this heading">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">keeks.checks</span></code> module is the contract harness for contributors, on the
+<code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> <code class="docutils literal notranslate"><span class="pre">check_estimator</span></code> pattern: each check runs a contributor’s
+implementation against the documented contract of its base class - the bets a
+binary strategy sizes, the weights an allocator returns, the draws a
+joint-return model samples - and fails with the first violation it meets,
+so an implementation can be verified without running a simulator.</p>
+<p id="module-keeks.checks">Contract checks for strategies and joint-return models, on the
+<code class="docutils literal notranslate"><span class="pre">check_estimator</span></code> pattern.</p>
+<p>The strategy contracts are enforced at the base classes: a concrete
+<code class="docutils literal notranslate"><span class="pre">evaluate</span></code> returning a contract-violating vector fails loudly at its own
+call site. A contributor implementing
+<code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.binary_strategies.BaseStrategy</span></code>,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.BaseAllocationStrategy</span></code>, or
+<a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.models.JointReturnModel</span></code></a> has nonetheless had no way
+to verify an implementation against the documented contract without running
+a simulator. The checks here are that harness: each runs the contract’s
+probes and raises - <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> naming the expectation and the received
+value for a contract violation, <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> for a subject outside the
+check’s ABC - and passes silently when everything holds.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">FixedWeights</span><span class="p">,</span> <span class="n">check_allocation_strategy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_allocation_strategy</span><span class="p">(</span><span class="n">FixedWeights</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">]))</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="keeks.checks.check_allocation_strategy">
+<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_allocation_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="allocation.html#keeks.allocation.base.BaseAllocationStrategy" title="keeks.allocation.base.BaseAllocationStrategy"><span class="pre">BaseAllocationStrategy</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_allocation_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_allocation_strategy" title="Link to this definition">¶</a></dt>
+<dd><p>Verify an allocator against the documented weight contract.</p>
+<p>Runs the contract probes: <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> at a positive bankroll returns a
+valid long-only weight vector (one finite weight per option, each within
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, summing to no more than one within
+<code class="docutils literal notranslate"><span class="pre">PROBABILITY_SUM_TOLERANCE</span></code>); a nonpositive bankroll returns all zeros
+- there is nothing left to allocate - with one weight per option at
+every bankroll.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>strategy</strong> (<a class="reference internal" href="allocation.html#keeks.allocation.base.BaseAllocationStrategy" title="keeks.allocation.base.BaseAllocationStrategy"><em>BaseAllocationStrategy</em></a>) – The allocation strategy to check.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is not a
+    <code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.BaseAllocationStrategy</span></code> subclass.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseAllocationStrategy</span><span class="p">,</span> <span class="n">check_allocation_strategy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">_OverBudget</span><span class="p">(</span><span class="n">BaseAllocationStrategy</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_allocation_strategy</span><span class="p">(</span><span class="n">_OverBudget</span><span class="p">())</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">Strategy weights must sum to no more than one; got (0.6, 0.6)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keeks.checks.check_model">
+<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><span class="pre">JointReturnModel</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_model" title="Link to this definition">¶</a></dt>
+<dd><p>Verify a joint-return model against the documented sampling contract.</p>
+<p>Runs the contract probes: <code class="docutils literal notranslate"><span class="pre">sample(n_samples,</span> <span class="pre">rng)</span></code> returns a finite
+<code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">N)</span></code> matrix of joint simple returns with <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">&gt;=</span> <span class="pre">1</span></code>; the
+same generator state produces the same draws (the house reproducibility
+contract); every sample count carries one column per option; and
+<code class="docutils literal notranslate"><span class="pre">moments()</span></code>, when the model knows them, returns a shape <code class="docutils literal notranslate"><span class="pre">(N,)</span></code> mean
+and <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">N)</span></code> covariance - <code class="docutils literal notranslate"><span class="pre">None</span></code> is the documented answer for a
+model without closed-form moments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model</strong> (<a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><em>JointReturnModel</em></a>) – The joint-return model to check.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">model</span></code> is not a <a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.models.JointReturnModel</span></code></a>
+    subclass.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">binary_bets_model</span><span class="p">,</span> <span class="n">check_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_model</span><span class="p">(</span><span class="n">binary_bets_model</span><span class="p">([(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.30</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]))</span>
+</pre></div>
+</div>
+<p>A model that ignores its generator breaks reproducibility:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.allocation.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointReturnModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">_DriftingModel</span><span class="p">(</span><span class="n">JointReturnModel</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_model</span><span class="p">(</span><span class="n">_DriftingModel</span><span class="p">())</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">sample must be deterministic given a generator's state - the same generator state must produce the same draws (the house reproducibility contract), but two identically-seeded generators diverged</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keeks.checks.check_strategy">
+<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="binary_strategies.html#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><span class="pre">BaseStrategy</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_strategy" title="Link to this definition">¶</a></dt>
+<dd><p>Verify a binary strategy against the documented <code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code> contract.</p>
+<p>Runs the contract probes: <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> returns a single finite bankroll
+fraction within <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> across a probability grid; a nonpositive
+bankroll returns exactly <code class="docutils literal notranslate"><span class="pre">0.0</span></code> - there is nothing left to stake;
+<code class="docutils literal notranslate"><span class="pre">get_max_safe_bet</span></code> stays a fraction within <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> and answers
+<code class="docutils literal notranslate"><span class="pre">0.0</span></code> for a nonpositive bankroll; and the optional simulator hooks
+<code class="docutils literal notranslate"><span class="pre">update_bankroll</span></code> and <code class="docutils literal notranslate"><span class="pre">record_settlement</span></code>, when defined, are callable -
+the shapes the simulators resolve <code class="docutils literal notranslate"><span class="pre">getattr</span></code>-style.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>strategy</strong> (<a class="reference internal" href="binary_strategies.html#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><em>BaseStrategy</em></a>) – The binary strategy to check.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is not a <code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.binary_strategies.BaseStrategy</span></code>
+    subclass.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">KellyCriterion</span><span class="p">,</span> <span class="n">check_strategy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_strategy</span><span class="p">(</span><span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>A contract violation raises with the expectation and the received value:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">_Reckless</span><span class="p">(</span><span class="n">KellyCriterion</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">current_bankroll</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="mf">1.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_strategy</span><span class="p">(</span><span class="n">_Reckless</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">evaluate(0.0, 1000.0) must return a bankroll fraction between 0 and 1, got 1.5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contract Checks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#keeks.checks.check_allocation_strategy"><code class="docutils literal notranslate"><span class="pre">check_allocation_strategy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keeks.checks.check_model"><code class="docutils literal notranslate"><span class="pre">check_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keeks.checks.check_strategy"><code class="docutils literal notranslate"><span class="pre">check_strategy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

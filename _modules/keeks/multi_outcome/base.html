@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
-    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -179,12 +179,15 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">,</span> <span class="n">_require_finite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROBABILITY_SUM_TOLERANCE</span><span class="p">,</span> <span class="n">_require_finite</span><span class="p">,</span> <span class="n">_validated_evaluate</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_validate_stake_fractions</span><span class="p">(</span><span class="n">stakes</span><span class="p">,</span> <span class="n">leg_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_stake_fractions</span><span class="p">(</span>
+    <span class="n">stakes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">leg_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Coerce a strategy's stake vector to a tuple of finite floats within ``[0, 1]``.</span>
 
@@ -246,7 +249,7 @@
 
 <div class="viewcode-block" id="BaseMultiOutcomeStrategy">
 <a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.base.BaseMultiOutcomeStrategy">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BaseMultiOutcomeStrategy</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseMultiOutcomeStrategy</span><span class="p">(</span><span class="n">ParameterMixin</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Abstract base class for all multi-outcome betting strategies.</span>
 
@@ -254,15 +257,32 @@
 <span class="sd">    must implement. A multi-outcome strategy sizes stakes on the mutually</span>
 <span class="sd">    exclusive legs of one market - a 1X2 football match, for instance - in a</span>
 <span class="sd">    single decision: exactly one leg settles, every losing leg's stake is</span>
-<span class="sd">    charged ``loss`` plus ``transaction_cost``, and the winning leg pays its</span>
+<span class="sd">    charged ``loss`` plus ``transaction_cost_rate``, and the winning leg pays its</span>
 <span class="sd">    payoff multiplier times its stake.</span>
 
 <span class="sd">    Concrete strategy implementations should inherit from this class and</span>
-<span class="sd">    implement the evaluate method.</span>
+<span class="sd">    implement the evaluate method, which the base then enforces: every</span>
+<span class="sd">    concrete ``evaluate`` is wrapped so its returned stake vector is</span>
+<span class="sd">    validated through :func:`_validate_stake_fractions` before the caller</span>
+<span class="sd">    sees it - a subclass returning contract-violating stakes fails its own</span>
+<span class="sd">    ``evaluate()`` with the validator's message plus the returned vector,</span>
+<span class="sd">    instead of passing silently until the simulator's boundary gate. The</span>
+<span class="sd">    same holds for the allocation layer's weight contract.</span>
 <span class="sd">    """</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Enforce the stake contract at the boundary: a concrete evaluate</span>
+        <span class="c1"># returning a vector that breaks it fails loudly at its own call</span>
+        <span class="c1"># site, with the same tolerance semantics the simulator's gate uses.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">evaluate</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"evaluate"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">evaluate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">evaluate</span><span class="p">,</span> <span class="s2">"_keeks_contract_validated"</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">evaluate</span> <span class="o">=</span> <span class="n">_validated_evaluate</span><span class="p">(</span><span class="n">evaluate</span><span class="p">,</span> <span class="n">_validate_stake_fractions</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">payoffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payoffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the strategy.</span>
@@ -271,32 +291,34 @@
 <span class="sd">        ----------</span>
 <span class="sd">        payoffs : sequence of float</span>
 <span class="sd">            The payoff multiplier for each mutually exclusive leg, in leg</span>
-<span class="sd">            order. Every payoff must be finite and greater than 0. The legs</span>
+<span class="sd">            order. Every payoff must be finite and greater than 0. Each is</span>
+<span class="sd">            the leg's *decimal odds* - the stake-included multiplier, so the</span>
+<span class="sd">            net win is ``payoff - 1`` - unlike the binary strategies, whose</span>
+<span class="sd">            ``payoff`` is the net win itself. The legs</span>
 <span class="sd">            are positional and payoffs are fixed at construction: leg ``i``</span>
 <span class="sd">            of the probabilities passed to :meth:`evaluate` is settled with</span>
 <span class="sd">            leg ``i`` of ``payoffs``, and a strategy reprices by fresh</span>
 <span class="sd">            construction, not by mutating its odds.</span>
 <span class="sd">        loss : float</span>
 <span class="sd">            The loss multiplier applied to every losing leg's stake.</span>
-<span class="sd">        transaction_cost : float, optional</span>
+<span class="sd">        transaction_cost_rate : float, optional</span>
 <span class="sd">            The transaction cost as a fraction of each unit staked, by default 0.</span>
 <span class="sd">            This is a per-unit *fractional* cost that enters the sizing formulas</span>
 <span class="sd">            alongside ``payoffs`` and ``loss``, so ``0.01`` means one percent of</span>
 <span class="sd">            the stake and the fee it represents grows with the bet.</span>
 
-<span class="sd">            The simulators in ``keeks.simulators`` take a near-identically named</span>
-<span class="sd">            ``transaction_costs`` (plural) that is an *absolute* bankroll amount</span>
-<span class="sd">            charged once per settled bet, independent of stake size. The two are</span>
-<span class="sd">            different units: passing the same number to both models two very</span>
-<span class="sd">            different costs.</span>
+<span class="sd">            The simulators in ``keeks.simulators`` take ``fee_per_bet``: an</span>
+<span class="sd">            *absolute* bankroll amount charged once per settled bet,</span>
+<span class="sd">            independent of stake size. The two are different units: passing</span>
+<span class="sd">            the same number to both models two very different costs.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If ``payoffs`` is not a non-empty one-dimensional sequence of</span>
 <span class="sd">            finite numbers greater than 0, if any of ``loss`` or</span>
-<span class="sd">            ``transaction_cost`` is not a finite number, if ``loss`` is</span>
-<span class="sd">            negative, or if ``loss + transaction_cost`` is not positive.</span>
+<span class="sd">            ``transaction_cost_rate`` is not a finite number, if ``loss`` is</span>
+<span class="sd">            negative, or if ``loss + transaction_cost_rate`` is not positive.</span>
 <span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">payoff_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">payoffs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -314,21 +336,23 @@
         <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">"Loss"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Loss must be non-negative"</span><span class="p">)</span>
-        <span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_cost</span><span class="p">,</span> <span class="s2">"Transaction cost"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">transaction_cost</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction cost must be non-negative"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">transaction_cost_rate</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span>
+            <span class="n">transaction_cost_rate</span><span class="p">,</span> <span class="s2">"Transaction cost rate"</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">transaction_cost_rate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction cost rate must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost_rate</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"Total cost (loss + transaction_cost) must be greater than 0"</span>
+                <span class="s2">"Total cost (loss + transaction_cost_rate) must be greater than 0"</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">payoff_array</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost_rate</span> <span class="o">=</span> <span class="n">transaction_cost_rate</span>
         <span class="c1"># Constructor-only constant: for a positive bankroll the bankroll term</span>
-        <span class="c1"># in current_bankroll / (loss + transaction_cost) cancels, so the</span>
+        <span class="c1"># in current_bankroll / (loss + transaction_cost_rate) cancels, so the</span>
         <span class="c1"># aggregate cap is a fixed fraction (see get_max_safe_total_bet).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_total_fraction</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_total_fraction</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost_rate</span><span class="p">))</span>
 
 <div class="viewcode-block" id="BaseMultiOutcomeStrategy.get_max_safe_total_bet">
 <a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.base.BaseMultiOutcomeStrategy.get_max_safe_total_bet">[docs]</a>
@@ -356,15 +380,15 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Under net settlement exactly one leg of the market wins and every</span>
-<span class="sd">        losing leg's stake is charged ``loss + transaction_cost``, so a total</span>
+<span class="sd">        losing leg's stake is charged ``loss + transaction_cost_rate``, so a total</span>
 <span class="sd">        stake fraction ``F`` spread across the legs can lose at most</span>
-<span class="sd">        ``F * (loss + transaction_cost)`` of the bankroll - the worst leg's</span>
+<span class="sd">        ``F * (loss + transaction_cost_rate)`` of the bankroll - the worst leg's</span>
 <span class="sd">        charge being the binding one. Keeping that worst case within the</span>
-<span class="sd">        bankroll requires ``F &lt;= current_bankroll / (loss + transaction_cost)``;</span>
+<span class="sd">        bankroll requires ``F &lt;= current_bankroll / (loss + transaction_cost_rate)``;</span>
 <span class="sd">        expressed as a proportion of the bankroll the bankroll term cancels,</span>
 <span class="sd">        so for a positive bankroll this is exactly</span>
-<span class="sd">        ``min(1.0, 1 / (loss + transaction_cost))``. Every leg shares one</span>
-<span class="sd">        scalar ``loss`` and ``transaction_cost``, so the worst leg's per-leg</span>
+<span class="sd">        ``min(1.0, 1 / (loss + transaction_cost_rate))``. Every leg shares one</span>
+<span class="sd">        scalar ``loss`` and ``transaction_cost_rate``, so the worst leg's per-leg</span>
 <span class="sd">        bound is also the aggregate bound - the same value</span>
 <span class="sd">        ``keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet`` returns</span>
 <span class="sd">        for a single binary bet with the same charges. A non-positive bankroll</span>
@@ -391,7 +415,7 @@
 <span class="sd">            The probability of each mutually exclusive leg, in leg order. Must</span>
 <span class="sd">            be a non-empty one-dimensional sequence of finite, nonnegative</span>
 <span class="sd">            numbers whose sum is at most ``1 + PROBABILITY_SUM_TOLERANCE`` -</span>
-<span class="sd">            the contract :func:`keeks.utils.normalize_probabilities` enforces.</span>
+<span class="sd">            the contract :func:`keeks.utils.validate_probabilities` enforces.</span>
 <span class="sd">            Probability mass below one models a void or push outcome on which</span>
 <span class="sd">            no leg settles.</span>
 <span class="sd">        current_bankroll : float</span>
@@ -403,7 +427,11 @@
 <span class="sd">            One stake fraction of the bankroll per leg: ``len(result) ==</span>
 <span class="sd">            len(probabilities)``, every element finite and within ``[0, 1]``,</span>
 <span class="sd">            and ``sum(result) &lt;= 1 + PROBABILITY_SUM_TOLERANCE``.</span>
-<span class="sd">            Implementations accept any sequence input and return a tuple.</span>
+<span class="sd">            Implementations accept any sequence input and return a tuple; the</span>
+<span class="sd">            base class validates the returned vector through</span>
+<span class="sd">            :func:`_validate_stake_fractions` before the caller sees it, so</span>
+<span class="sd">            implementations need not (but may - it is idempotent) validate</span>
+<span class="sd">            internally.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -435,8 +463,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

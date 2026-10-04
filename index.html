@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -207,16 +207,16 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.simulators.repeated_binary</span><span class="w"> </span><span class="kn">import</span> <span class="n">RepeatedBinarySimulator</span>
 
 <span class="c1"># Create a bankroll with initial funds</span>
-<span class="n">bankroll</span> <span class="o">=</span> <span class="n">BankRoll</span><span class="p">(</span><span class="n">initial_funds</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">max_draw_down</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">bankroll</span> <span class="o">=</span> <span class="n">BankRoll</span><span class="p">(</span><span class="n">initial_funds</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span> <span class="n">max_transaction_loss</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 
 <span class="c1"># Create a Kelly Criterion strategy</span>
-<span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 
 <span class="c1"># Create a simulator with a fixed probability</span>
 <span class="n">simulator</span> <span class="o">=</span> <span class="n">RepeatedBinarySimulator</span><span class="p">(</span>
     <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">transaction_costs</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">fee_per_bet</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
     <span class="n">probability</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span>  <span class="c1"># 55% chance of winning</span>
     <span class="n">trials</span><span class="o">=</span><span class="mi">1000</span>
 <span class="p">)</span>
@@ -241,6 +241,7 @@
 <li><p><strong>CPPI (Constant Proportion Portfolio Insurance)</strong>: Strategy that protects a floor value while allowing upside exposure</p></li>
 <li><p><strong>Dynamic Bankroll Management</strong>: Adaptive strategy based on recent performance</p></li>
 <li><p><strong>Naive Strategy</strong>: A simple strategy that bets the full amount when expected value is positive</p></li>
+<li><p><strong>Portfolio Allocation</strong>: Size portfolios across distribution-valued options - mean-variance, risk budgeting, HRP, mean-CVaR, and online methods over one configurable joint-return input model (see <a class="reference internal" href="allocation.html"><span class="doc">Portfolio Allocation</span></a>)</p></li>
 </ul>
 <p>Each strategy offers different tradeoffs between risk and reward, allowing you to select the approach that best matches your investment goals and risk tolerance.</p>
 </section>
@@ -324,7 +325,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#base-scenario">Base scenario</a></li>
 <li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#three-strategies-are-the-same-rule-here">Three strategies are the same rule here</a></li>
 <li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#what-the-cost-input-actually-does">What the cost input actually does</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#max-draw-down-is-a-per-settlement-cap-not-a-risk-budget"><code class="docutils literal notranslate"><span class="pre">max_draw_down</span></code> is a per-settlement cap, not a risk budget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#max-transaction-loss-is-a-per-settlement-cap-not-a-risk-budget"><code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> is a per-settlement cap, not a risk budget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#how-each-axis-moves-the-result">How each axis moves the result</a></li>
 <li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#seed-stability">Seed stability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#choosing-a-strategy">Choosing a strategy</a></li>
@@ -358,6 +359,23 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="multi_outcome.html#seeding-and-reproducibility">Seeding and Reproducibility</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#the-strategy-contract">The Strategy Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#joint-return-input-models">Joint-Return Input Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#moment-based-methods">Moment-Based Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#scenario-based-methods">Scenario-Based Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#hierarchical-risk-parity">Hierarchical Risk Parity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#estimators">Estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#online-allocation">Online Allocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#simulator">Simulator</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#bankroll-growth-and-drawdown">Bankroll growth and drawdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#weights-and-risk">Weights and risk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#structure-and-tails">Structure and tails</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="bankroll.html#exceptions">Exceptions</a></li>
 </ul>
@@ -366,8 +384,14 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="utils.html#keeks.utils.crra_utility"><code class="docutils literal notranslate"><span class="pre">crra_utility()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#keeks.utils.expected_utility"><code class="docutils literal notranslate"><span class="pre">expected_utility()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#keeks.utils.find_indifference_price"><code class="docutils literal notranslate"><span class="pre">find_indifference_price()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html#keeks.utils.normalize_probabilities"><code class="docutils literal notranslate"><span class="pre">normalize_probabilities()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#keeks.utils.validate_probabilities"><code class="docutils literal notranslate"><span class="pre">validate_probabilities()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="checks.html#keeks.checks.check_allocation_strategy"><code class="docutils literal notranslate"><span class="pre">check_allocation_strategy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks.html#keeks.checks.check_model"><code class="docutils literal notranslate"><span class="pre">check_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="checks.html#keeks.checks.check_strategy"><code class="docutils literal notranslate"><span class="pre">check_strategy()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -401,8 +425,11 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

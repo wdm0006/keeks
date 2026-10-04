@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
-    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -176,6 +176,9 @@
   <h1>Source code for keeks.binary_strategies.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterMixin</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_require_finite</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
@@ -183,43 +186,76 @@
 
 <div class="viewcode-block" id="BaseStrategy">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BaseStrategy</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseStrategy</span><span class="p">(</span><span class="n">ParameterMixin</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Abstract base class for all binary betting strategies.</span>
 
 <span class="sd">    This class defines the interface that all binary betting strategies must implement.</span>
 <span class="sd">    Concrete strategy implementations should inherit from this class and implement</span>
 <span class="sd">    the evaluate method.</span>
+
+<span class="sd">    Beyond ``evaluate``, the simulators in ``keeks.simulators`` resolve two</span>
+<span class="sd">    optional hooks ``getattr``-style once per run and fire them around each</span>
+<span class="sd">    settled bet. This base class implements neither, so a strategy may omit</span>
+<span class="sd">    them freely: the simulator skips the hook and the strategy stays</span>
+<span class="sd">    stateless. A stateful strategy that needs the feedback but omits the</span>
+<span class="sd">    hook simply sizes from stale state - there is no error, which is why the</span>
+<span class="sd">    contract is documented here.</span>
+
+<span class="sd">    - ``update_bankroll(current_bankroll)`` - fired at the top of every</span>
+<span class="sd">      trial, before ``evaluate``, with the bankroll's current total funds,</span>
+<span class="sd">      so an adaptive strategy can size from the bankroll as it stands</span>
+<span class="sd">      (:class:`keeks.binary_strategies.CPPIStrategy` ratchets its floor from</span>
+<span class="sd">      it). Not fired once the bankroll is depleted - the simulation has</span>
+<span class="sd">      already stopped.</span>
+
+<span class="sd">    - ``record_settlement(won, realized_returns)`` - fired once per *settled*</span>
+<span class="sd">      bet, after the bankroll transfer: ``won`` holds the bet's realized</span>
+<span class="sd">      outcome (one entry per settled option - a single ``True`` or ``False``</span>
+<span class="sd">      for the binary simulators) and ``realized_returns`` the realized</span>
+<span class="sd">      simple return per option on the bankroll, positive or negative. Not</span>
+<span class="sd">      fired for trials the strategy sits out (a zero stake),</span>
+<span class="sd">      and not fired for a settlement a bankroll safeguard refused - a</span>
+<span class="sd">      refused settlement leaves the bankroll unchanged and stops the</span>
+<span class="sd">      simulation, so there is no result to report</span>
+<span class="sd">      (:class:`keeks.binary_strategies.DynamicBankrollManagement` tracks</span>
+<span class="sd">      streaks and volatility through this hook).</span>
+
+<span class="sd">    A hook should not raise: exceptions other than the simulator's own</span>
+<span class="sd">    ``RuinError`` settlement handling propagate to the caller.</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">transaction_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the strategy.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        payoff : float</span>
-<span class="sd">            The payoff multiplier for winning.</span>
+<span class="sd">            The payoff multiplier for winning: the *net* amount won per unit</span>
+<span class="sd">            staked, excluding the stake's return - decimal odds minus one, so</span>
+<span class="sd">            even money is ``1.0`` and decimal odds ``3.0`` are ``payoff=2.0``.</span>
+<span class="sd">            This is the opposite of the multi-outcome and allocation layers,</span>
+<span class="sd">            where the same name means the decimal odds themselves.</span>
 <span class="sd">        loss : float</span>
 <span class="sd">            The loss multiplier for losing.</span>
-<span class="sd">        transaction_cost : float, optional</span>
+<span class="sd">        transaction_cost_rate : float, optional</span>
 <span class="sd">            The transaction cost as a fraction of each unit staked, by default 0.</span>
 <span class="sd">            This is a per-unit *fractional* cost that enters the sizing formulas</span>
 <span class="sd">            alongside ``payoff`` and ``loss`` (Kelly, for instance, computes</span>
-<span class="sd">            ``payoff - transaction_cost``), so ``0.01`` means one percent of the</span>
+<span class="sd">            ``payoff - transaction_cost_rate``), so ``0.01`` means one percent of the</span>
 <span class="sd">            stake and the fee it represents grows with the bet.</span>
 
-<span class="sd">            The simulators in ``keeks.simulators`` take a near-identically named</span>
-<span class="sd">            ``transaction_costs`` (plural) that is an *absolute* bankroll amount</span>
-<span class="sd">            charged once per settled bet, independent of stake size. The two are</span>
-<span class="sd">            different units: passing the same number to both models two very</span>
-<span class="sd">            different costs.</span>
+<span class="sd">            The simulators in ``keeks.simulators`` take ``fee_per_bet``: an</span>
+<span class="sd">            *absolute* bankroll amount charged once per settled bet,</span>
+<span class="sd">            independent of stake size. The two are different units: passing</span>
+<span class="sd">            the same number to both models two very different costs.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If any of payoff, loss or transaction_cost is not a finite number, if</span>
-<span class="sd">            payoff is not positive, loss is negative, or loss + transaction_cost</span>
+<span class="sd">            If any of payoff, loss or transaction_cost_rate is not a finite number, if</span>
+<span class="sd">            payoff is not positive, loss is negative, or loss + transaction_cost_rate</span>
 <span class="sd">            is not positive.</span>
 <span class="sd">        """</span>
         <span class="n">payoff</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="s2">"Payoff"</span><span class="p">)</span>
@@ -228,21 +264,23 @@
         <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">"Loss"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Loss must be non-negative"</span><span class="p">)</span>
-        <span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_cost</span><span class="p">,</span> <span class="s2">"Transaction cost"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">transaction_cost</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction cost must be non-negative"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">transaction_cost_rate</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span>
+            <span class="n">transaction_cost_rate</span><span class="p">,</span> <span class="s2">"Transaction cost rate"</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">transaction_cost_rate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction cost rate must be non-negative"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost_rate</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"Total cost (loss + transaction_cost) must be greater than 0"</span>
+                <span class="s2">"Total cost (loss + transaction_cost_rate) must be greater than 0"</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">=</span> <span class="n">payoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost</span> <span class="o">=</span> <span class="n">transaction_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_cost_rate</span> <span class="o">=</span> <span class="n">transaction_cost_rate</span>
         <span class="c1"># Constructor-only constant: for a positive bankroll the bankroll term</span>
-        <span class="c1"># in current_bankroll / (loss + transaction_cost) cancels, so the cap</span>
+        <span class="c1"># in current_bankroll / (loss + transaction_cost_rate) cancels, so the cap</span>
         <span class="c1"># is a fixed fraction.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_fraction</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_safe_fraction</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">loss</span> <span class="o">+</span> <span class="n">transaction_cost_rate</span><span class="p">))</span>
 
 <div class="viewcode-block" id="BaseStrategy.get_max_safe_bet">
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet">[docs]</a>
@@ -269,9 +307,9 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        The maximum stake that cannot drive the bankroll negative is</span>
-<span class="sd">        ``current_bankroll / (loss + transaction_cost)``; expressed as a</span>
+<span class="sd">        ``current_bankroll / (loss + transaction_cost_rate)``; expressed as a</span>
 <span class="sd">        proportion of the bankroll the bankroll term cancels, so for a positive</span>
-<span class="sd">        bankroll this is exactly ``min(1.0, 1 / (loss + transaction_cost))``.</span>
+<span class="sd">        bankroll this is exactly ``min(1.0, 1 / (loss + transaction_cost_rate))``.</span>
 <span class="sd">        A non-positive bankroll has no safe stake at all, so the answer there is</span>
 <span class="sd">        ``0.0``.</span>
 <span class="sd">        """</span>
@@ -285,12 +323,12 @@
 <a class="viewcode-back" href="../../../binary_strategies.html#keeks.binary_strategies.base.BaseStrategy.calculate_max_entry_price">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_max_entry_price</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">outcomes</span><span class="p">,</span>
-        <span class="n">probabilities</span><span class="p">,</span>
-        <span class="n">current_wealth</span><span class="p">,</span>
-        <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-        <span class="n">max_search_fraction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">outcomes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">current_wealth</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">max_search_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate maximum price willing to pay for a one-time gamble.</span>
 
@@ -375,7 +413,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
-<span class="sd">            The proportion of the bankroll to bet.</span>
+<span class="sd">            The proportion of the bankroll to bet - ``0.0`` for a</span>
+<span class="sd">            nonpositive bankroll, where there is nothing left to stake.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -405,8 +444,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

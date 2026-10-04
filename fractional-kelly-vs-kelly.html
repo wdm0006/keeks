@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -239,7 +239,7 @@ probability estimate is correct.</p>
 </section>
 <section id="python-comparison-with-identical-inputs">
 <h2>Python comparison with identical inputs<a class="headerlink" href="#python-comparison-with-identical-inputs" title="Link to this heading">¶</a></h2>
-<p>Both classes take the same <code class="docutils literal notranslate"><span class="pre">payoff</span></code>, <code class="docutils literal notranslate"><span class="pre">loss</span></code>, and <code class="docutils literal notranslate"><span class="pre">transaction_cost</span></code>
+<p>Both classes take the same <code class="docutils literal notranslate"><span class="pre">payoff</span></code>, <code class="docutils literal notranslate"><span class="pre">loss</span></code>, and <code class="docutils literal notranslate"><span class="pre">transaction_cost_rate</span></code>
 inputs and share the same <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">FractionalKellyCriterion</span><span class="p">,</span>
@@ -249,7 +249,7 @@ inputs and share the same <code class="docutils literal notranslate"><span class
 <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"payoff"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="s2">"loss"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="s2">"transaction_cost"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s2">"transaction_cost_rate"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">bankroll</span> <span class="o">=</span> <span class="mf">1_000.0</span>
 <span class="n">probability</span> <span class="o">=</span> <span class="mf">0.55</span>
@@ -300,7 +300,7 @@ choices you make going in.</p>
 mutate the bankroll in place, and some strategies carry state across
 <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> calls;</p></li>
 <li><p><strong>identical simulator inputs</strong> (<code class="docutils literal notranslate"><span class="pre">payoff</span></code>, <code class="docutils literal notranslate"><span class="pre">loss</span></code>,
-<code class="docutils literal notranslate"><span class="pre">transaction_costs</span></code>, <code class="docutils literal notranslate"><span class="pre">probability</span></code>) across every strategy being
+<code class="docutils literal notranslate"><span class="pre">fee_per_bet</span></code>, <code class="docutils literal notranslate"><span class="pre">probability</span></code>) across every strategy being
 compared;</p></li>
 <li><p><strong>multiple seeded runs</strong>, because a single stochastic path does not
 support a general claim about which strategy is “better”; and</p></li>
@@ -359,8 +359,11 @@ under identical, seeded assumptions.</p>
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">

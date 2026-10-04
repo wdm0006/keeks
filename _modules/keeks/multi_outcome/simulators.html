@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=c49ddd0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
-    <script src="../../../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -190,6 +190,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -199,8 +202,11 @@
     <span class="n">_require_finite</span><span class="p">,</span>
     <span class="n">_validate_simulator_probability</span><span class="p">,</span>
     <span class="n">_validate_simulator_seed</span><span class="p">,</span>
-    <span class="n">normalize_probabilities</span><span class="p">,</span>
+    <span class="n">validate_probabilities</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.bankroll</span><span class="w"> </span><span class="kn">import</span> <span class="n">BankRoll</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">"willmcginnis"</span>
 
@@ -251,8 +257,8 @@
 <span class="sd">    checked; a duck-typed strategy needs no ``payoffs``/``loss`` at all and</span>
 <span class="sd">    its compatibility stays the caller's responsibility.</span>
 
-<span class="sd">    The strategy's fractional ``transaction_cost`` and the simulator's flat</span>
-<span class="sd">    ``transaction_costs`` fee are deliberately different units and are never</span>
+<span class="sd">    The strategy's fractional ``transaction_cost_rate`` and the simulator's flat</span>
+<span class="sd">    ``fee_per_bet`` fee are deliberately different units and are never</span>
 <span class="sd">    compared.</span>
 
 <span class="sd">    Raises</span>
@@ -300,13 +306,13 @@
 <span class="sd">        ``probabilities`` is settled with leg ``i`` of ``payoffs``.</span>
 <span class="sd">    loss : float</span>
 <span class="sd">        The loss multiplier applied to every losing leg's stake.</span>
-<span class="sd">    transaction_costs : float</span>
+<span class="sd">    fee_per_bet : float</span>
 <span class="sd">        The flat fee charged once per settled leg, regardless of outcome. This</span>
 <span class="sd">        is an absolute bankroll amount, not a fraction of the stake: it is</span>
 <span class="sd">        subtracted from the winning leg's settlement and added to every</span>
 <span class="sd">        losing leg's. Legs the strategy declines (zero stake) settle nothing</span>
 <span class="sd">        and pay no fee. Note this differs in unit from the singular</span>
-<span class="sd">        ``transaction_cost`` taken by strategies in ``keeks.multi_outcome``,</span>
+<span class="sd">        ``transaction_cost_rate`` taken by strategies in ``keeks.multi_outcome``,</span>
 <span class="sd">        which is a per-unit fraction of the stake used for sizing.</span>
 <span class="sd">    probabilities : sequence of float</span>
 <span class="sd">        The fixed probability of each leg for all trials. Must be a non-empty</span>
@@ -324,7 +330,7 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If ``payoffs`` is not a non-empty one-dimensional sequence of finite</span>
-<span class="sd">        numbers greater than 0, if ``loss`` or ``transaction_costs`` is not</span>
+<span class="sd">        numbers greater than 0, if ``loss`` or ``fee_per_bet`` is not</span>
 <span class="sd">        finite and nonnegative, if ``probabilities`` is not a valid probability</span>
 <span class="sd">        vector or differs in length from ``payoffs``, or if ``trials`` is not</span>
 <span class="sd">        a nonnegative integer, or if ``seed``</span>
@@ -359,21 +365,25 @@
 <span class="sd">       the bankroll as it stood when the trial began, so settlements within</span>
 <span class="sd">       the batch never resize later legs. Each staked leg settles through the</span>
 <span class="sd">       same net-settlement flow the binary simulators use: the realized leg</span>
-<span class="sd">       nets ``(payoff - 1) * stake - transaction_costs`` (deposited, or withdrawn</span>
+<span class="sd">       nets ``(payoff - 1) * stake - fee_per_bet`` (deposited, or withdrawn</span>
 <span class="sd">       when the fee dominates) and every other staked leg is charged</span>
-<span class="sd">       ``loss * stake + transaction_costs``.</span>
+<span class="sd">       ``loss * stake + fee_per_bet``.</span>
 <span class="sd">    6. When a bankroll safeguard refuses a settlement (:class:`RuinError`),</span>
 <span class="sd">       that leg's settlement leaves the bankroll unchanged and reports a 0.0</span>
 <span class="sd">       return, the remaining legs of the batch still settle, and the</span>
 <span class="sd">       simulation stops after the batch completes - never mid-batch.</span>
 
 <span class="sd">    **The ``record_settlement`` hook.** Strategies expose an N-ary settlement</span>
-<span class="sd">    hook with the signature ``record_settlement(won_leg, return_pcts)``:</span>
-<span class="sd">    ``won_leg`` is the realized leg's index, or ``None`` for a void or push;</span>
-<span class="sd">    ``return_pcts`` holds one signed net return per leg, as a fraction of the</span>
-<span class="sd">    bankroll before the trial, with ``0.0`` for legs that settled nothing:</span>
-<span class="sd">    declined legs, void rounds, and settlements a safeguard refused. The hook</span>
-<span class="sd">    fires once per staked trial, including voids, after the batch settles.</span>
+<span class="sd">    hook with the signature ``record_settlement(won, realized_returns)``:</span>
+<span class="sd">    ``won`` holds one outcome flag per leg - ``True`` for the realized</span>
+<span class="sd">    winner, ``False`` for every leg that lost the market draw (declined</span>
+<span class="sd">    legs included: the draw realizes the whole market), and all ``None`` on</span>
+<span class="sd">    a void or push, where no leg settled and every stake refunds;</span>
+<span class="sd">    ``realized_returns`` holds one signed net return per leg, as a fraction</span>
+<span class="sd">    of the bankroll before the trial, with ``0.0`` for legs that settled</span>
+<span class="sd">    nothing: declined legs, void rounds, and settlements a safeguard</span>
+<span class="sd">    refused. The hook fires once per staked trial, including voids, after</span>
+<span class="sd">    the batch settles.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -381,7 +391,7 @@
 <span class="sd">    &gt;&gt;&gt; simulator = RepeatedMultiOutcomeSimulator(</span>
 <span class="sd">    ...     payoffs=(3.2, 3.4, 2.4),</span>
 <span class="sd">    ...     loss=1.0,</span>
-<span class="sd">    ...     transaction_costs=0.0,</span>
+<span class="sd">    ...     fee_per_bet=0.0,</span>
 <span class="sd">    ...     probabilities=(0.42, 0.27, 0.28),</span>
 <span class="sd">    ...     trials=10_000,</span>
 <span class="sd">    ...     seed=42,</span>
@@ -394,24 +404,24 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">payoffs</span><span class="p">,</span>
-        <span class="n">loss</span><span class="p">,</span>
-        <span class="n">transaction_costs</span><span class="p">,</span>
-        <span class="n">probabilities</span><span class="p">,</span>
-        <span class="n">trials</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">payoffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">fee_per_bet</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">trials</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">_validate_payoffs</span><span class="p">(</span><span class="n">payoffs</span><span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="s2">"Loss"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Loss must be non-negative"</span><span class="p">)</span>
-        <span class="n">transaction_costs</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_costs</span><span class="p">,</span> <span class="s2">"Transaction costs"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">transaction_costs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction costs must be non-negative"</span><span class="p">)</span>
+        <span class="n">fee_per_bet</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">fee_per_bet</span><span class="p">,</span> <span class="s2">"Fee per bet"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fee_per_bet</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Fee per bet must be non-negative"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">loss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">transaction_costs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">fee_per_bet</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">normalize_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">validate_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">"Payoffs and probabilities must have the same length: "</span>
@@ -440,7 +450,9 @@
 
 <div class="viewcode-block" id="RepeatedMultiOutcomeSimulator.evaluate_strategy">
 <a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.simulators.RepeatedMultiOutcomeSimulator.evaluate_strategy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="n">BaseMultiOutcomeStrategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">:</span> <span class="s2">"BankRoll"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Evaluate a multi-outcome strategy over multiple trials on a fixed market.</span>
 
@@ -509,15 +521,15 @@
                 <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
             <span class="p">)</span>
             <span class="n">realized</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cumulative</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">))</span>
-            <span class="n">won_leg</span> <span class="o">=</span> <span class="n">realized</span> <span class="k">if</span> <span class="n">realized</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">realized_leg</span> <span class="o">=</span> <span class="n">realized</span> <span class="k">if</span> <span class="n">realized</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
             <span class="n">returns</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">won_leg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">realized_leg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Void or push: the market refunds every stake, so no leg</span>
                 <span class="c1"># settles and no fee is charged.</span>
                 <span class="k">if</span> <span class="n">record_settlement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">record_settlement</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
+                    <span class="n">record_settlement</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">returns</span><span class="p">)),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
                 <span class="k">continue</span>
 
             <span class="c1"># Stakes come from the bankroll as it stood when the trial began;</span>
@@ -530,25 +542,35 @@
                     <span class="k">continue</span>
                 <span class="n">stake</span> <span class="o">=</span> <span class="n">bettable_funds</span> <span class="o">*</span> <span class="n">fraction</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">leg</span> <span class="o">==</span> <span class="n">won_leg</span><span class="p">:</span>
-                        <span class="n">amt</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
-                        <span class="k">if</span> <span class="n">amt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">bankroll</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">leg</span> <span class="o">==</span> <span class="n">realized_leg</span><span class="p">:</span>
+                        <span class="n">amount</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">payoffs</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span>
+                        <span class="k">if</span> <span class="n">amount</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">bankroll</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">amt</span><span class="p">))</span>
-                        <span class="n">returns</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="n">amt</span> <span class="o">/</span> <span class="n">bankroll_before</span>
+                            <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">amount</span><span class="p">))</span>
+                        <span class="n">returns</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="n">amount</span> <span class="o">/</span> <span class="n">bankroll_before</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">amt</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
-                        <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
-                        <span class="n">returns</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">amt</span> <span class="o">/</span> <span class="n">bankroll_before</span>
-                <span class="k">except</span> <span class="n">RuinError</span><span class="p">:</span>
+                        <span class="n">amount</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span>
+                        <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+                        <span class="n">returns</span><span class="p">[</span><span class="n">leg</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">amount</span> <span class="o">/</span> <span class="n">bankroll_before</span>
+                <span class="k">except</span> <span class="n">RuinError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                     <span class="c1"># Settlement exceeded a bankroll safeguard: that leg's</span>
                     <span class="c1"># settlement leaves the bankroll unchanged. Finish the</span>
                     <span class="c1"># rest of the batch, then stop - never truncate mid-batch.</span>
+                    <span class="c1"># Warn loudly: the message names the attempted amount,</span>
+                    <span class="c1"># the configured limit, and current funds.</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"Settlement refused; the simulation stops after "</span>
+                        <span class="sa">f</span><span class="s2">"this batch: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="p">)</span>
                     <span class="n">batch_ruined</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="n">record_settlement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">record_settlement</span><span class="p">(</span><span class="n">won_leg</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
+                <span class="c1"># One outcome flag per leg: the market draw realizes every</span>
+                <span class="c1"># leg at once - the realized leg wins, the others lose it.</span>
+                <span class="n">won</span> <span class="o">=</span> <span class="p">[</span><span class="n">leg</span> <span class="o">==</span> <span class="n">realized_leg</span> <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">))]</span>
+                <span class="n">record_settlement</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">won</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">batch_ruined</span><span class="p">:</span>
                 <span class="k">break</span></div>
@@ -634,8 +656,8 @@
 <span class="sd">    strategy needs no ``payoffs``/``loss`` at all and its compatibility stays</span>
 <span class="sd">    the caller's responsibility.</span>
 
-<span class="sd">    The strategy's fractional ``transaction_cost`` and the simulator's flat</span>
-<span class="sd">    ``transaction_costs`` fee are deliberately different units and are never</span>
+<span class="sd">    The strategy's fractional ``transaction_cost_rate`` and the simulator's flat</span>
+<span class="sd">    ``fee_per_bet`` fee are deliberately different units and are never</span>
 <span class="sd">    compared.</span>
 
 <span class="sd">    Raises</span>
@@ -706,13 +728,13 @@
 <span class="sd">        win probabilities are independent events, so unlike a market's</span>
 <span class="sd">        probability vector they carry no sum constraint - three bets at 0.5</span>
 <span class="sd">        each describe three separate markets, not a partition of one.</span>
-<span class="sd">    transaction_costs : float, default=0.0</span>
+<span class="sd">    fee_per_bet : float, default=0.0</span>
 <span class="sd">        The flat fee charged once per settled bet, regardless of outcome.</span>
 <span class="sd">        This is an absolute bankroll amount, not a fraction of the stake: it</span>
 <span class="sd">        is subtracted from a winning bet's settlement and added to a losing</span>
 <span class="sd">        bet's. Bets the strategy declines (zero stake) settle nothing and pay</span>
 <span class="sd">        no fee. Note this differs in unit from the singular</span>
-<span class="sd">        ``transaction_cost`` taken by strategies in ``keeks.multi_outcome``,</span>
+<span class="sd">        ``transaction_cost_rate`` taken by strategies in ``keeks.multi_outcome``,</span>
 <span class="sd">        which is a per-unit fraction of the stake used for sizing.</span>
 <span class="sd">    trials : int, default=1000</span>
 <span class="sd">        The number of betting trials to simulate.</span>
@@ -724,7 +746,7 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If ``bets`` is empty or not a sequence of valid ``(probability,</span>
-<span class="sd">        payoff, loss)`` triples, if ``transaction_costs`` is not finite and</span>
+<span class="sd">        payoff, loss)`` triples, if ``fee_per_bet`` is not finite and</span>
 <span class="sd">        nonnegative, if ``trials`` is not a nonnegative integer, or if</span>
 <span class="sd">        ``seed`` is not a nonnegative integer or ``None``.</span>
 
@@ -763,7 +785,7 @@
 <span class="sd">       ``outcome &lt; probability`` wins. A bet staked at probability 0 never</span>
 <span class="sd">       wins; at probability 1 it always wins. Declined bets draw nothing.</span>
 <span class="sd">    5. Settle the batch net. Each staked bet wins ``(payoff - 1) * stake -</span>
-<span class="sd">       transaction_costs`` or loses ``loss * stake + transaction_costs``;</span>
+<span class="sd">       fee_per_bet`` or loses ``loss * stake + fee_per_bet``;</span>
 <span class="sd">       the signed amounts sum to one net delta and the bankroll receives</span>
 <span class="sd">       exactly one deposit (net gain) or withdrawal (net loss) - one</span>
 <span class="sd">       history entry per settled batch. Stakes are computed once from the</span>
@@ -771,16 +793,17 @@
 <span class="sd">       resizes a later bet.</span>
 <span class="sd">    6. The drawdown check is batch-level: because the batch settles through</span>
 <span class="sd">       one transaction, the bankroll's safeguards (bankruptcy,</span>
-<span class="sd">       ``max_draw_down``) evaluate the batch's net total once - not once per</span>
+<span class="sd">       ``max_transaction_loss``) evaluate the batch's net total once - not once per</span>
 <span class="sd">       bet. When a safeguard refuses the net settlement</span>
 <span class="sd">       (:class:`RuinError`), the whole batch leaves the bankroll unchanged,</span>
 <span class="sd">       every bet reports a 0.0 return, and the simulation stops after the</span>
 <span class="sd">       batch completes - never mid-portfolio.</span>
 
 <span class="sd">    **The ``record_settlement`` hook.** Strategies expose an N-ary settlement</span>
-<span class="sd">    hook with the signature ``record_settlement(won_bets, return_pcts)``:</span>
-<span class="sd">    ``won_bets`` holds one entry per bet - ``True`` when the bet's draw won,</span>
-<span class="sd">    ``False`` when it lost, ``None`` for declined bets - and ``return_pcts``</span>
+<span class="sd">    hook with the signature ``record_settlement(won, realized_returns)``:</span>
+<span class="sd">    ``won`` holds one entry per bet - ``True`` when the bet's draw won,</span>
+<span class="sd">    ``False`` when it lost, ``None`` for declined bets - and</span>
+<span class="sd">    ``realized_returns``</span>
 <span class="sd">    holds one signed net return per bet, as a fraction of the bankroll before</span>
 <span class="sd">    the trial, with ``0.0`` for declined bets and for settlements a safeguard</span>
 <span class="sd">    refused. The hook fires once per staked trial, after the batch settles.</span>
@@ -790,7 +813,7 @@
 <span class="sd">    &gt;&gt;&gt; from keeks.multi_outcome.simulators import PortfolioSimulator</span>
 <span class="sd">    &gt;&gt;&gt; simulator = PortfolioSimulator(</span>
 <span class="sd">    ...     bets=[(0.55, 2.0, 1.0), (0.45, 3.0, 1.0), (0.30, 2.4, 1.0)],</span>
-<span class="sd">    ...     transaction_costs=0.0,</span>
+<span class="sd">    ...     fee_per_bet=0.0,</span>
 <span class="sd">    ...     trials=10_000,</span>
 <span class="sd">    ...     seed=42,</span>
 <span class="sd">    ... )</span>
@@ -802,19 +825,19 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">bets</span><span class="p">,</span>
-        <span class="n">transaction_costs</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">trials</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">bets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+        <span class="n">fee_per_bet</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">trials</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">_validate_bets</span><span class="p">(</span><span class="n">bets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">bet</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">bet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bets</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
         <span class="p">)</span>
-        <span class="n">transaction_costs</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">transaction_costs</span><span class="p">,</span> <span class="s2">"Transaction costs"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">transaction_costs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Transaction costs must be non-negative"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">transaction_costs</span>
+        <span class="n">fee_per_bet</span> <span class="o">=</span> <span class="n">_require_finite</span><span class="p">(</span><span class="n">fee_per_bet</span><span class="p">,</span> <span class="s2">"Fee per bet"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fee_per_bet</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Fee per bet must be non-negative"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">fee_per_bet</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">trials</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">trials</span><span class="p">)</span>
@@ -833,7 +856,9 @@
 
 <div class="viewcode-block" id="PortfolioSimulator.evaluate_strategy">
 <a class="viewcode-back" href="../../../multi_outcome.html#keeks.multi_outcome.simulators.PortfolioSimulator.evaluate_strategy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="n">BaseMultiOutcomeStrategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">:</span> <span class="s2">"BankRoll"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Evaluate a multi-outcome strategy over a portfolio of binary bets.</span>
 
@@ -905,7 +930,7 @@
             <span class="c1"># the batch's settlements never resize later bets.</span>
             <span class="n">bettable_funds</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">bettable_funds</span>
             <span class="n">bankroll_before</span> <span class="o">=</span> <span class="n">total_funds</span>
-            <span class="n">won_bets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
+            <span class="n">won</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
             <span class="n">amounts</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
             <span class="n">net</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">fraction</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fractions</span><span class="p">):</span>
@@ -919,11 +944,11 @@
                     <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">outcome</span> <span class="o">&lt;</span> <span class="n">probability</span><span class="p">:</span>
-                    <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">payoff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span>
+                    <span class="n">won</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">payoff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">loss</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_costs</span><span class="p">)</span>
+                    <span class="n">won</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">loss</span> <span class="o">*</span> <span class="n">stake</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span><span class="p">)</span>
                 <span class="n">net</span> <span class="o">+=</span> <span class="n">amounts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
             <span class="c1"># Net settlement: the whole batch crosses the bankroll as one</span>
@@ -936,16 +961,21 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="o">-</span><span class="n">net</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">amount</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">amounts</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">won_bets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">won</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">returns</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">amount</span> <span class="o">/</span> <span class="n">bankroll_before</span>
-            <span class="k">except</span> <span class="n">RuinError</span><span class="p">:</span>
+            <span class="k">except</span> <span class="n">RuinError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># The safeguard refused the batch's net settlement: the</span>
                 <span class="c1"># bankroll is unchanged, every return reports 0.0, and the</span>
                 <span class="c1"># simulation stops after this batch - never mid-portfolio.</span>
+                <span class="c1"># Warn loudly so a stopped run is never silent.</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Settlement refused; the simulation stops after this batch: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="n">batch_ruined</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="n">record_settlement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">record_settlement</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">won_bets</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
+                <span class="n">record_settlement</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">won</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">returns</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">batch_ruined</span><span class="p">:</span>
                 <span class="k">break</span></div>
@@ -970,8 +1000,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Portfolio Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Allocation Visualization Helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
 </ul>
 
 <search id="searchbox" style="display: none" role="search">
