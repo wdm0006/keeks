@@ -27,6 +27,7 @@ weights through the ``record_settlement`` hook alone, numpy-only.
 """
 
 from keeks.allocation.base import AllocationResult, BaseAllocationStrategy
+from keeks.allocation.hierarchical import HierarchicalRiskParity
 from keeks.allocation.online import (
     ExponentialGradient,
     FixedWeights,
@@ -38,5 +39,6 @@ __all__ = [
     "BaseAllocationStrategy",
     "ExponentialGradient",
     "FixedWeights",
+    "HierarchicalRiskParity",
     "OnlineNewtonStep",
 ]
