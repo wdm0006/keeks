@@ -17,15 +17,26 @@ stateful hook - ``record_settlement(realized_returns)``, called once per
 staked period with the realized joint simple-return vector.
 
 Subsequent modules in this subpackage add the joint-return input models, the
-method families (mean-variance, minimum variance, maximum Sharpe, risk
-budgeting, hierarchical risk parity, mean-CVaR, online methods), and the
-allocation simulator; solvers that need scipy arrive behind the
-``keeks[allocation]`` optional extra.
+remaining method families (mean-variance, minimum variance, maximum Sharpe,
+risk budgeting, hierarchical risk parity, mean-CVaR), and the allocation
+simulator; solvers that need scipy arrive behind the ``keeks[allocation]``
+optional extra. The online family already lives here
+(:mod:`keeks.allocation.online`): :class:`FixedWeights`,
+:class:`ExponentialGradient`, and :class:`OnlineNewtonStep` adapt their
+weights through the ``record_settlement`` hook alone, numpy-only.
 """
 
 from keeks.allocation.base import AllocationResult, BaseAllocationStrategy
+from keeks.allocation.online import (
+    ExponentialGradient,
+    FixedWeights,
+    OnlineNewtonStep,
+)
 
 __all__ = [
     "AllocationResult",
     "BaseAllocationStrategy",
+    "ExponentialGradient",
+    "FixedWeights",
+    "OnlineNewtonStep",
 ]
