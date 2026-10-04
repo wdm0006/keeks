@@ -158,8 +158,41 @@ def test_constructor_rejects_invalid_probabilities(probabilities):
 
 
 def test_constructor_accepts_probabilities_within_tolerance():
-    simulator = build_simulator(probabilities=(0.5, 0.5 + 1e-13))
+    simulator = build_simulator(payoffs=(2.0, 3.0), probabilities=(0.5, 0.5 + 1e-13))
     assert simulator.probabilities.sum() > 1
+
+
+@pytest.mark.parametrize(
+    ("payoffs", "probabilities"),
+    [((2.0,), (0.0, 1.0)), ((2.0, 3.0), (1.0,))],
+)
+@pytest.mark.parametrize("trials", [0, 1])
+def test_constructor_rejects_mismatched_leg_counts(payoffs, probabilities, trials):
+    with pytest.raises(
+        ValueError,
+        match=(
+            "Payoffs and probabilities must have the same length: "
+            f"got {len(payoffs)} payoffs and {len(probabilities)} probabilities"
+        ),
+    ):
+        build_simulator(payoffs=payoffs, probabilities=probabilities, trials=trials)
+
+
+@pytest.mark.parametrize(
+    ("payoffs", "probabilities", "stakes", "expected_history"),
+    [
+        ((2.0,), (1.0,), (0.1,), [1000.0, 1100.0]),
+        ((2.0, 3.0), (0.0, 1.0), (0.1, 0.1), [1000.0, 900.0, 1100.0]),
+    ],
+)
+def test_matched_leg_counts_preserve_settlement(
+    payoffs, probabilities, stakes, expected_history
+):
+    simulator = build_simulator(payoffs=payoffs, probabilities=probabilities, trials=1)
+    bankroll = BankRoll(1000.0, max_draw_down=None)
+    simulator.evaluate_strategy(_DuckTypedStrategy(stakes), bankroll)
+    assert bankroll.history == expected_history
+    assert bankroll.total_funds == 1100.0
 
 
 @pytest.mark.parametrize("trials", [-1, 3.5, "many"])
