@@ -51,6 +51,10 @@ Issues = "https://github.com/wdm0006/keeks/issues"
 Source = "https://github.com/wdm0006/keeks"
 
 [project.optional-dependencies]
+# Optional solver backend for the allocation layer (keeks[allocation]): the
+# scipy-gated QP/LP solvers, Gaussian-copula dependence, and Student-t
+# fitting. Runtime dependencies stay numpy + matplotlib without it.
+allocation = ["scipy"]
 dev = [
     "hypothesis",
     "pandas",
