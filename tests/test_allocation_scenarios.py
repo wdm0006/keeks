@@ -463,3 +463,29 @@ class TestTailAlphaValidation:
     def test_rejects_invalid_fractions(self, bad):
         with pytest.raises(ValueError):
             _validate_tail_alpha(bad)
+
+
+class TestAllCashReason:
+    """The result object carries the explanation the ETF example prints."""
+
+    def test_all_cash_optimum_carries_reason(self):
+        daily = np.array(
+            [
+                [0.0002, 0.0001],
+                [-0.0002, -0.0001],
+                [0.0001, -0.0001],
+                [-0.0001, 0.0002],
+            ]
+        )
+        result = MeanCVaR(daily).optimize()
+
+        assert result.all_cash_reason is not None
+        assert "full cash" in result.all_cash_reason
+
+    def test_risk_taking_optimum_leaves_reason_none(self):
+        rng = np.random.default_rng(0)
+        scenarios = rng.normal(0.02, 0.01, size=(200, 2))
+        result = MeanCVaR(scenarios).optimize()
+
+        assert not np.all(np.abs(result.weights) <= PROBABILITY_SUM_TOLERANCE)
+        assert result.all_cash_reason is None

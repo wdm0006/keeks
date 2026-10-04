@@ -14,7 +14,7 @@ import numpy as np
 import pytest
 
 from keeks.binary_strategies.base import BaseStrategy
-from keeks.multi_outcome import BaseMultiOutcomeStrategy
+from keeks.multi_outcome import BaseMultiOutcomeStrategy, MultiOutcomeKellyCriterion
 from keeks.multi_outcome.base import _validate_stake_fractions
 from keeks.utils import PROBABILITY_SUM_TOLERANCE, normalize_probabilities
 
@@ -318,3 +318,34 @@ def test_get_max_safe_total_bet_rejects_nonfinite_bankroll():
 
     with pytest.raises(ValueError, match="Current bankroll must be a finite number"):
         strategy.get_max_safe_total_bet(float("nan"))
+
+
+class _OverBudgetStrategy(BaseMultiOutcomeStrategy):
+    """Returns a stake vector that splits the bankroll twice over."""
+
+    def evaluate(self, _probabilities, _current_bankroll):
+        return (0.6, 0.6)
+
+
+def test_base_enforces_stake_contract():
+    """A concrete evaluate returning over-budget stakes fails its own call."""
+    strategy = _OverBudgetStrategy(payoffs=[3.0, 2.0], loss=1.0)
+
+    with pytest.raises(
+        ValueError,
+        match=re.escape(
+            "Strategy stake fractions must sum to no more than one; got (0.6, 0.6)"
+        ),
+    ):
+        strategy.evaluate([0.5, 0.5], 1000.0)
+
+
+def test_base_enforcement_matches_shipped_validators():
+    """Shipped strategies validate internally; the base gate is idempotent."""
+    strategy = MultiOutcomeKellyCriterion(
+        payoffs=[3.0, 2.0, 2.5], loss=1.0, transaction_cost=0.01
+    )
+
+    stakes = strategy.evaluate([0.42, 0.27, 0.28], 1000.0)
+
+    assert stakes == _validate_stake_fractions(stakes)

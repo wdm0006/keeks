@@ -13,6 +13,9 @@ includes:
   mean-variance, minimum-variance, maximum-Sharpe, risk-budgeting, hierarchical,
   mean-CVaR, and online methods over configurable joint-return models
 - Simulators: Tools to evaluate strategies under different conditions
+- Contract checks: ``check_strategy``, ``check_allocation_strategy``, and
+  ``check_model`` verify a contributor's implementation against the
+  documented contracts, on the ``check_estimator`` pattern
 - Decision-theory utilities: CRRA utility and one-time gamble pricing
 
 The documented public API is re-exported here, so ``from keeks import ...``
@@ -75,6 +78,7 @@ from keeks.binary_strategies import (
     OptimalF,
 )
 from keeks.binary_strategies.base import BaseStrategy
+from keeks.checks import check_allocation_strategy, check_model, check_strategy
 from keeks.multi_outcome import (
     BaseMultiOutcomeStrategy,
     MultiOutcomeKellyCriterion,
@@ -108,6 +112,9 @@ __all__ = [
     "BaseMultiOutcomeStrategy",
     "BaseStrategy",
     "BinaryBetsModel",
+    "check_allocation_strategy",
+    "check_model",
+    "check_strategy",
     "CPPIStrategy",
     "DrawdownAdjustedKelly",
     "DynamicBankrollManagement",

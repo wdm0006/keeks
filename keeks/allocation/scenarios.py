@@ -37,7 +37,7 @@ from keeks.allocation.models import (
     _validate_draws,
     _validate_n_samples,
 )
-from keeks.utils import _validate_simulator_seed
+from keeks.utils import PROBABILITY_SUM_TOLERANCE, _validate_simulator_seed
 
 __author__ = "willmcginnis"
 
@@ -358,6 +358,12 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
         and ``volatility`` reads the weights against the scenarios'
         empirical covariance from :func:`scenarios_to_moments`.
 
+        When the program's optimum is full cash - every weight effectively
+        zero, as on daily-frequency market data under the
+        unit-risk-aversion objective - ``all_cash_reason`` carries that
+        explanation on the result, in the result object rather than only in
+        example output.
+
         Returns
         -------
         AllocationResult
@@ -377,6 +383,17 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
         True
         >>> result.weights.shape
         (2,)
+
+        Daily-frequency scenarios hold full cash, and the result says why:
+
+        >>> daily = np.array([
+        ...     [0.0002, 0.0001],
+        ...     [-0.0002, -0.0001],
+        ...     [0.0001, -0.0001],
+        ...     [-0.0001, 0.0002],
+        ... ])
+        >>> MeanCVaR(daily).optimize().all_cash_reason is not None
+        True
         """
         portfolio_returns = self.scenarios @ self.weights
         if np.all(1.0 + portfolio_returns > 0.0):
@@ -389,6 +406,18 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
         # noise; a variance cannot be negative, so clamp before the root.
         variance = float(self.weights @ covariance @ self.weights)
         volatility = float(np.sqrt(max(variance, 0.0)))
+        all_cash_reason = None
+        if np.all(np.abs(self.weights) <= PROBABILITY_SUM_TOLERANCE):
+            all_cash_reason = (
+                "The optimal portfolio holds full cash: the "
+                "unit-risk-aversion objective (maximize w'mu - CVaR) trades "
+                "expected return against the tail's expected loss "
+                "one-for-one and is scale-homogeneous, so on "
+                "daily-frequency market data - expected return far below "
+                "the tail's expected loss - the honest optimum is all cash. "
+                "The risk-aversion dial is a documented follow-up (spec "
+                "decision D2)."
+            )
         return AllocationResult(
             weights=self.weights.copy(),
             objective=self.objective,
@@ -396,6 +425,7 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
             iterations=self.iterations,
             expected_growth=expected_growth,
             volatility=volatility,
+            all_cash_reason=all_cash_reason,
         )
 
     def evaluate(self, current_bankroll):

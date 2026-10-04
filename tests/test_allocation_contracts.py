@@ -503,3 +503,51 @@ def test_result_repr_and_hash():
 
     assert "AllocationResult" in repr(result)
     assert isinstance(hash(result), int)
+
+
+class _OverBudgetAllocator(BaseAllocationStrategy):
+    """Returns a weight vector that splits the bankroll twice over."""
+
+    def evaluate(self, _current_bankroll):
+        return (0.6, 0.6)
+
+
+class _ListReturningAllocator(BaseAllocationStrategy):
+    """Returns a list; the base validates and normalizes to a tuple."""
+
+    def evaluate(self, _current_bankroll):
+        return [0.5, 0.5]
+
+
+class _DuckTypedAllocator:
+    """Outside the ABC: the simulator's gate is its only contract check."""
+
+    def evaluate(self, _current_bankroll):
+        return (0.6, 0.6)
+
+
+def test_base_enforces_weight_contract():
+    """A concrete evaluate returning over-budget weights fails its own call."""
+    with pytest.raises(
+        ValueError,
+        match=re.escape(
+            "Strategy weights must sum to no more than one; got (0.6, 0.6)"
+        ),
+    ):
+        _OverBudgetAllocator().evaluate(1000.0)
+
+
+def test_base_enforcement_normalizes_valid_vectors():
+    """The wrapper's validator is the contract: a list comes back a tuple."""
+    assert _ListReturningAllocator().evaluate(1000.0) == (0.5, 0.5)
+
+
+def test_duck_typed_allocators_are_not_wrapped():
+    """Outside the ABC the base adds nothing; the simulator's gate still holds."""
+    assert _DuckTypedAllocator().evaluate(1000.0) == (0.6, 0.6)
+
+
+def test_result_all_cash_reason_defaults_to_none():
+    result = AllocationResult(weights=np.array([0.25, 0.75]))
+
+    assert result.all_cash_reason is None

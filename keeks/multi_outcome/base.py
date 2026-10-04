@@ -3,7 +3,7 @@ from collections.abc import Sequence
 
 import numpy as np
 
-from keeks.utils import PROBABILITY_SUM_TOLERANCE, _require_finite
+from keeks.utils import PROBABILITY_SUM_TOLERANCE, _require_finite, _validated_evaluate
 
 __author__ = "willmcginnis"
 
@@ -80,8 +80,25 @@ class BaseMultiOutcomeStrategy(abc.ABC):
     payoff multiplier times its stake.
 
     Concrete strategy implementations should inherit from this class and
-    implement the evaluate method.
+    implement the evaluate method, which the base then enforces: every
+    concrete ``evaluate`` is wrapped so its returned stake vector is
+    validated through :func:`_validate_stake_fractions` before the caller
+    sees it - a subclass returning contract-violating stakes fails its own
+    ``evaluate()`` with the validator's message plus the returned vector,
+    instead of passing silently until the simulator's boundary gate. The
+    same holds for the allocation layer's weight contract.
     """
+
+    def __init_subclass__(cls, **kwargs):
+        # Enforce the stake contract at the boundary: a concrete evaluate
+        # returning a vector that breaks it fails loudly at its own call
+        # site, with the same tolerance semantics the simulator's gate uses.
+        super().__init_subclass__(**kwargs)
+        evaluate = cls.__dict__.get("evaluate")
+        if evaluate is not None and not getattr(
+            evaluate, "_keeks_contract_validated", False
+        ):
+            cls.evaluate = _validated_evaluate(evaluate, _validate_stake_fractions)
 
     def __init__(
         self, payoffs: Sequence[float], loss: float, transaction_cost: float = 0
@@ -220,7 +237,11 @@ class BaseMultiOutcomeStrategy(abc.ABC):
             One stake fraction of the bankroll per leg: ``len(result) ==
             len(probabilities)``, every element finite and within ``[0, 1]``,
             and ``sum(result) <= 1 + PROBABILITY_SUM_TOLERANCE``.
-            Implementations accept any sequence input and return a tuple.
+            Implementations accept any sequence input and return a tuple; the
+            base class validates the returned vector through
+            :func:`_validate_stake_fractions` before the caller sees it, so
+            implementations need not (but may - it is idempotent) validate
+            internally.
 
         Raises
         ------
