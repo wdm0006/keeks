@@ -1,11 +1,14 @@
 import abc
 
+import numpy as np
+
+from keeks.params import ParameterMixin
 from keeks.utils import _require_finite
 
 __author__ = "willmcginnis"
 
 
-class BaseStrategy(abc.ABC):
+class BaseStrategy(ParameterMixin, abc.ABC):
     """
     Abstract base class for all binary betting strategies.
 
@@ -137,12 +140,12 @@ class BaseStrategy(abc.ABC):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 

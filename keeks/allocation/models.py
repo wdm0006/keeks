@@ -45,11 +45,15 @@ import hashlib
 import math
 import operator
 import struct
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 
 import numpy as np
 
-from keeks.allocation.base import _validate_covariance, _validate_scenarios
+from keeks.allocation.base import (
+    BaseAllocationStrategy,
+    _validate_covariance,
+    _validate_scenarios,
+)
 from keeks.multi_outcome.simulators import _validate_bets
 from keeks.utils import _require_finite, _validate_simulator_seed
 
@@ -72,7 +76,7 @@ class JointReturnModel(abc.ABC):
     """
 
     @abc.abstractmethod
-    def sample(self, n_samples, rng):
+    def sample(self, n_samples: int, rng: np.random.Generator) -> np.ndarray:
         """
         Return joint simple-return draws.
 
@@ -93,7 +97,7 @@ class JointReturnModel(abc.ABC):
         """
         raise NotImplementedError
 
-    def moments(self):
+    def moments(self) -> tuple[np.ndarray, np.ndarray] | None:
         """
         Return the model's exact ``(mean, covariance)`` when it knows them.
 
@@ -478,14 +482,18 @@ class ScenarioModel(JointReturnModel):
     (2, 2)
     """
 
-    def __init__(self, scenarios, probabilities=None):
+    def __init__(
+        self,
+        scenarios: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike | None = None,
+    ) -> None:
         self.scenarios: np.ndarray
         self.probabilities: np.ndarray | None
         self.scenarios, self.probabilities = _validate_scenarios(
             scenarios, probabilities
         )
 
-    def sample(self, n_samples, rng):
+    def sample(self, n_samples: int, rng: np.random.Generator) -> np.ndarray:
         """
         Resample scenario rows.
 
@@ -518,7 +526,7 @@ class ScenarioModel(JointReturnModel):
             draws = extended[rows]
         return _validate_draws(draws, n_samples)
 
-    def moments(self):
+    def moments(self) -> tuple[np.ndarray, np.ndarray]:
         """
         Return the exact probability-weighted empirical moments.
 
@@ -543,7 +551,10 @@ class ScenarioModel(JointReturnModel):
         return mean, covariance
 
 
-def scenario_model(scenarios, probabilities=None):
+def scenario_model(
+    scenarios: np.typing.ArrayLike,
+    probabilities: np.typing.ArrayLike | None = None,
+) -> ScenarioModel:
     """
     Build a joint-return model from empirical scenario rows.
 
@@ -646,7 +657,11 @@ class BinaryBetsModel(JointReturnModel):
     [1.0, 1.6875]
     """
 
-    def __init__(self, bets, transaction_cost_rate=0.0):
+    def __init__(
+        self,
+        bets: Sequence[tuple[float, float, float]],
+        transaction_cost_rate: float = 0.0,
+    ) -> None:
         self.bets: tuple[tuple[float, float, float], ...] = _validate_bets(bets)
         transaction_cost_rate = _require_finite(
             transaction_cost_rate, "Transaction cost rate"
@@ -662,7 +677,7 @@ class BinaryBetsModel(JointReturnModel):
         loss_return = -(loss + self.transaction_cost_rate)
         return np.where(uniforms < bet[0], win_return, loss_return)
 
-    def sample(self, n_samples, rng):
+    def sample(self, n_samples: int, rng: np.random.Generator) -> np.ndarray:
         """
         Draw every bet's per-period returns.
 
@@ -696,7 +711,7 @@ class BinaryBetsModel(JointReturnModel):
             columns.append(self._bet_returns(stream.random(n_samples), bet))
         return _validate_draws(np.stack(columns, axis=1), n_samples)
 
-    def moments(self):
+    def moments(self) -> tuple[np.ndarray, np.ndarray]:
         """
         Return the exact closed-form moments of the independent bets.
 
@@ -721,7 +736,9 @@ class BinaryBetsModel(JointReturnModel):
         return np.array(means), np.diag(np.array(variances))
 
 
-def binary_bets_model(bets, transaction_cost_rate=0.0):
+def binary_bets_model(
+    bets: Sequence[tuple[float, float, float]], transaction_cost_rate: float = 0.0
+) -> BinaryBetsModel:
     """
     Build a joint-return model from keeks-native binary bets.
 
@@ -785,7 +802,11 @@ class MarginalModel(JointReturnModel):
     (3, 2)
     """
 
-    def __init__(self, marginals, dependence=None):
+    def __init__(
+        self,
+        marginals: Sequence[tuple],
+        dependence: np.typing.ArrayLike | None = None,
+    ) -> None:
         try:
             specs = list(marginals)
         except TypeError as exc:
@@ -807,7 +828,7 @@ class MarginalModel(JointReturnModel):
             _require_scipy("Gaussian-copula dependence")
             self.dependence = _validate_dependence(dependence)
 
-    def sample(self, n_samples, rng):
+    def sample(self, n_samples: int, rng: np.random.Generator) -> np.ndarray:
         """
         Draw the joint simple returns.
 
@@ -845,7 +866,7 @@ class MarginalModel(JointReturnModel):
             ]
         return _validate_draws(np.stack(columns, axis=1), n_samples)
 
-    def moments(self):
+    def moments(self) -> tuple[np.ndarray, np.ndarray] | None:
         """
         Return the exact marginal moments when the model knows them.
 
@@ -875,7 +896,9 @@ class MarginalModel(JointReturnModel):
         return np.array(means), np.diag(np.array(variances))
 
 
-def marginals_model(marginals, dependence=None):
+def marginals_model(
+    marginals: Sequence[tuple], dependence: np.typing.ArrayLike | None = None
+) -> MarginalModel:
     """
     Build a joint-return model from per-option parametric marginals.
 
@@ -905,7 +928,11 @@ def marginals_model(marginals, dependence=None):
     return MarginalModel(marginals, dependence)
 
 
-def fit_marginals_model(returns, family="student_t", dependence=None):
+def fit_marginals_model(
+    returns: np.typing.ArrayLike,
+    family: str = "student_t",
+    dependence: np.typing.ArrayLike | None = None,
+) -> MarginalModel:
     """
     Fit per-option parametric marginals to a historical returns series.
 
@@ -983,7 +1010,9 @@ def fit_marginals_model(returns, family="student_t", dependence=None):
     return marginals_model(specs, dependence=dependence)
 
 
-def estimate_moments(model, n_samples, seed=None):
+def estimate_moments(
+    model: JointReturnModel, n_samples: int, seed: int | None = None
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Estimate a model's ``(mean, covariance)`` from its own draws.
 
@@ -1064,7 +1093,13 @@ class ModelInputMixin:
     """
 
     @classmethod
-    def from_model(cls, model, n_samples=10_000, seed=None, **kwargs):
+    def from_model(
+        cls,
+        model: JointReturnModel,
+        n_samples: int = 10_000,
+        seed: int | None = None,
+        **kwargs,
+    ) -> BaseAllocationStrategy:
         """
         Build ``cls`` from a joint-return model's inputs.
 

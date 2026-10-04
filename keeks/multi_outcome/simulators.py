@@ -15,6 +15,8 @@ import hashlib
 import operator
 import struct
 import warnings
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -26,6 +28,9 @@ from keeks.utils import (
     _validate_simulator_seed,
     validate_probabilities,
 )
+
+if TYPE_CHECKING:
+    from keeks.bankroll import BankRoll
 
 __author__ = "willmcginnis"
 
@@ -221,13 +226,13 @@ class RepeatedMultiOutcomeSimulator:
 
     def __init__(
         self,
-        payoffs,
-        loss,
-        fee_per_bet,
-        probabilities,
-        trials=1000,
-        seed=None,
-    ):
+        payoffs: Sequence[float],
+        loss: float,
+        fee_per_bet: float,
+        probabilities: np.typing.ArrayLike,
+        trials: int = 1000,
+        seed: int | None = None,
+    ) -> None:
         self.payoffs: tuple[float, ...] = _validate_payoffs(payoffs)
         loss = _require_finite(loss, "Loss")
         if loss < 0:
@@ -265,7 +270,9 @@ class RepeatedMultiOutcomeSimulator:
             else None
         )
 
-    def evaluate_strategy(self, strategy, bankroll) -> None:
+    def evaluate_strategy(
+        self, strategy: BaseMultiOutcomeStrategy, bankroll: "BankRoll"
+    ) -> None:
         """
         Evaluate a multi-outcome strategy over multiple trials on a fixed market.
 
@@ -634,11 +641,11 @@ class PortfolioSimulator:
 
     def __init__(
         self,
-        bets,
-        fee_per_bet=0.0,
-        trials=1000,
-        seed=None,
-    ):
+        bets: Sequence[tuple[float, float, float]],
+        fee_per_bet: float = 0.0,
+        trials: int = 1000,
+        seed: int | None = None,
+    ) -> None:
         self.bets: tuple[tuple[float, float, float], ...] = _validate_bets(bets)
         self.probabilities: np.ndarray = np.array(
             [bet[0] for bet in self.bets], dtype=float
@@ -663,7 +670,9 @@ class PortfolioSimulator:
         else:
             self._rngs = None
 
-    def evaluate_strategy(self, strategy, bankroll) -> None:
+    def evaluate_strategy(
+        self, strategy: BaseMultiOutcomeStrategy, bankroll: "BankRoll"
+    ) -> None:
         """
         Evaluate a multi-outcome strategy over a portfolio of binary bets.
 

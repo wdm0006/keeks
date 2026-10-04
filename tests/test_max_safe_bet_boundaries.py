@@ -68,7 +68,9 @@ class _ConcreteStrategy(BaseStrategy):
 
 def test_factories_cover_every_exported_strategy():
     """Guard: a newly exported strategy must be added to the boundary cases."""
-    assert set(STRATEGY_FACTORIES) == set(binary_strategies.__all__)
+    # BaseStrategy is exported (like every generation's ABC) but is abstract,
+    # so it has no factory; concrete subclasses exercise its inherited paths.
+    assert set(STRATEGY_FACTORIES) == set(binary_strategies.__all__) - {"BaseStrategy"}
 
 
 @pytest.mark.parametrize("name", sorted(STRATEGY_FACTORIES))

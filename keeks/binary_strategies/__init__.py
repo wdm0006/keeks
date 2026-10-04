@@ -15,6 +15,7 @@ This module provides various strategies for binary betting scenarios, including:
 All strategies implement the BaseStrategy interface.
 """
 
+from keeks.binary_strategies.base import BaseStrategy
 from keeks.binary_strategies.kelly import (
     DrawdownAdjustedKelly,
     FractionalKellyCriterion,
@@ -32,6 +33,7 @@ from keeks.binary_strategies.simple import (
 __author__ = "willmcginnis"
 
 __all__ = [
+    "BaseStrategy",
     "KellyCriterion",
     "FractionalKellyCriterion",
     "DrawdownAdjustedKelly",

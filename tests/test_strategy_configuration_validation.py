@@ -89,7 +89,11 @@ def build(strategy_cls, **overrides):
 
 def test_base_kwargs_cover_every_exported_strategy():
     """Guard: a newly exported strategy must be added to these cases."""
-    assert {cls.__name__ for cls in STRATEGIES} == set(binary_strategies.__all__)
+    # BaseStrategy is exported (like every generation's ABC) but is abstract,
+    # so it takes no configuration case of its own.
+    assert {cls.__name__ for cls in STRATEGIES} == set(binary_strategies.__all__) - {
+        "BaseStrategy"
+    }
 
 
 @pytest.mark.parametrize("strategy_cls", STRATEGIES)

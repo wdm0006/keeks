@@ -30,7 +30,7 @@ from keeks.allocation.base import (
 __author__ = "willmcginnis"
 
 
-def _correlation_distance(covariance):
+def _correlation_distance(covariance: np.ndarray) -> np.ndarray:
     """
     Correlation-distance matrix: ``d_ij = sqrt((1 - rho_ij) / 2)``.
 
@@ -63,7 +63,7 @@ def _correlation_distance(covariance):
     return distance
 
 
-def _agglomerative_linkage(distance):
+def _agglomerative_linkage(distance: np.ndarray) -> np.ndarray:
     """
     Single-linkage agglomerative clustering in the scipy linkage layout.
 
@@ -142,7 +142,7 @@ def _agglomerative_linkage(distance):
     return np.asarray(linkage, dtype=float).reshape(len(linkage), 4)
 
 
-def _quasi_diagonal(linkage):
+def _quasi_diagonal(linkage: np.ndarray) -> np.ndarray:
     """
     Leaf permutation that concentrates correlated options together.
 
@@ -190,7 +190,7 @@ def _quasi_diagonal(linkage):
     return order
 
 
-def _cluster_variance(covariance, indices):
+def _cluster_variance(covariance: np.ndarray, indices: np.ndarray) -> float:
     """
     Inverse-variance-weighted variance of one cluster.
 
@@ -222,7 +222,7 @@ def _cluster_variance(covariance, indices):
     return float(weights @ slice_ @ weights)
 
 
-def _recursive_bisection(covariance, order):
+def _recursive_bisection(covariance: np.ndarray, order: np.ndarray) -> np.ndarray:
     """
     Top-down allocation over the quasi-diagonal order.
 
@@ -321,7 +321,7 @@ class HierarchicalRiskParity(BaseAllocationStrategy):
     [0.2, 0.8]
     """
 
-    def __init__(self, covariance):
+    def __init__(self, covariance: np.typing.ArrayLike) -> None:
         covariance = _validate_covariance(covariance)
         if np.any(np.diag(covariance) <= 0):
             raise ValueError(
@@ -335,7 +335,7 @@ class HierarchicalRiskParity(BaseAllocationStrategy):
         self.order = _quasi_diagonal(self.linkage)
         self.weights = _recursive_bisection(covariance, self.order)
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the allocation with its diagnostics.
 
@@ -361,7 +361,7 @@ class HierarchicalRiskParity(BaseAllocationStrategy):
         volatility = float(np.sqrt(self.weights @ self.covariance @ self.weights))
         return AllocationResult(weights=self.weights.copy(), volatility=volatility)
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one long-only weight per option.
 

@@ -3,6 +3,7 @@ import dataclasses
 
 import numpy as np
 
+from keeks.params import ParameterMixin
 from keeks.utils import (
     PROBABILITY_SUM_TOLERANCE,
     _validated_evaluate,
@@ -22,7 +23,7 @@ COVARIANCE_SYMMETRY_TOLERANCE = 1e-8
 EIGENVALUE_FLOOR = -1e-10
 
 
-class BaseAllocationStrategy(abc.ABC):
+class BaseAllocationStrategy(ParameterMixin, abc.ABC):
     """
     Abstract base class for portfolio allocation strategies.
 
@@ -111,8 +112,33 @@ class BaseAllocationStrategy(abc.ABC):
         """
         pass
 
+    @property
+    def weights_(self) -> np.ndarray:
+        """
+        The fitted weight vector, under sklearn's trailing-underscore convention.
 
-def _validate_weights(weights, option_count=None):
+        A read-only view of the solved or adapted allocation state for the
+        allocators that hold one - the solver-backed families' optimum and
+        the online family's current adaptation state. Additive alongside the
+        established :attr:`weights` attribute, which keeps its name and
+        remains the primary accessor. Wrappers that recompute from a wrapped
+        allocator instead of holding their own solve
+        (:class:`RiskAversionScaling`) raise ``AttributeError``: read the
+        wrapped allocator's ``weights_``, or this wrapper's ``evaluate``.
+        """
+        weights = getattr(self, "weights", None)
+        if weights is None:
+            raise AttributeError(
+                f"{type(self).__name__} holds no fitted weight vector of its "
+                "own: it recomputes from its wrapped allocator. Read the "
+                "inner allocator's weights_ or call evaluate() instead."
+            )
+        return weights
+
+
+def _validate_weights(
+    weights: np.typing.ArrayLike, option_count: int | None = None
+) -> tuple[float, ...]:
     """
     Coerce an allocator's weight vector to a tuple of finite floats in ``[0, 1]``.
 
@@ -172,7 +198,7 @@ def _validate_weights(weights, option_count=None):
     return tuple(weights.tolist())
 
 
-def _validate_mean(mean):
+def _validate_mean(mean: np.typing.ArrayLike) -> np.ndarray:
     """
     Validate an expected simple-return vector and return it as a float array.
 
@@ -211,7 +237,9 @@ def _validate_mean(mean):
     return mean
 
 
-def _validate_covariance(covariance, option_count=None):
+def _validate_covariance(
+    covariance: np.typing.ArrayLike, option_count: int | None = None
+) -> np.ndarray:
     """
     Validate a covariance matrix and return it as a float array.
 
@@ -284,7 +312,9 @@ def _validate_covariance(covariance, option_count=None):
     return covariance
 
 
-def _validate_scenarios(scenarios, probabilities=None):
+def _validate_scenarios(
+    scenarios: np.typing.ArrayLike, probabilities: np.typing.ArrayLike | None = None
+) -> tuple[np.ndarray, np.ndarray | None]:
     """
     Validate a scenario matrix (and optional row probabilities).
 
@@ -339,7 +369,9 @@ def _validate_scenarios(scenarios, probabilities=None):
     return scenarios, probabilities
 
 
-def _validate_strategy_scenarios(strategy, scenarios):
+def _validate_strategy_scenarios(
+    strategy: object, scenarios: np.typing.ArrayLike
+) -> None:
     """
     Reject an allocator whose scenario descriptor contradicts the simulator's.
 

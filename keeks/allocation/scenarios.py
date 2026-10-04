@@ -31,6 +31,7 @@ from keeks.allocation.base import (
     _validate_weights,
 )
 from keeks.allocation.models import (
+    JointReturnModel,
     ModelInputMixin,
     ScenarioModel,
     _require_scipy,
@@ -42,7 +43,7 @@ from keeks.utils import PROBABILITY_SUM_TOLERANCE, _validate_simulator_seed
 __author__ = "willmcginnis"
 
 
-def _validate_tail_alpha(tail_alpha):
+def _validate_tail_alpha(tail_alpha: float) -> float:
     """
     Validate the tail fraction, which must lie strictly between 0 and 1.
 
@@ -82,7 +83,9 @@ def _validate_tail_alpha(tail_alpha):
     return tail_alpha
 
 
-def _mean_cvar_lp(scenarios, tail_alpha):
+def _mean_cvar_lp(
+    scenarios: np.ndarray, tail_alpha: float
+) -> tuple[np.ndarray, float, float, bool, int]:
     """
     Solve the unit-risk-aversion mean-CVaR program over ``scenarios``.
 
@@ -282,7 +285,11 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
     (256, 2)
     """
 
-    def __init__(self, scenarios, tail_alpha=0.05):
+    def __init__(
+        self,
+        scenarios: np.typing.ArrayLike,
+        tail_alpha: float = 0.05,
+    ) -> None:
         # The linear program is the method: gate before anything else, so a
         # caller without scipy gets the pointed install hint, not a deep
         # traceback from the solver import.
@@ -299,7 +306,13 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
         ) = _mean_cvar_lp(self.scenarios, self.tail_alpha)
 
     @classmethod
-    def from_model(cls, model, n_samples=10_000, seed=None, **kwargs):
+    def from_model(
+        cls,
+        model: JointReturnModel,
+        n_samples: int = 10_000,
+        seed: int | None = None,
+        **kwargs,
+    ) -> "MeanCVaR":
         """
         Build a scenario-bound allocator from a joint-return model's draws.
 
@@ -346,7 +359,7 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
         draws = _validate_draws(model.sample(n_samples, rng), n_samples)
         return cls(draws, **kwargs)
 
-    def optimize(self):
+    def optimize(self) -> AllocationResult:
         """
         Return the allocation with its solver diagnostics.
 
@@ -428,7 +441,7 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
             all_cash_reason=all_cash_reason,
         )
 
-    def evaluate(self, current_bankroll):
+    def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
         """
         Return one long-only weight per option.
 
@@ -456,7 +469,10 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
         return _validate_weights(self.weights, option_count=option_count)
 
 
-def scenarios_to_moments(scenarios, probabilities=None):
+def scenarios_to_moments(
+    scenarios: np.typing.ArrayLike,
+    probabilities: np.typing.ArrayLike | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Bridge a scenario matrix to the ``(mean, covariance)`` moment descriptor.
 

@@ -65,6 +65,10 @@ from keeks.allocation import (
     shrink_covariance,
     weight_evolution,
 )
+from keeks.allocation.base import (
+    COVARIANCE_SYMMETRY_TOLERANCE,
+    EIGENVALUE_FLOOR,
+)
 from keeks.bankroll import BankRoll
 from keeks.binary_strategies import (
     CPPIStrategy,
@@ -91,6 +95,7 @@ from keeks.simulators import (
     RepeatedBinarySimulator,
 )
 from keeks.utils import (
+    PROBABILITY_SUM_TOLERANCE,
     RuinError,
     crra_utility,
     expected_utility,
@@ -115,9 +120,11 @@ __all__ = [
     "check_allocation_strategy",
     "check_model",
     "check_strategy",
+    "COVARIANCE_SYMMETRY_TOLERANCE",
     "CPPIStrategy",
     "DrawdownAdjustedKelly",
     "DynamicBankrollManagement",
+    "EIGENVALUE_FLOOR",
     "ExponentialGradient",
     "FixedFractionStrategy",
     "FixedWeights",
@@ -138,6 +145,7 @@ __all__ = [
     "OnlineNewtonStep",
     "OptimalF",
     "PortfolioSimulator",
+    "PROBABILITY_SUM_TOLERANCE",
     "RandomBinarySimulator",
     "RandomUncertainBinarySimulator",
     "RepeatedBinarySimulator",

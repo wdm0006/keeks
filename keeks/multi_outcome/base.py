@@ -3,12 +3,15 @@ from collections.abc import Sequence
 
 import numpy as np
 
+from keeks.params import ParameterMixin
 from keeks.utils import PROBABILITY_SUM_TOLERANCE, _require_finite, _validated_evaluate
 
 __author__ = "willmcginnis"
 
 
-def _validate_stake_fractions(stakes, leg_count=None):
+def _validate_stake_fractions(
+    stakes: np.typing.ArrayLike, leg_count: int | None = None
+) -> tuple[float, ...]:
     """
     Coerce a strategy's stake vector to a tuple of finite floats within ``[0, 1]``.
 
@@ -68,7 +71,7 @@ def _validate_stake_fractions(stakes, leg_count=None):
     return tuple(stakes.tolist())
 
 
-class BaseMultiOutcomeStrategy(abc.ABC):
+class BaseMultiOutcomeStrategy(ParameterMixin, abc.ABC):
     """
     Abstract base class for all multi-outcome betting strategies.
 

@@ -150,7 +150,9 @@ def _ledoit_wolf_intensity(centered, sample_covariance, target):
     return max(0.0, min(1.0, estimation_noise / distance_squared))
 
 
-def shrink_covariance(samples, alpha=None):
+def shrink_covariance(
+    samples: np.typing.ArrayLike, alpha: float | None = None
+) -> tuple[np.ndarray, float]:
     """
     Ledoit-Wolf shrinkage estimate of a covariance matrix.
 
@@ -302,7 +304,14 @@ def _validate_views(views, option_count):
     return view_matrix, view_returns
 
 
-def black_litterman_mean(covariance, market_weights, risk_aversion, views, omega, tau):
+def black_litterman_mean(
+    covariance: np.typing.ArrayLike,
+    market_weights: np.typing.ArrayLike,
+    risk_aversion: float,
+    views: tuple[np.typing.ArrayLike, np.typing.ArrayLike] | None,
+    omega: np.typing.ArrayLike | None,
+    tau: float,
+) -> np.ndarray:
     """
     Black-Litterman posterior mean: equilibrium returns blended with views.
 
