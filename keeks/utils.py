@@ -16,7 +16,7 @@ class RuinError(Exception):
 
     Raised by the BankRoll class in two cases: a removal would take the
     funds below zero (bankruptcy), or a removal exceeds the configured
-    ``max_draw_down`` fraction of current funds. The message names the
+    ``max_transaction_loss`` fraction of current funds. The message names the
     attempted amount, the configured limit, and the current funds; the
     simulators re-report it as a ``UserWarning`` when a refusal stops a run.
     """
@@ -74,7 +74,7 @@ def crra_utility(wealth, risk_aversion=1.0):
     return (wealth ** (1 - risk_aversion)) / (1 - risk_aversion)
 
 
-def normalize_probabilities(probabilities):
+def validate_probabilities(probabilities):
     """
     Validate a probability vector and return it as a float array.
 
@@ -107,12 +107,12 @@ def normalize_probabilities(probabilities):
 
     Examples
     --------
-    >>> normalize_probabilities([0.25, 0.75])
+    >>> validate_probabilities([0.25, 0.75])
     array([0.25, 0.75])
 
     A sum above one by more than the tolerance is rejected:
 
-    >>> normalize_probabilities([0.5, 0.6])
+    >>> validate_probabilities([0.5, 0.6])
     Traceback (most recent call last):
         ...
     ValueError: Probabilities must sum to no more than one
@@ -148,7 +148,7 @@ def _normalize_gamble(outcomes, probabilities):
     if not np.all(np.isfinite(outcomes)):
         raise ValueError("Outcomes and probabilities must contain only finite values")
 
-    probabilities = normalize_probabilities(probabilities)
+    probabilities = validate_probabilities(probabilities)
 
     if outcomes.size != probabilities.size:
         raise ValueError("Outcomes and probabilities must have equal length")
@@ -225,18 +225,18 @@ def _validate_entry_price_scalars(
         _require_finite(entry_price, "Entry price")
 
 
-def _validate_simulator_controls(payoff, loss, transaction_costs, trials):
+def _validate_simulator_controls(payoff, loss, fee_per_bet, trials):
     """
     Validate the controls shared by every simulator constructor.
 
     ``payoff`` must be finite and positive, ``loss`` and the flat
-    ``transaction_costs`` fee must be finite and nonnegative, and ``trials`` must
+    ``fee_per_bet`` fee must be finite and nonnegative, and ``trials`` must
     be a nonnegative integer.
 
     Returns
     -------
     tuple
-        The validated ``(payoff, loss, transaction_costs, trials)``, with the
+        The validated ``(payoff, loss, fee_per_bet, trials)``, with the
         numeric controls coerced to ``float``.
 
     Raises
@@ -250,9 +250,9 @@ def _validate_simulator_controls(payoff, loss, transaction_costs, trials):
     loss = _require_finite(loss, "Loss")
     if loss < 0:
         raise ValueError("Loss must be non-negative")
-    transaction_costs = _require_finite(transaction_costs, "Transaction costs")
-    if transaction_costs < 0:
-        raise ValueError("Transaction costs must be non-negative")
+    fee_per_bet = _require_finite(fee_per_bet, "Fee per bet")
+    if fee_per_bet < 0:
+        raise ValueError("Fee per bet must be non-negative")
 
     try:
         trials = operator.index(trials)
@@ -261,7 +261,7 @@ def _validate_simulator_controls(payoff, loss, transaction_costs, trials):
     if trials < 0:
         raise ValueError("Trials must be a nonnegative integer")
 
-    return payoff, loss, transaction_costs, trials
+    return payoff, loss, fee_per_bet, trials
 
 
 def _validate_simulator_seed(seed):
@@ -303,8 +303,8 @@ def _validate_strategy_odds(strategy, payoff, loss):
     instances are checked; a duck-typed strategy needs no ``payoff``/``loss`` at
     all and its compatibility stays the caller's responsibility.
 
-    The strategies' fractional ``transaction_cost`` and the simulators' flat
-    ``transaction_costs`` fee are deliberately different units and are never
+    The strategies' fractional ``transaction_cost_rate`` and the simulators' flat
+    ``fee_per_bet`` fee are deliberately different units and are never
     compared.
 
     Raises

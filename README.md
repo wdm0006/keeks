@@ -39,7 +39,7 @@ bankroll = 1_000.0
 strategy = KellyCriterion(
     payoff=1.0,
     loss=1.0,
-    transaction_cost=0.01,
+    transaction_cost_rate=0.01,
 )
 
 fraction = strategy.evaluate(probability=0.55, current_bankroll=bankroll)
@@ -103,18 +103,18 @@ from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 bankroll = BankRoll(
     initial_funds=1_000.0,
     percent_bettable=0.8,
-    max_draw_down=0.3,
+    max_transaction_loss=0.3,
 )
 strategy = FractionalKellyCriterion(
     payoff=1.0,
     loss=1.0,
-    transaction_cost=0.01,
+    transaction_cost_rate=0.01,
     fraction=0.5,
 )
 simulator = RepeatedBinarySimulator(
     payoff=1.0,
     loss=1.0,
-    transaction_costs=0.01,
+    fee_per_bet=0.01,
     probability=0.55,
     trials=1_000,
 )
@@ -193,8 +193,10 @@ allocation.
 ```python
 from keeks import MeanVariance, binary_bets_model
 
-# Three simultaneous binary bets: (win probability, payoff, loss)
-model = binary_bets_model([(0.55, 1.0, 1.0), (0.60, 0.8, 1.0), (0.52, 1.2, 1.0)])
+# Three simultaneous binary bets: (win probability, decimal odds, loss)
+# - decimal odds settle the stake: a 2.0 book returns net winnings of 1.0
+#   per unit staked (payoff - 1), unlike binary_strategies' net-win payoff
+model = binary_bets_model([(0.55, 2.0, 1.0), (0.42, 2.5, 1.0), (0.70, 1.5, 1.0)])
 
 # λ = 1 mean-variance is the second-order Kelly allocation
 strategy = MeanVariance.from_model(model, n_samples=4096, seed=42)
@@ -256,8 +258,8 @@ uv run python examples/allocation_etfs.py --refresh  # re-download via yfinance
   market impact, or venue-specific commissions. Correlated positions and
   portfolio rebalancing are modeled by the allocation layer (`keeks.allocation`),
   under its own long-only weight contract and simulator semantics.
-- A strategy's `transaction_cost` is a per-unit *fractional* cost that scales
-  with stake size. A simulator's `transaction_costs` (plural) is a flat,
+- A strategy's `transaction_cost_rate` is a per-unit *fractional* cost that scales
+  with stake size. A simulator's `fee_per_bet` (plural) is a flat,
   *absolute* bankroll amount charged once per settled bet. The two are
   different units — passing the same number to both models two different
   real-world costs, and Keeks does not convert between them.

@@ -76,7 +76,7 @@ def run_strategy_simulation(strategy_class, strategy_name, strategy_params=None)
             simulator = RepeatedBinarySimulator(
                 payoff=PAYOFF,
                 loss=LOSS,
-                transaction_costs=TRANS_COST,
+                fee_per_bet=TRANS_COST,
                 probability=PROBABILITY,
                 trials=NUM_TRIALS,
                 seed=BASE_SEED + i,
@@ -171,7 +171,11 @@ def main():
         {
             "class": KellyCriterion,
             "name": "Kelly Criterion",
-            "params": {"payoff": PAYOFF, "loss": LOSS, "transaction_cost": TRANS_COST},
+            "params": {
+                "payoff": PAYOFF,
+                "loss": LOSS,
+                "transaction_cost_rate": TRANS_COST,
+            },
         },
         {
             "class": FractionalKellyCriterion,
@@ -179,7 +183,7 @@ def main():
             "params": {
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "fraction": 0.5,
             },
         },
@@ -189,7 +193,7 @@ def main():
             "params": {
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "fraction": 0.25,
             },
         },
@@ -199,8 +203,8 @@ def main():
             "params": {
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
-                "max_acceptable_drawdown": 0.2,
+                "transaction_cost_rate": TRANS_COST,
+                "max_transaction_loss": 0.2,
             },
         },
         {
@@ -209,7 +213,7 @@ def main():
             "params": {
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "win_rate": PROBABILITY,
                 "max_risk_fraction": 0.15,
             },
@@ -221,7 +225,7 @@ def main():
                 "fraction": 0.05,
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "min_probability": 0.0,  # Always bet regardless of probability
             },
         },
@@ -232,14 +236,18 @@ def main():
                 "fraction": 0.1,
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "min_probability": 0.0,  # Always bet regardless of probability
             },
         },
         {
             "class": NaiveStrategy,
             "name": "Naive Strategy",
-            "params": {"payoff": PAYOFF, "loss": LOSS, "transaction_cost": TRANS_COST},
+            "params": {
+                "payoff": PAYOFF,
+                "loss": LOSS,
+                "transaction_cost_rate": TRANS_COST,
+            },
         },
         {
             "class": CPPIStrategy,
@@ -250,7 +258,7 @@ def main():
                 "initial_bankroll": INITIAL_BANKROLL,
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "min_probability": 0.0,  # Always bet regardless of probability
             },
         },
@@ -261,7 +269,7 @@ def main():
                 "base_fraction": 0.1,
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "window_size": 10,
                 "max_fraction": 0.15,
                 "min_fraction": 0.01,
@@ -273,7 +281,7 @@ def main():
             "params": {
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "risk_aversion": 1.0,  # Low risk aversion (aggressive)
             },
         },
@@ -283,7 +291,7 @@ def main():
             "params": {
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "risk_aversion": 2.0,  # Moderate risk aversion (typical)
             },
         },
@@ -293,7 +301,7 @@ def main():
             "params": {
                 "payoff": PAYOFF,
                 "loss": LOSS,
-                "transaction_cost": TRANS_COST,
+                "transaction_cost_rate": TRANS_COST,
                 "risk_aversion": 5.0,  # High risk aversion (conservative)
             },
         },

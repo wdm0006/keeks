@@ -26,12 +26,12 @@ class _FixedFractionMultiOutcome:
 
 
 def run_simulation(seed):
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     strategy = _FixedFractionMultiOutcome(stakes=(0.1, 0.05, 0.0))
     simulator = RepeatedMultiOutcomeSimulator(
         payoffs=(2.0, 3.0, 2.5),
         loss=1.0,
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         probabilities=(0.4, 0.35, 0.2),
         trials=50,
         seed=seed,

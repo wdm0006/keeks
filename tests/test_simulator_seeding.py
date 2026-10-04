@@ -10,15 +10,15 @@ from .test_simulator_configuration_validation import SIMULATORS, build
 
 
 def run_simulation(simulator_cls, seed):
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     strategy = FixedFractionStrategy(
-        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.0
+        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.0
     )
     simulator = build(
         simulator_cls,
         seed=seed,
         trials=50,
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
     )
     simulator.evaluate_strategy(strategy, bankroll)
     return bankroll.history

@@ -57,7 +57,7 @@ SCENARIOS = {
         "cost": 0.01,
         "fee": 0.01,
         "probability": 0.55,
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
     "fee-heavy": {
         "payoff": 1.2,
@@ -65,7 +65,7 @@ SCENARIOS = {
         "cost": 0.02,
         "fee": 0.5,
         "probability": 0.45,
-        "max_draw_down": 0.05,
+        "max_transaction_loss": 0.05,
     },
     "subgate": {
         "payoff": 10.0,
@@ -73,7 +73,7 @@ SCENARIOS = {
         "cost": 0.0,
         "fee": 0.0,
         "probability": 0.3,
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
 }
 
@@ -81,29 +81,35 @@ SCENARIOS = {
 # rebuilt per run because they carry state across evaluate() calls.
 STRATEGY_FACTORIES = {
     "Kelly": lambda s: KellyCriterion(
-        payoff=s["payoff"], loss=s["loss"], transaction_cost=s["cost"]
+        payoff=s["payoff"], loss=s["loss"], transaction_cost_rate=s["cost"]
     ),
     "Half Kelly": lambda s: FractionalKellyCriterion(
-        payoff=s["payoff"], loss=s["loss"], transaction_cost=s["cost"], fraction=0.5
+        payoff=s["payoff"],
+        loss=s["loss"],
+        transaction_cost_rate=s["cost"],
+        fraction=0.5,
     ),
     "Drawdown-adjusted Kelly": lambda s: DrawdownAdjustedKelly(
         payoff=s["payoff"],
         loss=s["loss"],
-        transaction_cost=s["cost"],
-        max_acceptable_drawdown=0.2,
+        transaction_cost_rate=s["cost"],
+        max_transaction_loss=0.2,
     ),
     "Optimal f": lambda s: OptimalF(
         payoff=s["payoff"],
         loss=s["loss"],
-        transaction_cost=s["cost"],
+        transaction_cost_rate=s["cost"],
         win_rate=s["probability"],
         max_risk_fraction=0.2,
     ),
     "Naive": lambda s: NaiveStrategy(
-        payoff=s["payoff"], loss=s["loss"], transaction_cost=s["cost"]
+        payoff=s["payoff"], loss=s["loss"], transaction_cost_rate=s["cost"]
     ),
     "Fixed fraction 2%": lambda s: FixedFractionStrategy(
-        fraction=0.02, payoff=s["payoff"], loss=s["loss"], transaction_cost=s["cost"]
+        fraction=0.02,
+        payoff=s["payoff"],
+        loss=s["loss"],
+        transaction_cost_rate=s["cost"],
     ),
     "CPPI": lambda s: CPPIStrategy(
         floor_fraction=0.8,
@@ -111,18 +117,18 @@ STRATEGY_FACTORIES = {
         initial_bankroll=INITIAL_FUNDS,
         payoff=s["payoff"],
         loss=s["loss"],
-        transaction_cost=s["cost"],
+        transaction_cost_rate=s["cost"],
     ),
     "Dynamic": lambda s: DynamicBankrollManagement(
         base_fraction=0.05,
         payoff=s["payoff"],
         loss=s["loss"],
-        transaction_cost=s["cost"],
+        transaction_cost_rate=s["cost"],
     ),
     "Merton share": lambda s: MertonShare(
         payoff=s["payoff"],
         loss=s["loss"],
-        transaction_cost=s["cost"],
+        transaction_cost_rate=s["cost"],
         risk_aversion=2.0,
     ),
 }
@@ -144,7 +150,8 @@ def run_case(simulator_name, strategy_name, scenario_name, seed, trials, legacy)
     scenario = SCENARIOS[scenario_name]
     strategy = STRATEGY_FACTORIES[strategy_name](scenario)
     bankroll = BankRoll(
-        initial_funds=INITIAL_FUNDS, max_draw_down=scenario["max_draw_down"]
+        initial_funds=INITIAL_FUNDS,
+        max_transaction_loss=scenario["max_transaction_loss"],
     )
     sim_seed = None if legacy else seed
     if legacy:
@@ -155,7 +162,7 @@ def run_case(simulator_name, strategy_name, scenario_name, seed, trials, legacy)
         simulator = RepeatedBinarySimulator(
             payoff=scenario["payoff"],
             loss=scenario["loss"],
-            transaction_costs=scenario["fee"],
+            fee_per_bet=scenario["fee"],
             probability=scenario["probability"],
             trials=trials,
             seed=sim_seed,
@@ -164,7 +171,7 @@ def run_case(simulator_name, strategy_name, scenario_name, seed, trials, legacy)
         simulator = RandomBinarySimulator(
             payoff=scenario["payoff"],
             loss=scenario["loss"],
-            transaction_costs=scenario["fee"],
+            fee_per_bet=scenario["fee"],
             trials=trials,
             seed=sim_seed,
         )
@@ -172,7 +179,7 @@ def run_case(simulator_name, strategy_name, scenario_name, seed, trials, legacy)
         simulator = RandomUncertainBinarySimulator(
             payoff=scenario["payoff"],
             loss=scenario["loss"],
-            transaction_costs=scenario["fee"],
+            fee_per_bet=scenario["fee"],
             trials=trials,
             seed=sim_seed,
         )

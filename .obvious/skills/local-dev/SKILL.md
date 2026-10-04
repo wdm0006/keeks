@@ -37,7 +37,7 @@ uv run python examples/strategy_comparison.py        # stats table + chart in ex
 ```
 
 Expected quickstart values (README): `KellyCriterion(payoff=1.0, loss=1.0,
-transaction_cost=0.01).evaluate(probability=0.55, current_bankroll=1000)` →
+transaction_cost_rate=0.01).evaluate(probability=0.55, current_bankroll=1000)` →
 `0.090009` (9.0009%, $90.01). Assert these when smoke-testing.
 
 ## Gotchas

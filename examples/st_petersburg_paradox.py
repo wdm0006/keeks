@@ -89,31 +89,31 @@ def main():
     # Create strategy instances - all 9 strategies!
     strategies = {
         # Utility-based strategies
-        "Kelly": KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0),
+        "Kelly": KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0),
         "Half Kelly": FractionalKellyCriterion(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.5
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, fraction=0.5
         ),
         "Drawdown Kelly": DrawdownAdjustedKelly(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, max_acceptable_drawdown=0.2
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, max_transaction_loss=0.2
         ),
         "Optimal F": OptimalF(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, win_rate=0.55
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, win_rate=0.55
         ),
         "Merton (γ=2.0)": MertonShare(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=2.0
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=2.0
         ),
         "Merton (γ=5.0)": MertonShare(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=5.0
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=5.0
         ),
         # Rule-based strategies
-        "Naive": NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0),
+        "Naive": NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0),
         "Fixed 5%": FixedFractionStrategy(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.05
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, fraction=0.05
         ),
         "Dynamic 10%": DynamicBankrollManagement(
             payoff=1.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             base_fraction=0.1,
             window_size=10,
         ),

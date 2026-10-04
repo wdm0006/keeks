@@ -194,8 +194,8 @@ class TestBinaryBetsModel:
         # -- the simulator's flat fee on a unit stake is exactly the per-unit
         # transaction cost.
         probability, payoff, loss = 0.6, 0.5, 0.2
-        transaction_costs = 0.02
-        model = BinaryBetsModel([(probability, payoff, loss)], transaction_costs)
+        rate = 0.02
+        model = BinaryBetsModel([(probability, payoff, loss)], rate)
         draws = model.sample(300, np.random.default_rng(0))
 
         # Reproduce the model's stream with the documented keying family.
@@ -210,14 +210,14 @@ class TestBinaryBetsModel:
 
         expected = np.where(
             uniforms < probability,
-            (payoff - 1.0) - transaction_costs,
-            -(loss + transaction_costs),
+            (payoff - 1.0) - rate,
+            -(loss + rate),
         )
         assert np.array_equal(draws[:, 0], expected)
 
         # And the same uniform maps to the PortfolioSimulator's settlement
         # on a unit stake with the flat fee set to the per-unit cost.
-        fee = transaction_costs  # flat fee on a stake of 1.0
+        fee = rate  # flat fee on a stake of 1.0
         portfolio_net = np.where(
             uniforms < probability,
             (payoff - 1.0) * 1.0 - fee,
@@ -242,9 +242,9 @@ class TestBinaryBetsModel:
             def evaluate(self, probabilities, current_bankroll):  # noqa: ARG002
                 return (1.0,)
 
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
         simulator = PortfolioSimulator(
-            bets=[bet], transaction_costs=0.0, trials=trials, seed=child_entropy
+            bets=[bet], fee_per_bet=0.0, trials=trials, seed=child_entropy
         )
         simulator.evaluate_strategy(AllInStrategy(), bankroll)
         assert len(bankroll.history) == trials + 1
@@ -289,7 +289,7 @@ class TestBinaryBetsModel:
     def test_closed_form_moments_with_costs(self):
         probability, payoff, loss = 0.55, 2.0, 1.0
         tc = 0.01
-        model = BinaryBetsModel([(probability, payoff, loss)], transaction_costs=tc)
+        model = BinaryBetsModel([(probability, payoff, loss)], transaction_cost_rate=tc)
         mean, covariance = model.moments()
         win_return = (payoff - 1.0) - tc
         loss_return = loss + tc
@@ -320,8 +320,10 @@ class TestBinaryBetsModel:
             ValueError, match="Bet 0 probability must be between 0 and 1"
         ):
             binary_bets_model([(1.5, 2.0, 1.0)])
-        with pytest.raises(ValueError, match="Transaction costs must be non-negative"):
-            BinaryBetsModel([(0.5, 2.0, 1.0)], transaction_costs=-0.01)
+        with pytest.raises(
+            ValueError, match="Transaction cost rate must be non-negative"
+        ):
+            BinaryBetsModel([(0.5, 2.0, 1.0)], transaction_cost_rate=-0.01)
 
 
 class TestMarginalModel:

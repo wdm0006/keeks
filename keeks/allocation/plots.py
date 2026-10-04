@@ -56,7 +56,7 @@ __all__ = [
     "bankroll_paths",
     "correlation_heatmap",
     "dendrogram",
-    "drawdown",
+    "drawdown_history",
     "efficient_frontier",
     "risk_contributions",
     "scenario_losses",
@@ -350,7 +350,7 @@ def bankroll_paths(histories, log_scale=True):
     return axes
 
 
-def drawdown(history):
+def drawdown_history(history):
     """
     Plot the peak-to-trough drawdown curve of a bankroll history.
 
@@ -381,8 +381,8 @@ def drawdown(history):
 
     Examples
     --------
-    >>> from keeks.allocation.plots import drawdown
-    >>> axes = drawdown([1000.0, 1250.0, 1000.0])
+    >>> from keeks.allocation.plots import drawdown_history
+    >>> axes = drawdown_history([1000.0, 1250.0, 1000.0])
     >>> len(axes.lines)
     1
     >>> round(float(axes.lines[0].get_ydata().max()), 4)

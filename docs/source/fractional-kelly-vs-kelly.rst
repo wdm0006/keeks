@@ -69,7 +69,7 @@ probability estimate is correct.
 Python comparison with identical inputs
 ------------------------------------------
 
-Both classes take the same ``payoff``, ``loss``, and ``transaction_cost``
+Both classes take the same ``payoff``, ``loss``, and ``transaction_cost_rate``
 inputs and share the same ``evaluate()`` method:
 
 .. code-block:: python
@@ -82,7 +82,7 @@ inputs and share the same ``evaluate()`` method:
    inputs = {
        "payoff": 1.0,
        "loss": 1.0,
-       "transaction_cost": 0.01,
+       "transaction_cost_rate": 0.01,
    }
    bankroll = 1_000.0
    probability = 0.55
@@ -136,7 +136,7 @@ A fair comparison between strategies needs:
   mutate the bankroll in place, and some strategies carry state across
   ``evaluate()`` calls;
 - **identical simulator inputs** (``payoff``, ``loss``,
-  ``transaction_costs``, ``probability``) across every strategy being
+  ``fee_per_bet``, ``probability``) across every strategy being
   compared;
 - **multiple seeded runs**, because a single stochastic path does not
   support a general claim about which strategy is "better"; and

@@ -23,13 +23,13 @@ def simulator(request, monkeypatch):
 
 def _strategy():
     return FixedFractionStrategy(
-        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.0
+        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.0
     )
 
 
 def test_nonnegative_win_is_deposited(simulator):
-    simulator.transaction_costs = 0.5
-    bankroll = BankRoll(initial_funds=10.0, max_draw_down=0.3)
+    simulator.fee_per_bet = 0.5
+    bankroll = BankRoll(initial_funds=10.0, max_transaction_loss=0.3)
 
     simulator.evaluate_strategy(_strategy(), bankroll)
 
@@ -38,8 +38,8 @@ def test_nonnegative_win_is_deposited(simulator):
 
 
 def test_affordable_fee_dominated_win_is_withdrawn(simulator):
-    simulator.transaction_costs = 2.0
-    bankroll = BankRoll(initial_funds=10.0, max_draw_down=0.3)
+    simulator.fee_per_bet = 2.0
+    bankroll = BankRoll(initial_funds=10.0, max_transaction_loss=0.3)
 
     simulator.evaluate_strategy(_strategy(), bankroll)
 
@@ -48,8 +48,8 @@ def test_affordable_fee_dominated_win_is_withdrawn(simulator):
 
 
 def test_fee_dominated_win_exceeding_drawdown_stops_without_mutation(simulator):
-    simulator.transaction_costs = 5.0
-    bankroll = BankRoll(initial_funds=10.0, max_draw_down=0.3)
+    simulator.fee_per_bet = 5.0
+    bankroll = BankRoll(initial_funds=10.0, max_transaction_loss=0.3)
 
     simulator.evaluate_strategy(_strategy(), bankroll)
 
@@ -58,8 +58,8 @@ def test_fee_dominated_win_exceeding_drawdown_stops_without_mutation(simulator):
 
 
 def test_fee_dominated_win_exceeding_funds_stops_without_mutation(simulator):
-    simulator.transaction_costs = 12.0
-    bankroll = BankRoll(initial_funds=10.0, max_draw_down=None)
+    simulator.fee_per_bet = 12.0
+    bankroll = BankRoll(initial_funds=10.0, max_transaction_loss=None)
 
     simulator.evaluate_strategy(_strategy(), bankroll)
 

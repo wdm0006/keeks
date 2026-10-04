@@ -40,6 +40,11 @@ def _mean_reverting_scenarios(
     return np.column_stack([first, -first])
 
 
+def _won_for(realized):
+    """Outcome flags a simulator would report for these realized returns."""
+    return tuple(r > 0 for r in realized)
+
+
 def _run_online(allocator, scenarios, option_count=2):
     """Stake one period at a time, checking the weight contract each period."""
     growth = 1.0
@@ -50,7 +55,7 @@ def _run_online(allocator, scenarios, option_count=2):
         assert np.all(weights <= 1.0)
         assert weights.sum() <= 1.0 + PROBABILITY_SUM_TOLERANCE
         growth *= 1.0 + float(weights @ realized)
-        allocator.record_settlement(realized)
+        allocator.record_settlement(_won_for(realized), realized)
     return growth
 
 
@@ -66,7 +71,7 @@ class TestFixedWeights:
 
     def test_settlement_is_stateless(self):
         allocator = FixedWeights([0.5, 0.5])
-        allocator.record_settlement([0.2, -0.2])
+        allocator.record_settlement(_won_for([0.2, -0.2]), [0.2, -0.2])
         assert allocator.evaluate(1000.0) == (0.5, 0.5)
 
     @pytest.mark.parametrize(
@@ -89,13 +94,15 @@ class TestFixedWeights:
     def test_settlement_validates_shape_and_finiteness(self):
         allocator = FixedWeights([0.5, 0.5])
         with pytest.raises(ValueError, match="exactly 2"):
-            allocator.record_settlement([0.1, 0.1, 0.1])
+            allocator.record_settlement(_won_for([0.1, 0.1, 0.1]), [0.1, 0.1, 0.1])
         with pytest.raises(ValueError, match="finite"):
-            allocator.record_settlement([0.1, float("nan")])
+            allocator.record_settlement(
+                _won_for([0.1, float("nan")]), [0.1, float("nan")]
+            )
         with pytest.raises(ValueError, match="one-dimensional"):
-            allocator.record_settlement([[0.1, 0.1]])
+            allocator.record_settlement((True,), [[0.1, 0.1]])
         with pytest.raises(ValueError, match="non-empty"):
-            allocator.record_settlement([])
+            allocator.record_settlement(_won_for([]), [])
 
 
 class TestExponentialGradient:
@@ -110,30 +117,30 @@ class TestExponentialGradient:
 
     def test_follows_the_loser(self):
         allocator = ExponentialGradient(option_count=2, learning_rate=0.5)
-        allocator.record_settlement([0.2, -0.1])
+        allocator.record_settlement(_won_for([0.2, -0.1]), [0.2, -0.1])
         weights = np.asarray(allocator.evaluate(1000.0))
         assert weights[1] > weights[0]
 
         flipped = ExponentialGradient(option_count=2, learning_rate=0.5)
-        flipped.record_settlement([-0.1, 0.2])
+        flipped.record_settlement(_won_for([-0.1, 0.2]), [-0.1, 0.2])
         flipped_weights = np.asarray(flipped.evaluate(1000.0))
         assert flipped_weights[0] > flipped_weights[1]
 
     def test_state_accumulates_across_settlements(self):
         once = ExponentialGradient(option_count=2, learning_rate=0.5)
-        once.record_settlement([0.1, -0.1])
+        once.record_settlement(_won_for([0.1, -0.1]), [0.1, -0.1])
         after_one = np.asarray(once.evaluate(1000.0))
 
         twice = ExponentialGradient(option_count=2, learning_rate=0.5)
-        twice.record_settlement([0.1, -0.1])
-        twice.record_settlement([0.1, -0.1])
+        twice.record_settlement(_won_for([0.1, -0.1]), [0.1, -0.1])
+        twice.record_settlement(_won_for([0.1, -0.1]), [0.1, -0.1])
         after_two = np.asarray(twice.evaluate(1000.0))
 
         assert after_two[1] > after_one[1]
 
     def test_evaluate_does_not_mutate_state(self):
         allocator = ExponentialGradient(option_count=2, learning_rate=0.5)
-        allocator.record_settlement([0.1, -0.1])
+        allocator.record_settlement(_won_for([0.1, -0.1]), [0.1, -0.1])
         first = allocator.evaluate(1000.0)
         assert allocator.evaluate(1000.0) == first
         assert allocator.evaluate(0.0) == (0.0, 0.0)
@@ -142,12 +149,12 @@ class TestExponentialGradient:
     def test_zero_return_settlement_leaves_weights_unchanged(self):
         allocator = ExponentialGradient(option_count=3)
         before = allocator.evaluate(1000.0)
-        allocator.record_settlement([0.0, 0.0, 0.0])
+        allocator.record_settlement(_won_for([0.0, 0.0, 0.0]), [0.0, 0.0, 0.0])
         assert allocator.evaluate(1000.0) == before
 
     def test_extreme_returns_stay_finite(self):
         allocator = ExponentialGradient(option_count=2, learning_rate=0.05)
-        allocator.record_settlement([-2000.0, 0.0])
+        allocator.record_settlement(_won_for([-2000.0, 0.0]), [-2000.0, 0.0])
         weights = np.asarray(allocator.evaluate(1000.0))
         assert np.all(np.isfinite(weights))
         assert weights[0] > 0.99
@@ -156,7 +163,7 @@ class TestExponentialGradient:
     def test_single_option(self):
         allocator = ExponentialGradient(option_count=1)
         assert allocator.evaluate(1000.0) == (1.0,)
-        allocator.record_settlement([0.3])
+        allocator.record_settlement(_won_for([0.3]), [0.3])
         assert allocator.evaluate(1000.0) == (1.0,)
 
     def test_rejects_invalid_option_count(self):
@@ -176,14 +183,14 @@ class TestExponentialGradient:
         allocator = ExponentialGradient(option_count=2)
         for bad in ([0.1, 0.1, 0.1], [0.1, float("nan")], [[0.1, 0.1]], [], "nope"):
             with pytest.raises(ValueError):
-                allocator.record_settlement(bad)
+                allocator.record_settlement((), bad)
 
     def test_default_learning_rate_is_the_spec_value(self):
         default = ExponentialGradient(option_count=2)
         explicit = ExponentialGradient(option_count=2, learning_rate=0.05)
         for realized in _mean_reverting_scenarios(periods=10, amplitude=0.03):
-            default.record_settlement(realized)
-            explicit.record_settlement(realized)
+            default.record_settlement(_won_for(realized), realized)
+            explicit.record_settlement(_won_for(realized), realized)
         assert default.evaluate(1000.0) == explicit.evaluate(1000.0)
 
 
@@ -199,18 +206,18 @@ class TestOnlineNewtonStep:
 
     def test_follows_the_loser(self):
         allocator = OnlineNewtonStep(option_count=2)
-        allocator.record_settlement([0.05, -0.05])
+        allocator.record_settlement(_won_for([0.05, -0.05]), [0.05, -0.05])
         weights = np.asarray(allocator.evaluate(1000.0))
         assert weights[1] > weights[0]
 
         flipped = OnlineNewtonStep(option_count=2)
-        flipped.record_settlement([-0.05, 0.05])
+        flipped.record_settlement(_won_for([-0.05, 0.05]), [-0.05, 0.05])
         flipped_weights = np.asarray(flipped.evaluate(1000.0))
         assert flipped_weights[0] > flipped_weights[1]
 
     def test_evaluate_does_not_mutate_state(self):
         allocator = OnlineNewtonStep(option_count=2)
-        allocator.record_settlement([0.05, -0.05])
+        allocator.record_settlement(_won_for([0.05, -0.05]), [0.05, -0.05])
         first = allocator.evaluate(1000.0)
         assert allocator.evaluate(1000.0) == first
         assert allocator.evaluate(0.0) == (0.0, 0.0)
@@ -222,7 +229,7 @@ class TestOnlineNewtonStep:
         # of raising, and the projection keeps the weights inside the
         # contract with a small follow-the-loser tilt.
         allocator = OnlineNewtonStep(option_count=2)
-        allocator.record_settlement([-1e6, 1e6])
+        allocator.record_settlement(_won_for([-1e6, 1e6]), [-1e6, 1e6])
         weights = np.asarray(allocator.evaluate(1000.0))
         assert np.all(np.isfinite(weights))
         assert np.all(weights >= 0.0)
@@ -233,7 +240,7 @@ class TestOnlineNewtonStep:
     def test_single_option(self):
         allocator = OnlineNewtonStep(option_count=1)
         assert allocator.evaluate(1000.0) == (1.0,)
-        allocator.record_settlement([0.1])
+        allocator.record_settlement(_won_for([0.1]), [0.1])
         assert allocator.evaluate(1000.0) == (1.0,)
 
     @pytest.mark.parametrize(
@@ -250,8 +257,8 @@ class TestOnlineNewtonStep:
         default = OnlineNewtonStep(option_count=2)
         explicit = OnlineNewtonStep(option_count=2, learning_rate=0.5, epsilon=1e-6)
         for realized in _mean_reverting_scenarios(periods=6, amplitude=0.02):
-            default.record_settlement(realized)
-            explicit.record_settlement(realized)
+            default.record_settlement(_won_for(realized), realized)
+            explicit.record_settlement(_won_for(realized), realized)
         assert default.evaluate(1000.0) == explicit.evaluate(1000.0)
 
 
@@ -289,7 +296,7 @@ class TestSettlementHistory:
     @staticmethod
     def _replay(allocator, history):
         for realized in history:
-            allocator.record_settlement(realized)
+            allocator.record_settlement(_won_for(realized), realized)
         return allocator.evaluate(1000.0)
 
     def test_exponential_gradient_replays_identically(self):

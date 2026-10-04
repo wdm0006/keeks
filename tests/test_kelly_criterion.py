@@ -17,7 +17,7 @@ random.seed(42)
 
 def test_basic_functionality():
     """Test that KellyCriterion correctly calculates optimal bet sizes."""
-    strategy = KellyCriterion(payoff=1, loss=1, transaction_cost=0)
+    strategy = KellyCriterion(payoff=1, loss=1, transaction_cost_rate=0)
 
     # With 60% probability and 1:1 payoff ratio, Kelly fraction should be 0.2
     assert strategy.evaluate(0.6, 1000) == pytest.approx(0.2)
@@ -25,7 +25,9 @@ def test_basic_functionality():
 
 def test_min_probability_threshold():
     """Test that the strategy respects the minimum probability threshold."""
-    strategy = KellyCriterion(payoff=1, loss=1, transaction_cost=0, min_probability=0.5)
+    strategy = KellyCriterion(
+        payoff=1, loss=1, transaction_cost_rate=0, min_probability=0.5
+    )
 
     # Should bet when probability > min_probability
     assert strategy.evaluate(0.51, 1000) > 0
@@ -34,7 +36,7 @@ def test_min_probability_threshold():
 
 def test_edge_aware_default_sizes_formula_positive_longshots():
     """A bet the Kelly formula sizes positively is never silently zeroed."""
-    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0)
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost_rate=0)
 
     # The gate no longer defaults to 0.5: at p=0.4 the formula prices
     # 0.4/1 - 0.6/2 = 0.1 of bankroll, and the edge-aware default places it.
@@ -44,7 +46,9 @@ def test_edge_aware_default_sizes_formula_positive_longshots():
 
 def test_min_probability_gate_warns_when_it_zeroes_a_formula_positive_bet():
     """An explicit gate refuses formula-positive bets loudly."""
-    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0, min_probability=0.5)
+    strategy = KellyCriterion(
+        payoff=2, loss=1, transaction_cost_rate=0, min_probability=0.5
+    )
 
     with pytest.warns(UserWarning, match=r"sizes this bet positively at 0\.1000"):
         assert strategy.evaluate(0.4, 1000) == pytest.approx(0.0)
@@ -52,7 +56,9 @@ def test_min_probability_gate_warns_when_it_zeroes_a_formula_positive_bet():
 
 def test_min_probability_gate_stays_silent_for_formula_negative_bets():
     """The gate only warns when it overrides a positive Kelly fraction."""
-    strategy = KellyCriterion(payoff=1, loss=1, transaction_cost=0, min_probability=0.5)
+    strategy = KellyCriterion(
+        payoff=1, loss=1, transaction_cost_rate=0, min_probability=0.5
+    )
 
     with warnings.catch_warnings():
         warnings.simplefilter("error")
@@ -62,7 +68,7 @@ def test_min_probability_gate_stays_silent_for_formula_negative_bets():
 def test_min_probability_none_disables_the_gate():
     """min_probability=None (the default) sizes every positive-edge bet."""
     strategy = KellyCriterion(
-        payoff=10, loss=1, transaction_cost=0, min_probability=None
+        payoff=10, loss=1, transaction_cost_rate=0, min_probability=None
     )
 
     assert strategy.evaluate(0.3, 1000) == pytest.approx(0.23)
@@ -74,22 +80,24 @@ def test_invalid_min_probability_raises():
         with pytest.raises(
             ValueError, match="Minimum probability must be between 0 and 1"
         ):
-            KellyCriterion(payoff=2, loss=1, transaction_cost=0, min_probability=bad)
+            KellyCriterion(
+                payoff=2, loss=1, transaction_cost_rate=0, min_probability=bad
+            )
 
 
 def test_full_kelly_under_default_bankroll_settles_bets():
     """Regression: a full-Kelly run under default settings must not be a no-op.
 
-    Before the defaults changed, the old ``max_draw_down=0.3`` vetoed every
+    Before the defaults changed, the old ``max_transaction_loss=0.3`` vetoed every
     full-Kelly loss-side settlement (this edge stakes ~32% of funds) and the
     simulator stopped after it silently - one history entry, starting funds.
     """
-    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0.01)
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost_rate=0.01)
     bankroll = BankRoll(initial_funds=1000.0)  # default: no drawdown cap
     simulator = RepeatedBinarySimulator(
         payoff=2.0,
         loss=1.0,
-        transaction_costs=0.01,
+        fee_per_bet=0.01,
         probability=0.55,
         trials=200,
         seed=42,
@@ -104,28 +112,28 @@ def test_full_kelly_under_default_bankroll_settles_bets():
 def test_payoff_ratio_effect():
     """Test how different payoff ratios affect the Kelly fraction."""
     # Low payoff ratio (conservative)
-    strategy_low = KellyCriterion(payoff=1, loss=1, transaction_cost=0)
+    strategy_low = KellyCriterion(payoff=1, loss=1, transaction_cost_rate=0)
 
     # High payoff ratio (aggressive)
-    strategy_high = KellyCriterion(payoff=2, loss=1, transaction_cost=0)
+    strategy_high = KellyCriterion(payoff=2, loss=1, transaction_cost_rate=0)
 
     # Higher payoff ratio should result in larger bet size
     assert strategy_high.evaluate(0.6, 1000) > strategy_low.evaluate(0.6, 1000)
 
 
-def test_transaction_costs():
+def test_transaction_cost_rate():
     """Test how transaction costs affect the Kelly fraction."""
     # No transaction costs
-    strategy_no_cost = KellyCriterion(payoff=1, loss=1, transaction_cost=0)
+    strategy_no_cost = KellyCriterion(payoff=1, loss=1, transaction_cost_rate=0)
 
     # With transaction costs
-    strategy_with_cost = KellyCriterion(payoff=1, loss=1, transaction_cost=0.01)
+    strategy_with_cost = KellyCriterion(payoff=1, loss=1, transaction_cost_rate=0.01)
 
-    # Transaction costs should reduce bet size
+    # Fee per bet should reduce bet size
     assert strategy_with_cost.evaluate(0.6, 1000) < strategy_no_cost.evaluate(0.6, 1000)
 
     # With large transaction costs that make betting unprofitable
-    strategy_large_cost = KellyCriterion(payoff=1, loss=1, transaction_cost=0.5)
+    strategy_large_cost = KellyCriterion(payoff=1, loss=1, transaction_cost_rate=0.5)
 
     # Should not bet when transaction costs make betting unprofitable
     assert strategy_large_cost.evaluate(0.6, 1000) == pytest.approx(0.0)
@@ -135,43 +143,43 @@ def test_invalid_parameters():
     """Test that invalid parameters raise appropriate exceptions."""
     # Payoff must be positive
     with pytest.raises(ValueError, match="Payoff must be greater than 0"):
-        KellyCriterion(payoff=0, loss=1, transaction_cost=0)
+        KellyCriterion(payoff=0, loss=1, transaction_cost_rate=0)
 
     # Loss must be non-negative
     with pytest.raises(ValueError, match="Loss must be non-negative"):
-        KellyCriterion(payoff=1, loss=-1, transaction_cost=0)
+        KellyCriterion(payoff=1, loss=-1, transaction_cost_rate=0)
 
-    # Transaction cost must be non-negative
-    with pytest.raises(ValueError, match="Transaction cost must be non-negative"):
-        KellyCriterion(payoff=1, loss=1, transaction_cost=-0.01)
+    # Transaction cost rate must be non-negative
+    with pytest.raises(ValueError, match="Transaction cost rate must be non-negative"):
+        KellyCriterion(payoff=1, loss=1, transaction_cost_rate=-0.01)
 
     # Total cost must be positive
     with pytest.raises(ValueError, match="Total cost .* must be greater than 0"):
-        KellyCriterion(payoff=1, loss=0, transaction_cost=0)
+        KellyCriterion(payoff=1, loss=0, transaction_cost_rate=0)
 
 
 def test_simulation():
     """Test the strategy in a simulation with varying performance."""
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.55  # Slight edge
     trials = 300
     initial_bankroll = 1000
 
     # Initialize bankroll and strategy
     bankroll = BankRoll(
-        initial_funds=initial_bankroll, percent_bettable=0.5, max_draw_down=None
+        initial_funds=initial_bankroll, percent_bettable=0.5, max_transaction_loss=None
     )
     strategy = KellyCriterion(
-        payoff=payoff, loss=loss, transaction_cost=transaction_cost
+        payoff=payoff, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
 
     # Set up simulator
     RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )
@@ -192,13 +200,13 @@ def test_simulation():
         # Update bankroll based on the bet
         if random.random() < probability:
             # Win
-            bankroll.add_funds(
-                current_bankroll * bet_proportion * (payoff - transaction_cost)
+            bankroll.deposit(
+                current_bankroll * bet_proportion * (payoff - transaction_cost_rate)
             )
         else:
             # Loss
-            bankroll.remove_funds(
-                current_bankroll * bet_proportion * (loss + transaction_cost)
+            bankroll.withdraw(
+                current_bankroll * bet_proportion * (loss + transaction_cost_rate)
             )
 
     # Verify that the bankroll never went below 50% of initial
@@ -206,7 +214,7 @@ def test_simulation():
 
 
 def test_even_odds():
-    strategy = KellyCriterion(payoff=1, loss=1, transaction_cost=0)
+    strategy = KellyCriterion(payoff=1, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 60% chance of winning
@@ -220,7 +228,7 @@ def test_even_odds():
 
 def test_known_cases():
     # No transaction costs
-    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0)
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 50% chance of winning with 2:1 payoff
@@ -239,7 +247,7 @@ def test_known_cases():
     assert strategy.evaluate(0.4, current_bankroll) == pytest.approx(0.1)
 
     # With transaction costs
-    strategy_with_cost = KellyCriterion(payoff=2, loss=1, transaction_cost=0.1)
+    strategy_with_cost = KellyCriterion(payoff=2, loss=1, transaction_cost_rate=0.1)
 
     # 60% chance of winning with 2:1 payoff and transaction costs
     # f* = 0.6 / 1.1 - 0.4 / 1.9 = 0.3349
@@ -249,7 +257,7 @@ def test_known_cases():
 
 
 @pytest.mark.parametrize(
-    ("probability", "payoff", "loss", "transaction_cost"),
+    ("probability", "payoff", "loss", "transaction_cost_rate"),
     [
         (0.60, 2.0, 1.0, 0.0),
         (0.60, 2.0, 0.5, 0.0),
@@ -259,13 +267,13 @@ def test_known_cases():
     ],
 )
 def test_matches_numeric_expected_log_growth_maximum(
-    probability, payoff, loss, transaction_cost
+    probability, payoff, loss, transaction_cost_rate
 ):
-    strategy = KellyCriterion(payoff, loss, transaction_cost)
+    strategy = KellyCriterion(payoff, loss, transaction_cost_rate)
     max_safe_bet = strategy.get_max_safe_bet(1000)
     fractions = np.linspace(0, max_safe_bet, 100_001)
-    adjusted_payoff = payoff - transaction_cost
-    adjusted_loss = loss + transaction_cost
+    adjusted_payoff = payoff - transaction_cost_rate
+    adjusted_loss = loss + transaction_cost_rate
     with np.errstate(divide="ignore"):
         expected_log_growth = probability * np.log1p(fractions * adjusted_payoff) + (
             1 - probability
@@ -281,14 +289,16 @@ def test_kelly_variants_scale_corrected_non_unit_loss_fraction():
     probability = 0.55
     payoff = 1.0
     loss = 0.5
-    transaction_cost = 0.0
-    full_kelly = KellyCriterion(payoff, loss, transaction_cost).evaluate(
+    transaction_cost_rate = 0.0
+    full_kelly = KellyCriterion(payoff, loss, transaction_cost_rate).evaluate(
         probability, 1000
     )
 
-    fractional = FractionalKellyCriterion(payoff, loss, transaction_cost, fraction=0.5)
+    fractional = FractionalKellyCriterion(
+        payoff, loss, transaction_cost_rate, fraction=0.5
+    )
     drawdown_adjusted = DrawdownAdjustedKelly(
-        payoff, loss, transaction_cost, max_acceptable_drawdown=0.2
+        payoff, loss, transaction_cost_rate, max_transaction_loss=0.2
     )
 
     assert fractional.evaluate(probability, 1000) == pytest.approx(full_kelly * 0.5)
@@ -298,7 +308,7 @@ def test_kelly_variants_scale_corrected_non_unit_loss_fraction():
 
 
 def test_zero_probability():
-    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0)
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 0% chance of winning
@@ -308,7 +318,7 @@ def test_zero_probability():
 
 
 def test_one_probability():
-    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0)
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 100% chance of winning
@@ -320,16 +330,16 @@ def test_one_probability():
 def test_simulation_repeated():
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.55
     trials = 1_000
 
-    bankroll = BankRoll(initial_funds=1000, percent_bettable=1, max_draw_down=1)
-    strategy = KellyCriterion(payoff, loss, transaction_cost)
+    bankroll = BankRoll(initial_funds=1000, percent_bettable=1, max_transaction_loss=1)
+    strategy = KellyCriterion(payoff, loss, transaction_cost_rate)
     simulator = RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )
@@ -340,24 +350,24 @@ def test_simulation_repeated():
 def test_simulation_random():
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     trials = 100
     stdev = 0.05
 
     bankroll_kelly = BankRoll(
-        initial_funds=1000, percent_bettable=0.1, max_draw_down=0.5
+        initial_funds=1000, percent_bettable=0.1, max_transaction_loss=0.5
     )
     bankroll_naive = BankRoll(
-        initial_funds=1000, percent_bettable=0.1, max_draw_down=0.5
+        initial_funds=1000, percent_bettable=0.1, max_transaction_loss=0.5
     )
 
-    strategy_kelly = KellyCriterion(payoff, loss, transaction_cost)
-    strategy_naive = NaiveStrategy(payoff, loss, transaction_cost)
+    strategy_kelly = KellyCriterion(payoff, loss, transaction_cost_rate)
+    strategy_naive = NaiveStrategy(payoff, loss, transaction_cost_rate)
 
     simulator_kelly = RandomBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         trials=trials,
         stdev=stdev,
         seed=42,
@@ -366,7 +376,7 @@ def test_simulation_random():
     simulator_naive = RandomBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         trials=trials,
         stdev=stdev,
         seed=42,
@@ -382,31 +392,31 @@ def test_simulation_random():
 def test_simulation_random_uncertain():
     payoff = 0.15
     loss = 0.15
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     trials = 100
     stdev = 0.05
     uncertainty_stdev = 0.02
 
     bankroll_kelly = BankRoll(
-        initial_funds=1000, percent_bettable=0.1, max_draw_down=0.5
+        initial_funds=1000, percent_bettable=0.1, max_transaction_loss=0.5
     )
     bankroll_naive = BankRoll(
-        initial_funds=1000, percent_bettable=0.1, max_draw_down=0.5
+        initial_funds=1000, percent_bettable=0.1, max_transaction_loss=0.5
     )
     bankroll_fractional_kelly = BankRoll(
-        initial_funds=1000, percent_bettable=0.1, max_draw_down=0.5
+        initial_funds=1000, percent_bettable=0.1, max_transaction_loss=0.5
     )
 
-    strategy_kelly = KellyCriterion(payoff, loss, transaction_cost)
-    strategy_naive = NaiveStrategy(payoff, loss, transaction_cost)
+    strategy_kelly = KellyCriterion(payoff, loss, transaction_cost_rate)
+    strategy_naive = NaiveStrategy(payoff, loss, transaction_cost_rate)
     strategy_fractional_kelly = FractionalKellyCriterion(
-        payoff, loss, transaction_cost, 0.5
+        payoff, loss, transaction_cost_rate, 0.5
     )
 
     simulator_kelly = RandomUncertainBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         trials=trials,
         stdev=stdev,
         uncertainty_stdev=uncertainty_stdev,
@@ -416,7 +426,7 @@ def test_simulation_random_uncertain():
     simulator_naive = RandomUncertainBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         trials=trials,
         stdev=stdev,
         uncertainty_stdev=uncertainty_stdev,
@@ -426,7 +436,7 @@ def test_simulation_random_uncertain():
     simulator_fractional_kelly = RandomUncertainBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         trials=trials,
         stdev=stdev,
         uncertainty_stdev=uncertainty_stdev,
@@ -466,24 +476,30 @@ def test_fractional_kelly_validation():
     """Test that FractionalKellyCriterion validates parameters correctly."""
     # Valid parameters
     valid_strategy = FractionalKellyCriterion(
-        payoff=1, loss=1, transaction_cost=0, fraction=0.5
+        payoff=1, loss=1, transaction_cost_rate=0, fraction=0.5
     )
     assert valid_strategy.fraction == 0.5
 
     # Fraction must be between 0 and 1
     with pytest.raises(ValueError, match="Fraction must be between 0 and 1"):
-        FractionalKellyCriterion(payoff=1, loss=1, transaction_cost=0, fraction=-0.1)
+        FractionalKellyCriterion(
+            payoff=1, loss=1, transaction_cost_rate=0, fraction=-0.1
+        )
 
     with pytest.raises(ValueError, match="Fraction must be between 0 and 1"):
-        FractionalKellyCriterion(payoff=1, loss=1, transaction_cost=0, fraction=1.1)
+        FractionalKellyCriterion(
+            payoff=1, loss=1, transaction_cost_rate=0, fraction=1.1
+        )
 
     # Inherits validation from BaseStrategy
     with pytest.raises(ValueError, match="Payoff must be greater than 0"):
-        FractionalKellyCriterion(payoff=0, loss=1, transaction_cost=0, fraction=0.5)
+        FractionalKellyCriterion(
+            payoff=0, loss=1, transaction_cost_rate=0, fraction=0.5
+        )
 
 
-def test_transaction_costs_swallowing_payoff_return_zero():
+def test_transaction_cost_rate_swallowing_payoff_return_zero():
     """A transaction cost at or above the payoff makes Kelly sit out."""
-    strategy = KellyCriterion(payoff=0.5, loss=1.0, transaction_cost=0.6)
+    strategy = KellyCriterion(payoff=0.5, loss=1.0, transaction_cost_rate=0.6)
 
     assert strategy.evaluate(0.9, 1000) == 0.0

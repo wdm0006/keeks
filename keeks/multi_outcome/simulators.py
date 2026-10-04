@@ -24,7 +24,7 @@ from keeks.utils import (
     _require_finite,
     _validate_simulator_probability,
     _validate_simulator_seed,
-    normalize_probabilities,
+    validate_probabilities,
 )
 
 __author__ = "willmcginnis"
@@ -76,8 +76,8 @@ def _validate_strategy_odds(strategy, payoffs, loss):
     checked; a duck-typed strategy needs no ``payoffs``/``loss`` at all and
     its compatibility stays the caller's responsibility.
 
-    The strategy's fractional ``transaction_cost`` and the simulator's flat
-    ``transaction_costs`` fee are deliberately different units and are never
+    The strategy's fractional ``transaction_cost_rate`` and the simulator's flat
+    ``fee_per_bet`` fee are deliberately different units and are never
     compared.
 
     Raises
@@ -123,19 +123,20 @@ class RepeatedMultiOutcomeSimulator:
         ``probabilities`` is settled with leg ``i`` of ``payoffs``.
     loss : float
         The loss multiplier applied to every losing leg's stake.
-    transaction_costs : float
+    fee_per_bet : float
         The flat fee charged once per settled leg, regardless of outcome. This
         is an absolute bankroll amount, not a fraction of the stake: it is
         subtracted from the winning leg's settlement and added to every
         losing leg's. Legs the strategy declines (zero stake) settle nothing
         and pay no fee. Note this differs in unit from the singular
-        ``transaction_cost`` taken by strategies in ``keeks.multi_outcome``,
+        ``transaction_cost_rate`` taken by strategies in ``keeks.multi_outcome``,
         which is a per-unit fraction of the stake used for sizing.
     probabilities : sequence of float
         The fixed probability of each leg for all trials. Must be a non-empty
         one-dimensional sequence of finite nonnegative numbers summing to at
         most ``1 + PROBABILITY_SUM_TOLERANCE``; probability mass below one is
-        the chance of a void or push round on which no leg settles.
+        the chance of a void or push round on which no leg settles. Must have
+        the same length as ``payoffs``.
     trials : int, default=1000
         The number of betting trials to simulate.
     seed : int or None, default=None
@@ -146,9 +147,10 @@ class RepeatedMultiOutcomeSimulator:
     ------
     ValueError
         If ``payoffs`` is not a non-empty one-dimensional sequence of finite
-        numbers greater than 0, if ``loss`` or ``transaction_costs`` is not
+        numbers greater than 0, if ``loss`` or ``fee_per_bet`` is not
         finite and nonnegative, if ``probabilities`` is not a valid probability
-        vector, or if ``trials`` is not a nonnegative integer, or if ``seed``
+        vector or differs in length from ``payoffs``, or if ``trials`` is not
+        a nonnegative integer, or if ``seed``
         is not a nonnegative integer or ``None``.
 
     Notes
@@ -180,21 +182,25 @@ class RepeatedMultiOutcomeSimulator:
        the bankroll as it stood when the trial began, so settlements within
        the batch never resize later legs. Each staked leg settles through the
        same net-settlement flow the binary simulators use: the realized leg
-       nets ``(payoff - 1) * stake - transaction_costs`` (deposited, or withdrawn
+       nets ``(payoff - 1) * stake - fee_per_bet`` (deposited, or withdrawn
        when the fee dominates) and every other staked leg is charged
-       ``loss * stake + transaction_costs``.
+       ``loss * stake + fee_per_bet``.
     6. When a bankroll safeguard refuses a settlement (:class:`RuinError`),
        that leg's settlement leaves the bankroll unchanged and reports a 0.0
        return, the remaining legs of the batch still settle, and the
        simulation stops after the batch completes - never mid-batch.
 
     **The ``record_settlement`` hook.** Strategies expose an N-ary settlement
-    hook with the signature ``record_settlement(won_leg, return_pcts)``:
-    ``won_leg`` is the realized leg's index, or ``None`` for a void or push;
-    ``return_pcts`` holds one signed net return per leg, as a fraction of the
-    bankroll before the trial, with ``0.0`` for legs that settled nothing:
-    declined legs, void rounds, and settlements a safeguard refused. The hook
-    fires once per staked trial, including voids, after the batch settles.
+    hook with the signature ``record_settlement(won, realized_returns)``:
+    ``won`` holds one outcome flag per leg - ``True`` for the realized
+    winner, ``False`` for every leg that lost the market draw (declined
+    legs included: the draw realizes the whole market), and all ``None`` on
+    a void or push, where no leg settled and every stake refunds;
+    ``realized_returns`` holds one signed net return per leg, as a fraction
+    of the bankroll before the trial, with ``0.0`` for legs that settled
+    nothing: declined legs, void rounds, and settlements a safeguard
+    refused. The hook fires once per staked trial, including voids, after
+    the batch settles.
 
     Examples
     --------
@@ -202,7 +208,7 @@ class RepeatedMultiOutcomeSimulator:
     >>> simulator = RepeatedMultiOutcomeSimulator(
     ...     payoffs=(3.2, 3.4, 2.4),
     ...     loss=1.0,
-    ...     transaction_costs=0.0,
+    ...     fee_per_bet=0.0,
     ...     probabilities=(0.42, 0.27, 0.28),
     ...     trials=10_000,
     ...     seed=42,
@@ -217,7 +223,7 @@ class RepeatedMultiOutcomeSimulator:
         self,
         payoffs,
         loss,
-        transaction_costs,
+        fee_per_bet,
         probabilities,
         trials=1000,
         seed=None,
@@ -226,13 +232,19 @@ class RepeatedMultiOutcomeSimulator:
         loss = _require_finite(loss, "Loss")
         if loss < 0:
             raise ValueError("Loss must be non-negative")
-        transaction_costs = _require_finite(transaction_costs, "Transaction costs")
-        if transaction_costs < 0:
-            raise ValueError("Transaction costs must be non-negative")
+        fee_per_bet = _require_finite(fee_per_bet, "Fee per bet")
+        if fee_per_bet < 0:
+            raise ValueError("Fee per bet must be non-negative")
         self.loss: float = loss
-        self.transaction_costs: float = transaction_costs
+        self.fee_per_bet: float = fee_per_bet
 
-        self.probabilities: np.ndarray = normalize_probabilities(probabilities)
+        self.probabilities: np.ndarray = validate_probabilities(probabilities)
+        if len(self.payoffs) != len(self.probabilities):
+            raise ValueError(
+                "Payoffs and probabilities must have the same length: "
+                f"got {len(self.payoffs)} payoffs and "
+                f"{len(self.probabilities)} probabilities"
+            )
         # Cumulative bands for the categorical read: leg j realizes when the
         # trial's uniform falls below cumulative[j] and above cumulative[j-1];
         # the mass above cumulative[-1] is the void region.
@@ -322,15 +334,15 @@ class RepeatedMultiOutcomeSimulator:
                 else np.random.random()
             )
             realized = int(np.searchsorted(self._cumulative, outcome, side="right"))
-            won_leg = realized if realized < len(self.probabilities) else None
+            realized_leg = realized if realized < len(self.probabilities) else None
 
             returns = [0.0] * len(fractions)
 
-            if won_leg is None:
+            if realized_leg is None:
                 # Void or push: the market refunds every stake, so no leg
                 # settles and no fee is charged.
                 if record_settlement is not None:
-                    record_settlement(None, tuple(returns))
+                    record_settlement(tuple([None] * len(returns)), tuple(returns))
                 continue
 
             # Stakes come from the bankroll as it stood when the trial began;
@@ -343,17 +355,17 @@ class RepeatedMultiOutcomeSimulator:
                     continue
                 stake = bettable_funds * fraction
                 try:
-                    if leg == won_leg:
-                        amt = ((self.payoffs[leg] - 1) * stake) - self.transaction_costs
-                        if amt >= 0:
-                            bankroll.deposit(amt)
+                    if leg == realized_leg:
+                        amount = ((self.payoffs[leg] - 1) * stake) - self.fee_per_bet
+                        if amount >= 0:
+                            bankroll.deposit(amount)
                         else:
-                            bankroll.withdraw(abs(amt))
-                        returns[leg] = amt / bankroll_before
+                            bankroll.withdraw(abs(amount))
+                        returns[leg] = amount / bankroll_before
                     else:
-                        amt = (self.loss * stake) + self.transaction_costs
-                        bankroll.withdraw(amt)
-                        returns[leg] = -amt / bankroll_before
+                        amount = (self.loss * stake) + self.fee_per_bet
+                        bankroll.withdraw(amount)
+                        returns[leg] = -amount / bankroll_before
                 except RuinError as exc:
                     # Settlement exceeded a bankroll safeguard: that leg's
                     # settlement leaves the bankroll unchanged. Finish the
@@ -368,7 +380,10 @@ class RepeatedMultiOutcomeSimulator:
                     batch_ruined = True
 
             if record_settlement is not None:
-                record_settlement(won_leg, tuple(returns))
+                # One outcome flag per leg: the market draw realizes every
+                # leg at once - the realized leg wins, the others lose it.
+                won = [leg == realized_leg for leg in range(len(fractions))]
+                record_settlement(tuple(won), tuple(returns))
 
             if batch_ruined:
                 break
@@ -452,8 +467,8 @@ def _validate_portfolio_strategy_odds(strategy, bets):
     strategy needs no ``payoffs``/``loss`` at all and its compatibility stays
     the caller's responsibility.
 
-    The strategy's fractional ``transaction_cost`` and the simulator's flat
-    ``transaction_costs`` fee are deliberately different units and are never
+    The strategy's fractional ``transaction_cost_rate`` and the simulator's flat
+    ``fee_per_bet`` fee are deliberately different units and are never
     compared.
 
     Raises
@@ -522,13 +537,13 @@ class PortfolioSimulator:
         win probabilities are independent events, so unlike a market's
         probability vector they carry no sum constraint - three bets at 0.5
         each describe three separate markets, not a partition of one.
-    transaction_costs : float, default=0.0
+    fee_per_bet : float, default=0.0
         The flat fee charged once per settled bet, regardless of outcome.
         This is an absolute bankroll amount, not a fraction of the stake: it
         is subtracted from a winning bet's settlement and added to a losing
         bet's. Bets the strategy declines (zero stake) settle nothing and pay
         no fee. Note this differs in unit from the singular
-        ``transaction_cost`` taken by strategies in ``keeks.multi_outcome``,
+        ``transaction_cost_rate`` taken by strategies in ``keeks.multi_outcome``,
         which is a per-unit fraction of the stake used for sizing.
     trials : int, default=1000
         The number of betting trials to simulate.
@@ -540,7 +555,7 @@ class PortfolioSimulator:
     ------
     ValueError
         If ``bets`` is empty or not a sequence of valid ``(probability,
-        payoff, loss)`` triples, if ``transaction_costs`` is not finite and
+        payoff, loss)`` triples, if ``fee_per_bet`` is not finite and
         nonnegative, if ``trials`` is not a nonnegative integer, or if
         ``seed`` is not a nonnegative integer or ``None``.
 
@@ -579,7 +594,7 @@ class PortfolioSimulator:
        ``outcome < probability`` wins. A bet staked at probability 0 never
        wins; at probability 1 it always wins. Declined bets draw nothing.
     5. Settle the batch net. Each staked bet wins ``(payoff - 1) * stake -
-       transaction_costs`` or loses ``loss * stake + transaction_costs``;
+       fee_per_bet`` or loses ``loss * stake + fee_per_bet``;
        the signed amounts sum to one net delta and the bankroll receives
        exactly one deposit (net gain) or withdrawal (net loss) - one
        history entry per settled batch. Stakes are computed once from the
@@ -587,16 +602,17 @@ class PortfolioSimulator:
        resizes a later bet.
     6. The drawdown check is batch-level: because the batch settles through
        one transaction, the bankroll's safeguards (bankruptcy,
-       ``max_draw_down``) evaluate the batch's net total once - not once per
+       ``max_transaction_loss``) evaluate the batch's net total once - not once per
        bet. When a safeguard refuses the net settlement
        (:class:`RuinError`), the whole batch leaves the bankroll unchanged,
        every bet reports a 0.0 return, and the simulation stops after the
        batch completes - never mid-portfolio.
 
     **The ``record_settlement`` hook.** Strategies expose an N-ary settlement
-    hook with the signature ``record_settlement(won_bets, return_pcts)``:
-    ``won_bets`` holds one entry per bet - ``True`` when the bet's draw won,
-    ``False`` when it lost, ``None`` for declined bets - and ``return_pcts``
+    hook with the signature ``record_settlement(won, realized_returns)``:
+    ``won`` holds one entry per bet - ``True`` when the bet's draw won,
+    ``False`` when it lost, ``None`` for declined bets - and
+    ``realized_returns``
     holds one signed net return per bet, as a fraction of the bankroll before
     the trial, with ``0.0`` for declined bets and for settlements a safeguard
     refused. The hook fires once per staked trial, after the batch settles.
@@ -606,7 +622,7 @@ class PortfolioSimulator:
     >>> from keeks.multi_outcome.simulators import PortfolioSimulator
     >>> simulator = PortfolioSimulator(
     ...     bets=[(0.55, 2.0, 1.0), (0.45, 3.0, 1.0), (0.30, 2.4, 1.0)],
-    ...     transaction_costs=0.0,
+    ...     fee_per_bet=0.0,
     ...     trials=10_000,
     ...     seed=42,
     ... )
@@ -619,7 +635,7 @@ class PortfolioSimulator:
     def __init__(
         self,
         bets,
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         trials=1000,
         seed=None,
     ):
@@ -627,10 +643,10 @@ class PortfolioSimulator:
         self.probabilities: np.ndarray = np.array(
             [bet[0] for bet in self.bets], dtype=float
         )
-        transaction_costs = _require_finite(transaction_costs, "Transaction costs")
-        if transaction_costs < 0:
-            raise ValueError("Transaction costs must be non-negative")
-        self.transaction_costs: float = transaction_costs
+        fee_per_bet = _require_finite(fee_per_bet, "Fee per bet")
+        if fee_per_bet < 0:
+            raise ValueError("Fee per bet must be non-negative")
+        self.fee_per_bet: float = fee_per_bet
 
         try:
             trials = operator.index(trials)
@@ -719,7 +735,7 @@ class PortfolioSimulator:
             # the batch's settlements never resize later bets.
             bettable_funds = bankroll.bettable_funds
             bankroll_before = total_funds
-            won_bets: list[bool | None] = [None] * len(fractions)
+            won: list[bool | None] = [None] * len(fractions)
             amounts = [0.0] * len(fractions)
             net = 0.0
             for index, fraction in enumerate(fractions):
@@ -733,11 +749,11 @@ class PortfolioSimulator:
                     else np.random.random()
                 )
                 if outcome < probability:
-                    won_bets[index] = True
-                    amounts[index] = ((payoff - 1) * stake) - self.transaction_costs
+                    won[index] = True
+                    amounts[index] = ((payoff - 1) * stake) - self.fee_per_bet
                 else:
-                    won_bets[index] = False
-                    amounts[index] = -((loss * stake) + self.transaction_costs)
+                    won[index] = False
+                    amounts[index] = -((loss * stake) + self.fee_per_bet)
                 net += amounts[index]
 
             # Net settlement: the whole batch crosses the bankroll as one
@@ -750,7 +766,7 @@ class PortfolioSimulator:
                 else:
                     bankroll.withdraw(-net)
                 for index, amount in enumerate(amounts):
-                    if won_bets[index] is not None:
+                    if won[index] is not None:
                         returns[index] = amount / bankroll_before
             except RuinError as exc:
                 # The safeguard refused the batch's net settlement: the
@@ -764,7 +780,7 @@ class PortfolioSimulator:
                 batch_ruined = True
 
             if record_settlement is not None:
-                record_settlement(tuple(won_bets), tuple(returns))
+                record_settlement(tuple(won), tuple(returns))
 
             if batch_ruined:
                 break

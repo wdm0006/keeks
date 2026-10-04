@@ -66,12 +66,12 @@ def test_simulation():
     random.seed(42)
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.55  # Slight edge
     trials = 500
 
     # Initialize bankroll and strategy
-    bankroll = BankRoll(initial_funds=1000, percent_bettable=1, max_draw_down=1)
+    bankroll = BankRoll(initial_funds=1000, percent_bettable=1, max_transaction_loss=1)
     strategy = FixedFractionStrategy(
         fraction=0.05, payoff=payoff, loss=loss
     )  # 5% fixed fraction
@@ -80,7 +80,7 @@ def test_simulation():
     simulator = RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )
@@ -94,18 +94,22 @@ def test_simulation_with_different_fractions():
     """Compare performance with different fixed fractions."""
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.55  # Slight edge
     trials = 500
 
     # Strategy with higher fraction (more aggressive)
-    bankroll_high = BankRoll(initial_funds=1000, percent_bettable=1, max_draw_down=1)
+    bankroll_high = BankRoll(
+        initial_funds=1000, percent_bettable=1, max_transaction_loss=1
+    )
     strategy_high = FixedFractionStrategy(
         fraction=0.1, payoff=payoff, loss=loss
     )  # 10% fixed fraction
 
     # Strategy with lower fraction (more conservative)
-    bankroll_low = BankRoll(initial_funds=1000, percent_bettable=1, max_draw_down=1)
+    bankroll_low = BankRoll(
+        initial_funds=1000, percent_bettable=1, max_transaction_loss=1
+    )
     strategy_low = FixedFractionStrategy(
         fraction=0.01, payoff=payoff, loss=loss
     )  # 1% fixed fraction
@@ -114,7 +118,7 @@ def test_simulation_with_different_fractions():
     simulator_high = RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )
@@ -122,7 +126,7 @@ def test_simulation_with_different_fractions():
     simulator_low = RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )

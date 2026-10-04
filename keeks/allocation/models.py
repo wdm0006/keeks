@@ -609,12 +609,15 @@ class BinaryBetsModel(JointReturnModel):
 
     Each ``(probability, payoff, loss)`` triple becomes one option whose
     per-period simple return is the bet's settlement per unit staked:
-    ``(payoff - 1) - transaction_costs`` on a win, ``-(loss + transaction_costs)``
+    ``(payoff - 1) - transaction_cost_rate`` on a win, ``-(loss + transaction_cost_rate)``
     on a loss. This is the arithmetic :class:`keeks.multi_outcome.PortfolioSimulator`
     settles with - a win adds ``(payoff - 1) * stake`` to the bankroll
     (``payoff`` is decimal-odds gross including the returned stake) minus the
     fee - so allocation weights over these options replay portfolio stakes.
-    ``transaction_costs`` here is a per-unit-staked fee (the strategy-side
+    Unlike here, the ``keeks.binary_strategies`` strategies read ``payoff`` as
+    the *net* win per unit staked (decimal odds minus one): a
+    ``KellyCriterion(payoff=2.0)`` bet is this model's ``(p, 3.0, loss)``.
+    ``transaction_cost_rate`` here is a per-unit-staked fee (the strategy-side
     fractional unit): it matches the portfolio simulator's flat absolute fee
     on a unit stake.
 
@@ -630,7 +633,7 @@ class BinaryBetsModel(JointReturnModel):
     bets : sequence of (probability, payoff, loss) triples
         One triple per independent bet, validated like the portfolio
         simulator's bets.
-    transaction_costs : float, default=0.0
+    transaction_cost_rate : float, default=0.0
         The per-unit-staked fee, subtracted from a win and added to a loss.
 
     Examples
@@ -643,18 +646,20 @@ class BinaryBetsModel(JointReturnModel):
     [1.0, 1.6875]
     """
 
-    def __init__(self, bets, transaction_costs=0.0):
+    def __init__(self, bets, transaction_cost_rate=0.0):
         self.bets: tuple[tuple[float, float, float], ...] = _validate_bets(bets)
-        transaction_costs = _require_finite(transaction_costs, "Transaction costs")
-        if transaction_costs < 0:
-            raise ValueError("Transaction costs must be non-negative")
-        self.transaction_costs: float = transaction_costs
+        transaction_cost_rate = _require_finite(
+            transaction_cost_rate, "Transaction cost rate"
+        )
+        if transaction_cost_rate < 0:
+            raise ValueError("Transaction cost rate must be non-negative")
+        self.transaction_cost_rate: float = transaction_cost_rate
 
     def _bet_returns(self, uniforms, bet):
         """Map one bet's uniforms to its per-period simple returns."""
         _, payoff, loss = bet
-        win_return = (payoff - 1.0) - self.transaction_costs
-        loss_return = -(loss + self.transaction_costs)
+        win_return = (payoff - 1.0) - self.transaction_cost_rate
+        loss_return = -(loss + self.transaction_cost_rate)
         return np.where(uniforms < bet[0], win_return, loss_return)
 
     def sample(self, n_samples, rng):
@@ -707,8 +712,8 @@ class BinaryBetsModel(JointReturnModel):
         means = []
         variances = []
         for probability, payoff, loss in self.bets:
-            win_return = (payoff - 1.0) - self.transaction_costs
-            loss_return = loss + self.transaction_costs
+            win_return = (payoff - 1.0) - self.transaction_cost_rate
+            loss_return = loss + self.transaction_cost_rate
             mean = probability * win_return - (1.0 - probability) * loss_return
             second = probability * win_return**2 + (1.0 - probability) * loss_return**2
             means.append(mean)
@@ -716,7 +721,7 @@ class BinaryBetsModel(JointReturnModel):
         return np.array(means), np.diag(np.array(variances))
 
 
-def binary_bets_model(bets, transaction_costs=0.0):
+def binary_bets_model(bets, transaction_cost_rate=0.0):
     """
     Build a joint-return model from keeks-native binary bets.
 
@@ -727,7 +732,7 @@ def binary_bets_model(bets, transaction_costs=0.0):
     ----------
     bets : sequence of (probability, payoff, loss) triples
         One triple per independent bet.
-    transaction_costs : float, default=0.0
+    transaction_cost_rate : float, default=0.0
         The per-unit-staked fee.
 
     Returns
@@ -741,7 +746,7 @@ def binary_bets_model(bets, transaction_costs=0.0):
     >>> model.sample(3, np.random.default_rng(11)).shape
     (3, 2)
     """
-    return BinaryBetsModel(bets, transaction_costs)
+    return BinaryBetsModel(bets, transaction_cost_rate)
 
 
 class MarginalModel(JointReturnModel):

@@ -2,7 +2,7 @@
 
 Simulator constructors used to assign their controls unchecked, so a nonsensical
 configuration either distorted results silently or failed much later than
-configuration: a negative flat ``transaction_costs`` turned the per-bet fee into
+configuration: a negative flat ``fee_per_bet`` turned the per-bet fee into
 a subsidy, a fixed ``probability`` above 1 made every outcome a win, and a
 negative ``loss`` reached ``BankRoll.withdraw`` as a negative settlement amount.
 They now fail fast with ``ValueError``, matching ``BaseStrategy.__init__``.
@@ -25,7 +25,7 @@ from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 CONTROL_MESSAGES = {
     "payoff": r"^Payoff must be",
     "loss": r"^Loss must be",
-    "transaction_costs": r"^Transaction costs must be",
+    "fee_per_bet": r"^Fee per bet must be",
     "trials": r"^Trials must be",
 }
 
@@ -33,21 +33,21 @@ BASE_KWARGS = {
     RepeatedBinarySimulator: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_costs": 0.01,
+        "fee_per_bet": 0.01,
         "probability": 0.55,
         "trials": 10,
     },
     RandomBinarySimulator: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_costs": 0.01,
+        "fee_per_bet": 0.01,
         "trials": 10,
         "stdev": 0.1,
     },
     RandomUncertainBinarySimulator: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_costs": 0.01,
+        "fee_per_bet": 0.01,
         "trials": 10,
         "stdev": 0.1,
         "uncertainty_stdev": 0.05,
@@ -86,7 +86,7 @@ def test_base_kwargs_cover_every_simulator():
     [
         ("payoff", INVALID_PAYOFF),
         ("loss", INVALID_LOSS),
-        ("transaction_costs", INVALID_TRANSACTION_COSTS),
+        ("fee_per_bet", INVALID_TRANSACTION_COSTS),
         ("trials", INVALID_TRIALS),
     ],
 )
@@ -99,9 +99,9 @@ def test_shared_controls_rejected(simulator_cls, field, invalid_values):
 @pytest.mark.parametrize("simulator_cls", SIMULATORS)
 def test_shared_control_boundaries_accepted(simulator_cls):
     """``loss=0``, a zero fee and ``trials=0`` are meaningful configurations."""
-    simulator = build(simulator_cls, loss=0.0, transaction_costs=0.0, trials=0)
+    simulator = build(simulator_cls, loss=0.0, fee_per_bet=0.0, trials=0)
     assert simulator.loss == 0.0
-    assert simulator.transaction_costs == 0.0
+    assert simulator.fee_per_bet == 0.0
     assert simulator.trials == 0
     assert simulator.payoff == 1.0
 
@@ -159,11 +159,11 @@ def test_zero_uncertainty_stdev_accepted():
 
 def test_negative_fee_no_longer_manufactures_gains():
     """A negative flat fee used to pay the bettor on every settled bet."""
-    with pytest.raises(ValueError, match=r"^Transaction costs must be non-negative$"):
+    with pytest.raises(ValueError, match=r"^Fee per bet must be non-negative$"):
         RepeatedBinarySimulator(
             payoff=1.0,
             loss=1.0,
-            transaction_costs=-10,
+            fee_per_bet=-10,
             probability=0.55,
             trials=1,
         )
@@ -171,9 +171,9 @@ def test_negative_fee_no_longer_manufactures_gains():
 
 def test_valid_configuration_still_simulates():
     """Validation is the only change: a valid configuration runs as before."""
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     strategy = FixedFractionStrategy(
-        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01
+        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.01
     )
     simulator = build(RepeatedBinarySimulator, trials=25)
 

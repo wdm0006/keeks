@@ -63,20 +63,20 @@ The library follows a four-component architecture:
 1. **BankRoll** (`keeks/bankroll.py`): Central state manager
    - Tracks total funds and bettable funds (via `percent_bettable`)
    - Maintains transaction history
-   - Enforces risk limits via `max_draw_down` parameter
-   - Raises `RuinError` when drawdown limit exceeded
-   - Key methods: `deposit()`, `withdraw()`, `bet()`, `add_funds()`, `remove_funds()`
+   - Enforces risk limits via `max_transaction_loss` parameter
+   - Raises `RuinError` when a withdrawal would exceed the transaction-loss cap or cause bankruptcy
+   - Key methods: `deposit()`, `withdraw()`, `bet()`
 
 2. **Strategies** (`keeks/binary_strategies/`): Decision engines
    - All inherit from `BaseStrategy` abstract class
    - Must implement `evaluate(probability, current_bankroll)` returning bet fraction
-   - Strategy constructors take: `payoff`, `loss`, `transaction_cost`
+   - Strategy constructors take: `payoff`, `loss`, `transaction_cost_rate`
    - Available strategies: `KellyCriterion`, `FractionalKellyCriterion`, `DrawdownAdjustedKelly`, `OptimalF`, `FixedFractionStrategy`, `CPPIStrategy`, `DynamicBankrollManagement`, `MertonShare`, `NaiveStrategy`
 
 2b. **Multi-outcome strategies** (`keeks/multi_outcome/`): stake allocation across the mutually exclusive legs of one market (e.g. a 1X2 match)
-   - All inherit from `BaseMultiOutcomeStrategy` abstract class; constructors take `payoffs` (one per leg, fixed at construction), `loss`, `transaction_cost`
+   - All inherit from `BaseMultiOutcomeStrategy` abstract class; constructors take `payoffs` (one per leg, fixed at construction), `loss`, `transaction_cost_rate`
    - Must implement `evaluate(probabilities, current_bankroll)` returning one stake fraction per leg as a tuple (`len == len(probabilities)`, each in `[0, 1]`, sum <= 1 within tolerance)
-   - `get_max_safe_total_bet()` caps the aggregate stake at the worst leg's `min(1, 1 / (loss + transaction_cost))` bound
+   - `get_max_safe_total_bet()` caps the aggregate stake at the worst leg's `min(1, 1 / (loss + transaction_cost_rate))` bound
 
 3. **Simulators** (`keeks/simulators/`): Test harnesses
    - `RepeatedBinarySimulator`: Fixed probability across all trials
@@ -88,7 +88,7 @@ The library follows a four-component architecture:
    - `crra_utility(wealth, risk_aversion)`: Calculate CRRA utility values
    - `expected_utility(outcomes, probabilities, current_wealth, entry_price, risk_aversion)`: Calculate expected utility of a gamble
    - `find_indifference_price(outcomes, probabilities, current_wealth, risk_aversion)`: Find maximum price willing to pay for a gamble
-   - `normalize_probabilities(probabilities)`: Validate a probability vector (finite, nonnegative, sum <= 1 within tolerance) and return it as a float array
+   - `validate_probabilities(probabilities)`: Validate a probability vector (finite, nonnegative, sum <= 1 within tolerance) and return it as a float array
    - Used for one-time decision problems (e.g., St. Petersburg paradox) vs. repeated betting strategies
 
 ### Key Design Patterns
@@ -100,8 +100,8 @@ The library follows a four-component architecture:
 
 ### Important Constraints
 
-- **No negative bets**: All strategies validated in `BaseStrategy.__init__()` to ensure `payoff > 0`, `loss >= 0`, `transaction_cost >= 0`
-- **Drawdown protection**: `BankRoll.max_draw_down` enforces maximum loss per transaction; raises `RuinError` when violated
+- **No negative bets**: All strategies validated in `BaseStrategy.__init__()` to ensure `payoff > 0`, `loss >= 0`, `transaction_cost_rate >= 0`
+- **Drawdown protection**: `BankRoll.max_transaction_loss` enforces maximum loss per transaction; raises `RuinError` when violated
 - **Test isolation**: NEVER add test-specific handling or special case logic in library code (see python_standards.mdc)
 
 ## Code Standards
@@ -129,10 +129,10 @@ The library follows a four-component architecture:
 ### Testing a Strategy
 ```python
 # Pattern used throughout tests
-bankroll = BankRoll(initial_funds=1000, percent_bettable=0.5, max_draw_down=0.3)
-strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
+bankroll = BankRoll(initial_funds=1000, percent_bettable=0.5, max_transaction_loss=0.3)
+strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.01)
 simulator = RepeatedBinarySimulator(
-    payoff=1.0, loss=1.0, transaction_costs=0.01, probability=0.55, trials=1000
+    payoff=1.0, loss=1.0, fee_per_bet=0.01, probability=0.55, trials=1000
 )
 simulator.evaluate_strategy(strategy, bankroll)
 ```
@@ -161,7 +161,7 @@ from keeks.binary_strategies.simple import MertonShare
 strategy = MertonShare(
     payoff=1.0,
     loss=1.0,
-    transaction_cost=0.01,
+    transaction_cost_rate=0.01,
     risk_aversion=2.0,  # Higher values = more conservative
     min_probability=0.5,
     max_fraction=1.0,

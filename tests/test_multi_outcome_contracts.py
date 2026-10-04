@@ -16,7 +16,7 @@ import pytest
 from keeks.binary_strategies.base import BaseStrategy
 from keeks.multi_outcome import BaseMultiOutcomeStrategy, MultiOutcomeKellyCriterion
 from keeks.multi_outcome.base import _validate_stake_fractions
-from keeks.utils import PROBABILITY_SUM_TOLERANCE, normalize_probabilities
+from keeks.utils import PROBABILITY_SUM_TOLERANCE, validate_probabilities
 
 
 class _ConcreteStrategy(BaseMultiOutcomeStrategy):
@@ -36,8 +36,8 @@ class _ConcreteBinaryStrategy(BaseStrategy):
 class _FixedStakesStrategy(BaseMultiOutcomeStrategy):
     """Returns a fixed stake vector through the documented validator gate."""
 
-    def __init__(self, payoffs, loss, stakes, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, stakes, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._stakes = stakes
 
     def evaluate(self, _probabilities, _current_bankroll):
@@ -48,7 +48,7 @@ class _EqualStakesStrategy(BaseMultiOutcomeStrategy):
     """Spreads the largest safe aggregate evenly across every leg."""
 
     def evaluate(self, probabilities, current_bankroll):
-        probabilities = normalize_probabilities(probabilities)
+        probabilities = validate_probabilities(probabilities)
         aggregate = self.get_max_safe_total_bet(current_bankroll)
         return _validate_stake_fractions(
             [aggregate / len(probabilities)] * len(probabilities)
@@ -86,7 +86,7 @@ def test_constructor_accepts_any_sequence(payoffs):
 
     assert strategy.payoffs == (2.0, 3.0, 4.0)
     assert strategy.loss == 1.0
-    assert strategy.transaction_cost == 0
+    assert strategy.transaction_cost_rate == 0
 
 
 def test_constructor_payoffs_are_frozen_at_construction():
@@ -102,7 +102,7 @@ def test_constructor_payoffs_are_frozen_at_construction():
 @pytest.mark.parametrize(
     ("payoffs", "message"),
     [
-        # None coerces to a 0-d nan array, mirroring normalize_probabilities.
+        # None coerces to a 0-d nan array, mirroring validate_probabilities.
         (None, "Payoffs must be one-dimensional"),
         (object(), "Payoffs must be a finite sequence"),
         (["a", "b"], "Payoffs must be a finite sequence"),
@@ -121,19 +121,21 @@ def test_constructor_rejects_bad_payoffs(payoffs, message):
 
 
 @pytest.mark.parametrize(
-    ("loss", "transaction_cost", "message"),
+    ("loss", "transaction_cost_rate", "message"),
     [
         (float("nan"), 0.0, "Loss must be a finite number"),
         (float("inf"), 0.0, "Loss must be a finite number"),
         (-0.1, 0.0, "Loss must be non-negative"),
-        (1.0, float("nan"), "Transaction cost must be a finite number"),
-        (1.0, -0.1, "Transaction cost must be non-negative"),
-        (0.0, 0.0, "Total cost (loss + transaction_cost) must be greater than 0"),
+        (1.0, float("nan"), "Transaction cost rate must be a finite number"),
+        (1.0, -0.1, "Transaction cost rate must be non-negative"),
+        (0.0, 0.0, "Total cost (loss + transaction_cost_rate) must be greater than 0"),
     ],
 )
-def test_constructor_rejects_bad_costs(loss, transaction_cost, message):
+def test_constructor_rejects_bad_costs(loss, transaction_cost_rate, message):
     with pytest.raises(ValueError, match=f"^{re.escape(message)}$"):
-        _ConcreteStrategy(payoffs=[2.0], loss=loss, transaction_cost=transaction_cost)
+        _ConcreteStrategy(
+            payoffs=[2.0], loss=loss, transaction_cost_rate=transaction_cost_rate
+        )
 
 
 # ---
@@ -167,7 +169,7 @@ def test_validator_accepts_valid_stake_vectors(stakes):
 @pytest.mark.parametrize(
     ("stakes", "message"),
     [
-        # None coerces to a 0-d nan array, mirroring normalize_probabilities.
+        # None coerces to a 0-d nan array, mirroring validate_probabilities.
         (None, "Strategy stake fractions must be one-dimensional"),
         (object(), "Strategy stake fractions must be a finite sequence"),
         (0.25, "Strategy stake fractions must be one-dimensional"),
@@ -235,7 +237,7 @@ def test_evaluate_returns_one_fraction_per_leg(probabilities):
 def test_evaluate_spreads_the_safe_aggregate():
     """A concrete strategy caps its total at get_max_safe_total_bet."""
     strategy = _EqualStakesStrategy(
-        payoffs=[2.0, 3.0, 4.0], loss=1.0, transaction_cost=0.01
+        payoffs=[2.0, 3.0, 4.0], loss=1.0, transaction_cost_rate=0.01
     )
 
     result = strategy.evaluate([0.5, 0.3, 0.1], 1000.0)
@@ -260,35 +262,37 @@ def test_evaluate_rejects_probability_sum_above_tolerance():
 
 # ---
 # get_max_safe_total_bet boundaries: the aggregate cap is the worst leg's
-# min(1, 1 / (loss + transaction_cost)) bound.
+# min(1, 1 / (loss + transaction_cost_rate)) bound.
 # ---
 
 
 @pytest.mark.parametrize("bankroll", [0.0, -0.01, -100.0])
 def test_get_max_safe_total_bet_zero_at_non_positive_bankroll(bankroll):
     """The clamp returns 0.0 rather than dividing by the bankroll."""
-    strategy = _ConcreteStrategy(payoffs=[2.0, 3.0], loss=1.0, transaction_cost=0.01)
+    strategy = _ConcreteStrategy(
+        payoffs=[2.0, 3.0], loss=1.0, transaction_cost_rate=0.01
+    )
 
     assert strategy.get_max_safe_total_bet(bankroll) == 0.0
 
 
 @pytest.mark.parametrize(
-    ("loss", "transaction_cost", "expected"),
+    ("loss", "transaction_cost_rate", "expected"),
     [
-        # loss + transaction_cost above 1.0 - the reciprocal binds.
+        # loss + transaction_cost_rate above 1.0 - the reciprocal binds.
         (1.5, 0.1, 1 / 1.6),
         (4.0, 0.0, 0.25),
-        # loss + transaction_cost below 1.0 - the full bankroll is the cap.
+        # loss + transaction_cost_rate below 1.0 - the full bankroll is the cap.
         (0.5, 0.0, 1.0),
         (0.0, 0.5, 1.0),
-        # loss + transaction_cost exactly 1.0.
+        # loss + transaction_cost_rate exactly 1.0.
         (1.0, 0.0, 1.0),
     ],
 )
-def test_get_max_safe_total_bet_boundaries(loss, transaction_cost, expected):
-    """The aggregate cap is min(1, 1 / (loss + transaction_cost))."""
+def test_get_max_safe_total_bet_boundaries(loss, transaction_cost_rate, expected):
+    """The aggregate cap is min(1, 1 / (loss + transaction_cost_rate))."""
     strategy = _ConcreteStrategy(
-        payoffs=[2.0, 3.0, 4.0], loss=loss, transaction_cost=transaction_cost
+        payoffs=[2.0, 3.0, 4.0], loss=loss, transaction_cost_rate=transaction_cost_rate
     )
 
     assert strategy.get_max_safe_total_bet(1000.0) == pytest.approx(expected)
@@ -298,7 +302,7 @@ def test_get_max_safe_total_bet_boundaries(loss, transaction_cost, expected):
 def test_get_max_safe_total_bet_is_leg_count_independent(n_legs):
     """The cap bounds the total across N legs, which share one scalar charge."""
     strategy = _ConcreteStrategy(
-        payoffs=[2.0] * n_legs, loss=1.0, transaction_cost=0.01
+        payoffs=[2.0] * n_legs, loss=1.0, transaction_cost_rate=0.01
     )
 
     assert strategy.get_max_safe_total_bet(1000.0) == pytest.approx(1 / 1.01)
@@ -307,8 +311,10 @@ def test_get_max_safe_total_bet_is_leg_count_independent(n_legs):
 @pytest.mark.parametrize("bankroll", [1000.0, 42.0, 0.0, -5.0])
 def test_aggregate_cap_equals_binary_single_bet_cap(bankroll):
     """With shared scalar charges the worst leg's bound is the binary bound."""
-    binary = _ConcreteBinaryStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01)
-    multi = _ConcreteStrategy(payoffs=[2.0, 3.0, 4.0], loss=1.0, transaction_cost=0.01)
+    binary = _ConcreteBinaryStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01)
+    multi = _ConcreteStrategy(
+        payoffs=[2.0, 3.0, 4.0], loss=1.0, transaction_cost_rate=0.01
+    )
 
     assert multi.get_max_safe_total_bet(bankroll) == binary.get_max_safe_bet(bankroll)
 
@@ -343,7 +349,7 @@ def test_base_enforces_stake_contract():
 def test_base_enforcement_matches_shipped_validators():
     """Shipped strategies validate internally; the base gate is idempotent."""
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=[3.0, 2.0, 2.5], loss=1.0, transaction_cost=0.01
+        payoffs=[3.0, 2.0, 2.5], loss=1.0, transaction_cost_rate=0.01
     )
 
     stakes = strategy.evaluate([0.42, 0.27, 0.28], 1000.0)

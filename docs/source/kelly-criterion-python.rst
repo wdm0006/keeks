@@ -41,7 +41,7 @@ fraction of the current bankroll to stake on a repeated binary bet:
    strategy = KellyCriterion(
        payoff=1.0,
        loss=1.0,
-       transaction_cost=0.01,
+       transaction_cost_rate=0.01,
    )
 
    fraction = strategy.evaluate(probability=0.55, current_bankroll=bankroll)
@@ -74,7 +74,7 @@ Run the smallest complete example
    strategy = KellyCriterion(
        payoff=1.0,
        loss=1.0,
-       transaction_cost=0.01,
+       transaction_cost_rate=0.01,
    )
 
    fraction = strategy.evaluate(probability=0.55, current_bankroll=bankroll)
@@ -107,15 +107,15 @@ Keeks calculates:
 
 where ``p`` is the win probability, ``payoff`` and ``loss`` are the
 per-unit multipliers for a win and a loss, and ``cost`` is
-``transaction_cost``. The cost is added to the loss side and subtracted from
+``transaction_cost_rate``. The cost is added to the loss side and subtracted from
 the payoff side before the ratio is taken, so it makes both a win pay a
 little less and a loss cost a little more.
 
-``transaction_cost`` is Keeks' normalized, per-unit fractional model input —
+``transaction_cost_rate`` is Keeks' normalized, per-unit fractional model input —
 not a synonym for a broker commission, a bid-ask spread, or slippage. It does
 not model market impact, venue-specific fees, correlated positions, or
 portfolio rebalancing. It is also not the same quantity as the ``keeks.simulators``
-classes' ``transaction_costs`` (plural): that one is a flat, absolute
+classes' ``fee_per_bet`` (plural): that one is a flat, absolute
 bankroll amount charged once per settled bet, independent of stake size.
 Passing the same number to both does not mean the same real-world cost, and
 Keeks does not convert between them.
@@ -133,7 +133,7 @@ two adjustments after the formula:
   or undefined fraction.
 - **Maximum-safe-bet clamp.** The result is capped at
   ``get_max_safe_bet(current_bankroll)``, the largest stake that cannot drive
-  the bankroll negative given ``loss`` and ``transaction_cost``. A
+  the bankroll negative given ``loss`` and ``transaction_cost_rate``. A
   non-positive bankroll has no safe stake at all, so the clamp returns
   ``0.0`` in that case too.
 

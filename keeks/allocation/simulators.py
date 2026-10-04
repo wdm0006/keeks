@@ -32,7 +32,7 @@ from keeks.utils import (
     RuinError,
     _require_finite,
     _validate_simulator_seed,
-    normalize_probabilities,
+    validate_probabilities,
 )
 
 __author__ = "willmcginnis"
@@ -125,8 +125,8 @@ class AllocationSimulator:
     Residual probability mass is an all-cash period: with ``probabilities``
     given, each trial draws one uniform and reads it against the cumulative
     bands, and a draw beyond the total mass is a period where nothing is
-    realized - no transaction, no fee, and a zero vector reported through
-    the settlement hook.
+    realized - no transaction, no fee, and an all-``None`` outcome vector
+    with a zero return vector reported through the settlement hook.
 
     Parameters
     ----------
@@ -142,7 +142,7 @@ class AllocationSimulator:
         one within ``PROBABILITY_SUM_TOLERANCE``). ``None`` (the default)
         makes the model's draws the trial sequence: trial ``t`` settles the
         ``t``-th realization row.
-    transaction_costs : float
+    fee_per_bet : float
         Flat cost charged once per staked period, the house convention.
         Turnover-based charging (costs that scale with weight changes
         between periods) is deliberately deferred.
@@ -169,7 +169,7 @@ class AllocationSimulator:
     ...     [[0.03, 0.01], [-0.01, 0.02], [0.01, -0.005], [0.0, 0.0]]
     ... )
     >>> simulator = AllocationSimulator(model, trials=200, seed=42)
-    >>> bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    >>> bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     >>> simulator.evaluate_strategy(FixedWeights([0.4, 0.2]), bankroll)
     >>> round(float(bankroll.total_funds), 2)
     2583.92
@@ -223,9 +223,11 @@ class AllocationSimulator:
        (net loss) of ``bankroll * w'R(omega)`` minus the flat transaction
        cost, written to the history once. When a bankroll safeguard refuses
        the settlement (:class:`~keeks.utils.RuinError` - bankruptcy or the
-       drawdown cap), the period leaves the bankroll unchanged and the
-       simulation stops after it completes.
-    6. Fire ``record_settlement(realized_returns)`` once with the realized
+       configured ``max_transaction_loss`` cap), the period leaves the
+       bankroll unchanged and the simulation stops after it completes.
+    6. Fire ``record_settlement(won, realized_returns)`` once with the
+       period's per-option outcome vector (``True`` when the option's
+       realized return is positive, ``False`` otherwise) and the realized
        joint simple-return vector - the state channel for online
        allocators. A refused settlement still reports the market's
        realization: the refusal blocks the bankroll transfer, not the
@@ -245,7 +247,7 @@ class AllocationSimulator:
         self,
         model,
         probabilities=None,
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         trials=1000,
         seed=None,
     ):
@@ -254,12 +256,12 @@ class AllocationSimulator:
             self.probabilities: np.ndarray | None = None
             self._cumulative: np.ndarray | None = None
         else:
-            self.probabilities = normalize_probabilities(probabilities)
+            self.probabilities = validate_probabilities(probabilities)
             self._cumulative = np.cumsum(self.probabilities)
-        transaction_costs = _require_finite(transaction_costs, "Transaction costs")
-        if transaction_costs < 0:
-            raise ValueError("Transaction costs must be non-negative")
-        self.transaction_costs: float = transaction_costs
+        fee_per_bet = _require_finite(fee_per_bet, "Fee per bet")
+        if fee_per_bet < 0:
+            raise ValueError("Fee per bet must be non-negative")
+        self.fee_per_bet: float = fee_per_bet
         try:
             trials = operator.index(trials)
         except TypeError as exc:
@@ -369,7 +371,10 @@ class AllocationSimulator:
                 if band >= len(self.probabilities):
                     # Residual probability mass: an all-cash period.
                     if record_settlement is not None:
-                        record_settlement(tuple(np.zeros(realizations.shape[1])))
+                        record_settlement(
+                            tuple([None] * realizations.shape[1]),
+                            tuple(np.zeros(realizations.shape[1])),
+                        )
                     continue
                 realized = realizations[band]
 
@@ -381,7 +386,7 @@ class AllocationSimulator:
             ]
             batch_ruined = False
             try:
-                net = sum(amounts) - self.transaction_costs
+                net = sum(amounts) - self.fee_per_bet
                 if net >= 0:
                     bankroll.deposit(net)
                 else:
@@ -399,7 +404,10 @@ class AllocationSimulator:
                 batch_ruined = True
 
             if record_settlement is not None:
-                record_settlement(tuple(realized.tolist()))
+                # The outcome flag reads off the realized return: a positive
+                # simple return won its stake, zero or negative lost it.
+                won = tuple(bool(r > 0) for r in realized)
+                record_settlement(won, tuple(realized.tolist()))
 
             if batch_ruined:
                 break

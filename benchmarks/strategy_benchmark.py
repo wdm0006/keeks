@@ -28,8 +28,8 @@ Design notes that the numbers depend on:
   the estimate-noise axis instead perturbs the probability handed to
   ``strategy.evaluate`` while the simulator settles against the true probability.
 * **Cost units differ by design of the library.** Strategies treat
-  ``transaction_cost`` as a per-unit fractional cost; simulators subtract
-  ``transaction_costs`` as a flat fee per settled bet. The same scalar is passed to
+  ``transaction_cost_rate`` as a per-unit fractional cost; simulators subtract
+  ``fee_per_bet`` as a flat fee per settled bet. The same scalar is passed to
   both, and the realised fee is measured and reported so the asymmetry is visible
   rather than assumed away.
 """
@@ -95,7 +95,7 @@ class Scenario:
     probability: float
     cost: float
     estimate_stdev: float
-    max_draw_down: float | None
+    max_transaction_loss: float | None
     payoff: float = 1.0
     loss: float = 1.0
 
@@ -103,11 +103,11 @@ class Scenario:
 BASE = Scenario(
     key="base",
     axis="base",
-    label="Base: 55% edge, even money, no cost, no estimate error, max_draw_down=0.3",
+    label="Base: 55% edge, even money, no cost, no estimate error, max_transaction_loss=0.3",
     probability=0.55,
     cost=0.0,
     estimate_stdev=0.0,
-    max_draw_down=0.3,
+    max_transaction_loss=0.3,
 )
 
 
@@ -137,19 +137,19 @@ SCENARIOS = [
         "drawdown-08",
         "drawdown limit",
         "Drawdown limit: 8% of funds per settlement",
-        max_draw_down=0.08,
+        max_transaction_loss=0.08,
     ),
     _variant(
         "drawdown-03",
         "drawdown limit",
         "Drawdown limit: 3% of funds per settlement",
-        max_draw_down=0.03,
+        max_transaction_loss=0.03,
     ),
     _variant(
         "drawdown-off",
         "drawdown limit",
-        "Drawdown limit: disabled (max_draw_down=None)",
-        max_draw_down=None,
+        "Drawdown limit: disabled (max_transaction_loss=None)",
+        max_transaction_loss=None,
     ),
 ]
 
@@ -158,29 +158,29 @@ SCENARIOS = [
 # evaluate() calls, so each path needs its own object.
 STRATEGY_FACTORIES = {
     "Kelly": lambda s: KellyCriterion(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "Half Kelly": lambda s: FractionalKellyCriterion(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost, fraction=0.5
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost, fraction=0.5
     ),
     "Drawdown-adjusted Kelly": lambda s: DrawdownAdjustedKelly(
         payoff=s.payoff,
         loss=s.loss,
-        transaction_cost=s.cost,
-        max_acceptable_drawdown=0.2,
+        transaction_cost_rate=s.cost,
+        max_transaction_loss=0.2,
     ),
     "Optimal f": lambda s: OptimalF(
         payoff=s.payoff,
         loss=s.loss,
-        transaction_cost=s.cost,
+        transaction_cost_rate=s.cost,
         win_rate=s.probability,
         max_risk_fraction=0.2,
     ),
     "Naive": lambda s: NaiveStrategy(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "Fixed fraction 2%": lambda s: FixedFractionStrategy(
-        fraction=0.02, payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        fraction=0.02, payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "CPPI": lambda s: CPPIStrategy(
         floor_fraction=0.8,
@@ -188,13 +188,13 @@ STRATEGY_FACTORIES = {
         initial_bankroll=INITIAL_FUNDS,
         payoff=s.payoff,
         loss=s.loss,
-        transaction_cost=s.cost,
+        transaction_cost_rate=s.cost,
     ),
     "Dynamic": lambda s: DynamicBankrollManagement(
-        base_fraction=0.05, payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        base_fraction=0.05, payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "Merton share": lambda s: MertonShare(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost, risk_aversion=2.0
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost, risk_aversion=2.0
     ),
 }
 
@@ -207,16 +207,18 @@ class _StoppedBankRoll(BankRoll):
     stop from a bankruptcy stop instead of inferring both from a short history.
     """
 
-    def __init__(self, initial_funds, max_draw_down):
-        super().__init__(initial_funds=initial_funds, max_draw_down=max_draw_down)
+    def __init__(self, initial_funds, max_transaction_loss):
+        super().__init__(
+            initial_funds=initial_funds, max_transaction_loss=max_transaction_loss
+        )
         self.stop_reason = ""
 
-    def withdraw(self, amt):
+    def withdraw(self, amount):
         try:
-            super().withdraw(amt)
+            super().withdraw(amount)
         except RuinError:
             self.stop_reason = (
-                "bankruptcy" if self.total_funds - amt < 0 else "drawdown-limit"
+                "bankruptcy" if self.total_funds - amount < 0 else "drawdown-limit"
             )
             raise
 
@@ -292,7 +294,7 @@ def run_path(scenario, strategy_name, path_index):
     else:
         beliefs = [scenario.probability] * TRIALS
 
-    bankroll = _StoppedBankRoll(INITIAL_FUNDS, scenario.max_draw_down)
+    bankroll = _StoppedBankRoll(INITIAL_FUNDS, scenario.max_transaction_loss)
     strategy = STRATEGY_FACTORIES[strategy_name](scenario)
     clock = _Clock()
     counters = {"bets": 0, "staked": 0.0, "first": 0.0}
@@ -316,7 +318,7 @@ def run_path(scenario, strategy_name, path_index):
     simulator = RepeatedBinarySimulator(
         payoff=scenario.payoff,
         loss=scenario.loss,
-        transaction_costs=scenario.cost,
+        fee_per_bet=scenario.cost,
         probability=scenario.probability,
         trials=TRIALS,
     )
@@ -361,9 +363,9 @@ def summarise(scenario, strategy_name, results):
         "probability": scenario.probability,
         "cost_input": scenario.cost,
         "estimate_stdev": scenario.estimate_stdev,
-        "max_draw_down": "none"
-        if scenario.max_draw_down is None
-        else scenario.max_draw_down,
+        "max_transaction_loss": "none"
+        if scenario.max_transaction_loss is None
+        else scenario.max_transaction_loss,
         "strategy": strategy_name,
         "paths": len(results),
         "median_first_bet_fraction": round(
@@ -549,7 +551,7 @@ def chart_early_stops(frame, path):
         f"{PATHS} paths, {TRIALS} bets, seed {SEED}",
         fontsize=11,
     )
-    ax.legend(title="max_draw_down", ncol=4, loc="upper center", framealpha=1.0)
+    ax.legend(title="max_transaction_loss", ncol=4, loc="upper center", framealpha=1.0)
     ax.grid(axis="y", linestyle="--", alpha=0.4)
     fig.tight_layout()
     fig.savefig(path, dpi=200)
@@ -598,7 +600,7 @@ def run_allocation_comparison(model, trials=1_000):
         print(f"skipping the scipy-gated allocators: {error}")
     histories = {}
     for name, allocation in allocators.items():
-        bankroll = BankRoll(initial_funds=1_000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1_000.0, max_transaction_loss=None)
         simulator = AllocationSimulator(model, trials=trials, seed=SEED)
         simulator.evaluate_strategy(allocation, bankroll)
         histories[name] = [float(value) for value in bankroll.history]

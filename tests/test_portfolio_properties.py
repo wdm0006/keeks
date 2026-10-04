@@ -72,16 +72,14 @@ class _RecordingStrategy:
     def update_bankroll(self, _current_bankroll):
         pass
 
-    def record_settlement(self, won_bets, return_pcts):
-        self.settlements.append((won_bets, return_pcts))
+    def record_settlement(self, won, realized_returns):
+        self.settlements.append((won, realized_returns))
 
 
 def run_portfolio(bets, stakes, seed, trials=25):
-    simulator = PortfolioSimulator(
-        bets=bets, transaction_costs=0.0, trials=trials, seed=seed
-    )
+    simulator = PortfolioSimulator(bets=bets, fee_per_bet=0.0, trials=trials, seed=seed)
     strategy = _RecordingStrategy(stakes)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     return strategy, bankroll
 
@@ -110,13 +108,13 @@ def test_no_negative_stakes_and_exposure_bound_hold(portfolio, seed):
     strategy, _bankroll = run_portfolio(bets, stakes, seed)
     staked = _staked_evaluations(strategy, stakes)
 
-    for (_probabilities, before), (won_bets, returns) in zip(
+    for (_probabilities, before), (won, returns) in zip(
         staked, strategy.settlements, strict=True
     ):
         recovered = [
-            abs(ret) * before / (bets[index][1] if won else bets[index][2])
-            for index, (won, ret) in enumerate(zip(won_bets, returns, strict=True))
-            if won is not None
+            abs(ret) * before / (bets[index][1] if flag else bets[index][2])
+            for index, (flag, ret) in enumerate(zip(won, returns, strict=True))
+            if flag is not None
         ]
         assert all(stake >= 0 for stake in recovered)
         assert sum(recovered) <= before * (1 + 1e-9)
@@ -138,7 +136,7 @@ def test_each_batch_updates_the_bankroll_exactly_once(portfolio, seed):
     staked = _staked_evaluations(strategy, stakes)
     settled = 0
     history_index = 1
-    for (_probabilities, before), (_won_bets, returns) in zip(
+    for (_probabilities, before), (_won, returns) in zip(
         staked, strategy.settlements, strict=True
     ):
         # The bankroll the trial saw is the last history entry.
@@ -179,11 +177,9 @@ def test_zero_stake_portfolio_never_settles_or_draws(portfolio, seed):
     """A portfolio that stakes nothing is skipped wholesale, every trial."""
     bets, _stakes = portfolio
     m = len(bets)
-    simulator = PortfolioSimulator(
-        bets=bets, transaction_costs=0.01, trials=30, seed=seed
-    )
+    simulator = PortfolioSimulator(bets=bets, fee_per_bet=0.01, trials=30, seed=seed)
     strategy = _RecordingStrategy((0.0,) * m)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     assert bankroll.history == [1000.0]
     assert strategy.settlements == []

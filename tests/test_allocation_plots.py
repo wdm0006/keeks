@@ -19,7 +19,7 @@ from keeks.allocation.plots import (
     bankroll_paths,
     correlation_heatmap,
     dendrogram,
-    drawdown,
+    drawdown_history,
     efficient_frontier,
     risk_contributions,
     scenario_losses,
@@ -106,40 +106,40 @@ def test_bankroll_paths_validates_histories():
 
 
 # ---
-# drawdown: the peak-to-trough fraction, zero before the first positive
+# drawdown_history: the peak-to-trough fraction, zero before the first positive
 # bankroll, accepted as a sequence or an owning BankRoll.
 # ---
 
 
-def test_drawdown_plots_the_peak_to_trough_fraction():
-    axes = drawdown([1000.0, 1250.0, 1000.0, 1500.0])
+def test_drawdown_history_plots_the_peak_to_trough_fraction():
+    axes = drawdown_history([1000.0, 1250.0, 1000.0, 1500.0])
     (line,) = axes.get_lines()
     assert line.get_ydata().tolist() == [0.0, 0.0, 0.2, 0.0]
     assert len(axes.collections) == 1  # the light fill beneath the curve
 
 
-def test_drawdown_accepts_a_bankroll():
+def test_drawdown_history_accepts_a_bankroll():
     bankroll = BankRoll(initial_funds=1000.0)
     bankroll.withdraw(250.0)
-    (line,) = drawdown(bankroll).get_lines()
+    (line,) = drawdown_history(bankroll).get_lines()
     assert line.get_ydata().tolist() == [0.0, 0.25]
 
 
-def test_drawdown_is_zero_before_the_first_positive_value():
+def test_drawdown_history_is_zero_before_the_first_positive_value():
     """No banked funds means nothing to lose - zero drawdown, no crash."""
-    (line,) = drawdown([0.0, 0.0, 100.0, 50.0]).get_lines()
+    (line,) = drawdown_history([0.0, 0.0, 100.0, 50.0]).get_lines()
     assert line.get_ydata().tolist() == [0.0, 0.0, 0.0, 0.5]
 
 
-def test_drawdown_validates_the_history():
+def test_drawdown_history_validates_the_history():
     with pytest.raises(ValueError, match="one-dimensional"):
-        drawdown([[1.0, 2.0]])
+        drawdown_history([[1.0, 2.0]])
     with pytest.raises(ValueError, match="non-empty"):
-        drawdown([])
+        drawdown_history([])
     with pytest.raises(ValueError, match="only finite values"):
-        drawdown([1.0, float("inf")])
+        drawdown_history([1.0, float("inf")])
     with pytest.raises(ValueError, match="nonnegative"):
-        drawdown([-1.0])
+        drawdown_history([-1.0])
 
 
 # ---
@@ -403,8 +403,8 @@ def test_scenario_losses_validates_the_inputs():
 
 def test_helpers_are_deterministic():
     """Identical inputs draw identical artists, twice in a row."""
-    first = drawdown([1000.0, 1250.0, 1000.0])
-    second = drawdown([1000.0, 1250.0, 1000.0])
+    first = drawdown_history([1000.0, 1250.0, 1000.0])
+    second = drawdown_history([1000.0, 1250.0, 1000.0])
     assert first.get_lines()[0].get_ydata().tolist() == (
         second.get_lines()[0].get_ydata().tolist()
     )
@@ -414,7 +414,7 @@ def test_helpers_are_deterministic():
 def test_helpers_leave_pyplot_empty():
     """No helper registers a figure in pyplot's global manager."""
     bankroll_paths({"a": [1.0, 2.0]})
-    drawdown([1.0, 2.0])
+    drawdown_history([1.0, 2.0])
     weight_evolution([[0.5, 0.5]])
     risk_contributions([0.5, 0.5], COVARIANCE)
     efficient_frontier([0.02, 0.01], COVARIANCE, [1.0])
@@ -427,7 +427,7 @@ def test_helpers_leave_pyplot_empty():
 def test_helpers_return_the_axes_they_drew_on():
     for axes in (
         bankroll_paths({"a": [1.0, 2.0]}),
-        drawdown([1.0, 2.0]),
+        drawdown_history([1.0, 2.0]),
         weight_evolution([[0.5, 0.5]]),
         risk_contributions([0.5, 0.5], COVARIANCE),
         efficient_frontier([0.02, 0.01], COVARIANCE, [1.0]),

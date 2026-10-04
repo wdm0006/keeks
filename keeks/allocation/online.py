@@ -4,7 +4,7 @@ Online allocation strategies: weights that adapt from settled returns.
 The online family sizes a portfolio the way sequential portfolio selection
 does: the allocator holds a current weight vector, each staked period
 settles with a realized joint simple-return vector, and that vector is the
-only stateful channel - ``record_settlement(realized_returns)``, called
+only stateful channel - ``record_settlement(won, realized_returns)``, called
 once per staked period. ``evaluate`` never mutates state; it only reads it,
 so the weights a period stakes are the weights the previous settlements
 produced.
@@ -131,9 +131,9 @@ def _validate_realized_returns(realized_returns, option_count=None):
     Coerce a realized joint simple-return vector to a finite float array.
 
     One entry per option: the simple return each option realized over the
-    settled period. This is the payload of the ``record_settlement`` hook -
-    the online family's only stateful channel - so it is validated at the
-    door: a non-one-dimensional, empty, non-finite, or wrong-length vector
+    settled period. This is the returns payload of the ``record_settlement``
+    hook - the online family's only stateful channel - so it is validated at
+    the door: a non-one-dimensional, empty, non-finite, or wrong-length vector
     is rejected rather than silently misaligning the update.
 
     Parameters
@@ -283,12 +283,15 @@ class FixedWeights(_OnlineAllocator):
     def __init__(self, weights):
         super().__init__(weights)
 
-    def record_settlement(self, realized_returns):
+    def record_settlement(self, won, realized_returns):
         """
         Validate the settlement; the benchmark holds no state.
 
         Parameters
         ----------
+        won : sequence of bool or None
+            The settled period's per-option outcome vector; the benchmark
+            updates from the returns alone and ignores it.
         realized_returns : sequence of float
             The realized joint simple-return vector of the settled period.
 
@@ -298,6 +301,7 @@ class FixedWeights(_OnlineAllocator):
             If the vector is not a non-empty one-dimensional sequence of
             finite numbers matching the option count.
         """
+        del won  # the benchmark reads the returns alone
         _validate_realized_returns(realized_returns, option_count=self._option_count)
 
 
@@ -338,7 +342,7 @@ class ExponentialGradient(_OnlineAllocator):
     >>> allocator = ExponentialGradient(option_count=2, learning_rate=0.5)
     >>> allocator.evaluate(1000.0)
     (0.5, 0.5)
-    >>> allocator.record_settlement([0.2, -0.1])
+    >>> allocator.record_settlement((True, False), [0.2, -0.1])
     >>> weights = allocator.evaluate(1000.0)
     >>> weights[1] > weights[0]
     True
@@ -351,12 +355,15 @@ class ExponentialGradient(_OnlineAllocator):
         super().__init__(np.full(count, 1.0 / count))
         self._learning_rate = _validate_positive_finite(learning_rate, "Learning rate")
 
-    def record_settlement(self, realized_returns):
+    def record_settlement(self, won, realized_returns):
         """
         Advance the weights with the settled joint simple returns.
 
         Parameters
         ----------
+        won : sequence of bool or None
+            The settled period's per-option outcome vector; the gradient
+            update reads the returns alone and ignores it.
         realized_returns : sequence of float
             The realized joint simple-return vector of the settled period;
             one entry per option.
@@ -367,6 +374,7 @@ class ExponentialGradient(_OnlineAllocator):
             If the vector is not a non-empty one-dimensional sequence of
             finite numbers matching the option count.
         """
+        del won  # the gradient update reads the returns alone
         returns = _validate_realized_returns(
             realized_returns, option_count=self._option_count
         )
@@ -425,7 +433,7 @@ class OnlineNewtonStep(_OnlineAllocator):
     >>> allocator = OnlineNewtonStep(option_count=2)
     >>> allocator.evaluate(1000.0)
     (0.5, 0.5)
-    >>> allocator.record_settlement([0.05, -0.05])
+    >>> allocator.record_settlement((True, False), [0.05, -0.05])
     >>> weights = allocator.evaluate(1000.0)
     >>> weights[1] > weights[0]
     True
@@ -440,12 +448,15 @@ class OnlineNewtonStep(_OnlineAllocator):
         self._epsilon = _validate_positive_finite(epsilon, "Epsilon")
         self._outer_products = np.zeros((count, count))
 
-    def record_settlement(self, realized_returns):
+    def record_settlement(self, won, realized_returns):
         """
         Advance the weights with the settled joint simple returns.
 
         Parameters
         ----------
+        won : sequence of bool or None
+            The settled period's per-option outcome vector; the Newton step
+            reads the returns alone and ignores it.
         realized_returns : sequence of float
             The realized joint simple-return vector of the settled period;
             one entry per option.
@@ -456,6 +467,7 @@ class OnlineNewtonStep(_OnlineAllocator):
             If the vector is not a non-empty one-dimensional sequence of
             finite numbers matching the option count.
         """
+        del won  # the Newton step reads the returns alone
         returns = _validate_realized_returns(
             realized_returns, option_count=self._option_count
         )

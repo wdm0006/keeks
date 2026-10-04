@@ -98,7 +98,7 @@ def test_strategy_simulation_is_reproducible_with_paired_indexed_seeds(monkeypat
     params = {
         "payoff": EXAMPLE.PAYOFF,
         "loss": EXAMPLE.LOSS,
-        "transaction_cost": EXAMPLE.TRANS_COST,
+        "transaction_cost_rate": EXAMPLE.TRANS_COST,
     }
 
     first = EXAMPLE.run_strategy_simulation(KellyCriterion, "Kelly", params)

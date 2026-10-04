@@ -21,8 +21,8 @@ from keeks.multi_outcome.base import _validate_stake_fractions
 class _FixedStakesStrategy(BaseMultiOutcomeStrategy):
     """Returns a fixed stake vector through the documented validator gate."""
 
-    def __init__(self, payoffs, loss, stakes, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, stakes, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._stakes = stakes
 
     def evaluate(self, _probabilities, _current_bankroll):
@@ -32,8 +32,8 @@ class _FixedStakesStrategy(BaseMultiOutcomeStrategy):
 class _RecordingStrategy(BaseMultiOutcomeStrategy):
     """Fixed stakes plus a log of every hook call the simulator makes."""
 
-    def __init__(self, payoffs, loss, stakes, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, stakes, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._stakes = stakes
         self.events = []
 
@@ -44,8 +44,8 @@ class _RecordingStrategy(BaseMultiOutcomeStrategy):
         self.events.append(("evaluate", tuple(probabilities), current_bankroll))
         return _validate_stake_fractions(self._stakes)
 
-    def record_settlement(self, won_bets, return_pcts):
-        self.events.append(("record_settlement", won_bets, return_pcts))
+    def record_settlement(self, won, realized_returns):
+        self.events.append(("record_settlement", won, realized_returns))
 
 
 class _DuckTypedStrategy:
@@ -62,7 +62,7 @@ def build_simulator(**overrides):
     """A three-bet portfolio with deterministic outcome knobs."""
     common = {
         "bets": ((0.55, 2.0, 1.0), (0.45, 3.0, 1.0), (0.30, 2.4, 1.0)),
-        "transaction_costs": 0.0,
+        "fee_per_bet": 0.0,
         "trials": 3,
         "seed": 42,
     }
@@ -107,7 +107,7 @@ def test_bets_and_probabilities_are_stored():
     simulator = build_simulator()
     assert simulator.bets == ((0.55, 2.0, 1.0), (0.45, 3.0, 1.0), (0.30, 2.4, 1.0))
     assert simulator.probabilities.tolist() == [0.55, 0.45, 0.30]
-    assert simulator.transaction_costs == 0.0
+    assert simulator.fee_per_bet == 0.0
     assert simulator.trials == 3
     assert simulator.seed == 42
 
@@ -150,14 +150,14 @@ def test_bet_loss_must_be_nonnegative(loss):
         PortfolioSimulator(bets=[(0.5, 2.0, loss)])
 
 
-def test_transaction_costs_must_be_nonnegative():
-    with pytest.raises(ValueError, match="Transaction costs"):
-        build_simulator(transaction_costs=-0.01)
+def test_fee_per_bet_must_be_nonnegative():
+    with pytest.raises(ValueError, match="Fee per bet"):
+        build_simulator(fee_per_bet=-0.01)
 
 
-def test_transaction_costs_must_be_finite():
-    with pytest.raises(ValueError, match="Transaction costs"):
-        build_simulator(transaction_costs=float("nan"))
+def test_fee_per_bet_must_be_finite():
+    with pytest.raises(ValueError, match="Fee per bet"):
+        build_simulator(fee_per_bet=float("nan"))
 
 
 def test_trials_must_be_nonnegative_integer():
@@ -208,7 +208,7 @@ def test_stake_vector_length_must_match_bet_count():
     # bets used to crash with IndexError deep in the settlement loop, and a
     # shorter one silently left bets unstaked.
     simulator = build_simulator(bets=((0.55, 2.0, 1.0),))
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     with pytest.raises(ValueError, match="exactly 1 stake fractions, got 3"):
         simulator.evaluate_strategy(_DuckTypedStrategy((0.1, 0.1, 0.1)), bankroll)
     with pytest.raises(ValueError, match="exactly 1 stake fractions, got 2"):
@@ -222,8 +222,8 @@ def test_stake_vector_length_must_match_bet_count():
 def test_always_win_bets_settle_through_the_payoff_leg():
     bets = ((1.0, 2.0, 1.0),)
     fractions = (0.5,)
-    simulator = build_simulator(bets=bets, transaction_costs=10.0, trials=2, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator = build_simulator(bets=bets, fee_per_bet=10.0, trials=2, seed=7)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_DuckTypedStrategy(fractions), bankroll)
     assert bankroll.history == _expected_history(
         1000.0, fractions, bets, fee=10.0, trials=2
@@ -233,8 +233,8 @@ def test_always_win_bets_settle_through_the_payoff_leg():
 def test_always_lose_bets_settle_through_the_loss_leg():
     bets = ((0.0, 2.0, 1.0),)
     fractions = (0.5,)
-    simulator = build_simulator(bets=bets, transaction_costs=10.0, trials=2, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator = build_simulator(bets=bets, fee_per_bet=10.0, trials=2, seed=7)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_DuckTypedStrategy(fractions), bankroll)
     assert bankroll.history == _expected_history(
         1000.0, fractions, bets, fee=10.0, trials=2
@@ -245,8 +245,8 @@ def test_fee_dominated_win_settles_as_a_net_withdrawal():
     # (payoff - 1) * stake = 50 < fee = 60: the winning bet still costs the
     # portfolio 10, and the net batch settles through one withdrawal.
     bets = ((1.0, 1.5, 1.0),)
-    simulator = build_simulator(bets=bets, transaction_costs=60.0, trials=1, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator = build_simulator(bets=bets, fee_per_bet=60.0, trials=1, seed=7)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_DuckTypedStrategy((0.1,)), bankroll)
     assert bankroll.history == [1000.0, 990.0]
 
@@ -256,8 +256,8 @@ def test_batch_nets_into_exactly_one_transaction():
     # -205) net to +90 and cross the bankroll as a single deposit - one
     # history entry for the whole portfolio, not one per bet.
     bets = ((1.0, 2.0, 1.0), (0.0, 3.0, 1.0))
-    simulator = build_simulator(bets=bets, transaction_costs=5.0, trials=1, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator = build_simulator(bets=bets, fee_per_bet=5.0, trials=1, seed=7)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_DuckTypedStrategy((0.3, 0.2)), bankroll)
     assert bankroll.history == [1000.0, 1090.0]
     assert len(bankroll.history) == 2
@@ -269,7 +269,7 @@ def test_stakes_come_from_the_trial_start_bankroll():
     bets = ((1.0, 2.0, 1.0), (0.0, 3.0, 1.0))
     fractions = (0.3, 0.2)
     simulator = build_simulator(bets=bets, trials=2, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_DuckTypedStrategy(fractions), bankroll)
     assert bankroll.history == _expected_history(
         1000.0, fractions, bets, fee=0.0, trials=2
@@ -278,9 +278,9 @@ def test_stakes_come_from_the_trial_start_bankroll():
 
 def test_declined_bets_pay_no_fee_and_draw_nothing():
     bets = ((1.0, 2.0, 1.0), (1.0, 2.0, 1.0))
-    simulator = build_simulator(bets=bets, transaction_costs=25.0, trials=1, seed=7)
+    simulator = build_simulator(bets=bets, fee_per_bet=25.0, trials=1, seed=7)
     strategy = _RecordingStrategy(payoffs=(2.0, 2.0), loss=1.0, stakes=(0.0, 0.25))
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     # Bet 0 declined: no fee, no draw, won flag None, return 0.0. Bet 1 wins:
     # (2 - 1) * 250 - 25 = 225.
@@ -296,7 +296,7 @@ def test_fully_declined_trial_is_skipped_entirely():
     bets = ((0.5, 2.0, 1.0), (0.5, 3.0, 1.0))
     simulator = build_simulator(bets=bets, trials=3, seed=7)
     strategy = _RecordingStrategy(payoffs=(2.0, 3.0), loss=1.0, stakes=(0.0, 0.0))
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     # No settlement, no fee, no history growth - but update_bankroll still
     # fires before evaluate on every non-bankrupt trial.
@@ -322,7 +322,7 @@ def test_depleted_bankroll_stops_before_any_hook():
     strategy = _RecordingStrategy(
         payoffs=(2.0, 3.0, 2.4), loss=1.0, stakes=(0.1, 0.1, 0.1)
     )
-    bankroll = BankRoll(initial_funds=0.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=0.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     assert bankroll.history == [0.0]
     assert strategy.events == []
@@ -335,17 +335,17 @@ def test_one_bet_portfolio_shares_the_one_leg_market_stream():
     from keeks.multi_outcome import RepeatedMultiOutcomeSimulator
 
     strategy = _FixedStakesStrategy(payoffs=(2.0,), loss=1.0, stakes=(0.25,))
-    portfolio_bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    portfolio_bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     portfolio = PortfolioSimulator(
-        bets=[(1.0, 2.0, 1.0)], transaction_costs=0.05, trials=30, seed=42
+        bets=[(1.0, 2.0, 1.0)], fee_per_bet=0.05, trials=30, seed=42
     )
     portfolio.evaluate_strategy(strategy, portfolio_bankroll)
 
-    market_bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    market_bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     market = RepeatedMultiOutcomeSimulator(
         payoffs=(2.0,),
         loss=1.0,
-        transaction_costs=0.05,
+        fee_per_bet=0.05,
         probabilities=(1.0,),
         trials=30,
         seed=42,
@@ -360,7 +360,7 @@ def test_one_bet_portfolio_shares_the_one_leg_market_stream():
 def test_exposure_over_bound_is_rejected_not_reduced():
     simulator = build_simulator()
     strategy = _DuckTypedStrategy(stakes=(0.5, 0.4, 0.2))
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     with pytest.raises(ValueError, match="sum to no more than one"):
         simulator.evaluate_strategy(strategy, bankroll)
     # Reject semantics: the run aborts before any settlement, the stakes are
@@ -377,7 +377,7 @@ def test_exposure_bound_holds_in_the_placement_arithmetic():
     fractions = (0.2, 0.3, 0.1)
     simulator = build_simulator(bets=bets, trials=2, seed=7)
     strategy = _RecordingStrategy(payoffs=(2.0, 3.0, 2.4), loss=1.0, stakes=fractions)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
 
     settlements = [
@@ -386,11 +386,11 @@ def test_exposure_bound_holds_in_the_placement_arithmetic():
     befores = [event[2] for event in strategy.events if event[0] == "evaluate"]
     assert len(settlements) == len(befores) == 2
     for event, before in zip(settlements, befores, strict=True):
-        won_bets, returns = event[1:]
+        won, returns = event[1:]
         stakes = [
-            abs(ret) * before / (bets[index][1] if won else bets[index][2])
-            for index, (won, ret) in enumerate(zip(won_bets, returns, strict=True))
-            if won is not None
+            abs(ret) * before / (bets[index][1] if flag else bets[index][2])
+            for index, (flag, ret) in enumerate(zip(won, returns, strict=True))
+            if flag is not None
         ]
         assert all(stake >= 0 for stake in stakes)
         assert sum(stakes) <= before * (1 + 1e-9)
@@ -400,17 +400,17 @@ def test_exposure_bound_holds_in_the_placement_arithmetic():
 # Batch-level drawdown
 # ---------------------------------------------------------------------------
 def test_batch_drawdown_evaluates_the_net_total_once():
-    # max_draw_down = 0.07 caps one withdrawal at 70. Each leg alone (a 500
+    # max_transaction_loss = 0.07 caps one withdrawal at 70. Each leg alone (a 500
     # loss) would breach it, but the batch nets to -60, so the single
     # batch-level check lets the portfolio settle.
     bets = ((0.0, 1.1, 1.0), (1.0, 2.1, 1.0))
     simulator = build_simulator(bets=bets, trials=1, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.07)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.07)
     strategy = _RecordingStrategy(payoffs=(1.1, 2.1), loss=1.0, stakes=(0.5, 0.4))
     simulator.evaluate_strategy(strategy, bankroll)
     assert bankroll.history == [1000.0, 940.0]
-    won_bets, returns = strategy.events[-1][1:]
-    assert won_bets == (False, True)
+    won, returns = strategy.events[-1][1:]
+    assert won == (False, True)
     assert returns[0] == -0.5
     assert returns[1] == pytest.approx(0.44)
 
@@ -422,7 +422,7 @@ def test_batch_over_drawdown_is_refused_and_stops_the_run():
     # mid-portfolio.
     bets = ((0.0, 1.1, 1.0), (0.0, 1.1, 1.0))
     simulator = build_simulator(bets=bets, trials=5, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.05)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.05)
     strategy = _RecordingStrategy(payoffs=(1.1, 1.1), loss=1.0, stakes=(0.5, 0.5))
     with pytest.warns(
         UserWarning, match="Settlement refused; the simulation stops after this batch"
@@ -434,8 +434,8 @@ def test_batch_over_drawdown_is_refused_and_stops_the_run():
         event for event in strategy.events if event[0] == "record_settlement"
     ]
     assert len(settlements) == 1
-    _, won_bets, returns = settlements[0]
-    assert won_bets == (False, False)
+    _, won, returns = settlements[0]
+    assert won == (False, False)
     assert returns == (0.0, 0.0)
 
 
@@ -444,15 +444,15 @@ def test_refused_batch_reports_drawn_outcomes_with_zero_returns():
     # won/lost flags - only the returns are zeroed by the refusal.
     bets = ((0.0, 1.1, 1.0), (1.0, 1.1, 1.0))
     simulator = build_simulator(bets=bets, trials=1, seed=7)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.05)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.05)
     strategy = _RecordingStrategy(payoffs=(1.1, 1.1), loss=1.0, stakes=(0.5, 0.1))
     with pytest.warns(
         UserWarning, match="Settlement refused; the simulation stops after this batch"
     ):
         simulator.evaluate_strategy(strategy, bankroll)
     # Net: -500 + 110 - 0 = -390, withdrawn past the 50 cap -> refused.
-    _, won_bets, returns = strategy.events[-1]
-    assert won_bets == (False, True)
+    _, won, returns = strategy.events[-1]
+    assert won == (False, True)
     assert returns == (0.0, 0.0)
     assert bankroll.total_funds == 1000.0
 
@@ -464,7 +464,7 @@ def test_hooks_fire_in_documented_order_per_trial():
     bets = ((1.0, 2.0, 1.0), (0.0, 3.0, 1.0))
     simulator = build_simulator(bets=bets, trials=2, seed=7)
     strategy = _RecordingStrategy(payoffs=(2.0, 3.0), loss=1.0, stakes=(0.1, 0.1))
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
 
     kinds = [event[0] for event in strategy.events]
@@ -480,8 +480,8 @@ def test_hooks_fire_in_documented_order_per_trial():
     assert first_update[1] == 1000.0
     assert first_eval[1] == (1.0, 0.0)
     assert first_eval[2] == 1000.0
-    won_bets, returns = first_settlement[1:]
-    assert won_bets == (True, False)
+    won, returns = first_settlement[1:]
+    assert won == (True, False)
     assert returns == (0.1, -0.1)
 
 
@@ -490,7 +490,7 @@ def test_strategy_without_hooks_runs_quietly():
         payoffs=(2.0, 3.0, 2.4), loss=1.0, stakes=(0.1, 0.1, 0.1)
     )
     simulator = build_simulator()
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     assert len(bankroll.history) == 4
 
@@ -501,7 +501,7 @@ def test_strategy_without_hooks_runs_quietly():
 def test_unseeded_path_draws_from_numpy_global_generator(monkeypatch):
     monkeypatch.setattr(np.random, "random", lambda: 0.99)
     simulator = build_simulator(bets=((0.5, 2.0, 1.0),), trials=2, seed=None)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_DuckTypedStrategy((0.1,)), bankroll)
     # Every draw is 0.99 >= 0.5, so every staked bet loses; each trial risks
     # a tenth of the bankroll as it stood when that trial began.
