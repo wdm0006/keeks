@@ -128,9 +128,13 @@ what the bankroll can safely support. ``KellyCriterion.evaluate()`` applies
 two adjustments after the formula:
 
 - **Zero floor.** If the win probability is below the strategy's
-  ``min_probability`` (0.5 by default), or if the cost-adjusted payoff or
-  loss is not positive, the strategy returns ``0.0`` rather than a negative
-  or undefined fraction.
+  ``min_probability``, or if the cost-adjusted payoff or loss is not
+  positive, the strategy returns ``0.0`` rather than a negative or
+  undefined fraction. ``min_probability`` defaults to ``None`` — the gate
+  is edge-aware, so any bet the Kelly formula itself prices positively is
+  placed. Setting an explicit ``min_probability`` refuses below-gate bets
+  and emits a ``UserWarning`` naming the suppressed fraction whenever the
+  gate zeroes a bet the formula would size.
 - **Maximum-safe-bet clamp.** The result is capped at
   ``get_max_safe_bet(current_bankroll)``, the largest stake that cannot drive
   the bankroll negative given ``loss`` and ``transaction_cost_rate``. A

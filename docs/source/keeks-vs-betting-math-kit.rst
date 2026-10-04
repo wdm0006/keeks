@@ -197,8 +197,10 @@ resulting probability and payoff to Keeks to compare sizing policies.
 
 Two cautions that apply to any such pairing. First, Keeks does not check that a
 strategy's payoff and loss agree with the simulator's, so pass the same values
-to both. Second, Kelly-family strategies in Keeks return ``0.0`` below a
-``min_probability`` of 0.5 by default, regardless of payoff.
+to both. Second, Kelly-family strategies in Keeks refuse bets their formula
+prices negatively: ``min_probability`` defaults to ``None`` (edge-aware
+sizing), not a fixed 0.5 probability floor — a below-0.5 win probability is
+still staked when the payoff makes it positive expected value.
 
 .. _bmk-sources:
 
