@@ -224,25 +224,28 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
     ImportError
         When scipy is not installed - the linear program is the method, so
         there is no numpy-only fallback. Install the optional solver
-        backend with ``pip install keeks[allocation]``:
-
-        >>> import builtins
-        >>> real_import = builtins.__import__
-        >>> def without_scipy(name, *args, **kwargs):
-        ...     if name.startswith("scipy"):
-        ...         raise ImportError(f"No module named {name!r}")
-        ...     return real_import(name, *args, **kwargs)
-        >>> builtins.__import__ = without_scipy
-        >>> try:
-        ...     MeanCVaR([[0.01], [-0.01]])
-        ... except ImportError as error:
-        ...     print("points at the extra:", "keeks[allocation]" in str(error))
-        ... finally:
-        ...     builtins.__import__ = real_import
-        points at the extra: True
+        backend with ``pip install keeks[allocation]``; the first example
+        below demonstrates the pointed error.
 
     Examples
     --------
+    The scipy gate points at the optional extra, not a deep traceback:
+
+    >>> import builtins
+    >>> real_import = builtins.__import__
+    >>> def without_scipy(name, *args, **kwargs):
+    ...     if name.startswith("scipy"):
+    ...         raise ImportError(f"No module named {name!r}")
+    ...     return real_import(name, *args, **kwargs)
+    >>> builtins.__import__ = without_scipy
+    >>> try:
+    ...     MeanCVaR([[0.01], [-0.01]])
+    ... except ImportError as error:
+    ...     print("points at the extra:", "keeks[allocation]" in str(error))
+    ... finally:
+    ...     builtins.__import__ = real_import
+    points at the extra: True
+
     >>> import numpy as np
     >>> scenarios = np.array([
     ...     [0.03, 0.01],
@@ -319,7 +322,7 @@ class MeanCVaR(BaseAllocationStrategy, ModelInputMixin):
         seed : int, optional
             Seed for the private sampling stream; omit it for fresh draws
             with no replay promised.
-        **kwargs
+        ``**kwargs``
             Extra constructor keyword arguments for ``cls`` (a tail
             fraction, ...).
 

@@ -80,6 +80,7 @@ Keeks implements various bankroll allocation strategies:
 - **CPPI (Constant Proportion Portfolio Insurance)**: Strategy that protects a floor value while allowing upside exposure
 - **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
 - **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
+- **Portfolio Allocation**: Size portfolios across distribution-valued options - mean-variance, risk budgeting, HRP, mean-CVaR, and online methods over one configurable joint-return input model (see :doc:`allocation`)
 
 Each strategy offers different tradeoffs between risk and reward, allowing you to select the approach that best matches your investment goals and risk tolerance.
 
@@ -129,6 +130,7 @@ Contents
    binary_strategies
    simulators
    multi_outcome
+   allocation
    allocation_plots
    bankroll
    utils

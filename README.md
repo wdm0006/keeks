@@ -228,7 +228,9 @@ simulator = AllocationSimulator(scenarios, trials=1000, seed=42)
 bankroll = BankRoll(initial_funds=1_000.0)
 simulator.evaluate_strategy(strategy, bankroll)
 
-bankroll_paths({"strategy": bankroll.history})  # and drawdown(), weight_evolution(), ...
+bankroll_paths(
+    {"strategy": bankroll.history}
+)  # and drawdown(), weight_evolution(), ...
 ```
 
 The visualization helpers (`bankroll_paths`, `drawdown`, `weight_evolution`,
