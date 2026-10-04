@@ -83,7 +83,12 @@ def test_drawdown_check_uses_pre_withdrawal_amount():
     bankroll = BankRoll(initial_funds=1000, max_draw_down=0.2)
 
     # Try to withdraw 250 (25% of 1000, exceeds 20% limit)
-    with pytest.raises(RuinError, match="slow down"):
+    with pytest.raises(
+        RuinError,
+        match=r"Refused withdrawal of 250\.00: it exceeds the configured "
+        r"drawdown limit \(max_draw_down=0.2, i\.e\. at most 200\.00 of "
+        r"current funds: 1000\.00\)",
+    ):
         bankroll.withdraw(250)
 
     # Bankroll should be unchanged

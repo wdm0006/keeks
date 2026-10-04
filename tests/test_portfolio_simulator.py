@@ -424,7 +424,10 @@ def test_batch_over_drawdown_is_refused_and_stops_the_run():
     simulator = build_simulator(bets=bets, trials=5, seed=7)
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.05)
     strategy = _RecordingStrategy(payoffs=(1.1, 1.1), loss=1.0, stakes=(0.5, 0.5))
-    simulator.evaluate_strategy(strategy, bankroll)
+    with pytest.warns(
+        UserWarning, match="Settlement refused; the simulation stops after this batch"
+    ):
+        simulator.evaluate_strategy(strategy, bankroll)
     assert bankroll.history == [1000.0]
     assert bankroll.total_funds == 1000.0
     settlements = [
@@ -443,7 +446,10 @@ def test_refused_batch_reports_drawn_outcomes_with_zero_returns():
     simulator = build_simulator(bets=bets, trials=1, seed=7)
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.05)
     strategy = _RecordingStrategy(payoffs=(1.1, 1.1), loss=1.0, stakes=(0.5, 0.1))
-    simulator.evaluate_strategy(strategy, bankroll)
+    with pytest.warns(
+        UserWarning, match="Settlement refused; the simulation stops after this batch"
+    ):
+        simulator.evaluate_strategy(strategy, bankroll)
     # Net: -500 + 110 - 0 = -390, withdrawn past the 50 cap -> refused.
     _, won_bets, returns = strategy.events[-1]
     assert won_bets == (False, True)

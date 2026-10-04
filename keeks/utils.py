@@ -12,10 +12,13 @@ _UNSET = object()
 
 class RuinError(Exception):
     """
-    Exception raised when a bankroll experiences a drawdown exceeding the maximum allowed limit.
+    Exception raised when a bankroll safeguard refuses a removal.
 
-    This exception is typically raised by the BankRoll class when a withdrawal would cause
-    the bankroll to drop below the configured maximum drawdown threshold.
+    Raised by the BankRoll class in two cases: a removal would take the
+    funds below zero (bankruptcy), or a removal exceeds the configured
+    ``max_draw_down`` fraction of current funds. The message names the
+    attempted amount, the configured limit, and the current funds; the
+    simulators re-report it as a ``UserWarning`` when a refusal stops a run.
     """
 
     pass

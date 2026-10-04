@@ -22,6 +22,7 @@ through the same hook.
 """
 
 import operator
+import warnings
 
 import numpy as np
 
@@ -385,9 +386,16 @@ class AllocationSimulator:
                     bankroll.deposit(net)
                 else:
                     bankroll.withdraw(-net)
-            except RuinError:
+            except RuinError as exc:
                 # Refuse-then-stop: the settlement is refused, the bankroll
                 # is unchanged, and the simulation stops after this period.
+                # Warn loudly: the message names the attempted amount, the
+                # configured limit, and current funds.
+                warnings.warn(
+                    f"Settlement refused; the simulation stops after "
+                    f"this period: {exc}",
+                    stacklevel=2,
+                )
                 batch_ruined = True
 
             if record_settlement is not None:

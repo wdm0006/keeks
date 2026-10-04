@@ -1,3 +1,5 @@
+import warnings
+
 from keeks.binary_strategies.base import BaseStrategy
 from keeks.utils import _require_finite, _validate_probability, find_indifference_price
 
@@ -11,6 +13,12 @@ class KellyCriterion(BaseStrategy):
     The Kelly Criterion is a mathematical formula that determines the optimal
     size of a series of bets to maximize long-term growth rate.
 
+    By default the gate is edge-aware: a bet the Kelly formula itself sizes
+    positively is always sized, and a bet with no positive edge returns 0.0.
+    An optional ``min_probability`` longshot gate can additionally refuse
+    low-probability bets - loudly, when the refused bet is one the formula
+    would have sized.
+
     Parameters
     ----------
     payoff : float
@@ -19,15 +27,26 @@ class KellyCriterion(BaseStrategy):
         The amount lost per unit bet on an unsuccessful outcome.
     transaction_cost : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
-    min_probability : float, default=0.5
-        The minimum probability required to place a bet. The default is a
-        lossy gate for better-than-even payoffs: with ``payoff=10``,
-        ``loss=1`` and probability 0.3, the true Kelly fraction is about
-        0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.
-        Pass a lower ``min_probability`` to size such bets.
+    min_probability : float or None, optional
+        An optional longshot gate: when set, bets with a win probability
+        below it return 0.0 even when the Kelly fraction is positive, and a
+        ``UserWarning`` names the suppressed fraction so the refusal is
+        never silent. The default (``None``) sizes on edge alone: with
+        ``payoff=10``, ``loss=1`` and probability 0.3, the true Kelly
+        fraction of about 0.23 is placed instead of being zeroed.
+
+    Examples
+    --------
+    >>> strategy = KellyCriterion(payoff=10, loss=1, transaction_cost=0)
+    >>> # Edge-aware by default: the formula sizes this longshot at 0.23.
+    >>> round(strategy.evaluate(0.3, 1000.0), 4)
+    0.23
+    >>> # A bet with no positive edge refuses itself.
+    >>> round(strategy.evaluate(0.05, 1000.0), 4)
+    0
     """
 
-    def __init__(self, payoff, loss, transaction_cost, min_probability=0.5):
+    def __init__(self, payoff, loss, transaction_cost, min_probability=None):
         """
         Initialize the Kelly Criterion strategy.
 
@@ -39,14 +58,13 @@ class KellyCriterion(BaseStrategy):
             The amount lost per unit bet on an unsuccessful outcome.
         transaction_cost : float
             The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
-        min_probability : float, default=0.5
-            The minimum probability required to place a bet. The default is a
-            lossy gate for better-than-even payoffs: with ``payoff=10``,
-            ``loss=1`` and probability 0.3, the true Kelly fraction is about
-            0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.
-            Pass a lower ``min_probability`` to size such bets.
+        min_probability : float or None, optional
+            An optional longshot gate: when set, bets with a win probability
+            below it return 0.0 even when the Kelly fraction is positive, and
+            a ``UserWarning`` names the suppressed fraction. ``None`` (the
+            default) sizes on edge alone.
         """
-        if not 0 <= min_probability <= 1:
+        if min_probability is not None and not 0 <= min_probability <= 1:
             raise ValueError("Minimum probability must be between 0 and 1")
 
         super().__init__(payoff, loss, transaction_cost)
@@ -69,6 +87,12 @@ class KellyCriterion(BaseStrategy):
         Unlike the classic formula, which assumes the entire stake is lost, this
         formula explicitly accounts for the loss multiplier used by this library.
 
+        The gate is edge-aware: a bet the formula sizes positively is never
+        silently zeroed. When ``min_probability`` is set and the probability
+        falls below it, a formula-positive bet is refused with a warning
+        naming the suppressed fraction; a formula-negative bet refuses
+        silently, because the formula itself declines it.
+
         Parameters
         ----------
         probability : float
@@ -83,8 +107,6 @@ class KellyCriterion(BaseStrategy):
         """
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
-        if probability < self.min_probability:
-            return 0.0
 
         # Calculate probability of losing
         q = 1 - probability
@@ -100,6 +122,18 @@ class KellyCriterion(BaseStrategy):
 
         # Calculate Kelly fraction with adjusted payoff and loss
         kelly_fraction = probability / adjusted_loss - q / adjusted_payoff
+
+        if self.min_probability is not None and probability < self.min_probability:
+            if kelly_fraction > 0:
+                warnings.warn(
+                    f"min_probability gate: probability {probability} is below "
+                    f"min_probability={self.min_probability}, but the Kelly "
+                    f"formula sizes this bet positively at {kelly_fraction:.4f} "
+                    "of bankroll; the bet is refused anyway. Pass "
+                    "min_probability=None to size every positive-edge bet.",
+                    stacklevel=2,
+                )
+            return 0.0
 
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, kelly_fraction), self.get_max_safe_bet(current_bankroll))

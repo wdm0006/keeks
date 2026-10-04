@@ -296,7 +296,10 @@ def test_drawdown_refusal_refuses_then_stops():
     bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.01)
     simulator = AllocationSimulator(model, trials=5, seed=5)
     allocation = _RecordingAllocator([0.4, 0.3, 0.3])
-    simulator.evaluate_strategy(allocation, bankroll)
+    with pytest.warns(
+        UserWarning, match="Settlement refused; the simulation stops after this period"
+    ):
+        simulator.evaluate_strategy(allocation, bankroll)
     # The refused period left the bankroll unchanged and the simulation
     # stopped after it - but the market's realization was still reported.
     assert bankroll.history == [1000.0]

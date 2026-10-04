@@ -1,4 +1,5 @@
 import random
+import warnings
 
 import numpy as np
 import pytest
@@ -29,6 +30,75 @@ def test_min_probability_threshold():
     # Should bet when probability > min_probability
     assert strategy.evaluate(0.51, 1000) > 0
     assert strategy.evaluate(0.4, 1000) == pytest.approx(0.0)
+
+
+def test_edge_aware_default_sizes_formula_positive_longshots():
+    """A bet the Kelly formula sizes positively is never silently zeroed."""
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0)
+
+    # The gate no longer defaults to 0.5: at p=0.4 the formula prices
+    # 0.4/1 - 0.6/2 = 0.1 of bankroll, and the edge-aware default places it.
+    assert strategy.min_probability is None
+    assert strategy.evaluate(0.4, 1000) == pytest.approx(0.1)
+
+
+def test_min_probability_gate_warns_when_it_zeroes_a_formula_positive_bet():
+    """An explicit gate refuses formula-positive bets loudly."""
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0, min_probability=0.5)
+
+    with pytest.warns(UserWarning, match=r"sizes this bet positively at 0\.1000"):
+        assert strategy.evaluate(0.4, 1000) == pytest.approx(0.0)
+
+
+def test_min_probability_gate_stays_silent_for_formula_negative_bets():
+    """The gate only warns when it overrides a positive Kelly fraction."""
+    strategy = KellyCriterion(payoff=1, loss=1, transaction_cost=0, min_probability=0.5)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        assert strategy.evaluate(0.4, 1000) == pytest.approx(0.0)
+
+
+def test_min_probability_none_disables_the_gate():
+    """min_probability=None (the default) sizes every positive-edge bet."""
+    strategy = KellyCriterion(
+        payoff=10, loss=1, transaction_cost=0, min_probability=None
+    )
+
+    assert strategy.evaluate(0.3, 1000) == pytest.approx(0.23)
+
+
+def test_invalid_min_probability_raises():
+    """Out-of-range min_probability values raise ValueError."""
+    for bad in (-0.1, 1.1):
+        with pytest.raises(
+            ValueError, match="Minimum probability must be between 0 and 1"
+        ):
+            KellyCriterion(payoff=2, loss=1, transaction_cost=0, min_probability=bad)
+
+
+def test_full_kelly_under_default_bankroll_settles_bets():
+    """Regression: a full-Kelly run under default settings must not be a no-op.
+
+    Before the defaults changed, the old ``max_draw_down=0.3`` vetoed every
+    full-Kelly loss-side settlement (this edge stakes ~32% of funds) and the
+    simulator stopped after it silently - one history entry, starting funds.
+    """
+    strategy = KellyCriterion(payoff=2, loss=1, transaction_cost=0.01)
+    bankroll = BankRoll(initial_funds=1000.0)  # default: no drawdown cap
+    simulator = RepeatedBinarySimulator(
+        payoff=2.0,
+        loss=1.0,
+        transaction_costs=0.01,
+        probability=0.55,
+        trials=200,
+        seed=42,
+    )
+
+    simulator.evaluate_strategy(strategy, bankroll)
+
+    assert len(bankroll.history) > 1
+    assert bankroll.total_funds != 1000.0
 
 
 def test_payoff_ratio_effect():
@@ -163,10 +233,10 @@ def test_known_cases():
         0.4
     )  # (0.6 * 2 - 0.4) / 2 = 0.4
 
-    # 40% chance of winning with 2:1 payoff (negative EV)
-    assert strategy.evaluate(0.4, current_bankroll) == pytest.approx(
-        0.0
-    )  # Should return 0 for negative EV
+    # 40% chance of winning with 2:1 payoff: below the old 0.5 probability
+    # gate but positive formula edge (0.4/1 - 0.6/2 = 0.1), so the
+    # edge-aware default sizes it instead of silently zeroing it.
+    assert strategy.evaluate(0.4, current_bankroll) == pytest.approx(0.1)
 
     # With transaction costs
     strategy_with_cost = KellyCriterion(payoff=2, loss=1, transaction_cost=0.1)

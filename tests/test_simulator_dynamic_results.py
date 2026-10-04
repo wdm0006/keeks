@@ -67,6 +67,10 @@ def test_rejected_settlement_does_not_record_result(simulator, monkeypatch):
     monkeypatch.setattr(random, "random", lambda: 0.9)
     strategy = _strategy(base_fraction=0.5)
 
-    simulator.evaluate_strategy(strategy, BankRoll(initial_funds=100.0))
+    # The 50% stake trips an explicit 0.3 drawdown cap; the refusal is loud.
+    with pytest.warns(UserWarning, match="Simulation stopped early: Refused"):
+        simulator.evaluate_strategy(
+            strategy, BankRoll(initial_funds=100.0, max_draw_down=0.3)
+        )
 
     assert strategy.results == []

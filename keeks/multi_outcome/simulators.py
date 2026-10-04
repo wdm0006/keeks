@@ -14,6 +14,7 @@ bankroll transaction.
 import hashlib
 import operator
 import struct
+import warnings
 
 import numpy as np
 
@@ -353,10 +354,17 @@ class RepeatedMultiOutcomeSimulator:
                         amt = (self.loss * stake) + self.transaction_costs
                         bankroll.withdraw(amt)
                         returns[leg] = -amt / bankroll_before
-                except RuinError:
+                except RuinError as exc:
                     # Settlement exceeded a bankroll safeguard: that leg's
                     # settlement leaves the bankroll unchanged. Finish the
                     # rest of the batch, then stop - never truncate mid-batch.
+                    # Warn loudly: the message names the attempted amount,
+                    # the configured limit, and current funds.
+                    warnings.warn(
+                        f"Settlement refused; the simulation stops after "
+                        f"this batch: {exc}",
+                        stacklevel=2,
+                    )
                     batch_ruined = True
 
             if record_settlement is not None:
@@ -744,10 +752,15 @@ class PortfolioSimulator:
                 for index, amount in enumerate(amounts):
                     if won_bets[index] is not None:
                         returns[index] = amount / bankroll_before
-            except RuinError:
+            except RuinError as exc:
                 # The safeguard refused the batch's net settlement: the
                 # bankroll is unchanged, every return reports 0.0, and the
                 # simulation stops after this batch - never mid-portfolio.
+                # Warn loudly so a stopped run is never silent.
+                warnings.warn(
+                    f"Settlement refused; the simulation stops after this batch: {exc}",
+                    stacklevel=2,
+                )
                 batch_ruined = True
 
             if record_settlement is not None:

@@ -19,9 +19,11 @@ class BankRoll:
         The starting amount of money in the bankroll.
     percent_bettable : float, default=1.0
         The percentage of total funds that can be used for betting (0.0 to 1.0).
-    max_draw_down : float, default=0.3
-        The maximum percentage of funds that can be lost in a single withdrawal (0.0 to 1.0).
-        If None, no drawdown limit is enforced.
+    max_draw_down : float or None, default=None
+        The maximum fraction of current funds that a single withdrawal may
+        remove (0.0 to 1.0). ``None`` (the default) enforces no per-removal
+        cap. A refused removal raises :class:`RuinError` naming the
+        attempted amount, the configured limit, and the current funds.
     verbose : int, default=0
         Controls the verbosity level of the bankroll operations.
 
@@ -32,7 +34,7 @@ class BankRoll:
     """
 
     def __init__(
-        self, initial_funds=0.0, percent_bettable=1.0, max_draw_down=0.3, verbose=0
+        self, initial_funds=0.0, percent_bettable=1.0, max_draw_down=None, verbose=0
     ):
         self._validate_nonnegative_finite(initial_funds, "initial_funds")
         self._validate_unit_interval(percent_bettable, "percent_bettable")
@@ -65,11 +67,19 @@ class BankRoll:
         # removal enforces the same bankruptcy and drawdown safeguards.
         if self._bank - amount < 0:
             raise RuinError(
-                f"Insufficient funds for {description} (would cause bankruptcy)"
+                f"Refused {description} of {amount:.2f}: current funds are "
+                f"{self._bank:.2f} and the removal would cause bankruptcy "
+                f"(configured max_draw_down: {self.max_draw_down})"
             )
 
         if self.max_draw_down is not None and amount > self.max_draw_down * self._bank:
-            raise RuinError("You lost too much money buddy, slow down.")
+            limit_amount = self.max_draw_down * self._bank
+            raise RuinError(
+                f"Refused {description} of {amount:.2f}: it exceeds the "
+                f"configured drawdown limit (max_draw_down={self.max_draw_down}, "
+                f"i.e. at most {limit_amount:.2f} of current funds: "
+                f"{self._bank:.2f}); pass max_draw_down=None to lift the cap"
+            )
 
         self._bank -= amount
         self.update_history()
