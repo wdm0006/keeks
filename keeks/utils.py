@@ -1,3 +1,4 @@
+import functools
 import math
 import operator
 import warnings
@@ -341,6 +342,30 @@ def _update_strategy_bankroll(strategy, current_bankroll):
     update_bankroll = getattr(strategy, "update_bankroll", None)
     if callable(update_bankroll):
         update_bankroll(current_bankroll)
+
+
+def _validated_evaluate(evaluate, validate):
+    """
+    Wrap a concrete strategy's ``evaluate`` so its returned vector meets the contract.
+
+    ``validate`` is the strategy generation's vector gate (the stake-fraction
+    or weight validator); its message names the expectation, and the wrapper
+    appends the returned vector so a failure names the received values too.
+    The wrapper is idempotent for implementations that already validate
+    internally, and the ``_keeks_contract_validated`` marker lets
+    ``__init_subclass__`` skip wrapping an already-wrapped method.
+    """
+
+    @functools.wraps(evaluate)
+    def wrapper(*args, **kwargs):
+        result = evaluate(*args, **kwargs)
+        try:
+            return validate(result)
+        except ValueError as exc:
+            raise ValueError(f"{exc}; got {result!r}") from exc
+
+    wrapper._keeks_contract_validated = True
+    return wrapper
 
 
 def _expected_utility(

@@ -3,7 +3,11 @@ import dataclasses
 
 import numpy as np
 
-from keeks.utils import PROBABILITY_SUM_TOLERANCE, normalize_probabilities
+from keeks.utils import (
+    PROBABILITY_SUM_TOLERANCE,
+    _validated_evaluate,
+    normalize_probabilities,
+)
 
 __author__ = "willmcginnis"
 
@@ -43,13 +47,32 @@ class BaseAllocationStrategy(abc.ABC):
     are all zeros for a nonpositive bankroll, like every keeks strategy.
 
     Concrete strategy implementations should inherit from this class and
-    implement the evaluate method. Simulators resolve two optional hooks
+    implement the evaluate method, which the base then enforces: every
+    concrete ``evaluate`` is wrapped so its returned weight vector is
+    validated through :func:`_validate_weights` before the caller sees it -
+    a subclass returning contract-violating weights fails its own
+    ``evaluate()`` with the validator's message plus the returned vector,
+    instead of passing silently until the simulator's boundary gate. The
+    same holds for the multi-outcome stake contract.
+
+    Simulators resolve two optional hooks
     ``getattr``-style: ``update_bankroll(current_bankroll)`` carries the
     bankroll path for plumbing, and online allocators additionally implement
     ``record_settlement(realized_returns)`` - called once per staked period
     with the realized joint simple-return vector - as their only sanctioned
     stateful channel.
     """
+
+    def __init_subclass__(cls, **kwargs):
+        # Enforce the weight contract at the boundary: a concrete evaluate
+        # returning a vector that breaks it fails loudly at its own call
+        # site, with the same tolerance semantics the simulator's gate uses.
+        super().__init_subclass__(**kwargs)
+        evaluate = cls.__dict__.get("evaluate")
+        if evaluate is not None and not getattr(
+            evaluate, "_keeks_contract_validated", False
+        ):
+            cls.evaluate = _validated_evaluate(evaluate, _validate_weights)
 
     @abc.abstractmethod
     def evaluate(self, current_bankroll: float) -> tuple[float, ...]:
@@ -59,8 +82,10 @@ class BaseAllocationStrategy(abc.ABC):
         Every descriptive input - a mean vector and covariance, a scenario
         matrix, or whatever else the concrete strategy optimizes over - binds
         at construction, so the only call-time input is the bankroll.
-        Implementations return one weight per option and validate the vector
-        through :func:`_validate_weights`.
+        Implementations return one weight per option; the base class then
+        validates the returned vector through :func:`_validate_weights`
+        before the caller sees it, so implementations need not (but may - it
+        is idempotent) validate internally.
 
         Parameters
         ----------
@@ -376,6 +401,13 @@ class AllocationResult:
         The estimated ``E[log(1 + w'R)]`` under the strategy's inputs.
     volatility : float, optional
         ``sqrt(w' Σ w)``, when a covariance is available.
+    all_cash_reason : str, optional
+        An allocator-supplied explanation when the optimal weights are all
+        effectively zero - the portfolio holds full cash. MeanCVaR's
+        unit-risk-aversion objective, for instance, holds full cash on
+        daily-frequency market data, and the result carries that explanation
+        rather than leaving it to example output. ``None`` when the portfolio
+        takes risk or the allocator offers no explanation.
     """
 
     weights: np.ndarray
@@ -384,3 +416,4 @@ class AllocationResult:
     iterations: int | None = None
     expected_growth: float | None = None
     volatility: float | None = None
+    all_cash_reason: str | None = None

@@ -12,6 +12,34 @@ class BaseStrategy(abc.ABC):
     This class defines the interface that all binary betting strategies must implement.
     Concrete strategy implementations should inherit from this class and implement
     the evaluate method.
+
+    Beyond ``evaluate``, the simulators in ``keeks.simulators`` resolve two
+    optional hooks ``getattr``-style once per run and fire them around each
+    settled bet. This base class implements neither, so a strategy may omit
+    them freely: the simulator skips the hook and the strategy stays
+    stateless. A stateful strategy that needs the feedback but omits the
+    hook simply sizes from stale state - there is no error, which is why the
+    contract is documented here.
+
+    - ``update_bankroll(current_bankroll)`` - fired at the top of every
+      trial, before ``evaluate``, with the bankroll's current total funds,
+      so an adaptive strategy can size from the bankroll as it stands
+      (:class:`keeks.binary_strategies.CPPIStrategy` ratchets its floor from
+      it). Not fired once the bankroll is depleted - the simulation has
+      already stopped.
+
+    - ``record_result(won, return_pct)`` - fired once per *settled* bet,
+      after the bankroll transfer: ``won`` is the bet's realized outcome and
+      ``return_pct`` the realized simple return on the bankroll, positive or
+      negative. Not fired for trials the strategy sits out (a zero stake),
+      and not fired for a settlement a bankroll safeguard refused - a
+      refused settlement leaves the bankroll unchanged and stops the
+      simulation, so there is no result to report
+      (:class:`keeks.binary_strategies.DynamicBankrollManagement` tracks
+      streaks and volatility through this hook).
+
+    A hook should not raise: exceptions other than the simulator's own
+    ``RuinError`` settlement handling propagate to the caller.
     """
 
     def __init__(self, payoff: float, loss: float, transaction_cost: float = 0):
@@ -189,7 +217,8 @@ class BaseStrategy(abc.ABC):
         Returns
         -------
         float
-            The proportion of the bankroll to bet.
+            The proportion of the bankroll to bet - ``0.0`` for a
+            nonpositive bankroll, where there is nothing left to stake.
 
         Raises
         ------
