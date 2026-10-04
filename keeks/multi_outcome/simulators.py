@@ -134,7 +134,8 @@ class RepeatedMultiOutcomeSimulator:
         The fixed probability of each leg for all trials. Must be a non-empty
         one-dimensional sequence of finite nonnegative numbers summing to at
         most ``1 + PROBABILITY_SUM_TOLERANCE``; probability mass below one is
-        the chance of a void or push round on which no leg settles.
+        the chance of a void or push round on which no leg settles. Must have
+        the same length as ``payoffs``.
     trials : int, default=1000
         The number of betting trials to simulate.
     seed : int or None, default=None
@@ -147,7 +148,8 @@ class RepeatedMultiOutcomeSimulator:
         If ``payoffs`` is not a non-empty one-dimensional sequence of finite
         numbers greater than 0, if ``loss`` or ``transaction_costs`` is not
         finite and nonnegative, if ``probabilities`` is not a valid probability
-        vector, or if ``trials`` is not a nonnegative integer, or if ``seed``
+        vector or differs in length from ``payoffs``, or if ``trials`` is not
+        a nonnegative integer, or if ``seed``
         is not a nonnegative integer or ``None``.
 
     Notes
@@ -232,6 +234,12 @@ class RepeatedMultiOutcomeSimulator:
         self.transaction_costs: float = transaction_costs
 
         self.probabilities: np.ndarray = normalize_probabilities(probabilities)
+        if len(self.payoffs) != len(self.probabilities):
+            raise ValueError(
+                "Payoffs and probabilities must have the same length: "
+                f"got {len(self.payoffs)} payoffs and "
+                f"{len(self.probabilities)} probabilities"
+            )
         # Cumulative bands for the categorical read: leg j realizes when the
         # trial's uniform falls below cumulative[j] and above cumulative[j-1];
         # the mass above cumulative[-1] is the void region.
