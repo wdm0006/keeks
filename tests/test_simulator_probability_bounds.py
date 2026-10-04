@@ -92,7 +92,7 @@ def test_random_binary_clamps_sample_below_zero(stub_draws):
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [0.0]
-    # Below Kelly's min_probability, so no bet is placed at all.
+    # A clamped 0.0 probability has no edge, so no bet is placed at all.
     assert bankroll.total_funds == 1000.0
     assert bankroll.history == [1000.0]
 

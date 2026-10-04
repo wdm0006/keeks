@@ -670,7 +670,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "1ce589fe2b9853dda75b28237eb9354c3bc8a3e17ed2983c5b8c5dc95ad29183",
+    ): "74f5725a61f2b47681a5ae173d03460ebe878cbff3d5ddba076e1bef2671a204",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -678,7 +678,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "1ce589fe2b9853dda75b28237eb9354c3bc8a3e17ed2983c5b8c5dc95ad29183",
+    ): "74f5725a61f2b47681a5ae173d03460ebe878cbff3d5ddba076e1bef2671a204",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -710,7 +710,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "6abdc14fd608c1cc1b94ceed9121b45f5b4d5d537b10e6782f7782b6035dd3c7",
+    ): "66fc444133d5aa2d4dac517b7211170caebd678ff8f7566d310aa7d5688e1816",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -718,7 +718,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "6abdc14fd608c1cc1b94ceed9121b45f5b4d5d537b10e6782f7782b6035dd3c7",
+    ): "66fc444133d5aa2d4dac517b7211170caebd678ff8f7566d310aa7d5688e1816",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -750,7 +750,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "0c13ad6ab51602af49379f3f15455c43566e041e0d64182057133bdc25ca5547",
+    ): "7a7697182d7acaf543389c28102b3135cb0b0da00b1a53db549cef40523f5b7f",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -758,7 +758,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "50f984df2b0846c666d51371e7fd827b692fd28f4bcb2d16072862024172f9ae",
+    ): "f9e3e27632457dd35c6f8033fc9651edd0e2076551ebe70c8d0a8ff34cf01491",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -766,7 +766,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "6af6dcda2404f6e4a1ccbf9e755aec92a195f42c4ad2fe0fd7d7b7967bd348c7",
+    ): "8e7240d461791550c65aa67d8e68c6a4e77ccfa9f330d3a31110aa750fdd06c4",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -774,7 +774,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "c8704faf404aba884ad03e9e3e73d264b0d0194543a416647c02b97010c91194",
+    ): "70708b9b7f937d3fec8c4bdb5058a75be3291ec2f28f34837adc7375544965fb",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -782,7 +782,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "3ccca7a2f80943611c0f840926674634432508802bf1d7f7e78da9b50d92bdf2",
+    ): "355b7272dca90280ceb50628ca9934466c5f2449fe5736919a31e03868cab564",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -790,7 +790,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "b1cbd03a349c92baf3846246ff7e02e30ff23d36a8ee7bc973f46570f7ae1b3e",
+    ): "cd48ee48fcb250988f1dde6a800405f88c33817f39cc77ab754bc31bd7952f5e",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -798,7 +798,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "451b809f3f4acb128a6dc06c998d4cf8df12677cb09f6f34a4514a3c4691c935",
+    ): "5a6a46f47371af677bfd0fafcf421c97ca485e51dfcc506972d0666262f695ab",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -806,7 +806,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "e8c4f52237bf898326a74b8683833e9b9d4cefc3a9df510dd25b5b5012ca67d4",
+    ): "cd9d18ef6f974c4100f76fb2b86ca9ba0775f1ae52414dd9ebb592237217922c",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -814,7 +814,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "48d07d67dc313f090473e3f8bfdcbd5e2d7254e4f5e78695dbc95ea9030aab91",
+    ): "9b826841db4a1c3a4a76c2b827369642ac6d70b64bc86e6915d588e05951c478",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -822,7 +822,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "1dd791b37129facc4733bea5357d2def18c21d18e455ad38ca7f73a7b7dcd926",
+    ): "537fe314077e4ef3fee14d00ec608e6ce594d9e67d2fbb7148fdb5be56b061a4",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -830,7 +830,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "1dd1aec48790da63d775922bb63f5940d060c025b29a6b7e3c01b73511bffbdf",
+    ): "8f757e2fbc0867702d6a9e01fff0abd245998e95dc9c682f86b363faa25f96f0",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -838,7 +838,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "6725c666d30fc3bab8986f6dd4d038bdc7453303628c2c44f9deba8240079889",
+    ): "63f016882134c72b5406d3e99133559c03a03c257d92900e733b41ac2633ece9",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -846,7 +846,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "2da24c0bbdb3632e64dffa64136be16444cd0d741556a2513dd27bcd10388ac5",
+    ): "7ddbda51448fb971f523929e7c4556e2b052b5cb9afa84604d0e9a86ec80ec83",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -854,7 +854,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "d2a225ed3ff28bdac20e2a9d3d435e8ff629d28793490027d247d35937c1a24e",
+    ): "498b5f1a98d8a4022405139400f0d77171fb7951f7a2447b7855e0a8183ac413",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -862,7 +862,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "8802ca9798e442bf624e0e6fe7b5b97a414b6d0893f26cc5596fd0f1d6650a2b",
+    ): "9f5f5019f797167c90dcca117e6ea1d2204e6a0f01fc4354112bdebd6fe193a8",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -870,7 +870,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "9e45d648428d9de2181b892588081700ca45ea4762c9186a4d2d2dcfdeec9d30",
+    ): "d6283b4e89467c7ed1d69fef11362a7760aabf18d3262647cd1ecdc96322a48a",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -878,7 +878,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "d673f37dca7823d7bc641708b16d428894117dcaf19f2b8113908ae6c081c31c",
+    ): "ad1b49dced9f959fe95d94cfe758aae0c04901f091bf095525338bf3bc2f71d4",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -886,7 +886,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "19cd2121eb0bb7b8db6a504c627ddb845e8272b287154f615c270033c410c0ec",
+    ): "948b11a135d71ab2994a4f85b6323aa03f5f2bd6e9a652246ecdac00f93ade62",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -894,7 +894,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "cebb114339f1857c29a5a8c3baf77fcf41176799b46d435f7007ffa0e6fa5c60",
+    ): "0dc7bef0b54ecfd842e7280ebcdfd3a6403d71d15e93b37cf884589f4f057db9",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -902,7 +902,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "eac0e8552637cfe46d7ce47a174b27959206bb5e9e71ce6f83dbbf989e0b283e",
+    ): "cfe0a66a8c4aae251b9b38a509363dfef22b5c2bfe5c0bb0e8ffded18a8680f8",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -910,7 +910,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "59c7d42cc301eeb1e7f0cae16221e3611de470beb404d67cabf18846c983cce0",
+    ): "a3223d52e7720e8a25280343f79b4a458ebc5ceee0328839949f84dc7dfe4634",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -918,7 +918,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "17d74c04d61244380db8e37ce3e8111c17ce6f2444ac3364a4d9c13551312d11",
+    ): "95ce2c73c55b8ed26babeeb3b60c3a14bd32ed56cf4406ed459ca8449e46ae7c",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -926,7 +926,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "23a57cfba89ee16edc8fe95ed3b989bf757fb7c21d0b55de867f9fcfbdd5cac1",
+    ): "a20f11b16f4e32beb7ca22d9b603885c891600f4b8ee98754b686361449d39ba",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -934,7 +934,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "1f5561b27b175ece38edc69421c612f1fe773a97f17ca6cb9633fc9954694433",
+    ): "702c34cb168f3f1a0dbc3436d657193dc78244a02f53e69e4edeb9673924899a",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -942,7 +942,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "3e7d9e6ebb4f6525752a33290b63966045ad8389b122ca68c1a287e32fd465cf",
+    ): "20b1a2da7a315aa4d24d6d0376855919947b927aa4f34e6548962871e566f751",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -950,7 +950,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "940382489433d5999f39b8469d8c8409610f5ff43eff277555d3c81f65196f47",
+    ): "0f54be4d522146a465198da2803a83e74a0335932b8e11f25d03a43d4dfe4b52",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -958,7 +958,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "7aaebb6d3c80fad458d31a0957dbcff13c62a964bea68a2ed22b1db8ac5b38d6",
+    ): "0909ac1089e10d1e4ae702f24b9c181b539d0702a4167bb60a4f50007bc54429",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -966,7 +966,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "5eca23e03dc464c4daeed7f3a1dec6a74f7dee1acfa4dea2c542d8a5efdfe5f0",
+    ): "57c2fbed2d66fe07b7805f25508dba33bfe4072f61042e454bfb1e9e584bdc61",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -974,7 +974,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "5f6a34567fb18d1a891889e9347de4f22bd9f4a0227f93468433111db7b3c423",
+    ): "135da8c1d7f15e274d7e548be85dc9db7895dc75f42b3585a740e0ae6874ffc9",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -982,7 +982,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "cb47993f27782eacc70b487c1c35f894c4c20fcc9ee65d977f15f40bb7d0c7fc",
+    ): "5bece3b4b14e8e74e12b370559c6ceac20a999505f6aae7a165f84387a5cbd9f",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -990,7 +990,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "d6d5b7de1c4882bd3eec72f8e7f38069358f94c35c01480e07daa2772227a454",
+    ): "e03e1db1c3c88c01241c8c05c490c6f8c4dbf7b95f74bf80772e86334ab7aa86",
     (
         "random",
         "Drawdown-adjusted Kelly",
@@ -998,7 +998,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "45d2bddea3506d7d3f7549769fc72d0078ba7ff8bc1722a22fff9173b60a9687",
+    ): "01a1f86d044efeaa3b5b6360d23c43a5188fb584a37a75c001f01a85383ecd39",
     (
         "random",
         "Dynamic",
@@ -1822,7 +1822,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "163e60cd3fe6b1eabfdac46dd5913a65f3a5ba288ddfccb4b19e1bd17160e1d5",
+    ): "1248672344f4f2f8dd064f70e71e349f7bdc4c9d48de63300c34842f22e69885",
     (
         "random",
         "Half Kelly",
@@ -1830,7 +1830,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "163e60cd3fe6b1eabfdac46dd5913a65f3a5ba288ddfccb4b19e1bd17160e1d5",
+    ): "1248672344f4f2f8dd064f70e71e349f7bdc4c9d48de63300c34842f22e69885",
     (
         "random",
         "Half Kelly",
@@ -1862,7 +1862,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "7824f02338087c8f0b4b6187e3f37878386ae91b2e4f49415ce00deed68c03ec",
+    ): "b799a64f95a766d213260066e745a7cab5065686763b39b83811605a6b25d458",
     (
         "random",
         "Half Kelly",
@@ -1870,7 +1870,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "7824f02338087c8f0b4b6187e3f37878386ae91b2e4f49415ce00deed68c03ec",
+    ): "b799a64f95a766d213260066e745a7cab5065686763b39b83811605a6b25d458",
     (
         "random",
         "Half Kelly",
@@ -1902,7 +1902,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "75bb5f6bc0da90929586c40ade1d2167021986230ed49f5b967c120dd91d663b",
+    ): "f31a2ef4674bb180acd88e709de4624e34ba9828a2773e066d86af72e0280819",
     (
         "random",
         "Half Kelly",
@@ -1910,7 +1910,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "de2598e79bdce60244a265593731b87beabbad040605e8dd37ca4af6bf95f346",
+    ): "04ea94adaca6916d4aab37ab6083b6bdaea1706d713a49194e73b9afad82c0fc",
     (
         "random",
         "Half Kelly",
@@ -1918,7 +1918,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "3459680c268bf5f707114af8c6936225616b03015015c03ce1e95f8fb7cde99e",
+    ): "69bbf62e25f37ec42e4261258e6b497f65b502e17e284b3e7714fc09fc761c9d",
     (
         "random",
         "Half Kelly",
@@ -1926,7 +1926,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "51874740f15545c6079d1f3062a22a08665a60225aedb72e00a189427c8e9c40",
+    ): "4dbb2c65f29985cdb7dc8fd11a54f0432c5994b2c6cf364b2edf7ebba4669516",
     (
         "random",
         "Half Kelly",
@@ -1934,7 +1934,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "880d91c8865c973085935962e734ffa295be5eda7ae444a2e7b5d6751b6a47a4",
+    ): "da36dbc95dacebd7fd0a9867d2fa831f1d7b3e71d276da981932914f2c54e331",
     (
         "random",
         "Half Kelly",
@@ -1942,7 +1942,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "a2a6a9f4aa956986e902cd777a44e19a7ac61313847e1943eca6ddcd121c527f",
+    ): "19ecb2aa05305b88ded08c51f2185c0df320524e99ffd7f702abb9dcf151cdea",
     (
         "random",
         "Half Kelly",
@@ -1950,7 +1950,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "732b972b5cda98af476ae06e8c8eca5fc46c3699ace27b446a9fef19c7bdd0e9",
+    ): "b37abae3f7baabc02f90c8dec840c6671fc01d0a85568aca37b8247f0581bce6",
     (
         "random",
         "Half Kelly",
@@ -1958,7 +1958,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "adbd508a93f3157bf9be682e51e902171f6cf0d0008110ffdb856f0683c76873",
+    ): "d9a281de194463a801171dd644a582b5230555ccbaf14c5145cb7c5774359fbc",
     (
         "random",
         "Half Kelly",
@@ -1966,7 +1966,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "3c9090612000c5092e6c6aa5542b1c06534035678156e27301d721554706c973",
+    ): "a6380474bf055bf1c6c53357dacd210c4654985535bef6c2dd39da23570d3d0e",
     (
         "random",
         "Half Kelly",
@@ -1974,7 +1974,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "76ab13d050fe9f9b7b006e67e3d8e70c0b3f77f8f21fc193d944202839bee27d",
+    ): "659e0a4a40d63bccec538763489049cd2e6e133a572cbd71f98d0cdcdf5e731c",
     (
         "random",
         "Half Kelly",
@@ -1982,7 +1982,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "a730bac8d6c1c4e36f9c59d3fcc30875feacfb36bb6c9b3f9558ffe7417364df",
+    ): "85616d8469783e4701e9e7d1f582155996a9f3fb7ddf62eb47f3e2149b6e0aad",
     (
         "random",
         "Half Kelly",
@@ -1990,7 +1990,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "21b9790bb93c8b18c51075a612cbb8c1725b3d4692e0a73a0c75f83edeec075e",
+    ): "7f61fd0bb3d1f1f0fd102d6315264b0c57426322ad6eb8106f882f0e04fad843",
     (
         "random",
         "Half Kelly",
@@ -1998,7 +1998,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "45c7ecf0f664e79e88dcbdaf1fd283e95b60b2930ad3d23c4e60d25cfb637418",
+    ): "6963e57046d0f81545f095d16ad7faac6dc9b97a1a6c0e5071c63136be59ea15",
     (
         "random",
         "Half Kelly",
@@ -2006,7 +2006,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "1277e096e4f4ef5c25285c4005ed8deaec27b2a77dece567cdb0828b3a7bc985",
+    ): "6de123be6169f1e8cd047dd4427a772955f2c7f28530c3b548815b3e9e81a909",
     (
         "random",
         "Half Kelly",
@@ -2014,7 +2014,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "feb1724e253069009838e128be99537f29f6bf585cb201e989be8f0c585d0d5d",
+    ): "fe1b8a8baf54e451856cdf54b579745f713a3a4a5aeb44a35869cdfcb3e67529",
     (
         "random",
         "Half Kelly",
@@ -2022,7 +2022,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "1a5300c1704ed2ae97e9d1242904414c948fa2a05a6e8e89d96172c6c38958b3",
+    ): "19886bd3735a3ec46b041d2f6b35b902b485f3f96a3aa265869e48c0792244eb",
     (
         "random",
         "Half Kelly",
@@ -2030,7 +2030,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "dd358e2772c598d8771923ab60efb90e947375ed86bf35c13c5d500c4b92cd43",
+    ): "112c4dea2759d33513b3e85af3fde6c3d5c209ea346b747f46b670f747b9226b",
     (
         "random",
         "Half Kelly",
@@ -2038,7 +2038,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "f5d0a382d9d6e1d69199dc3635a793738cd33f1f585ce2192fd4e2b81a874592",
+    ): "3cd02894a3a8640d288fe4ceea7695507cb8304e10ca5f30ccd596b68dc9a6f7",
     (
         "random",
         "Half Kelly",
@@ -2046,7 +2046,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "d0493286ae86496e19c43a3f01ebf0ffd49986053310376db86948052dd606b4",
+    ): "b2887aca78e6a85b593661a0e8bf14404053c39985f1f5dc8eefeec1c319b039",
     (
         "random",
         "Half Kelly",
@@ -2054,7 +2054,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "d6440b547bf713566339831bbf86539e14643b8824c1ff8423f35f726b99887d",
+    ): "17d2d8642e1c6e3dea7af5cb9e0d11684a06b8b12e0b20aa58173c048d2da671",
     (
         "random",
         "Half Kelly",
@@ -2062,7 +2062,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "3e332cc09e6bc62ff57f156865430561beb87de316399db030ecedc920e51ca6",
+    ): "2a008ad30960794b6f0bcc970e41feba861cac92be24e02af2b7f6de1f563c3d",
     (
         "random",
         "Half Kelly",
@@ -2070,7 +2070,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "cc3cb21fd19011f5c6b6c32d0c81064d3c443307be4f5deee220140e0870fddb",
+    ): "0cea8df413ee9623b687a5f05e47fb8a829359bb626fc59dde54a1bbb965eab4",
     (
         "random",
         "Half Kelly",
@@ -2078,7 +2078,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "6474825553da38498f7287a9870a4536632d3c84116809e05a5ae2ce4df2547c",
+    ): "684ce1c8087a5d8ff2c9f5330cc9509707789a8318a9de9ce6fe3d03ee8ce93f",
     (
         "random",
         "Half Kelly",
@@ -2086,7 +2086,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "a3575e21a8b4742a0cdd201181f03bc03b6be86f6e103127eb706d73b06d0729",
+    ): "fe5d6edbd1bc0fa02a8dd715294580d55ac525513abbeee195d415d00d6f4990",
     (
         "random",
         "Half Kelly",
@@ -2094,7 +2094,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "580f1c16d5659babe8eefd7d3e32bb0552e10d861633e5630ba13e06e8901efb",
+    ): "94337999b4825d22fdd85d1d487c18d6bdebb9b005ad77bdaa0d8e0f55b64a4c",
     (
         "random",
         "Half Kelly",
@@ -2102,7 +2102,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "99417e400247ddf17db932d5e8c262372a247994196c29849c9470af4d86f031",
+    ): "7896a9cf7dbfd6ae81bba4f9870f1fa7fadc21ce325c9bd0d409ec0013cc03c8",
     (
         "random",
         "Half Kelly",
@@ -2110,7 +2110,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "bcb01ef8fb5abc40a59735261daf92b39dc0cec069d69e3b99669df8353940ad",
+    ): "6bdf0a37b42356a3f3f676e3b5ee92f5d8972a8adb28f257af008d13bce056f3",
     (
         "random",
         "Half Kelly",
@@ -2118,7 +2118,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "85639e7d1fc75fdd607a307014ec25f80b156a85c4da1e4cdb95cd546c2b5fc3",
+    ): "cceefc9139e503ebf48083a3f80ea597f50551a3fa1f45d64ff1550c69e64e88",
     (
         "random",
         "Half Kelly",
@@ -2126,7 +2126,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "914c5eefa998153930392f11c1045a740a0b4efa265de28566ddf85a3b09054d",
+    ): "4e37bce853a4bb6c0dd739545040facd77790dd0579cbeea388383b2521e60fc",
     (
         "random",
         "Half Kelly",
@@ -2134,7 +2134,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "d1ee18ca0aacda4467ef99e9872dcf7fa98ca068e308895a2b3efb34d5b2aef6",
+    ): "5151093c72234164eb096ba9fbb6c074d1a31817b1918c89f633c630dc1e1006",
     (
         "random",
         "Half Kelly",
@@ -2142,7 +2142,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "627666476d9a2edb3f909860c1de8b061c1b2b1fe418786caf17a6ff1c029110",
+    ): "3ad7fa5f5cd7e64eb91f9038dbb851d427cc75463e1ef6954a58c569214eb65f",
     (
         "random",
         "Half Kelly",
@@ -2150,7 +2150,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "429ece1fccc407bc9a45700a2d9ce657260db219961e8a253a04d1dcafdef6ef",
+    ): "6dab32f3946a5274bbde5855dc1a14a56915c44e18f3cdc30f407434133012ed",
     (
         "random",
         "Kelly",
@@ -2206,7 +2206,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "34ee12f0a170a4000bf0a0b2ff90a8b2a1705bdb720cdacc3f0bc4566de37364",
+    ): "51346fb9c8fd6a8a1f5e78858fa6dcd6f4b73dd479f5733ee65e1bc1676de025",
     (
         "random",
         "Kelly",
@@ -2214,7 +2214,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "34ee12f0a170a4000bf0a0b2ff90a8b2a1705bdb720cdacc3f0bc4566de37364",
+    ): "51346fb9c8fd6a8a1f5e78858fa6dcd6f4b73dd479f5733ee65e1bc1676de025",
     (
         "random",
         "Kelly",
@@ -2246,7 +2246,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "59b7f84338b0abde1bb5eace2808aa8b3f98b7f3ec556856c9115ae95fd8dd11",
+    ): "e0d9598a8250444c38680768f2272ad77b9fa9223d37dc46d254416186190290",
     (
         "random",
         "Kelly",
@@ -2254,7 +2254,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "59b7f84338b0abde1bb5eace2808aa8b3f98b7f3ec556856c9115ae95fd8dd11",
+    ): "e0d9598a8250444c38680768f2272ad77b9fa9223d37dc46d254416186190290",
     (
         "random",
         "Kelly",
@@ -2286,7 +2286,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "bf6c41f9728c5ebc38de139d349fac3f93193afd776eb0e108ecb58a81a59be5",
+    ): "ba607c67830c6775e75bcb5b21db67d2bf599d631d847cc3381a40b1bca6bb9d",
     (
         "random",
         "Kelly",
@@ -2294,7 +2294,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "d5da31694d5e80a6cb1fe1db1b2bb7a6a1ee6a015a9682da8471071968ca67d9",
+    ): "47a7d6781a077621f686f9524d7988ccb3cf2e86fa627d16b62677f7ebd7c338",
     (
         "random",
         "Kelly",
@@ -2302,7 +2302,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "45563ed7cdf038fdd483111c2ecbd916b447d8c73a4a7b714abe9fea1a94964f",
+    ): "9631e4adf94d5fcf5146a4088b0f72a2062519d8f371e3db9dacf6019d39ae15",
     (
         "random",
         "Kelly",
@@ -2310,7 +2310,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "0bcfbfd3ad4f0eddc75bcad27b8942abf11b44b5299788bf5f5e27920ba991ee",
+    ): "737ef91cde8841fb98f47dc6750a8e3db7bd0c2dafdbae5b84eedbe602718f37",
     (
         "random",
         "Kelly",
@@ -2318,7 +2318,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "934a48ac6bf46036d1839577e108323a1f73027407b0f97ea60dda4d35225884",
+    ): "8d92645ee3b048b127320d197428b767b9d92d326cdc7aa5d02a3b9c3f931c7d",
     (
         "random",
         "Kelly",
@@ -2326,7 +2326,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "25043c8014ee020f9f8513ba3aa576e69bbe3185d2e55fb03c666d7641c89341",
+    ): "fca1e0fb4e5b5d8e1143546b8f243d5d55389d00434f16164dfc723aa72550b1",
     (
         "random",
         "Kelly",
@@ -2334,7 +2334,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "b7cc5c120b63c924f2b067c5d6f580e9d03284215def1f646fedddf565b8d76e",
+    ): "a22a2ee78c42f122cb1ae09fb99ddba58dba9df0587a7c559b72f6d4dab9f84d",
     (
         "random",
         "Kelly",
@@ -2342,7 +2342,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "4543aa1262742f33f242e4d37fe61de0e21f7a1e715b3a1f75aff6faf6d016a3",
+    ): "69e3a28cd3a9e1a8ed67182f8fb668e378979ac69a8d638cd3c44e1dcffeb9f9",
     (
         "random",
         "Kelly",
@@ -2350,7 +2350,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "7fc70f8a9b1b78188cc9e5d64ae4830d14f26ad1fa2b833b6712987a8fa34b3b",
+    ): "b16feebd9a089f0581469afd7c6d4d4dab54f6cbbe6e14c852bda6cb69143dc9",
     (
         "random",
         "Kelly",
@@ -2358,7 +2358,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "f490b44eb98c576327b98506ff5ddfca17c86280b90367d1326156d1bd801804",
+    ): "14f888ba85d14b14f2f8418a8f63f504affea6f93b312eabea5b5057d243b1cf",
     (
         "random",
         "Kelly",
@@ -2366,7 +2366,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "90ee3b278c9b980f0c5e7b24a9a7daf42d889e983a9389e9fc560ca89d3d1b66",
+    ): "ccde26324c5fb2263ed4250de3bfbb3f7ca1ec8af85fac711bdaeaa64870e185",
     (
         "random",
         "Kelly",
@@ -2374,7 +2374,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "fedf6adf73e7859da5392053a379b7f49559e4b7b3c85d1137c28d9a914e54a7",
+    ): "20724d4b1ed7f4827b33f80d7d55e2eff9149edd5d52d4f15595fb36f4ff3166",
     (
         "random",
         "Kelly",
@@ -2382,7 +2382,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "a3f2955e2ff5cb9dbf93f76baf14f98bc39209b67a87e2f0fa1afc86a5af18da",
+    ): "2a02c95980e2974f379c4c612250d2373913fb976721a0e4cbf6341270ffb51e",
     (
         "random",
         "Kelly",
@@ -2390,7 +2390,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "39ceff9d01290e4c5e67057efef4779a86ba73946f0c1baf02563b1b20b92910",
+    ): "b0fbf06e44fce2dfac69f7c062c90dfe7b2ac3794b211267e34ee12e76f50d03",
     (
         "random",
         "Kelly",
@@ -2398,7 +2398,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "51d1e77c52102a85833b09f83ddf87e776c1806c61128948b69a064234253db1",
+    ): "bbb47108f6237f9f86f917e581b355ddebab2b0a869d3c8e979af41c7036f960",
     (
         "random",
         "Kelly",
@@ -2406,7 +2406,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "6889597a4eee5e0466d85ee5871e704632e8b49f29c81911fc1a5da7c0cff6d6",
+    ): "887e1e34c4c0ef9912725d46aca36267c9308745fc9454f7309287e0c146d581",
     (
         "random",
         "Kelly",
@@ -2414,7 +2414,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "46562c12e1cfbb8b0b78088f9b5541505d23900d5edc0ba928a2cb42cda4ee99",
+    ): "7287668bdcab188979a0ddd1195583e1eee4b8dfd9ded9bcfa16964864393570",
     (
         "random",
         "Kelly",
@@ -2422,7 +2422,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "a3c68c3b386c665cf8929e535b6ad8583e14ed8b1febc32e0429f0320b9e7e88",
+    ): "ac116a8edbdc5a03e1c9e43faf86d3ecc75c57a3e23e40c823bd403119874da6",
     (
         "random",
         "Kelly",
@@ -2430,7 +2430,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "ca1654da78b5cc481630968c792a36ccdee68f5293531cf2cc7fdb3b444a9416",
+    ): "03a79190dc616cac7b1682daab66069e4d0c41ddbd97b1e0d5eb1635b2096e0b",
     (
         "random",
         "Kelly",
@@ -2438,7 +2438,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "bbbf5b3bb1d98274700731081b53b73e5a2a14993d9a56a9e9894bbd707322c9",
+    ): "ee8bac73d30e427dde746cc08116724c74cc7fbb37a411ca85def8b0a977f3f0",
     (
         "random",
         "Kelly",
@@ -2446,7 +2446,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "605973bcc0a07d4d4c6ebf493ec29b1056f249904bda69d6f3534109ff5c8ff1",
+    ): "a8f55440d831539fd73767c504f2dfdb52f3004295f01dce214cf9a8a67dfad9",
     (
         "random",
         "Kelly",
@@ -2454,7 +2454,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "d5362e93727a689a4f9487c4445119b84abceca781c1209e54da10668638a163",
+    ): "e269bce2e706035dd9e23bc529ab18894e8b059436c0eadebaa001f0d6db5bfe",
     (
         "random",
         "Kelly",
@@ -2462,7 +2462,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "c3d8f9a6eaad9404c8ef188a910be40928ae6ad789316775790805a0684e7bab",
+    ): "52744d2fc1bd551f7872dcbac77c01b090f333377f0b8d7ff25f0fe1cd258e6b",
     (
         "random",
         "Kelly",
@@ -2470,7 +2470,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "c733d72ab8b5d2763d4e149895f7ab69f3861a05f0ca07cdd21371a917b2ab2b",
+    ): "c88f56c34f58d10c86b0cc99e4d62329a9b7fcca3b6bedd8cdd68a3c1ec82d3e",
     (
         "random",
         "Kelly",
@@ -2478,7 +2478,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "22644a5923a48b2137fe59503a77b06895997a84f955b9e0ff869a2445f4608f",
+    ): "cd626947fdeb9e26e9cbd9a6331e7814feab4a5301e40c032c544fedd1e9cbe5",
     (
         "random",
         "Kelly",
@@ -2486,7 +2486,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "377fabaf2274f2ec9cb5d22152a89156ff3015b8055325a5874a178db6891c56",
+    ): "6fe4d571eb1ad3d5c4e993e107ec14c72cf3de3e65bbf9c99139b17e1eb84fa7",
     (
         "random",
         "Kelly",
@@ -2494,7 +2494,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "34cd19f9ff54ea2d83cf06eb2a795e6aa514344bf9db0902e683d5d6b49887f0",
+    ): "7efdeb610517333cc6d3dceab77cb26a34f174a9c0278d18a6b93f5b673a1acb",
     (
         "random",
         "Kelly",
@@ -2502,7 +2502,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "73f9320250dea75793b66e57e57cf6ea000fc61290a5a6ffc27b2b58b6f4ea14",
+    ): "c8059a342a71a520c68e8e3ecf1eee7ee2391e4b2f3bf0cde1f206bd27c0356a",
     (
         "random",
         "Kelly",
@@ -2510,7 +2510,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "7819da62eb25db870d626536c3cf043c2123e2619b232e80ec9dd74658cc8b6e",
+    ): "51cb381158ce8c05a6e6612795bcea2352f786480e5e37dae86d6b750f84c074",
     (
         "random",
         "Kelly",
@@ -2518,7 +2518,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "b9ae2333b717ac693737f4f08206a3436c2c0860f3fd653c62cf0b8ad7c9864d",
+    ): "512aee84b1ea2e9b77513b1175a2c947bb2ea87858afd56434d935ede0b784f0",
     (
         "random",
         "Kelly",
@@ -2526,7 +2526,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "9f67476a102ab008f7e60f6e2c34c678452cd370f4da7c4420ccc786e87cd514",
+    ): "69ae6f43da4492eec6928da84a3c055dd9059aa87a7c57b9a669e63001cc3a5a",
     (
         "random",
         "Kelly",
@@ -2534,7 +2534,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "64761d0d22d9a14427741e8ab47bd10533522f5ccf9ba70c46bc9f7030f38177",
+    ): "c42f1db46ee2515b28d828fc43947213baa4a9e48ea999d39b8428b01930d414",
     (
         "random",
         "Merton share",
@@ -4126,7 +4126,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "1ce589fe2b9853dda75b28237eb9354c3bc8a3e17ed2983c5b8c5dc95ad29183",
+    ): "b872d8f24abf425f2e49de22ce3c23156f689430766ed41b177ed2f2586cd145",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4134,7 +4134,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "1ce589fe2b9853dda75b28237eb9354c3bc8a3e17ed2983c5b8c5dc95ad29183",
+    ): "b872d8f24abf425f2e49de22ce3c23156f689430766ed41b177ed2f2586cd145",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4166,7 +4166,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "bd2c07b5933fff51afaa8f2bcf60be3905730874d2a0bafa53ad3612ba6ce010",
+    ): "34a9774f54be78c749f90e014c2dac4852bbb40f72a2e76c690db23af999e286",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4174,7 +4174,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "bd2c07b5933fff51afaa8f2bcf60be3905730874d2a0bafa53ad3612ba6ce010",
+    ): "34a9774f54be78c749f90e014c2dac4852bbb40f72a2e76c690db23af999e286",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4206,7 +4206,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "804072ae1b3cd8f3ee40c9ecbde828c79e0ef4b2b9c475afc1b7aa2c07057e98",
+    ): "06c97e2ba73785e35f4668681ec4e8485b6368da787a3137835e08eea46c0831",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4214,7 +4214,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "4e057d79c83479e6257b7924fbc6e51f2c737251db705f0a79844f85c0ae38c3",
+    ): "50962df91588f339eb095aaf2df6915266245c986853b357351d5647df4bff39",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4222,7 +4222,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "c24960b6e0e2c1be5b6ff87d01047dc7e69a8df3ce3e8556a6bfe15a93e77e3c",
+    ): "a1c2780b3c35c94fece67dbfaaff6df16573625c26f84d8f8f4a1ab664d21fb6",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4230,7 +4230,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "3a6e9a8b3c925daa172781021678e75d4f1af48ef32684b479546fceb93bd22a",
+    ): "66f3c9ff13bd29d2e5f737e37c6ce6e1dfdff3791ae8f23ca2496affde4979c8",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4238,7 +4238,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "49247c8f6a4d0442947b5f7f204cc57a5dd7dc4847c884afb34a7bd7de5d648c",
+    ): "6e731dd82f50440032ebbe2d9ce001d8ab2eb609d29cfaf3c1c196c42ec535ec",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4246,7 +4246,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "90b74f3bcd2d35a71e8433deaf13a98bdbd3c7406e2a9da5a060837e9624da0e",
+    ): "02386cc6881fc85dbe53fe0bfc139f94296b7b6ad39c20717d1ef5ddfe67bbb8",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4254,7 +4254,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "1f0db303ec0eb825d62f7e3242a8d1e863b0a106e9f903805604ae9e4858b041",
+    ): "f746cc7304d75dc0fc9c21381a796f49a9813671233f169d969f0f3e228b09bd",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4262,7 +4262,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "8addbfe8d8000d6842f169b5ce6b1d52420a5bcf4aa0357ac7477b33e3fffb61",
+    ): "ed89869265764ad7079b2a582d7a71d777a555ddd0737780d010c317f01ec0f0",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4270,7 +4270,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "a089ea0f685d5af3e4a1fe8dbc04b305ab53cd7d33efbe6a8ca4b7921e5f7905",
+    ): "198f42d1a999c2115db72406af39a16cfa2e878ca65fc15edfe79006b03a7d5e",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4278,7 +4278,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "47b38e4f7bb39e00012989b012de4d0f0a2768eb4e54fa40cc0d705541dd3e3c",
+    ): "581e5db166e29e76d64730d81228db99de29cae67a0a0602371be3a8232ba78a",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4286,7 +4286,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "39178264f169fa6335785e37e2971e680fcdc43820a413e76e33103c84399d36",
+    ): "5a23913b4bdcd540e21adefd136bccada381863ad354e332fae6c877362b1730",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4294,7 +4294,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "b538e84cadbf3df224fe07769b342d8446caf33d83e12cb3e406f8c472ac5f0b",
+    ): "8df8c3ba18433b8d4090b4bd139acaeb2b9531fbf9a06e161e4b4b9d21ba4ce8",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4302,7 +4302,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "fa1057447ae85c24a9e18cb733d64948f82b56b8c571ff1f6dc44bfdf5ea211f",
+    ): "7b5748e35931a892419ae2f94fd36218f3d81514d8ec9ef388bd01fad582608b",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4310,7 +4310,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "6ff7fef76d3bcabba5bf3ef919361084ac8dfcbe0d00691c57260e92b49af667",
+    ): "a20a4c6e5c5c1e265e7d65ccde3f92e3653750c9edd7359088342b876e3355a3",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4318,7 +4318,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "3a0da790152a8f36ceafedf3fb92b2df49f13e563c469fbb7132e403cda6111f",
+    ): "af36e484e0c383dde69da70cc3672043700ff67d8d35c33a64f64ed6e30a7fda",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4326,7 +4326,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "98f21d497cb065739ae9596bfb52fbd1862194af56373174b551da0b42df7e49",
+    ): "81a58b87dfb7e58614af7d0567471d005ace8c93caba6490fa622c10b1a1243f",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4334,7 +4334,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "cad879749d51808b6948de6f306446ee5147628499f00ba63ffb031e982420c9",
+    ): "d8baf2c9e252b55b4692fb3ac3640494d4ddc7608e45bc20e43ffc02ebb891c3",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4342,7 +4342,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "f74b0a838c4da10c18388bc83e6e7d928518afc033de48b5c059b5d5e5505732",
+    ): "eea82c1c46876352df8114a408b580cedd9ecfc449dacec86b84cf0d819ff132",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4350,7 +4350,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "6fde6d1bc9df158bdba1f4ca08eb57bf340d89684ede7fb7ab7e7abaca1c14cb",
+    ): "b3f1fba1c29ef2024366ff7b3f322c2ca4c3d9a34c4b4e69523653aeb57f8b67",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4358,7 +4358,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "1901343130cec00dc853ececda454c1cdfcf24c475ffd81c1e91eced16079939",
+    ): "1784434d67b190d5478d863497eb091e710245200fa8c71b2e9607312bf170fa",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4366,7 +4366,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "d2160dc8a166941e80bcfa95cbf47061131e1117fcfe94d1a86ec496482adcc2",
+    ): "e0e4f9f38988c5208250efc00d6ba5b3056d2814cb1f02a4fd28c346bc6def54",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4374,7 +4374,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "73c552d036c7f566baab6cc8dfc535e67a11dcd4fd1731975b9fb1cfb1c07ca9",
+    ): "f1ad52352591d63715755d8a98726f04f32e215a82979d9e6ad5b0bd0a1cc714",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4382,7 +4382,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "d16ca65b879a9cf15a38a82f39fa263234b7a6a604d57f6ce3e59204e25027e9",
+    ): "098158e89281db20c72c193a02e9562a493f2e533d70adf8dbe33117ace44ac7",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4390,7 +4390,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "2c51e44845bb5574744472f440589fdd36bfd84741f9cffb68009d34b529f2e9",
+    ): "c99357fa8238956b5de978a792c7c11a3fb4f79622929fe46c35bf536a31f727",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4398,7 +4398,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "a2ed641a83a0ec2f7caf206eafbf3a13db395742e5ec1c608bd273c77d4305c9",
+    ): "8b4415dd98ede3ab4723ae9cb1e032c0cb437e1ac86a653c36e90d763d916251",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4406,7 +4406,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "63664c8d1c76ce529eef18bc43b41d82e28d055ab0f4b6a8356e5c6564a02eae",
+    ): "50843cd8aba33fb5cb042d155497b0ddf0a3d9024e359ee721eca6620be06cfb",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4414,7 +4414,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "4347524ccc570db687bd48503613a1839c97c924d329979f3806bd2b062e1249",
+    ): "da8e3fa30bbb197b557ee39450615c4fbc1cdd8bc6f4380a5ca8c75c38a99d75",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4422,7 +4422,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "c9b820a4877ed86ea23cacac4af7753eac49e8e37b6aaafd586f912dd3a656db",
+    ): "36429a12d141f448cc06f4fcddad0c45a6c7b0d41d3979afc330de5dcff0afe3",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4430,7 +4430,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "86a2ad4aecd78304a1ddd68dd2ad29e608477521b0b8d1eb8229c80702140431",
+    ): "5aac4399848850a569a76877d7989a709dd70f9b1a5f004411ffb6313c3b0d27",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4438,7 +4438,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "8bd42cec47b68ec405e6ee3ecba8682e08986a02666949e6f5f05c08611840f2",
+    ): "0b1bf85516627d257bfc56ec305c461a1decbe9909b7c84d01d19e0c018466d1",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4446,7 +4446,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "cda906250e04e1de5be1367597a1cfff5590ce91592b30143e3c9f689cee73c3",
+    ): "a1f312a06ad9bf351afc1f610296af5a855405ce051e0448cfb3d2e0d03f8486",
     (
         "random-uncertain",
         "Drawdown-adjusted Kelly",
@@ -4454,7 +4454,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "2f6e695ea06df9f24b5f174886a30269eae019b80f8eda65c49fdde7b3a381cd",
+    ): "dc782ae78c5c566970cfe6f96e294807bf53dc2fc4590842f6a743b390fba789",
     (
         "random-uncertain",
         "Dynamic",
@@ -5278,7 +5278,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "163e60cd3fe6b1eabfdac46dd5913a65f3a5ba288ddfccb4b19e1bd17160e1d5",
+    ): "74541a69e29190596a01ed7bc5b0e0cf46d114620882665d8f75efc1999add4e",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5286,7 +5286,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "163e60cd3fe6b1eabfdac46dd5913a65f3a5ba288ddfccb4b19e1bd17160e1d5",
+    ): "74541a69e29190596a01ed7bc5b0e0cf46d114620882665d8f75efc1999add4e",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5318,7 +5318,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "d75d46e8ab3a6f84fead1e1547f9b75c8c22ed867e4ccc4215c838fdaef5bca9",
+    ): "19f91d0224c0deaba9885a953799ccdd06821f0dd2237e89d31fcf263ba4bd27",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5326,7 +5326,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "d75d46e8ab3a6f84fead1e1547f9b75c8c22ed867e4ccc4215c838fdaef5bca9",
+    ): "19f91d0224c0deaba9885a953799ccdd06821f0dd2237e89d31fcf263ba4bd27",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5358,7 +5358,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "b3b7d3a64b23c95d1ab0397eb659980240698830df03c82c7bf73b3c71eb29d8",
+    ): "4b478a637b509c281e50d5415454422e1fbe4f80d2e51a3c19ce5ea7a52439ae",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5366,7 +5366,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "9396e69278c72e453bbfc69a3e006582657e7f25bb8729fa76b6c7485c3e6965",
+    ): "45c5ee1799229af9d5e3c1067f83038934eb34ca3050e85fe75379fb6c681c1b",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5374,7 +5374,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "b0561599d9efdc583143f01627d71232e671bd78b3e2208b004534b222508145",
+    ): "23440fef986f4ff719f09f1e0ccfce2507c74a67b15370e4529bd137923e2215",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5382,7 +5382,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "4de5f1561c3a64a8bf406f0333ff9e42223dc4f3d9e337e6b7bdd3cc71270bf5",
+    ): "8cafab2a8bc2e3c433464fb5369245972305a85368055d56e0d2b5c66595986c",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5390,7 +5390,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "d37f426a8ab87d32b3dadafd3aeb2b0d0042285bedbae1efa37824c2fc59679e",
+    ): "86157fcffdf68ac2f51244ddcab60c5e653b631debfeadbb2f17601c1490d672",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5398,7 +5398,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "408b52be10181ef25793e2c1e0a48e5c51cf0d13ac800e17fb03fe28682a4917",
+    ): "a71c835640b0546e3c0eccf5fa9e60925ea68c86c9635278b43e718bb646edb9",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5406,7 +5406,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "d3dcf70eda820cd6f0b75cefb1e0a02ff56c8a5f26cbb28f099deed72f8fd34c",
+    ): "f8cd28fd6569039f7ac43b7983b0bc16e686b236000d879adaf0d7b595ce372b",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5414,7 +5414,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "aaca5b03753a2befe0729fb46c273d806342c9856e4c47472907e5db78f1c3ba",
+    ): "092ea9d2b0c4dba83473812a7a34eb33810990c61997c15ba1015b773ad8928f",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5422,7 +5422,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "05e573ba1c9d3a8d47052e90ed89576d3c6dd5846df267c083c2e5078f5de0ac",
+    ): "b01829f70177cba720d2259fb95e1454d0c9a9295988243157388c1269747e22",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5430,7 +5430,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "77781ca57647dd95a8db0a5771a9cad3447306653eae97fdfd53044743142242",
+    ): "272e02dfe61b1959c32f76db485cd5a179051ec0cf42bbbe149638dd61ec683d",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5438,7 +5438,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "68960fe487d055c9ba44fd457c197c19c556a4162fd58bda6a72d10d74931f90",
+    ): "afcef741a5c600468a0fb2fdc1dc2ccc7f639a867051b03206bc2a437002aa20",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5446,7 +5446,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "ee2c5f983ee7149968a721e05d14c7593c0fdaf3a1ca9da89d0e59a1eff81661",
+    ): "aaa880cccd4191d9f0aeb2e315e249f00f2ee8c230849c86e773f2c518021141",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5454,7 +5454,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "92d67816b18014288630cb9451f7e9015232808efddb94c0abfde5b11f6b7827",
+    ): "528f3f7946a96adef727cb5945bab4729ef6631d694e61311404efdcc4749456",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5462,7 +5462,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "eb2df27bab0356b48ed42be81f291b04346da1dfd9341f4e0fff1fe9b767e658",
+    ): "c759779769a277548fd25eaa5f7050fd336d787de7bd859b30a6a9f9e7d80cf1",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5470,7 +5470,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "5919ed82eee136a5d85219b00acca66ead2eea970acda866ca0bd5478130b88a",
+    ): "dcc600238026afb6fcf279282d660fb98f7b48d9647dcaad51eaa6d6726bbb90",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5478,7 +5478,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "29b8aab047f8757da74f02e93d52d7b7d4d2d9d0b446eab66ba6bc87fcef93b8",
+    ): "ce8248f133d23a9c07a7e8251fbac84feb731afdedd357a70651bcdd982a0246",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5486,7 +5486,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "7beac2a5189eb599959db3788fc2083a353378f3199146b4206e7b81211da347",
+    ): "5dfda6fcbe41885a42f833d71acff4a81f5a2a661a8c74ccefa3e0357ae527db",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5494,7 +5494,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "edc3766d8785cd537e666b9d389746d5299ba0fb43feaa9f5a35dcd2eddb2bab",
+    ): "190b19dbb14ef5d79afa06811a6f30eb6faa79562e4519026f4b0bedb87609a7",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5502,7 +5502,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "a8e03fee1810377f53ea43abdfea2a671560b456df88b8a52a0dfa1198e21a3c",
+    ): "d429f6c6bf17fcd5b6a3c368d40a9e06f4f2f10a5561fe846ad604d41ea1293a",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5510,7 +5510,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "b72a37ee32162b4a02b6b1558a86410c41f3851d2510534ad8d141b10e34d8ac",
+    ): "7601f3d497dfcbd5a42f71cbba534aa0b6023ef25de7072995a9e99ca158097a",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5518,7 +5518,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "d2d87a6d306ef10ca05959db3148c6fb5b46cda47b71519d6286f511e063c682",
+    ): "4f504edf0017d6bd47ad01fac7e10765c6af97efa0e3bb6489096c4d2c6e694e",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5526,7 +5526,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "71b34cb89acb5fa2bc6dd9d314c2ccd916bd76a4b59239ef5a2a68c9e0713c59",
+    ): "3b99fa939f03466c183c264435a54eb40914dd0181d7384cc8d0a2b1f222bc56",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5534,7 +5534,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "5a6973730df295bfc79a49a52f4c9025e6a019b7cb1c0ad3e2096cc3d0bdc08d",
+    ): "857af8b3756766ef5edd9e8564ffcdd5091bc66e9cf5c3a0a5b103fc1ad799b8",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5542,7 +5542,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "20c4e8e37da94a7a2e7f8be396c6371ce84be6969202226fc7d3e174c5ffe3a2",
+    ): "04c2752517a5a1a0ab678b05a758ccf99a1f6afd2c4d31384ad8a298cdaa275e",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5550,7 +5550,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "464f6fe1d9a622d2e5555be14c9490f150dc1578d140cde49a6cfa6245866510",
+    ): "5d40e7928374fc254cac4dd155b9acbe9b3fe217a009719aff182935de6f8fb4",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5558,7 +5558,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "3f6b2272a255c3e57274f9afc94d2880e081dad170fb57d369561c335864dd9b",
+    ): "9d9ecaa530a269ecf7968e97e789f0c2c014b578513f93d4a9bddb515c57b800",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5566,7 +5566,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "ca1e47e29a454868c291344c55ebac00a3dff4f00187d9ed481b86eebf04bb44",
+    ): "9fd5d57168a1b46d96a6e47e97a1bb7be08d05dd1e651d37d918d8222ecf10da",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5574,7 +5574,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "9ed78b4cad0fd57932fbe01b5a8559fa927dbb0400779f49bc3d9546a975ea81",
+    ): "fdbf55dad4838913ccce57d204e4aa421a7ad48b722890e06f8cde037f98abb0",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5582,7 +5582,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "56ad1dc92322fc796d9e2e0e432a1bb2daa3f4c923291f775f4ab3eabd27962b",
+    ): "0c55113b737972f54906509270a5b3dbaf110cc077fa2e703ce9247a60e49127",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5590,7 +5590,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "14b336c2d192c6bde0be6bb69cce74c8ba5ac7d6d1ce6f10ae431439770cf06c",
+    ): "0a43d1b192b5418e48cc3af32d66ba9a2502aa3299ca47377775f95ab3281555",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5598,7 +5598,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "dd68fc465c5836fdbe7291278c79d8eebc836acef39e91007bda48174e80c0e8",
+    ): "acaad179afa0287b2930c0a024b2f2e25db40f6e35a25c35bacb5d8ff55b3d53",
     (
         "random-uncertain",
         "Half Kelly",
@@ -5606,7 +5606,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "33e6e6fd394990231fab374f17e46cdc107d335c22a3c264bdbcad55597784a8",
+    ): "696d182567a6bad6438deca5a44ac676850441df1ab2bad268e9120c3d3e522b",
     (
         "random-uncertain",
         "Kelly",
@@ -5702,7 +5702,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "92c7b1d3b5d29cac7bdeab9380d88b9782a588138d3edfabc8a5dc15d3a3fa7e",
+    ): "7bf5b05e91eb2537bf53dbac645f448081702e124b86efe2d2b71cad446a1415",
     (
         "random-uncertain",
         "Kelly",
@@ -5710,7 +5710,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "92c7b1d3b5d29cac7bdeab9380d88b9782a588138d3edfabc8a5dc15d3a3fa7e",
+    ): "7bf5b05e91eb2537bf53dbac645f448081702e124b86efe2d2b71cad446a1415",
     (
         "random-uncertain",
         "Kelly",
@@ -5742,7 +5742,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "fc5f38d96b26367609bd33339641b9f45674d6602ef8fba4bf68ce5cc3310133",
+    ): "2ef6ec25513e7abeab6416b1e2a1f54b99f627d5cf5560b99c45aad541f23c84",
     (
         "random-uncertain",
         "Kelly",
@@ -5750,7 +5750,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "6b74ff7a55583c48aea534759223cd7452f596dbeca07f8202243c967beb0827",
+    ): "3850cbc05dc1f0520e92da7468c5200ce5e027ffa79cd6a95585f925f9a22043",
     (
         "random-uncertain",
         "Kelly",
@@ -5758,7 +5758,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "74f3a8e517d87a6035d4777ed1a0c6ef96f267c8c29acbd9d18792ec082efc9a",
+    ): "b050b8613198d032faeadded0eec89f1e1739cf4a491c38bb898c42036626246",
     (
         "random-uncertain",
         "Kelly",
@@ -5766,7 +5766,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "f3c0d6b25898c676e6c3d18c4554a8049286e6ac2838cf1fd75163753a5d7b42",
+    ): "fc09e78a0d55d5c09b45cdc2ad2ca767fc512ee2be645a45d339723913aff201",
     (
         "random-uncertain",
         "Kelly",
@@ -5774,7 +5774,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "9a08fc661d681035b082867dbb12372e6d72cc7c1db7214379b2b9ff9cd430ce",
+    ): "4db0223964f9b2ce3f408dc0238aa9512fd1e2850b7c93633a4fa9fc3659b4ea",
     (
         "random-uncertain",
         "Kelly",
@@ -5782,7 +5782,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "f86c1a61643b0751f7598ebadcbca5c55487d90bf25b91573713a1f135e7df05",
+    ): "6635afa8414203615d959faf9247fb32e8cf162a101a53bee9bb81c854e5ee64",
     (
         "random-uncertain",
         "Kelly",
@@ -5790,7 +5790,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "db69bd950feffb703141eb4e6bc3b79caccb3c7683c6b9af25ff3b9cd8309ece",
+    ): "78030d3e311cd7649c9878dd12703be04fd90324b00d3232915a3ecf7456c82a",
     (
         "random-uncertain",
         "Kelly",
@@ -5798,7 +5798,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "9072a7c2b0fe7276174319935310b17bdd7e0e6b15446241daeae41264a3b107",
+    ): "64a3849d8b22a496e756662ea9ef9dfca32e9a7eb57cd685910b58362182cb53",
     (
         "random-uncertain",
         "Kelly",
@@ -5806,7 +5806,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "ab57a5ceba9d3bd165439261ca582bbb81cbfcabc09ca1c71228a51ff3ef953f",
+    ): "c7ff512899f17011ec3e2d82bc439f65d53f9b545d85ea73176b3e43883b7bae",
     (
         "random-uncertain",
         "Kelly",
@@ -5814,7 +5814,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "ae79d5c9fc7035c80c03d2037691ddd37c0d1b8f8152f8ad1ea74369724a3dfc",
+    ): "1d966a6e55b24309d8adeba666adaef8af68707413f511dfa8d3ee37da45c1c1",
     (
         "random-uncertain",
         "Kelly",
@@ -5822,7 +5822,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "6c7ddecc8a30c30c57add1c083547d496cde8570354b781848de8a861c550140",
+    ): "1b261ef1929d5487274961f98b33affd872e04f80acdd69729ca19b3a74d5636",
     (
         "random-uncertain",
         "Kelly",
@@ -5830,7 +5830,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "5bc69effad96561e98c5fd3ccec940f12e6336202e63dbb616611ba64142491c",
+    ): "e4277555c4cdfba29ad41f4a8251564cc6830866ac2df74b15e9f537f9213d64",
     (
         "random-uncertain",
         "Kelly",
@@ -5838,7 +5838,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "144dda79b749009528870104fb3e397789de95dfac75d2d4a98855efe6cb8d1a",
+    ): "04494f5f950192a5a5a7968bb54edd7dea76a6cf851508fec963630cd1f8f7e6",
     (
         "random-uncertain",
         "Kelly",
@@ -5846,7 +5846,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "558ef798807b6140426b3b5df29b27de1d794c9308c6e01cc6751084f28ffd99",
+    ): "c2efdcca7d34a12deef574374e84a2d091367cfdf967f493606b44d08226760a",
     (
         "random-uncertain",
         "Kelly",
@@ -5854,7 +5854,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "933eab1dd9225c3262889e19105b290387d11e3248b43b2355a78fdedcc3bd78",
+    ): "afcc7608ea57a39e3e8f0dac7cfa47f0a3c0d79d38d61f38417a8261654be915",
     (
         "random-uncertain",
         "Kelly",
@@ -5862,7 +5862,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "04dbd724e034349a5bdcd95890cd551d113350892a1b6047efa0cb2214f19453",
+    ): "65921d95f42991954681e725c3839d13018bc3dc9b28eab8d45cdf1184cd2a7c",
     (
         "random-uncertain",
         "Kelly",
@@ -5870,7 +5870,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "bf283028314385789d8227ea2eeda51ed9f2e3af167855b247a763610f3a1349",
+    ): "f3c962350da29178e5a298dc4548e8729b85571dbce7ef18417a0ed0324dcaad",
     (
         "random-uncertain",
         "Kelly",
@@ -5878,7 +5878,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "dc7e8597add600125161b9b4950c8f608fcc05b01443b19a2813be372e42c255",
+    ): "37b47dfc660a7d52181067351c5bdd1daea9080516b8daef389bf3ce05190399",
     (
         "random-uncertain",
         "Kelly",
@@ -5886,7 +5886,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "475ef09f5226e4d37077f0aa76cf12086057b0b7771057f3ab0f999399670b88",
+    ): "15dc490e42e149f4ffd9274d19d4cd75436bb08e55693b1dc906ec76819595c1",
     (
         "random-uncertain",
         "Kelly",
@@ -5894,7 +5894,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "91c75942fdbc9b3a0d089045ed3052719c8866bbeabd2407e1452448d7473929",
+    ): "6ade18e2c8aba38f3912356b31e6fdbbf69205a1a965e22eeaf6890e47aec630",
     (
         "random-uncertain",
         "Kelly",
@@ -5902,7 +5902,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "6db72b2cc7d3d99e8229c53d9d15e3baea8c317137b2661806b5cec97e19dcd8",
+    ): "491362f42de6221b0d84e997ac7af3472809739715d40faea6ad4771d3ab0125",
     (
         "random-uncertain",
         "Kelly",
@@ -5910,7 +5910,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "bcf834109a509ea5b178bc34ef0b449836e45bb4dcc565089bee3d14e5e3e349",
+    ): "6d3e0cdea481e913a6befed86a1b38c8ff4499b82ec8966d059b047e842e0ba1",
     (
         "random-uncertain",
         "Kelly",
@@ -5918,7 +5918,7 @@ GOLDEN = {
         7,
         25,
         True,
-    ): "3833d4dbe4f9601d3a953c4e73e4d156ad847f344a6755580644b3237c4b1b10",
+    ): "f0b60680586dcfe722bcd08b5721365ac86f0e6ee22bb5b12aff8614ce8960d3",
     (
         "random-uncertain",
         "Kelly",
@@ -5926,7 +5926,7 @@ GOLDEN = {
         7,
         120,
         True,
-    ): "6c7d461ca707f2a9bf46dbebcbd864494fbdcced1be148a14a8972fc67bb2a8a",
+    ): "405025dd37f6e40a143fdfa8ca2d3512238d01af9597afc8c36fa1e6e90073cb",
     (
         "random-uncertain",
         "Kelly",
@@ -5934,7 +5934,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "d8ebdcc5583f8f5f6cb2ffafb669b036e7e70e9fe877a83f6336e6bd27139528",
+    ): "a2397c30c4b6078560faa12cf719edf836f66aebfaa7c10a8b3dfe90af23097d",
     (
         "random-uncertain",
         "Kelly",
@@ -5942,7 +5942,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "921f4af8ec676b25fab04e59b25b222f83ffdcaa1ed10606228a1c8c8f015341",
+    ): "d119ed9616999ee41f101690c21ce6fc95d3e81666a23b626a13bc0975bbdae3",
     (
         "random-uncertain",
         "Kelly",
@@ -5950,7 +5950,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "00f6a335be324158c522ce9ad11f45590b1c52debda0ed14f4405089fb330f18",
+    ): "a2bc2c99e405c4fe22aa168f419c1978f774c040b3d9f93aa9134a42242a8397",
     (
         "random-uncertain",
         "Kelly",
@@ -5958,7 +5958,7 @@ GOLDEN = {
         99,
         25,
         True,
-    ): "09b20def8a406ebff6061cc44ebdef3789df8d893d11b83e3ce3ccdf39914580",
+    ): "a98d23fb418711003f74bf57d1e541562779c27aec008b6033f154192b38d171",
     (
         "random-uncertain",
         "Kelly",
@@ -5966,7 +5966,7 @@ GOLDEN = {
         99,
         120,
         True,
-    ): "c23ffbc74447d8abf0e5b1294ec642796b358b6b204b1a894b2ff76deb24220e",
+    ): "8bbe33b3b1c5528a608f7990a7a0806b0e8148d865163a98b423d25491b371d5",
     (
         "random-uncertain",
         "Kelly",
@@ -5974,7 +5974,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "cb6c483041043584bd9b2dbdae6c3e2b55053d30f91199424b2caff62b6b26b0",
+    ): "0048bdfc91e413ddf68c7fd353fc0ed0d7c87e66d5f4a0396f091b9568d8047b",
     (
         "random-uncertain",
         "Kelly",
@@ -5982,7 +5982,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "1e43e987ae18d77df5459e2f6a1c25941bb902881fc2287413a1dab486e8ee8b",
+    ): "8ff6ed5c77d94680d479a09b1c68e4dcc75da9a468092e605a8652ebbca6f2a1",
     (
         "random-uncertain",
         "Kelly",
@@ -5990,7 +5990,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "2cfdd2eb296f14843b84ddde11e48c594645d1d0a2beebd88d117e36c1532a11",
+    ): "2ed573483bd63eefe86ebe788255155c1592531f6aed8aa652469ed56e5dcd57",
     (
         "random-uncertain",
         "Merton share",
@@ -7438,7 +7438,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "5bd35daa243252cd91dd5050cb437d86a63bdd3f60370e665bd86278701679c6",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7446,7 +7446,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "e70b77fbc83f1b34619893df69926dfc5e264be77fd3eb3680dac7deb42c0dc3",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7454,7 +7454,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "3f6cd5d095eea1b9fe73f31dfd1a7960e686f43dcfbb59f001fda70ac4669feb",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7462,7 +7462,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "35328e3b5366bd184979090545ea87dea0c0c3eb8dd45e8ca9dac7a98ca3aab0",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7470,7 +7470,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "029bfae47c3fb8ea1d9a108bcbfb2db039b69d1c647843eadc3b9ed2ab5f4d0c",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7478,7 +7478,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "2b6de72689398ce44302a834120f44e6816db72f27322d80f552bbfd5874c429",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7486,7 +7486,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "95dedb543fa5b69d71ae59b8ce771096ea4e5991546e918ff3d52f9016598c47",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7494,7 +7494,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "bd484eaa0fd72c6c7da3c5a40e06e2ca3806850133631af3760a18f28897fa23",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7502,7 +7502,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "0ee56b2eddaef12e7d499971405ae7dc3404a5dd394fcaf6117e5a7089034349",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7510,7 +7510,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "1dbc46f9b16820d34124fd69bd8944ecd5bf98084cfdc1621f574f5590c00a37",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7518,7 +7518,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "88e0fc03923169a72a97543fce18deae0e993a87d424e811fd5577f6a50a59b2",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7526,7 +7526,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "f05f225ddb55a074d33fc0d431c16282e74e06081a119dd17cd9dc281f4d24cc",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7630,7 +7630,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "c0b5123c258e092b88313a23d50f9608af32102625859a023fb9a409c48066c8",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7638,7 +7638,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "a3d4455342733ee2e630400ff264bbb943b23d78cd21adb353661893fab03275",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7646,7 +7646,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "3247449dba8e034c6f81b106397acf8af606a8b0622eb4882a633fb442684a0f",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7654,7 +7654,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "1bfb7d58f6182bf7efb4e2dca5e411c55ac4688f053d713d585e30efdb301453",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7662,7 +7662,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "455a0e18108788f0b5b0d393c08d8860e8dfdf7608bd3ca420b2269b2270b16d",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7670,7 +7670,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "4ab0d0fd4ad82bf7e15d24d042888da243db63b8b915d5a593082770026c8ae5",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7678,7 +7678,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "d48b3293d4fd21034c1d69d83bb79534e2051d80f489616d00437ac834846bbc",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7686,7 +7686,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "a3e80a956fce7bd6efb0f1ba3c67b1566df7b3149bc29ac14ad6d3e2a2865abd",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7694,7 +7694,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "ab515d564cda62dc04d3f109786e8fc6f9ab5b2f2122a63b63ba0f2520b69b90",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7702,7 +7702,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "0551d397d1a5553ad8d6e5343a42cc463af50e5f8e0e2be9d4de968bd69b53ae",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7710,7 +7710,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "673c4f7ef2cdabdb399b467c216a4db7dc4ce6399c27b2f34b06436f4ec5d102",
     (
         "repeated",
         "Drawdown-adjusted Kelly",
@@ -7718,7 +7718,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "209c9ef20e97bf6a4b0b60ee93ede43f40ba3b15b7da1ed38f04a64191fbff6b",
     (
         "repeated",
         "Dynamic",
@@ -8326,7 +8326,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "1cfbba27bb53b479b0ccd343055c0ade6950cb408dda831759baff02e34b34bc",
     (
         "repeated",
         "Half Kelly",
@@ -8334,7 +8334,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "1cfbba27bb53b479b0ccd343055c0ade6950cb408dda831759baff02e34b34bc",
     (
         "repeated",
         "Half Kelly",
@@ -8342,7 +8342,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "1cfbba27bb53b479b0ccd343055c0ade6950cb408dda831759baff02e34b34bc",
     (
         "repeated",
         "Half Kelly",
@@ -8494,7 +8494,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "a832d779aa7935d618652bc2aec80755858786d8942d19c5e3bbc36e31068d9f",
     (
         "repeated",
         "Half Kelly",
@@ -8502,7 +8502,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "927f1cdfaeb64480bf637cda4d0d2f3c4c21affcb05828a4a64cf5b15db3da5e",
     (
         "repeated",
         "Half Kelly",
@@ -8510,7 +8510,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "ef0e99d66baba6e0f7f9cb48b41f04206833840d3f9bd3363a0f91e1ba27b28c",
     (
         "repeated",
         "Half Kelly",
@@ -8518,7 +8518,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "f86b56387495b6a59ea2577da008246c8445019f8385f3a8b26928b0964658cc",
     (
         "repeated",
         "Half Kelly",
@@ -8526,7 +8526,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "b818b87611bbd3f6fe2da99edcda4157bcef9640d340bea9441480a58c1a2e15",
     (
         "repeated",
         "Half Kelly",
@@ -8534,7 +8534,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "b559236d4b0af7c587f9c8b185e95f94a6014a3ca7d61d1bdec224b0ffdf328d",
     (
         "repeated",
         "Half Kelly",
@@ -8542,7 +8542,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "2197e5faebfb113a878fbdce46f3c9231f51af81c33a3c4df2416313a4bd14ef",
     (
         "repeated",
         "Half Kelly",
@@ -8550,7 +8550,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "b15fb597b79e3674e1980367fa12e8383ef5ed27da962d9691a4982aaeb29759",
     (
         "repeated",
         "Half Kelly",
@@ -8558,7 +8558,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "20d709669d910b6fcddb26183eec986e2bdc08f62f05c21a21908b24dd5a9256",
     (
         "repeated",
         "Half Kelly",
@@ -8566,7 +8566,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "b720a62b8654cd3e45c02b959e99d5b81f09af08d84223e90c51c5042d566b09",
     (
         "repeated",
         "Half Kelly",
@@ -8574,7 +8574,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "6d3443021d0b0872beecda83ce12e46e01ee108434eaef44a6d4f7fbbe84a8a7",
     (
         "repeated",
         "Half Kelly",
@@ -8582,7 +8582,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "818bbb2bc01a818a27dd22cea7c6cdf365754214096a7290a3384459cc3b3a0e",
     (
         "repeated",
         "Kelly",
@@ -8614,7 +8614,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "70b5d32e1f21090f4400c6286149f6d32e5fc821891d16c986ac3ef567d6e8e3",
     (
         "repeated",
         "Kelly",
@@ -8622,7 +8622,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "70b5d32e1f21090f4400c6286149f6d32e5fc821891d16c986ac3ef567d6e8e3",
     (
         "repeated",
         "Kelly",
@@ -8630,7 +8630,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "70b5d32e1f21090f4400c6286149f6d32e5fc821891d16c986ac3ef567d6e8e3",
     (
         "repeated",
         "Kelly",
@@ -8782,7 +8782,7 @@ GOLDEN = {
         0,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "13f3ce33737ae7642c54048bd5acc9d25a062a195de50b1d2a1882584972791e",
     (
         "repeated",
         "Kelly",
@@ -8790,7 +8790,7 @@ GOLDEN = {
         0,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "76d1692e6c37e0bd2cc415e9780774daea94cb9f82f762981ee3bd0ab33e4b75",
     (
         "repeated",
         "Kelly",
@@ -8798,7 +8798,7 @@ GOLDEN = {
         0,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "a1d3496cc727d206dd537de1812265a6c69093d1c1d063bcc492dd43d4511513",
     (
         "repeated",
         "Kelly",
@@ -8806,7 +8806,7 @@ GOLDEN = {
         1,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "47d99c1ea1f560d5463960e1073687688cd6506f416920c365e42d4fa1e18147",
     (
         "repeated",
         "Kelly",
@@ -8814,7 +8814,7 @@ GOLDEN = {
         1,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "071fa3181cc43c3b14e15a5173929fa3319b266f08c538e28270c46935f2d7da",
     (
         "repeated",
         "Kelly",
@@ -8822,7 +8822,7 @@ GOLDEN = {
         1,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "ba2f95dee5ce77afb22cdc9e51369d7990e81e6916ced7f3254d76ea2e03dc37",
     (
         "repeated",
         "Kelly",
@@ -8830,7 +8830,7 @@ GOLDEN = {
         42,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "97adcb8f32b8c00aca94c88ad1af9f7978a009f79f650c45be87ceb340147891",
     (
         "repeated",
         "Kelly",
@@ -8838,7 +8838,7 @@ GOLDEN = {
         42,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "ce3dc9e29b4b55d5357ffa3d26a5faf25c11cae6b9c01d2bbb377665b872b833",
     (
         "repeated",
         "Kelly",
@@ -8846,7 +8846,7 @@ GOLDEN = {
         42,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "357f7feba0a6a47514bd7d4f1d8fb093b9152683c1434c3bc9c90f9d1aff6e4c",
     (
         "repeated",
         "Kelly",
@@ -8854,7 +8854,7 @@ GOLDEN = {
         20260803,
         7,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "cd5c5d858862d0211de624f405323bf0c64b5c4b85429e24653edc50cef0aa67",
     (
         "repeated",
         "Kelly",
@@ -8862,7 +8862,7 @@ GOLDEN = {
         20260803,
         53,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "8ad0de78d8e0d3fe94af77b40748ed892e2aa97cfff7b01352a2c5b96c56cc75",
     (
         "repeated",
         "Kelly",
@@ -8870,7 +8870,7 @@ GOLDEN = {
         20260803,
         400,
         False,
-    ): "0ea68d787463f3ae61be487d44d89ee1089343b138ec38b5cd1cb7a746b9c87e",
+    ): "e2e925e5121fbd76ad4e854eb41460b511c79817a94c15b0785ed65bb6ab7d6c",
     (
         "repeated",
         "Merton share",

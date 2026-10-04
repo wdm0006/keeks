@@ -549,7 +549,12 @@ class TestBankrollBoundaries:
         bankroll = BankRoll(initial_funds=100.0, max_draw_down=0)
         bankroll.deposit(50.0)
 
-        with pytest.raises(RuinError, match=r"^You lost too much"):
+        with pytest.raises(
+            RuinError,
+            match=r"^Refused withdrawal of 1\.00: it exceeds the configured "
+            r"drawdown limit \(max_draw_down=0, i\.e\. at most 0\.00 of "
+            r"current funds: 150\.00\); pass max_draw_down=None to lift the cap$",
+        ):
             bankroll.withdraw(1.0)
 
         # A zero-amount withdrawal is still a no-op, not ruin.

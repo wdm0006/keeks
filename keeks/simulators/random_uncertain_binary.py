@@ -1,4 +1,5 @@
 import random
+import warnings
 
 import numpy as np
 
@@ -193,8 +194,11 @@ class RandomUncertainBinarySimulator:
                         amt = (self.loss * bet_amount) + self.transaction_costs
                         bankroll.withdraw(amt)
                         return_pct = -amt / current_bankroll
-                except RuinError:
-                    # Settlement exceeded a bankroll safeguard; stop gracefully
+                except RuinError as exc:
+                    # Settlement exceeded a bankroll safeguard; stop the run
+                    # loudly rather than silently: the warning carries the
+                    # refused amount, the configured limit, and current funds.
+                    warnings.warn(f"Simulation stopped early: {exc}", stacklevel=2)
                     break
 
                 if record_result is not None:

@@ -38,8 +38,26 @@ def test_percent_bettable():
 
 def test_drawdown_limit():
     br = BankRoll(initial_funds=1000, percent_bettable=0.5, max_draw_down=0.3)
-    with pytest.raises(RuinError, match=r"^You lost too much"):
+    with pytest.raises(
+        RuinError,
+        match=(
+            r"^Refused withdrawal of 400.00: it exceeds the configured drawdown "
+            r"limit \(max_draw_down=0.3, i.e. at most 300.00 of current funds: "
+            r"1000.00\); pass max_draw_down=None to lift the cap$"
+        ),
+    ):
         br.withdraw(400)
+
+
+def test_default_has_no_drawdown_cap():
+    """The default BankRoll enforces no per-removal cap (max_draw_down=None)."""
+    br = BankRoll(initial_funds=100)
+
+    assert br.max_draw_down is None
+
+    br.withdraw(100)
+
+    assert br.total_funds == 0
 
 
 @pytest.mark.parametrize(
@@ -91,7 +109,7 @@ def test_zero_drawdown_rejects_positive_removal_without_mutation(method_name):
     br = BankRoll(initial_funds=100, max_draw_down=0)
     original_history = br.history.copy()
 
-    with pytest.raises(RuinError, match=r"^You lost too much"):
+    with pytest.raises(RuinError, match=r"Refused .* of 1\.00: it exceeds"):
         getattr(br, method_name)(1)
 
     assert br.total_funds == 100
@@ -112,7 +130,14 @@ def test_bet_above_drawdown_limit_does_not_mutate_bankroll():
     br = BankRoll(initial_funds=100, max_draw_down=0.5)
     original_history = br.history.copy()
 
-    with pytest.raises(RuinError, match=r"^You lost too much"):
+    with pytest.raises(
+        RuinError,
+        match=(
+            r"^Refused bet of 50.01: it exceeds the configured drawdown "
+            r"limit \(max_draw_down=0.5, i.e. at most 50.00 of current funds: "
+            r"100.00\); pass max_draw_down=None to lift the cap$"
+        ),
+    ):
         br.bet(50.01)
 
     assert br.total_funds == 100

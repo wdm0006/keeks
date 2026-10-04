@@ -223,7 +223,11 @@ class TestBankRollContracts:
         bankroll = BankRoll(100.0)
         with pytest.raises(
             Exception,
-            match=r"^Insufficient funds for withdrawal \(would cause bankruptcy\)$",
+            match=(
+                r"^Refused withdrawal of 1000\.00: current funds are 100\.00 "
+                r"and the removal would cause bankruptcy "
+                r"\(configured max_draw_down: None\)$"
+            ),
         ):
             bankroll.withdraw(1000.0)
 
@@ -234,7 +238,10 @@ class TestBankRollContracts:
         bankroll = BankRoll(initial_funds=0.6)
         bankroll.add_funds(0.3)
         with pytest.raises(
-            Exception, match=r"^Insufficient funds for bet \(would cause bankruptcy\)$"
+            match=(
+                r"^Refused bet of 0\.90: current funds are 0\.90 and the "
+                r"removal would cause bankruptcy \(configured max_draw_down: None\)$"
+            )
         ):
             bankroll.bet(0.9)
 
@@ -256,7 +263,11 @@ class TestBankRollContracts:
         bankroll = BankRoll(100.0)
         with pytest.raises(
             Exception,
-            match=r"^Insufficient funds for removal \(would cause bankruptcy\)$",
+            match=(
+                r"^Refused removal of 1000\.00: current funds are 100\.00 "
+                r"and the removal would cause bankruptcy "
+                r"\(configured max_draw_down: None\)$"
+            ),
         ):
             bankroll.remove_funds(1000.0)
 

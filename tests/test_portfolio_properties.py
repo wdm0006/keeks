@@ -143,10 +143,12 @@ def test_each_batch_updates_the_bankroll_exactly_once(portfolio, seed):
     ):
         # The bankroll the trial saw is the last history entry.
         assert before == bankroll.history[history_index - 1]
-        if not any(returns):
-            # Refused batch: bankroll untouched and the run stops, so the
-            # history must already be fully accounted for.
-            assert history_index == len(bankroll.history)
+        if history_index == len(bankroll.history):
+            # Refused batch: the bankroll never moved (every return reports
+            # 0.0) and the run stops, so the history is fully accounted for.
+            # A settled zero-net batch (e.g. a push at decimal odds 1.0) also
+            # reports all-zero returns, so classify by the history length.
+            assert not any(returns)
             break
         net = sum(ret * before for ret in returns)
         # The history reports cents, but at compounding magnitudes a double's

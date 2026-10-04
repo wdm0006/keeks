@@ -544,11 +544,14 @@ def test_ruin_error_settles_the_rest_of_the_batch_then_stops():
         payoffs=(2.0, 3.0, 2.4), loss=1.0, stakes=(0.5, 0.01, 0.0)
     )
     simulator = build_simulator(probabilities=(0.0, 0.0, 1.0), trials=100)
-    bankroll = BankRoll(initial_funds=1000.0)  # default max_draw_down=0.3
+    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
 
     # Leg 2 always realizes. Leg 0's 500 loss trips the drawdown limit and is
     # refused; leg 1's 10 loss is still settled; then the run stops.
-    simulator.evaluate_strategy(strategy, bankroll)
+    with pytest.warns(
+        UserWarning, match="Settlement refused; the simulation stops after this batch"
+    ):
+        simulator.evaluate_strategy(strategy, bankroll)
 
     assert bankroll.history == [1000.0, 990.0]
     assert strategy.events == [
@@ -563,11 +566,14 @@ def test_ruin_error_on_every_leg_still_completes_the_batch():
         payoffs=(2.0, 3.0, 2.4), loss=1.0, stakes=(0.5, 0.5, 0.0)
     )
     simulator = build_simulator(probabilities=(0.0, 0.0, 1.0), trials=100)
-    bankroll = BankRoll(initial_funds=1000.0)  # default max_draw_down=0.3
+    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
 
     # Both losing legs are refused by the drawdown limit; the batch still
     # runs to completion before the simulation stops.
-    simulator.evaluate_strategy(strategy, bankroll)
+    with pytest.warns(
+        UserWarning, match="Settlement refused; the simulation stops after this batch"
+    ):
+        simulator.evaluate_strategy(strategy, bankroll)
 
     assert bankroll.history == [1000.0]
 
@@ -577,11 +583,14 @@ def test_ruin_error_after_a_win_still_reports_the_win():
         payoffs=(2.0, 3.0, 2.4), loss=1.0, stakes=(0.01, 0.5, 0.0)
     )
     simulator = build_simulator(probabilities=(1.0, 0.0, 0.0), trials=100)
-    bankroll = BankRoll(initial_funds=1000.0)  # default max_draw_down=0.3
+    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
 
     # Leg 0 realizes and wins first (stake 10 pays 20); leg 1's 500 loss is
     # then refused by the drawdown limit; the batch reports both and stops.
-    simulator.evaluate_strategy(strategy, bankroll)
+    with pytest.warns(
+        UserWarning, match="Settlement refused; the simulation stops after this batch"
+    ):
+        simulator.evaluate_strategy(strategy, bankroll)
 
     assert bankroll.history == [1000.0, 1010.0]
     assert strategy.events == [

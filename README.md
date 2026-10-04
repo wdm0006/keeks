@@ -261,11 +261,12 @@ uv run python examples/allocation_etfs.py --refresh  # re-download via yfinance
   *absolute* bankroll amount charged once per settled bet. The two are
   different units — passing the same number to both models two different
   real-world costs, and Keeks does not convert between them.
-- Kelly-family strategies gate bets behind a default `min_probability=0.5`: a
-  trial probability below it returns 0.0 regardless of payoff asymmetry. With
-  `payoff=10`, `loss=1`, and a 0.3 win probability, the true Kelly fraction is
-  about 0.23, but `evaluate` returns 0.0 until you pass a lower
-  `min_probability`. `OptimalF` hardcodes the same 0.5 gate.
+- `KellyCriterion` sizes on edge by default (`min_probability=None`): any bet
+  its formula prices positively is placed, and a bet with no positive edge
+  returns 0.0. Set `min_probability` to add a longshot gate — a trial
+  probability below it returns 0.0 even when the Kelly fraction is positive,
+  with a `UserWarning` naming the suppressed fraction. The other strategies'
+  probability gates are unchanged (`OptimalF` hardcodes a 0.5 gate).
 
 ## Documentation and examples
 
