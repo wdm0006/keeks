@@ -190,8 +190,8 @@ class TestBinaryBetsModel:
 
     def test_settlement_arithmetic_matches_portfolio_simulator(self):
         # The model's per-period returns ARE the portfolio simulator's
-        # settlement per unit staked: win payoff - tc, loss -(loss + tc) --
-        # the simulator's flat fee on a unit stake is exactly the per-unit
+        # settlement per unit staked: win (payoff - 1) - tc, loss -(loss + tc)
+        # -- the simulator's flat fee on a unit stake is exactly the per-unit
         # transaction cost.
         probability, payoff, loss = 0.6, 0.5, 0.2
         transaction_costs = 0.02
@@ -210,7 +210,7 @@ class TestBinaryBetsModel:
 
         expected = np.where(
             uniforms < probability,
-            payoff - transaction_costs,
+            (payoff - 1.0) - transaction_costs,
             -(loss + transaction_costs),
         )
         assert np.array_equal(draws[:, 0], expected)
@@ -220,7 +220,7 @@ class TestBinaryBetsModel:
         fee = transaction_costs  # flat fee on a stake of 1.0
         portfolio_net = np.where(
             uniforms < probability,
-            payoff * 1.0 - fee,
+            (payoff - 1.0) * 1.0 - fee,
             -((loss * 1.0) + fee),
         )
         assert np.allclose(draws[:, 0], portfolio_net)
@@ -229,8 +229,10 @@ class TestBinaryBetsModel:
         # Full loop, byte-identical streams: the model's child entropy for
         # default_rng(0) is the simulator seed that reproduces the exact
         # same per-bet stream, so staking 100% on one fee-less bet replays
-        # the model's returns as the bankroll history itself.
-        bet = (0.6, 0.5, 0.2)
+        # the model's returns as the bankroll history itself. Net odds need
+        # payoff > 1 for the win to profit: (0.6, 1.5, 0.2) wins +0.5 and
+        # loses -0.2 per unit staked, matching the gross-era economics.
+        bet = (0.6, 1.5, 0.2)
         trials = 50
         model = binary_bets_model([bet])
         child_entropy = int.from_bytes(np.random.default_rng(0).bytes(8), "big")
@@ -289,7 +291,7 @@ class TestBinaryBetsModel:
         tc = 0.01
         model = BinaryBetsModel([(probability, payoff, loss)], transaction_costs=tc)
         mean, covariance = model.moments()
-        win_return = payoff - tc
+        win_return = (payoff - 1.0) - tc
         loss_return = loss + tc
         expected_mean = probability * win_return - (1.0 - probability) * loss_return
         expected_second = (
@@ -302,7 +304,7 @@ class TestBinaryBetsModel:
         mean, covariance = BinaryBetsModel(
             [(0.5, 2.0, 1.0), (0.25, 3.0, 1.0)]
         ).moments()
-        assert np.allclose(mean, [0.5, 0.0])
+        assert np.allclose(mean, [0.0, -0.25])
         assert np.allclose(covariance[0, 1], 0.0)
         assert np.allclose(covariance[1, 0], 0.0)
 

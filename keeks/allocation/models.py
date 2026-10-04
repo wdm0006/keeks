@@ -609,10 +609,10 @@ class BinaryBetsModel(JointReturnModel):
 
     Each ``(probability, payoff, loss)`` triple becomes one option whose
     per-period simple return is the bet's settlement per unit staked:
-    ``payoff - transaction_costs`` on a win, ``-(loss + transaction_costs)``
+    ``(payoff - 1) - transaction_costs`` on a win, ``-(loss + transaction_costs)``
     on a loss. This is the arithmetic :class:`keeks.multi_outcome.PortfolioSimulator`
-    settles with - a win adds ``payoff * stake`` to the bankroll (the stake
-    is never deducted, so ``payoff`` is a net profit multiplier) minus the
+    settles with - a win adds ``(payoff - 1) * stake`` to the bankroll
+    (``payoff`` is decimal-odds gross including the returned stake) minus the
     fee - so allocation weights over these options replay portfolio stakes.
     ``transaction_costs`` here is a per-unit-staked fee (the strategy-side
     fractional unit): it matches the portfolio simulator's flat absolute fee
@@ -638,9 +638,9 @@ class BinaryBetsModel(JointReturnModel):
     >>> model = BinaryBetsModel([(0.5, 2.0, 1.0), (0.25, 3.0, 1.0)])
     >>> mean, covariance = model.moments()
     >>> mean.tolist()
-    [0.5, 0.0]
+    [0.0, -0.25]
     >>> covariance.diagonal().tolist()
-    [2.25, 3.0]
+    [1.0, 1.6875]
     """
 
     def __init__(self, bets, transaction_costs=0.0):
@@ -653,7 +653,7 @@ class BinaryBetsModel(JointReturnModel):
     def _bet_returns(self, uniforms, bet):
         """Map one bet's uniforms to its per-period simple returns."""
         _, payoff, loss = bet
-        win_return = payoff - self.transaction_costs
+        win_return = (payoff - 1.0) - self.transaction_costs
         loss_return = -(loss + self.transaction_costs)
         return np.where(uniforms < bet[0], win_return, loss_return)
 
@@ -695,7 +695,7 @@ class BinaryBetsModel(JointReturnModel):
         """
         Return the exact closed-form moments of the independent bets.
 
-        Per bet: ``mean = p * (payoff - tc) - (1 - p) * (loss + tc)`` and
+        Per bet: ``mean = p * ((payoff - 1) - tc) - (1 - p) * (loss + tc)`` and
         variance from the second moment; independence across bets makes the
         covariance diagonal.
 
@@ -707,7 +707,7 @@ class BinaryBetsModel(JointReturnModel):
         means = []
         variances = []
         for probability, payoff, loss in self.bets:
-            win_return = payoff - self.transaction_costs
+            win_return = (payoff - 1.0) - self.transaction_costs
             loss_return = loss + self.transaction_costs
             mean = probability * win_return - (1.0 - probability) * loss_return
             second = probability * win_return**2 + (1.0 - probability) * loss_return**2
@@ -1055,7 +1055,7 @@ class ModelInputMixin:
     ...         self.covariance = covariance
     >>> model = binary_bets_model([(0.5, 2.0, 1.0)])
     >>> EqualWeights.from_model(model).mean.tolist()
-    [0.5]
+    [0.0]
     """
 
     @classmethod

@@ -312,7 +312,9 @@ class TestMaximumSharpe:
     def test_single_option_goes_all_in(self):
         # A winning bet (positive expected return) puts the whole budget on
         # the option: the Sharpe ratio is scale-free, so fully invest.
-        strategy = MaximumSharpe.from_model(binary_bets_model([(0.9, 0.2, 1.0)]))
+        # Net odds need payoff > 1 for the win to profit: (0.9, 1.2, 1.0)
+        # wins +0.2 and loses -1.0 per unit staked.
+        strategy = MaximumSharpe.from_model(binary_bets_model([(0.9, 1.2, 1.0)]))
         assert strategy.evaluate(1000.0) == pytest.approx((1.0,), abs=1e-8)
 
     def test_requires_excess_return(self):
