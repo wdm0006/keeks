@@ -222,14 +222,20 @@ class TestBruteForceOracle:
     def test_lp_matches_dual_oracle_random_tiny_scenarios(self, rows, tail_alpha):
         scenarios = np.array(rows)
         strategy = MeanCVaR(scenarios, tail_alpha=tail_alpha)
+        # HiGHS's default feasibility tolerances are 1e-7, and on tiny
+        # adversarial books the returned optimum can sit a hair outside a
+        # 1e-9 duality gap - so the oracle equality is asserted at the
+        # solver's own tolerance scale.  Real formulation errors (wrong
+        # mean, cap, or sign) break this by O(1); the fixed cases above
+        # still hold the tight 1e-9 line.
         assert -strategy.objective == pytest.approx(
-            _dual_lp_value(scenarios, tail_alpha), abs=1e-9
+            _dual_lp_value(scenarios, tail_alpha), abs=1e-7
         )
         achieved = _objective_oracle(strategy.weights, scenarios, tail_alpha)
-        assert achieved == pytest.approx(-strategy.objective, abs=1e-9)
+        assert achieved == pytest.approx(-strategy.objective, abs=1e-7)
         assert (
             _brute_force_optimum(scenarios, tail_alpha, steps=11)
-            <= -strategy.objective + 1e-9
+            <= -strategy.objective + 1e-7
         )
 
     def test_all_losing_book_goes_to_cash(self):
