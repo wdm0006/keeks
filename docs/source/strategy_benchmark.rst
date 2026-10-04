@@ -212,7 +212,7 @@ the bankroll and stake sizes you actually expect, and do not assume the same
 number on the strategy side is doing comparable work.
 
 ``max_transaction_loss`` is a per-settlement cap, not a risk budget
-------------------------------------------------------------
+----------------------------------------------------------------------
 
 ``BankRoll`` refuses any single withdrawal larger than ``max_transaction_loss`` times
 current funds and raises ``RuinError``; the simulator catches it and stops the

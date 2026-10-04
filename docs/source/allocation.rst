@@ -44,7 +44,7 @@ The Strategy Contract
 
 .. autoclass:: keeks.allocation.base.AllocationResult
     :members:
-    :exclude-members: weights, objective, converged, iterations, expected_growth, volatility
+    :exclude-members: weights, objective, converged, iterations, expected_growth, volatility, all_cash_reason
 
 .. autoclass:: keeks.allocation.models.ModelInputMixin
     :members:
