@@ -28,9 +28,15 @@ The estimators also live here (:mod:`keeks.allocation.estimators`):
 :func:`shrink_covariance` and :func:`black_litterman_mean` preprocess Σ
 and μ for any optimizer, numpy-only.
 
-Subsequent modules in this subpackage add the allocation simulator;
-solvers that need scipy arrive behind the ``keeks[allocation]`` optional
-extra. The online family lives in :mod:`keeks.allocation.online` -
+The allocation simulator (:mod:`keeks.allocation.simulators`) replays any
+allocator over realizations from any joint-return model through the bankroll
+machinery: :class:`AllocationSimulator` settles batch-net per period with
+keeks' seeding and refuse-then-stop conventions, fires the
+``record_settlement`` hook with the realized joint simple-return vector for
+the online family, and treats residual probability mass as an all-cash
+period.
+
+The online family lives in :mod:`keeks.allocation.online` -
 :class:`FixedWeights`, :class:`ExponentialGradient`, and
 :class:`OnlineNewtonStep` adapt their weights through the
 ``record_settlement`` hook alone, numpy-only - the static moment-based
@@ -73,9 +79,11 @@ from keeks.allocation.online import (
     OnlineNewtonStep,
 )
 from keeks.allocation.scenarios import MeanCVaR, scenarios_to_moments
+from keeks.allocation.simulators import AllocationSimulator
 
 __all__ = [
     "AllocationResult",
+    "AllocationSimulator",
     "BaseAllocationStrategy",
     "BinaryBetsModel",
     "black_litterman_mean",
