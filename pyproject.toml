@@ -66,9 +66,6 @@ dev = [
     # still an optional runtime extra (keeks[allocation]).
     "scipy",
     "sphinx",
-    # docs/source/conf.py sets html_theme to wabi_sphinx_theme; declare it
-    # so a clean `uv pip install -e ".[dev]"` can build the docs.
-    "wabi_sphinx_theme",
     "sphinxcontrib-googleanalytics",
     "wheel",
     "ruff",

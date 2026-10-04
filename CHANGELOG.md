@@ -9,7 +9,7 @@ Unreleased
  * `help()` now shows constructor parameters for `BankRoll` and all three binary simulators: real `__init__` docstrings documenting every parameter's meaning and unit — funds in currency, `percent_bettable` and `max_transaction_loss` as fractions of funds, `fee_per_bet` in currency per bet — plus each simulator's RNG family and seeded-replay behavior (stdlib `random.Random` for `RepeatedBinarySimulator`, numpy Generators for the rest)
  * Export fixes: `BaseStrategy` is importable from `keeks.binary_strategies` (matching every other generation's ABC), the numeric-discipline constants `PROBABILITY_SUM_TOLERANCE`, `COVARIANCE_SYMMETRY_TOLERANCE`, and `EIGENVALUE_FLOOR` are exported from the package root, and `PALETTE`/`COLORMAP` are importable from `keeks.allocation` (one level down from `keeks.allocation.plots`)
  * `CPPIStrategy` stores `initial_bankroll` as a public attribute, so constructor introspection reads it back
- * Sphinx documentation gains a contract-checks page for the `keeks.checks` harness, and the `wabi_sphinx_theme` dependency `docs/source/conf.py` already required is declared in the `dev` extra
+ * Sphinx documentation gains a contract-checks page for the `keeks.checks` harness
 
 **Breaking changes — naming and contract sweep (one meaning per name):**
 
