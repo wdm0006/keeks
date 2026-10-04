@@ -25,12 +25,15 @@ consume exact model moments when available and Monte Carlo estimates
 otherwise.
 
 Subsequent modules in this subpackage add the remaining method families
-(mean-variance, minimum variance, maximum Sharpe, risk budgeting,
-mean-CVaR), and the allocation simulator; solvers that need scipy arrive
-behind the ``keeks[allocation]`` optional extra. The online family already
-lives here (:mod:`keeks.allocation.online`): :class:`FixedWeights`,
+(mean-CVaR) and the allocation simulator; solvers that need scipy arrive
+behind the ``keeks[allocation]`` optional extra. The online family lives in
+:mod:`keeks.allocation.online` - :class:`FixedWeights`,
 :class:`ExponentialGradient`, and :class:`OnlineNewtonStep` adapt their
-weights through the ``record_settlement`` hook alone, numpy-only.
+weights through the ``record_settlement`` hook alone, numpy-only - and the
+static moment-based family in :mod:`keeks.allocation.moments`:
+:class:`MeanVariance`, :class:`GlobalMinimumVariance`,
+:class:`MaximumSharpe`, :class:`MaximumDiversification`,
+:class:`RiskBudgeting`, and the :class:`RiskAversionScaling` wrapper.
 """
 
 from keeks.allocation.base import AllocationResult, BaseAllocationStrategy
@@ -47,6 +50,14 @@ from keeks.allocation.models import (
     marginals_model,
     scenario_model,
 )
+from keeks.allocation.moments import (
+    GlobalMinimumVariance,
+    MaximumDiversification,
+    MaximumSharpe,
+    MeanVariance,
+    RiskAversionScaling,
+    RiskBudgeting,
+)
 from keeks.allocation.online import (
     ExponentialGradient,
     FixedWeights,
@@ -59,11 +70,17 @@ __all__ = [
     "BinaryBetsModel",
     "ExponentialGradient",
     "FixedWeights",
+    "GlobalMinimumVariance",
     "HierarchicalRiskParity",
     "JointReturnModel",
     "MarginalModel",
+    "MaximumDiversification",
+    "MaximumSharpe",
+    "MeanVariance",
     "ModelInputMixin",
     "OnlineNewtonStep",
+    "RiskAversionScaling",
+    "RiskBudgeting",
     "ScenarioModel",
     "binary_bets_model",
     "estimate_moments",
