@@ -76,7 +76,7 @@ class BaseMultiOutcomeStrategy(abc.ABC):
     must implement. A multi-outcome strategy sizes stakes on the mutually
     exclusive legs of one market - a 1X2 football match, for instance - in a
     single decision: exactly one leg settles, every losing leg's stake is
-    charged ``loss`` plus ``transaction_cost``, and the winning leg pays its
+    charged ``loss`` plus ``transaction_cost_rate``, and the winning leg pays its
     payoff multiplier times its stake.
 
     Concrete strategy implementations should inherit from this class and
@@ -101,7 +101,7 @@ class BaseMultiOutcomeStrategy(abc.ABC):
             cls.evaluate = _validated_evaluate(evaluate, _validate_stake_fractions)
 
     def __init__(
-        self, payoffs: Sequence[float], loss: float, transaction_cost: float = 0
+        self, payoffs: Sequence[float], loss: float, transaction_cost_rate: float = 0
     ):
         """
         Initialize the strategy.
@@ -110,32 +110,34 @@ class BaseMultiOutcomeStrategy(abc.ABC):
         ----------
         payoffs : sequence of float
             The payoff multiplier for each mutually exclusive leg, in leg
-            order. Every payoff must be finite and greater than 0. The legs
+            order. Every payoff must be finite and greater than 0. Each is
+            the leg's *decimal odds* - the stake-included multiplier, so the
+            net win is ``payoff - 1`` - unlike the binary strategies, whose
+            ``payoff`` is the net win itself. The legs
             are positional and payoffs are fixed at construction: leg ``i``
             of the probabilities passed to :meth:`evaluate` is settled with
             leg ``i`` of ``payoffs``, and a strategy reprices by fresh
             construction, not by mutating its odds.
         loss : float
             The loss multiplier applied to every losing leg's stake.
-        transaction_cost : float, optional
+        transaction_cost_rate : float, optional
             The transaction cost as a fraction of each unit staked, by default 0.
             This is a per-unit *fractional* cost that enters the sizing formulas
             alongside ``payoffs`` and ``loss``, so ``0.01`` means one percent of
             the stake and the fee it represents grows with the bet.
 
-            The simulators in ``keeks.simulators`` take a near-identically named
-            ``transaction_costs`` (plural) that is an *absolute* bankroll amount
-            charged once per settled bet, independent of stake size. The two are
-            different units: passing the same number to both models two very
-            different costs.
+            The simulators in ``keeks.simulators`` take ``fee_per_bet``: an
+            *absolute* bankroll amount charged once per settled bet,
+            independent of stake size. The two are different units: passing
+            the same number to both models two very different costs.
 
         Raises
         ------
         ValueError
             If ``payoffs`` is not a non-empty one-dimensional sequence of
             finite numbers greater than 0, if any of ``loss`` or
-            ``transaction_cost`` is not a finite number, if ``loss`` is
-            negative, or if ``loss + transaction_cost`` is not positive.
+            ``transaction_cost_rate`` is not a finite number, if ``loss`` is
+            negative, or if ``loss + transaction_cost_rate`` is not positive.
         """
         try:
             payoff_array = np.asarray(payoffs, dtype=float)
@@ -153,21 +155,23 @@ class BaseMultiOutcomeStrategy(abc.ABC):
         loss = _require_finite(loss, "Loss")
         if loss < 0:
             raise ValueError("Loss must be non-negative")
-        transaction_cost = _require_finite(transaction_cost, "Transaction cost")
-        if transaction_cost < 0:
-            raise ValueError("Transaction cost must be non-negative")
-        if loss + transaction_cost <= 0:
+        transaction_cost_rate = _require_finite(
+            transaction_cost_rate, "Transaction cost rate"
+        )
+        if transaction_cost_rate < 0:
+            raise ValueError("Transaction cost rate must be non-negative")
+        if loss + transaction_cost_rate <= 0:
             raise ValueError(
-                "Total cost (loss + transaction_cost) must be greater than 0"
+                "Total cost (loss + transaction_cost_rate) must be greater than 0"
             )
 
         self.payoffs: tuple[float, ...] = tuple(payoff_array.tolist())
         self.loss = loss
-        self.transaction_cost = transaction_cost
+        self.transaction_cost_rate = transaction_cost_rate
         # Constructor-only constant: for a positive bankroll the bankroll term
-        # in current_bankroll / (loss + transaction_cost) cancels, so the
+        # in current_bankroll / (loss + transaction_cost_rate) cancels, so the
         # aggregate cap is a fixed fraction (see get_max_safe_total_bet).
-        self._max_safe_total_fraction = min(1.0, 1.0 / (loss + transaction_cost))
+        self._max_safe_total_fraction = min(1.0, 1.0 / (loss + transaction_cost_rate))
 
     def get_max_safe_total_bet(self, current_bankroll: float) -> float:
         """
@@ -193,15 +197,15 @@ class BaseMultiOutcomeStrategy(abc.ABC):
         Notes
         -----
         Under net settlement exactly one leg of the market wins and every
-        losing leg's stake is charged ``loss + transaction_cost``, so a total
+        losing leg's stake is charged ``loss + transaction_cost_rate``, so a total
         stake fraction ``F`` spread across the legs can lose at most
-        ``F * (loss + transaction_cost)`` of the bankroll - the worst leg's
+        ``F * (loss + transaction_cost_rate)`` of the bankroll - the worst leg's
         charge being the binding one. Keeping that worst case within the
-        bankroll requires ``F <= current_bankroll / (loss + transaction_cost)``;
+        bankroll requires ``F <= current_bankroll / (loss + transaction_cost_rate)``;
         expressed as a proportion of the bankroll the bankroll term cancels,
         so for a positive bankroll this is exactly
-        ``min(1.0, 1 / (loss + transaction_cost))``. Every leg shares one
-        scalar ``loss`` and ``transaction_cost``, so the worst leg's per-leg
+        ``min(1.0, 1 / (loss + transaction_cost_rate))``. Every leg shares one
+        scalar ``loss`` and ``transaction_cost_rate``, so the worst leg's per-leg
         bound is also the aggregate bound - the same value
         ``keeks.binary_strategies.base.BaseStrategy.get_max_safe_bet`` returns
         for a single binary bet with the same charges. A non-positive bankroll
@@ -225,7 +229,7 @@ class BaseMultiOutcomeStrategy(abc.ABC):
             The probability of each mutually exclusive leg, in leg order. Must
             be a non-empty one-dimensional sequence of finite, nonnegative
             numbers whose sum is at most ``1 + PROBABILITY_SUM_TOLERANCE`` -
-            the contract :func:`keeks.utils.normalize_probabilities` enforces.
+            the contract :func:`keeks.utils.validate_probabilities` enforces.
             Probability mass below one models a void or push outcome on which
             no leg settles.
         current_bankroll : float

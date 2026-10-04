@@ -35,12 +35,12 @@ from keeks.allocation.models import JointReturnModel
 
 def _all_shipped_binary_strategies():
     return [
-        KellyCriterion(payoff=2.0, loss=1.0, transaction_cost=0.01),
+        KellyCriterion(payoff=2.0, loss=1.0, transaction_cost_rate=0.01),
         FractionalKellyCriterion(
-            payoff=2.0, loss=1.0, transaction_cost=0.01, fraction=0.5
+            payoff=2.0, loss=1.0, transaction_cost_rate=0.01, fraction=0.5
         ),
-        DrawdownAdjustedKelly(payoff=2.0, loss=1.0, transaction_cost=0.01),
-        NaiveStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01),
+        DrawdownAdjustedKelly(payoff=2.0, loss=1.0, transaction_cost_rate=0.01),
+        NaiveStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01),
         FixedFractionStrategy(fraction=0.1, payoff=2.0, loss=1.0),
         CPPIStrategy(
             floor_fraction=0.1,
@@ -50,10 +50,10 @@ def _all_shipped_binary_strategies():
             loss=1.0,
         ),
         DynamicBankrollManagement(
-            base_fraction=0.1, payoff=2.0, loss=1.0, transaction_cost=0.01
+            base_fraction=0.1, payoff=2.0, loss=1.0, transaction_cost_rate=0.01
         ),
-        OptimalF(payoff=2.0, loss=1.0, transaction_cost=0.01, win_rate=0.55),
-        MertonShare(payoff=2.0, loss=1.0, transaction_cost=0.01),
+        OptimalF(payoff=2.0, loss=1.0, transaction_cost_rate=0.01, win_rate=0.55),
+        MertonShare(payoff=2.0, loss=1.0, transaction_cost_rate=0.01),
     ]
 
 
@@ -215,14 +215,16 @@ def test_check_strategy_flags_fraction_out_of_range():
             "and 1, got 1.5"
         ),
     ):
-        check_strategy(_RecklessStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01))
+        check_strategy(
+            _RecklessStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01)
+        )
 
 
 def test_check_strategy_flags_nonfinite_fraction():
     with pytest.raises(
         ValueError, match="must return a finite bankroll fraction, got nan"
     ):
-        check_strategy(_NanStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01))
+        check_strategy(_NanStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01))
 
 
 def test_check_strategy_flags_non_scalar_fraction():
@@ -230,7 +232,7 @@ def test_check_strategy_flags_non_scalar_fraction():
         ValueError,
         match=re.escape("must return a single bankroll fraction, got (0.25, 0.25)"),
     ):
-        check_strategy(_TupleStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01))
+        check_strategy(_TupleStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01))
 
 
 def test_check_strategy_flags_staking_at_ruin():
@@ -241,7 +243,9 @@ def test_check_strategy_flags_staking_at_ruin():
             "nothing left to stake, got 0.25"
         ),
     ):
-        check_strategy(_DeadbeatStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01))
+        check_strategy(
+            _DeadbeatStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01)
+        )
 
 
 def test_check_strategy_flags_cap_out_of_range():
@@ -252,18 +256,20 @@ def test_check_strategy_flags_cap_out_of_range():
             "0 and 1, got 2.0"
         ),
     ):
-        check_strategy(_UnsafeCapStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01))
+        check_strategy(
+            _UnsafeCapStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01)
+        )
 
 
 def test_check_strategy_flags_staking_into_ruin_cap():
     with pytest.raises(ValueError, match="get_max_safe_bet\\(0.0\\) must return 0.0"):
         check_strategy(
-            _NoCapAtRuinStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01)
+            _NoCapAtRuinStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01)
         )
 
 
 def test_check_strategy_flags_uncallable_hook():
-    strategy = _UncallableHookStrategy(payoff=2.0, loss=1.0, transaction_cost=0.01)
+    strategy = _UncallableHookStrategy(payoff=2.0, loss=1.0, transaction_cost_rate=0.01)
     strategy.update_bankroll = 5
     with pytest.raises(ValueError, match="update_bankroll must be callable"):
         check_strategy(strategy)

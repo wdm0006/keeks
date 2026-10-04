@@ -27,7 +27,7 @@ class TestKellyCriterionEntryPrice:
 
     def test_basic_functionality(self):
         """Test basic entry price calculation for Kelly."""
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         # Simple 50/50 bet: win $100 or lose $100
         outcomes = [100, -100]
@@ -43,7 +43,7 @@ class TestKellyCriterionEntryPrice:
 
     def test_positive_ev_bet(self):
         """Test that Kelly is willing to pay for positive EV bet."""
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         # Positive EV: 60% chance to win $100, 40% chance to lose $50
         outcomes = [100, -50]
@@ -60,7 +60,7 @@ class TestKellyCriterionEntryPrice:
 
     def test_st_petersburg_bounded(self):
         """Test that Kelly gives finite price for St. Petersburg paradox."""
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         # St. Petersburg outcomes
         max_flips = 20
@@ -77,7 +77,7 @@ class TestKellyCriterionEntryPrice:
 
     def test_wealth_effect(self):
         """Test that wealthier agents pay more (absolute terms)."""
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         outcomes = [1000, -500]
         probabilities = [0.5, 0.5]
@@ -100,7 +100,7 @@ class TestMertonShareEntryPrice:
     def test_basic_functionality(self):
         """Test basic entry price calculation for Merton."""
         strategy = MertonShare(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=2.0
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=2.0
         )
 
         outcomes = [100, -50]
@@ -121,7 +121,7 @@ class TestMertonShareEntryPrice:
 
         # Low risk aversion (γ=1.5)
         strategy_low = MertonShare(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=1.5
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=1.5
         )
         price_low = strategy_low.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
@@ -129,7 +129,7 @@ class TestMertonShareEntryPrice:
 
         # High risk aversion (γ=5.0)
         strategy_high = MertonShare(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=5.0
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=5.0
         )
         price_high = strategy_high.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
@@ -144,13 +144,13 @@ class TestMertonShareEntryPrice:
         probabilities = [0.6, 0.4]
         current_wealth = 5000
 
-        kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         price_kelly = kelly.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
         )
 
         merton = MertonShare(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=1.0
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=1.0
         )
         price_merton = merton.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
@@ -169,7 +169,7 @@ class TestMertonShareEntryPrice:
         prices = {}
         for gamma in [1.0, 2.0, 3.0, 5.0]:
             strategy = MertonShare(
-                payoff=1.0, loss=1.0, transaction_cost=0.0, risk_aversion=gamma
+                payoff=1.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=gamma
             )
             prices[gamma] = strategy.calculate_max_entry_price(
                 outcomes, probabilities, current_wealth
@@ -191,13 +191,13 @@ class TestOtherStrategiesEntryPrice:
         probabilities = [0.6, 0.4]
         current_wealth = 5000
 
-        kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         kelly_price = kelly.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
         )
 
         half_kelly = FractionalKellyCriterion(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.5
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, fraction=0.5
         )
         half_kelly_price = half_kelly.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
@@ -212,13 +212,13 @@ class TestOtherStrategiesEntryPrice:
         probabilities = [0.6, 0.4]
         current_wealth = 5000
 
-        kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        kelly = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         kelly_price = kelly.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
         )
 
         drawdown_kelly = DrawdownAdjustedKelly(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, max_acceptable_drawdown=0.2
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, max_transaction_loss=0.2
         )
         drawdown_price = drawdown_kelly.calculate_max_entry_price(
             outcomes, probabilities, current_wealth
@@ -230,7 +230,9 @@ class TestOtherStrategiesEntryPrice:
 
     def test_optimal_f_uses_log_utility(self):
         """Test that OptimalF uses log utility (like Kelly)."""
-        strategy = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.0, win_rate=0.55)
+        strategy = OptimalF(
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, win_rate=0.55
+        )
 
         outcomes = [100, -50]
         probabilities = [0.6, 0.4]
@@ -246,7 +248,7 @@ class TestOtherStrategiesEntryPrice:
 
     def test_naive_pays_expected_value(self):
         """Test that NaiveStrategy pays expected value."""
-        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         outcomes = [100, -50]
         probabilities = [0.6, 0.4]
@@ -262,7 +264,7 @@ class TestOtherStrategiesEntryPrice:
 
     def test_naive_respects_max_search_fraction(self):
         """Test that NaiveStrategy caps expected value at the wealth fraction."""
-        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         # Expected value ($10,000) far exceeds the search bound
         outcomes = [10000]
@@ -284,7 +286,7 @@ class TestOtherStrategiesEntryPrice:
     def test_fixed_fraction_uses_fraction(self):
         """Test that FixedFractionStrategy pays a fixed fraction of wealth."""
         strategy = FixedFractionStrategy(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.05
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, fraction=0.05
         )
 
         outcomes = [100, -50]
@@ -303,7 +305,7 @@ class TestOtherStrategiesEntryPrice:
         strategy = CPPIStrategy(
             payoff=1.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             floor_fraction=0.5,
             multiplier=2.0,
             initial_bankroll=1000,
@@ -327,7 +329,7 @@ class TestOtherStrategiesEntryPrice:
         strategy = DynamicBankrollManagement(
             payoff=1.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             base_fraction=0.1,
             window_size=10,
         )
@@ -349,7 +351,7 @@ class TestEntryPriceParameters:
 
     def test_custom_tolerance(self):
         """Test that custom tolerance parameter works."""
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         outcomes = [100, -50]
         probabilities = [0.6, 0.4]
@@ -370,7 +372,7 @@ class TestEntryPriceParameters:
 
     def test_custom_max_search_fraction(self):
         """Test that max_search_fraction parameter is respected."""
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         outcomes = [10000, 0]  # Very favorable bet
         probabilities = [0.9, 0.1]
@@ -386,10 +388,10 @@ class TestEntryPriceParameters:
     @pytest.mark.parametrize(
         "strategy",
         [
-            KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0),
-            NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0),
+            KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0),
+            NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0),
             FixedFractionStrategy(
-                fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.0
+                fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.0
             ),
         ],
     )

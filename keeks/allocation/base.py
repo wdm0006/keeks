@@ -6,7 +6,7 @@ import numpy as np
 from keeks.utils import (
     PROBABILITY_SUM_TOLERANCE,
     _validated_evaluate,
-    normalize_probabilities,
+    validate_probabilities,
 )
 
 __author__ = "willmcginnis"
@@ -58,9 +58,11 @@ class BaseAllocationStrategy(abc.ABC):
     Simulators resolve two optional hooks
     ``getattr``-style: ``update_bankroll(current_bankroll)`` carries the
     bankroll path for plumbing, and online allocators additionally implement
-    ``record_settlement(realized_returns)`` - called once per staked period
-    with the realized joint simple-return vector - as their only sanctioned
-    stateful channel.
+    ``record_settlement(won, realized_returns)`` - called once per staked
+    period with the period's per-option outcome vector (``True`` for a win,
+    ``False`` for a loss, ``None`` when no settlement draw realized for that
+    option) and the realized joint simple-return vector - as their only
+    sanctioned stateful channel.
     """
 
     def __init_subclass__(cls, **kwargs):
@@ -290,7 +292,7 @@ def _validate_scenarios(scenarios, probabilities=None):
     one column per option. Rows are equally likely unless ``probabilities``
     says otherwise, and any probability mass below one is left as-is - it
     models all-cash periods at zero return, so probabilities are validated
-    through :func:`keeks.utils.normalize_probabilities` and never
+    through :func:`keeks.utils.validate_probabilities` and never
     renormalized.
 
     Parameters
@@ -300,7 +302,7 @@ def _validate_scenarios(scenarios, probabilities=None):
         non-empty two-dimensional sequence of finite numbers.
     probabilities : array-like, optional
         The probability of each scenario row. Must satisfy
-        :func:`keeks.utils.normalize_probabilities` and carry exactly one
+        :func:`keeks.utils.validate_probabilities` and carry exactly one
         entry per row.
 
     Returns
@@ -331,7 +333,7 @@ def _validate_scenarios(scenarios, probabilities=None):
     if probabilities is None:
         return scenarios, None
 
-    probabilities = normalize_probabilities(probabilities)
+    probabilities = validate_probabilities(probabilities)
     if probabilities.size != scenarios.shape[0]:
         raise ValueError("Probabilities must have one entry per scenario row")
     return scenarios, probabilities

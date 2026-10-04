@@ -13,7 +13,7 @@ BASE_KWARGS = {
     RepeatedBinarySimulator: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_costs": 0.0,
+        "fee_per_bet": 0.0,
         "probability": 1.0,
         "trials": 1,
         "seed": 1,
@@ -21,7 +21,7 @@ BASE_KWARGS = {
     RandomBinarySimulator: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_costs": 0.0,
+        "fee_per_bet": 0.0,
         "trials": 1,
         "stdev": 0.0,
         "seed": 1,
@@ -29,7 +29,7 @@ BASE_KWARGS = {
     RandomUncertainBinarySimulator: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_costs": 0.0,
+        "fee_per_bet": 0.0,
         "trials": 1,
         "stdev": 0.0,
         "uncertainty_stdev": 0.0,
@@ -55,14 +55,14 @@ class Strategy:
         self.probabilities.append(probability)
         return self.fraction
 
-    def record_result(self, won, return_pct):
-        self.results.append((won, return_pct))
+    def record_settlement(self, won, realized_returns):
+        self.results.append((won, realized_returns))
 
 
 @pytest.mark.parametrize("simulator_cls", SIMULATORS)
 @pytest.mark.parametrize("fraction", INVALID_FRACTIONS)
 def test_invalid_fraction_is_rejected_without_side_effects(simulator_cls, fraction):
-    bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
     strategy = Strategy(fraction)
 
     with pytest.raises(ValueError, match="Strategy stake fraction"):
@@ -85,8 +85,8 @@ def test_rejected_fraction_does_not_shift_seeded_run(simulator_cls):
     with pytest.raises(ValueError, match="Strategy stake fraction"):
         reused.evaluate_strategy(Strategy(2.0), BankRoll(initial_funds=100.0))
 
-    reused_bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
-    fresh_bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+    reused_bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
+    fresh_bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
     reused_strategy = Strategy(0.1)
     fresh_strategy = Strategy(0.1)
     reused.evaluate_strategy(reused_strategy, reused_bankroll)
@@ -102,7 +102,7 @@ def test_rejected_fraction_does_not_shift_seeded_run(simulator_cls):
     [(0.0, [100.0]), (1.0, [100.0, 200.0])],
 )
 def test_fraction_boundaries(simulator_cls, fraction, expected_history):
-    bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
     build(simulator_cls).evaluate_strategy(Strategy(fraction), bankroll)
 

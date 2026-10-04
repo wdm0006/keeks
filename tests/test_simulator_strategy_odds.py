@@ -7,7 +7,7 @@ confident, meaningless bankroll path. ``evaluate_strategy`` now rejects that
 configuration before touching the strategy, the bankroll, or any generator.
 
 Duck-typed strategies are deliberately left alone, and the fractional
-``transaction_cost`` is never compared against the flat ``transaction_costs``
+``transaction_cost_rate`` is never compared against the flat ``fee_per_bet``
 fee: those units differ on purpose.
 """
 
@@ -37,20 +37,20 @@ def strategy(**overrides):
         "fraction": 0.1,
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.0,
+        "transaction_cost_rate": 0.0,
     }
     parameters.update(overrides)
     return FixedFractionStrategy(**parameters)
 
 
 def simulator(simulator_cls, **overrides):
-    parameters = {"seed": SEED, "trials": TRIALS, "transaction_costs": 0.0}
+    parameters = {"seed": SEED, "trials": TRIALS, "fee_per_bet": 0.0}
     parameters.update(overrides)
     return build(simulator_cls, **parameters)
 
 
 def run(sim, **strategy_overrides):
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     sim.evaluate_strategy(strategy(**strategy_overrides), bankroll)
     return bankroll
 
@@ -99,7 +99,7 @@ class TestMismatchRejected:
     @pytest.mark.parametrize("field", ["payoff", "loss"])
     def test_mismatch_consumes_no_global_randomness(self, simulator_cls, field):
         """The unseeded path draws from the process-global generators."""
-        sim = build(simulator_cls, trials=TRIALS, transaction_costs=0.0)
+        sim = build(simulator_cls, trials=TRIALS, fee_per_bet=0.0)
         random.seed(12345)
         np.random.seed(12345)
         expected_random = random.getstate()
@@ -117,7 +117,7 @@ class TestMismatchRejected:
     def test_mismatch_leaves_stateful_strategy_untouched(self, simulator_cls):
         sim = simulator(simulator_cls)
         dynamic = DynamicBankrollManagement(
-            base_fraction=0.1, payoff=2.0, loss=1.0, transaction_cost=0.0
+            base_fraction=0.1, payoff=2.0, loss=1.0, transaction_cost_rate=0.0
         )
 
         with pytest.raises(ValueError, match=r"^Strategy payoff \("):
@@ -147,9 +147,9 @@ class TestMismatchRejected:
 
     def test_ten_to_one_settlement_of_an_even_money_strategy_is_refused(self):
         """The reported defect: even-money sizing settled at ten-to-one."""
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
         sim = RepeatedBinarySimulator(
-            payoff=10.0, loss=0.1, transaction_costs=0.0, probability=1.0, trials=1
+            payoff=10.0, loss=0.1, fee_per_bet=0.0, probability=1.0, trials=1
         )
 
         with pytest.raises(ValueError, match=r"^Strategy payoff \("):
@@ -178,9 +178,9 @@ class TestMatchingRunsUnchanged:
 
     @pytest.mark.parametrize("simulator_cls", SIMULATORS)
     def test_stateful_strategies_still_run_and_record(self, simulator_cls):
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
         dynamic = DynamicBankrollManagement(
-            base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.0
+            base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.0
         )
 
         simulator(simulator_cls).evaluate_strategy(dynamic, bankroll)
@@ -189,7 +189,7 @@ class TestMatchingRunsUnchanged:
         assert len(bankroll.history) > 1
 
     def test_cppi_still_runs(self):
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
         cppi = CPPIStrategy(
             floor_fraction=0.5,
             multiplier=2.0,
@@ -207,7 +207,7 @@ class TestMatchingRunsUnchanged:
 
     @pytest.mark.parametrize("simulator_cls", SIMULATORS)
     def test_integer_and_float_odds_are_treated_as_equal(self, simulator_cls):
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
 
         simulator(simulator_cls).evaluate_strategy(strategy(payoff=1, loss=1), bankroll)
 
@@ -218,10 +218,10 @@ class TestUncomparedConfiguration:
     @pytest.mark.parametrize("simulator_cls", SIMULATORS)
     def test_transaction_cost_units_are_not_compared(self, simulator_cls):
         """The fractional per-unit cost and the flat per-bet fee differ on purpose."""
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
-        sim = simulator(simulator_cls, transaction_costs=5.0)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
+        sim = simulator(simulator_cls, fee_per_bet=5.0)
 
-        sim.evaluate_strategy(strategy(transaction_cost=0.01), bankroll)
+        sim.evaluate_strategy(strategy(transaction_cost_rate=0.01), bankroll)
 
         assert len(bankroll.history) > 1
 
@@ -233,7 +233,7 @@ class TestUncomparedConfiguration:
             def evaluate(self, _probability, _current_bankroll):
                 return 0.05
 
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
 
         simulator(simulator_cls).evaluate_strategy(DuckStrategy(), bankroll)
 

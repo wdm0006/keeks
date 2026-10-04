@@ -25,20 +25,22 @@ from keeks.binary_strategies.base import BaseStrategy
 # bankroll state between evaluate() calls.
 STRATEGY_FACTORIES = {
     "KellyCriterion": lambda: KellyCriterion(
-        payoff=1.0, loss=1.0, transaction_cost=0.01
+        payoff=1.0, loss=1.0, transaction_cost_rate=0.01
     ),
     "FractionalKellyCriterion": lambda: FractionalKellyCriterion(
-        payoff=1.0, loss=1.0, transaction_cost=0.01, fraction=0.5
+        payoff=1.0, loss=1.0, transaction_cost_rate=0.01, fraction=0.5
     ),
     "DrawdownAdjustedKelly": lambda: DrawdownAdjustedKelly(
-        payoff=1.0, loss=1.0, transaction_cost=0.01, max_acceptable_drawdown=0.2
+        payoff=1.0, loss=1.0, transaction_cost_rate=0.01, max_transaction_loss=0.2
     ),
     "OptimalF": lambda: OptimalF(
-        payoff=1.0, loss=1.0, transaction_cost=0.01, win_rate=0.6
+        payoff=1.0, loss=1.0, transaction_cost_rate=0.01, win_rate=0.6
     ),
-    "NaiveStrategy": lambda: NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.01),
+    "NaiveStrategy": lambda: NaiveStrategy(
+        payoff=1.0, loss=1.0, transaction_cost_rate=0.01
+    ),
     "FixedFractionStrategy": lambda: FixedFractionStrategy(
-        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01
+        fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.01
     ),
     "CPPIStrategy": lambda: CPPIStrategy(
         floor_fraction=0.5,
@@ -46,12 +48,14 @@ STRATEGY_FACTORIES = {
         initial_bankroll=1000.0,
         payoff=1.0,
         loss=1.0,
-        transaction_cost=0.01,
+        transaction_cost_rate=0.01,
     ),
     "DynamicBankrollManagement": lambda: DynamicBankrollManagement(
-        base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01
+        base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.01
     ),
-    "MertonShare": lambda: MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.01),
+    "MertonShare": lambda: MertonShare(
+        payoff=1.0, loss=1.0, transaction_cost_rate=0.01
+    ),
 }
 
 
@@ -79,18 +83,18 @@ def test_evaluate_returns_zero_at_non_positive_bankroll(name, bankroll):
 @pytest.mark.parametrize("bankroll", [0.0, -0.01, -100.0])
 def test_get_max_safe_bet_zero_at_non_positive_bankroll(bankroll):
     """The clamp itself returns 0.0 rather than dividing by the bankroll."""
-    strategy = _ConcreteStrategy(payoff=1.0, loss=1.0, transaction_cost=0.01)
+    strategy = _ConcreteStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.01)
 
     assert strategy.get_max_safe_bet(bankroll) == 0.0
 
 
 @pytest.mark.parametrize(
-    ("loss", "transaction_cost", "expected"),
+    ("loss", "transaction_cost_rate", "expected"),
     [
-        # loss + transaction_cost above 1.0 - the reciprocal binds.
+        # loss + transaction_cost_rate above 1.0 - the reciprocal binds.
         (1.0, 0.01, 1.0 / 1.01),
         (2.0, 0.5, 0.4),
-        # loss + transaction_cost at or below 1.0 - the 1.0 cap binds.
+        # loss + transaction_cost_rate at or below 1.0 - the 1.0 cap binds.
         (1.0, 0.0, 1.0),
         (0.5, 0.0, 1.0),
         (0.25, 0.25, 1.0),
@@ -98,11 +102,11 @@ def test_get_max_safe_bet_zero_at_non_positive_bankroll(bankroll):
 )
 @pytest.mark.parametrize("bankroll", [0.01, 1.0, 1000.0, 1e9])
 def test_get_max_safe_bet_unchanged_for_positive_bankroll(
-    loss, transaction_cost, expected, bankroll
+    loss, transaction_cost_rate, expected, bankroll
 ):
     """Positive bankrolls keep the pre-guard value: min(1, 1/(loss + cost))."""
     strategy = _ConcreteStrategy(
-        payoff=1.0, loss=loss, transaction_cost=transaction_cost
+        payoff=1.0, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
 
     assert strategy.get_max_safe_bet(bankroll) == pytest.approx(expected)
@@ -111,7 +115,7 @@ def test_get_max_safe_bet_unchanged_for_positive_bankroll(
 def test_dynamic_strategy_zero_bankroll_does_not_divide_by_zero_peak():
     """DynamicBankrollManagement's drawdown factor tolerates a zero peak bankroll."""
     strategy = DynamicBankrollManagement(
-        base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.01
+        base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.01
     )
     strategy.current_bankroll = 0.0
     strategy.peak_bankroll = 0.0

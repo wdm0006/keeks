@@ -87,7 +87,7 @@ Side-by-side
        (``simulation.py``).
    * - Bankroll and drawdown safeguards
      - ``BankRoll`` can hold back part of the funds and refuses any single
-       withdrawal larger than ``max_draw_down`` times current funds, raising
+       withdrawal larger than ``max_transaction_loss`` times current funds, raising
        ``RuinError`` that the simulators catch. This is a per-settlement cap,
        not a cumulative drawdown budget, and it does not protect against loss
        (:doc:`bankroll`).
@@ -181,15 +181,15 @@ resulting probability and payoff to Keeks to compare sizing policies.
    payoff = 100 / 110
 
    strategies = {
-       "kelly": KellyCriterion(payoff=payoff, loss=1.0, transaction_cost=0.0),
+       "kelly": KellyCriterion(payoff=payoff, loss=1.0, transaction_cost_rate=0.0),
        "half kelly": FractionalKellyCriterion(
-           payoff=payoff, loss=1.0, fraction=0.5, transaction_cost=0.0
+           payoff=payoff, loss=1.0, fraction=0.5, transaction_cost_rate=0.0
        ),
    }
    for name, strategy in strategies.items():
-       bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+       bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.3)
        simulator = RepeatedBinarySimulator(
-           payoff=payoff, loss=1.0, transaction_costs=0.0,
+           payoff=payoff, loss=1.0, fee_per_bet=0.0,
            probability=model_prob, trials=200, seed=7,
        )
        simulator.evaluate_strategy(strategy, bankroll)

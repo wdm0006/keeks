@@ -41,7 +41,7 @@ def check_strategy(strategy: BaseStrategy) -> None:
     bankroll returns exactly ``0.0`` - there is nothing left to stake;
     ``get_max_safe_bet`` stays a fraction within ``[0, 1]`` and answers
     ``0.0`` for a nonpositive bankroll; and the optional simulator hooks
-    ``update_bankroll`` and ``record_result``, when defined, are callable -
+    ``update_bankroll`` and ``record_settlement``, when defined, are callable -
     the shapes the simulators resolve ``getattr``-style.
 
     Parameters
@@ -60,14 +60,14 @@ def check_strategy(strategy: BaseStrategy) -> None:
     Examples
     --------
     >>> from keeks import KellyCriterion, check_strategy
-    >>> check_strategy(KellyCriterion(payoff=2.0, loss=1.0, transaction_cost=0.01))
+    >>> check_strategy(KellyCriterion(payoff=2.0, loss=1.0, transaction_cost_rate=0.01))
 
     A contract violation raises with the expectation and the received value:
 
     >>> class _Reckless(KellyCriterion):
     ...     def evaluate(self, probability, current_bankroll):
     ...         return 1.5
-    >>> check_strategy(_Reckless(payoff=2.0, loss=1.0, transaction_cost=0.01))
+    >>> check_strategy(_Reckless(payoff=2.0, loss=1.0, transaction_cost_rate=0.01))
     Traceback (most recent call last):
         ...
     ValueError: evaluate(0.0, 1000.0) must return a bankroll fraction between 0 and 1, got 1.5
@@ -118,7 +118,7 @@ def check_strategy(strategy: BaseStrategy) -> None:
             "has no safe stake"
         )
 
-    for hook in ("update_bankroll", "record_result"):
+    for hook in ("update_bankroll", "record_settlement"):
         resolved = getattr(strategy, hook, None)
         if resolved is not None and not callable(resolved):
             raise ValueError(

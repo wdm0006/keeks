@@ -4,7 +4,7 @@ The seeded tests pin the exact composition of each simulator's random streams â€
 the numpy ``Generator`` probability/uncertainty stream against the legacy
 ``random.Random`` outcome stream â€” with golden values computed independently
 from fresh generators. The unseeded tests pin the state-restore behaviour of
-the legacy global stream, the exact-0.0 bankruptcy stop, the ``record_result``
+the legacy global stream, the exact-0.0 bankruptcy stop, the ``record_settlement``
 payload, and the ``None`` return value of an early-exited run.
 """
 
@@ -29,8 +29,8 @@ class RecordingStrategy:
         self.probabilities.append(probability)
         return self.fraction
 
-    def record_result(self, won, return_pct):
-        self.results.append((won, return_pct))
+    def record_settlement(self, won, realized_returns):
+        self.results.append((won, realized_returns))
 
 
 class TestSeededStreamLayout:
@@ -49,14 +49,14 @@ class TestSeededStreamLayout:
         simulator = RandomUncertainBinarySimulator(
             payoff=2.0,
             loss=1.0,
-            transaction_costs=0.0,
+            fee_per_bet=0.0,
             trials=2,
             stdev=0.1,
             uncertainty_stdev=0.05,
             seed=7,
         )
         strategy = RecordingStrategy(0.1)
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         simulator.evaluate_strategy(strategy, bankroll)
 
@@ -68,7 +68,7 @@ class TestSeededStreamLayout:
         # 0.5001230153357482 + 0.014937276875423495 = 0.5150602922111717, and
         # both outcome draws (0.3238..., 0.1508...) fall below their targets.
         # Each settled bet risks 10% of the current funds for a 2x payoff.
-        assert strategy.results == [(True, 0.2), (True, 0.2)]
+        assert strategy.results == [((True,), (0.2,)), ((True,), (0.2,))]
         assert bankroll.history == [100.0, 120.0, 144.0]
 
     def test_repeated_simulator_uses_only_the_outcome_stream(self):
@@ -76,13 +76,13 @@ class TestSeededStreamLayout:
         simulator = RepeatedBinarySimulator(
             payoff=2.0,
             loss=1.0,
-            transaction_costs=0.0,
+            fee_per_bet=0.0,
             probability=0.5,
             trials=2,
             seed=7,
         )
         strategy = RecordingStrategy(0.1)
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         numpy_state_before = np.random.get_state()
         simulator.evaluate_strategy(strategy, bankroll)
@@ -90,7 +90,7 @@ class TestSeededStreamLayout:
         # random.Random(7) draws 0.32383276483316237 then 0.15084917392450192;
         # both beat the fixed 0.5 probability.
         assert strategy.probabilities == [0.5, 0.5]
-        assert strategy.results == [(True, 0.2), (True, 0.2)]
+        assert strategy.results == [((True,), (0.2,)), ((True,), (0.2,))]
         assert bankroll.history == [100.0, 120.0, 144.0]
 
         after = np.random.get_state()
@@ -100,50 +100,50 @@ class TestSeededStreamLayout:
         assert after[2] == numpy_state_before[2]
 
 
-class TestRecordResultPayload:
-    """record_result receives (won: bool, return_pct: float) per settled bet."""
+class TestRecordSettlementPayload:
+    """record_settlement receives one-entry won and return tuples per settled bet."""
 
     def test_winning_settlement_payload(self):
         simulator = RepeatedBinarySimulator(
             payoff=2.0,
             loss=1.0,
-            transaction_costs=0.0,
+            fee_per_bet=0.0,
             probability=1.0,  # every outcome wins
             trials=1,
             seed=1,
         )
         strategy = RecordingStrategy(0.1)
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         simulator.evaluate_strategy(strategy, bankroll)
 
         # Won 2x on a 10-unit bet of a 100-unit bankroll.
-        assert strategy.results == [(True, 0.2)]
-        assert isinstance(strategy.results[0][0], bool)
-        assert isinstance(strategy.results[0][1], float)
+        assert strategy.results == [((True,), (0.2,))]
+        assert isinstance(strategy.results[0][0][0], bool)
+        assert isinstance(strategy.results[0][1][0], float)
 
     def test_losing_settlement_payload(self):
         simulator = RepeatedBinarySimulator(
             payoff=2.0,
             loss=1.0,
-            transaction_costs=0.0,
+            fee_per_bet=0.0,
             probability=0.0,  # every outcome loses
             trials=1,
             seed=1,
         )
         strategy = RecordingStrategy(0.1)
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         simulator.evaluate_strategy(strategy, bankroll)
 
         # Lost 1x on a 10-unit bet of a 100-unit bankroll.
-        assert strategy.results == [(False, -0.1)]
+        assert strategy.results == [((False,), (-0.1,))]
 
     def test_fee_shifts_return_pct_on_both_sides(self):
         winning = RepeatedBinarySimulator(
             payoff=2.0,
             loss=1.0,
-            transaction_costs=5.0,
+            fee_per_bet=5.0,
             probability=1.0,
             trials=1,
             seed=1,
@@ -151,7 +151,7 @@ class TestRecordResultPayload:
         losing = RepeatedBinarySimulator(
             payoff=2.0,
             loss=1.0,
-            transaction_costs=5.0,
+            fee_per_bet=5.0,
             probability=0.0,
             trials=1,
             seed=1,
@@ -160,15 +160,15 @@ class TestRecordResultPayload:
         lose_strategy = RecordingStrategy(0.1)
 
         winning.evaluate_strategy(
-            win_strategy, BankRoll(initial_funds=100.0, max_draw_down=None)
+            win_strategy, BankRoll(initial_funds=100.0, max_transaction_loss=None)
         )
         losing.evaluate_strategy(
-            lose_strategy, BankRoll(initial_funds=100.0, max_draw_down=None)
+            lose_strategy, BankRoll(initial_funds=100.0, max_transaction_loss=None)
         )
 
         # Fee is an absolute amount: (2*10 - 5)/100 and -(1*10 + 5)/100.
-        assert win_strategy.results == [(True, 0.15)]
-        assert lose_strategy.results == [(False, -0.15)]
+        assert win_strategy.results == [((True,), (0.15,))]
+        assert lose_strategy.results == [((False,), (-0.15,))]
 
 
 class TestExactZeroRuinStop:
@@ -178,13 +178,13 @@ class TestExactZeroRuinStop:
         simulator = RepeatedBinarySimulator(
             payoff=1.0,
             loss=1.0,
-            transaction_costs=0.0,
+            fee_per_bet=0.0,
             probability=0.1,  # random.Random(1).random() < 0.1 is False: a loss
             trials=10,
             seed=1,
         )
         strategy = RecordingStrategy(1.0)  # stake the entire bettable funds
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         result = simulator.evaluate_strategy(strategy, bankroll)
 
@@ -193,20 +193,20 @@ class TestExactZeroRuinStop:
         assert bankroll.total_funds == 0.0
         assert bankroll.history == [100.0, 0.0]
         assert len(strategy.probabilities) == 1
-        assert strategy.results == [(False, -1.0)]
+        assert strategy.results == [((False,), (-1.0,))]
         assert result is None
 
     def test_normal_completion_also_returns_none(self):
         simulator = RepeatedBinarySimulator(
             payoff=1.0,
             loss=1.0,
-            transaction_costs=0.0,
+            fee_per_bet=0.0,
             probability=1.0,
             trials=3,
             seed=1,
         )
         strategy = RecordingStrategy(0.1)
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         result = simulator.evaluate_strategy(strategy, bankroll)
 
@@ -228,7 +228,7 @@ class TestUnseededInvalidFractionRestore:
         kwargs = {
             "payoff": 2.0,
             "loss": 1.0,
-            "transaction_costs": 0.0,
+            "fee_per_bet": 0.0,
             "trials": 1,
             "stdev": 0.1,
         }
@@ -237,7 +237,7 @@ class TestUnseededInvalidFractionRestore:
         simulator = simulator_cls(**{**kwargs, "seed": None})
 
         strategy = RecordingStrategy(2.0)  # invalid: outside [0, 1]
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         with pytest.raises(ValueError, match="Strategy stake fraction"):
             simulator.evaluate_strategy(strategy, bankroll)
@@ -257,14 +257,14 @@ class TestUnseededInvalidFractionRestore:
         simulator = RandomUncertainBinarySimulator(
             payoff=2.0,
             loss=1.0,
-            transaction_costs=0.0,
+            fee_per_bet=0.0,
             trials=1,
             stdev=0.1,
             uncertainty_stdev=0.05,
             seed=None,
         )
         strategy = RecordingStrategy(0.0)  # valid, and no bet is settled
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
         simulator.evaluate_strategy(strategy, bankroll)
 

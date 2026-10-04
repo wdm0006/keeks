@@ -34,20 +34,20 @@ from keeks.binary_strategies.simple import (
 MERTON_CASE_1 = {
     "payoff": 2.0,
     "loss": 0.5,
-    "transaction_cost": 0.0,
+    "transaction_cost_rate": 0.0,
     "risk_aversion": 2.0,
 }
 MERTON_CASE_2 = {
     "payoff": 2.0,
     "loss": 0.5,
-    "transaction_cost": 0.1,
+    "transaction_cost_rate": 0.1,
     "risk_aversion": 3.0,
 }
 
 
-def merton_closed_form(p, payoff, loss, transaction_cost, risk_aversion):
+def merton_closed_form(p, payoff, loss, transaction_cost_rate, risk_aversion):
     """Independent closed form: mu / (gamma * Var[R]) for the binary return."""
-    mu = p * (payoff - transaction_cost) - (1 - p) * (loss + transaction_cost)
+    mu = p * (payoff - transaction_cost_rate) - (1 - p) * (loss + transaction_cost_rate)
     mean = p * payoff - (1 - p) * loss
     variance = p * payoff**2 + (1 - p) * loss**2 - mean**2
     return mu / (risk_aversion * variance)
@@ -61,7 +61,7 @@ class TestMertonShareGolden:
         assert expected == pytest.approx(1 / 3, abs=1e-12)
         assert strategy.evaluate(0.6, 1000.0) == pytest.approx(expected, abs=1e-12)
 
-    def test_case2_with_transaction_costs_matches_closed_form(self):
+    def test_case2_with_transaction_cost_rate_matches_closed_form(self):
         strategy = MertonShare(**MERTON_CASE_2)
         expected = merton_closed_form(0.7, **MERTON_CASE_2)
 
@@ -72,7 +72,7 @@ class TestMertonShareGolden:
         strategy = MertonShare(
             payoff=2.0,
             loss=0.5,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             risk_aversion=0.5,
             max_fraction=0.4,
         )
@@ -82,11 +82,11 @@ class TestMertonShareGolden:
         assert strategy.evaluate(0.6, 1000.0) == 0.4
 
     def test_degenerate_edges_do_not_bet(self):
-        never_edge = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.3)
+        never_edge = MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0.3)
         # Negative expected return.
         assert never_edge.evaluate(0.5, 1000.0) == 0.0
         # Zero variance: p=1 leaves no spread in the gross return.
-        degenerate = MertonShare(payoff=2.0, loss=0.5, transaction_cost=0.0)
+        degenerate = MertonShare(payoff=2.0, loss=0.5, transaction_cost_rate=0.0)
         assert degenerate.evaluate(1.0, 1000.0) == 0.0
 
 
@@ -100,7 +100,7 @@ class TestCPPIGolden:
             "initial_bankroll": 1000.0,
             "payoff": payoff,
             "loss": loss,
-            "transaction_cost": 0.0,
+            "transaction_cost_rate": 0.0,
         }
 
     def test_bankroll_below_floor_bets_nothing(self):
@@ -146,15 +146,15 @@ class TestDynamicBankrollGolden:
             "base_fraction": 0.1,
             "payoff": 2.0,
             "loss": 1.0,
-            "transaction_cost": 0.0,
+            "transaction_cost_rate": 0.0,
             "window_size": 10,
         }
         defaults.update(overrides)
         return DynamicBankrollManagement(**defaults)
 
-    def record(self, strategy, *return_pcts):
-        for pct in return_pcts:
-            strategy.record_result(pct > 0, pct)
+    def record(self, strategy, *realized_returns):
+        for pct in realized_returns:
+            strategy.record_settlement((pct > 0,), (pct,))
 
     def test_streak_factor_no_results(self):
         assert self.make().get_streak_factor() == 1.0
@@ -244,7 +244,7 @@ class TestDynamicBankrollGolden:
 
         # A win at the peak, then an 800 bankroll: streak 1.05 (1 win, scale 0.1),
         # volatility 1.0 (single sample), drawdown 0.8, probability 1.1.
-        strategy.record_result(True)
+        strategy.record_settlement((True,))
         assert strategy.evaluate(0.6, 800.0) == pytest.approx(0.0924, abs=1e-12)
 
     def test_min_and_max_fraction_clamps(self):
@@ -257,7 +257,7 @@ class TestDynamicBankrollGolden:
     def test_result_window_drops_oldest(self):
         strategy = self.make(window_size=10)
         for i in range(11):
-            strategy.record_result(True, float(i + 1))
+            strategy.record_settlement((True,), (float(i + 1),))
         assert len(strategy.results) == 10
         assert strategy.results[0] == 2.0
         assert strategy.results[-1] == 11.0
@@ -280,7 +280,7 @@ class TestDrawdownAdjustedKellyGolden:
     def test_drawdown_factor_scaling(self, drawdown, factor):
         kelly = self.kelly_fraction()
         strategy = DrawdownAdjustedKelly(
-            self.PAYOFF, self.LOSS, self.COST, max_acceptable_drawdown=drawdown
+            self.PAYOFF, self.LOSS, self.COST, max_transaction_loss=drawdown
         )
         assert strategy.evaluate(self.PROBABILITY, 1000.0) == pytest.approx(
             factor * kelly, rel=1e-12
@@ -289,7 +289,7 @@ class TestDrawdownAdjustedKellyGolden:
     def test_scaling_never_exceeds_full_kelly(self):
         kelly = self.kelly_fraction()
         wide = DrawdownAdjustedKelly(
-            self.PAYOFF, self.LOSS, self.COST, max_acceptable_drawdown=0.75
+            self.PAYOFF, self.LOSS, self.COST, max_transaction_loss=0.75
         )
         assert wide.evaluate(self.PROBABILITY, 1000.0) <= kelly + 1e-12
 
@@ -308,7 +308,7 @@ class TestEntryPriceGolden:
         return w - x
 
     def test_kelly_log_utility_entry_price_closed_form(self):
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         expected = self.closed_form_log_price()
         assert expected == pytest.approx(23.380962103093992, abs=1e-9)
 
@@ -321,7 +321,9 @@ class TestEntryPriceGolden:
         assert price == pytest.approx(expected, abs=1e-3)
 
     def test_optimal_f_log_utility_entry_price_closed_form(self):
-        strategy = OptimalF(payoff=1.0, loss=1.0, transaction_cost=0.0, win_rate=0.6)
+        strategy = OptimalF(
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, win_rate=0.6
+        )
         price = strategy.calculate_max_entry_price(
             self.GAMBLE_OUTCOMES,
             self.GAMBLE_PROBABILITIES,
@@ -332,18 +334,18 @@ class TestEntryPriceGolden:
 
     def test_default_tolerance_and_search_fraction_are_pinned(self):
         """Defaults tolerance=0.01 / max_search_fraction=0.5 must hold jointly."""
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         # A sure 10x payout saturates the default bound: 1000 * 0.5 = 500.
         with pytest.warns(RuntimeWarning, match="saturated at its search bound"):
             price = strategy.calculate_max_entry_price([10000.0], [1.0], 1000.0)
         assert price == pytest.approx(500.0, abs=0.01)
 
     def test_naive_entry_price_is_capped_at_search_bound(self):
-        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         assert strategy.calculate_max_entry_price([1e9], [1.0], 1000.0) == 500.0
 
     def test_naive_negative_ev_gamble_prices_at_zero(self):
-        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
         # EV = 0.25*1 - 0.75*1 = -0.5 -> unwilling to pay anything.
         assert (
@@ -351,20 +353,24 @@ class TestEntryPriceGolden:
         )
 
     def test_naive_zero_expected_value_bets_nothing(self):
-        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         assert strategy.evaluate(0.5, 1000.0) == 0.0
 
 
 class TestOptimalFGolden:
     def test_probability_gate_at_half(self):
-        strategy = OptimalF(payoff=2.0, loss=1.0, transaction_cost=0.0, win_rate=0.6)
+        strategy = OptimalF(
+            payoff=2.0, loss=1.0, transaction_cost_rate=0.0, win_rate=0.6
+        )
         # optimal f = 0.6 - 0.4/(2/1) = 0.4, capped at max_risk_fraction 0.2,
         # converted to a stake fraction: 0.2 / (1 + 0) = 0.2.
         assert strategy.evaluate(0.5, 1000.0) == pytest.approx(0.2, abs=1e-12)
         assert strategy.evaluate(0.49, 1000.0) == 0.0
 
     def test_unprofitable_costs_do_not_bet(self):
-        strategy = OptimalF(payoff=0.5, loss=1.0, transaction_cost=0.5, win_rate=0.6)
+        strategy = OptimalF(
+            payoff=0.5, loss=1.0, transaction_cost_rate=0.5, win_rate=0.6
+        )
         assert strategy.evaluate(0.7, 1000.0) == 0.0
 
 
@@ -373,14 +379,14 @@ class TestOptimalFGolden:
     [
         (MertonShare, {"risk_aversion": 2.0, "min_probability": 0.0}, 1.0),
         (FractionalKellyCriterion, {"fraction": 0.5}, 0.5),
-        (DrawdownAdjustedKelly, {"max_acceptable_drawdown": 0.5}, 1.0),
+        (DrawdownAdjustedKelly, {"max_transaction_loss": 0.5}, 1.0),
     ],
 )
 def test_utility_entry_price_saturates_at_default_search_cap(
     strategy_cls, kwargs, expected_multiplier
 ):
     """Utility strategies saturate at wealth * max_search_fraction = 500."""
-    strategy = strategy_cls(payoff=1.0, loss=1.0, transaction_cost=0.0, **kwargs)
+    strategy = strategy_cls(payoff=1.0, loss=1.0, transaction_cost_rate=0.0, **kwargs)
 
     with pytest.warns(RuntimeWarning, match="saturated at its search bound"):
         price = strategy.calculate_max_entry_price([10000.0], [1.0], 1000.0)
@@ -404,7 +410,7 @@ def test_heuristic_entry_price_pinned_with_default_config(
     strategy_cls, kwargs, expected_price
 ):
     """Heuristic overrides pin wealth*max_search_fraction*fraction exactly."""
-    strategy = strategy_cls(payoff=1.0, loss=1.0, transaction_cost=0.0, **kwargs)
+    strategy = strategy_cls(payoff=1.0, loss=1.0, transaction_cost_rate=0.0, **kwargs)
 
     price = strategy.calculate_max_entry_price([10000.0], [1.0], 1000.0)
 

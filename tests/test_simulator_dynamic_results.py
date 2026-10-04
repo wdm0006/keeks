@@ -15,7 +15,7 @@ def _strategy(**overrides):
         "base_fraction": 0.1,
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.0,
+        "transaction_cost_rate": 0.0,
         "window_size": 2,
         "max_fraction": 0.5,
         "min_fraction": 0.0,
@@ -45,7 +45,7 @@ def test_settled_results_change_dynamic_bet_sizing(simulator, monkeypatch):
     outcomes = iter([0.5, 0.9])
     monkeypatch.setattr(random, "random", lambda: next(outcomes))
     strategy = _strategy()
-    bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
 
     initial_bet = strategy.evaluate(0.75, bankroll.total_funds)
     simulator.evaluate_strategy(strategy, bankroll)
@@ -55,7 +55,7 @@ def test_settled_results_change_dynamic_bet_sizing(simulator, monkeypatch):
     assert strategy.evaluate(0.75, bankroll.total_funds) != pytest.approx(initial_bet)
 
 
-def test_skipped_bet_does_not_record_result(simulator):
+def test_skipped_bet_does_not_record_settlement(simulator):
     strategy = _strategy(min_probability=0.8)
 
     simulator.evaluate_strategy(strategy, BankRoll(initial_funds=100.0))
@@ -63,14 +63,14 @@ def test_skipped_bet_does_not_record_result(simulator):
     assert strategy.results == []
 
 
-def test_rejected_settlement_does_not_record_result(simulator, monkeypatch):
+def test_rejected_settlement_does_not_record_settlement(simulator, monkeypatch):
     monkeypatch.setattr(random, "random", lambda: 0.9)
     strategy = _strategy(base_fraction=0.5)
 
     # The 50% stake trips an explicit 0.3 drawdown cap; the refusal is loud.
     with pytest.warns(UserWarning, match="Simulation stopped early: Refused"):
         simulator.evaluate_strategy(
-            strategy, BankRoll(initial_funds=100.0, max_draw_down=0.3)
+            strategy, BankRoll(initial_funds=100.0, max_transaction_loss=0.3)
         )
 
     assert strategy.results == []

@@ -41,7 +41,8 @@ class _RecordingWeights:
     def evaluate(self, _current_bankroll):
         return self.weights
 
-    def record_settlement(self, realized_returns):
+    def record_settlement(self, won, realized_returns):
+        del won  # hooks must accept the outcome flags; only returns matter
         self.realized.append(realized_returns)
 
 
@@ -58,15 +59,13 @@ class _SameFractions:
     def update_bankroll(self, _current_bankroll):
         pass
 
-    def record_settlement(self, won_bets, _return_pcts):
-        self.won_flags.append(won_bets)
+    def record_settlement(self, won, _realized_returns):
+        self.won_flags.append(won)
 
 
 def run_portfolio_simulation(seed, trials=40):
-    simulator = PortfolioSimulator(
-        bets=BETS, transaction_costs=0.0, trials=trials, seed=seed
-    )
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator = PortfolioSimulator(bets=BETS, fee_per_bet=0.0, trials=trials, seed=seed)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     strategy = _SameFractions(FRACTIONS)
     simulator.evaluate_strategy(strategy, bankroll)
     return bankroll.history, strategy.won_flags
@@ -83,10 +82,8 @@ def portfolio_seed_matching(seed):
 
 def run_allocation_simulation(seed, trials=40):
     model = binary_bets_model(BETS)
-    simulator = AllocationSimulator(
-        model, transaction_costs=0.0, trials=trials, seed=seed
-    )
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator = AllocationSimulator(model, fee_per_bet=0.0, trials=trials, seed=seed)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     strategy = _RecordingWeights(FRACTIONS)
     simulator.evaluate_strategy(strategy, bankroll)
     return bankroll.history, strategy.realized
@@ -98,10 +95,10 @@ def test_binary_bets_replay_portfolio_streams_under_matched_seeding(seed):
     allocation_history, realized = run_allocation_simulation(seed)
     assert allocation_history == ps_history
     assert len(realized) == len(ps_won)
-    for joint_returns, won_bets in zip(realized, ps_won, strict=True):
+    for joint_returns, won_flags in zip(realized, ps_won, strict=True):
         # A binary bet's simple return is +payoff on a win and -loss on a
         # loss, so the sign of the realized return is the won flag.
-        assert tuple(r > 0 for r in joint_returns) == tuple(bool(w) for w in won_bets)
+        assert tuple(r > 0 for r in joint_returns) == tuple(bool(w) for w in won_flags)
 
 
 def test_bridge_history_is_bit_identical_not_approximate():

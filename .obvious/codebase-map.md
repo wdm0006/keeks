@@ -4,7 +4,7 @@ Folder-level overview (depth 2). Python library, no sub-apps.
 
 | Path | Purpose |
 |---|---|
-| `keeks/` | The package. `bankroll.py` = `BankRoll` state manager (funds, history, `max_draw_down`, raises `RuinError`). `utils.py` = shared math (CRRA utility, indifference price search, etc.). |
+| `keeks/` | The package. `bankroll.py` = `BankRoll` state manager (funds, history, `max_transaction_loss`, raises `RuinError`). `utils.py` = shared math (CRRA utility, indifference price search, etc.). |
 | `keeks/binary_strategies/` | Nine strategies, all subclassing `BaseStrategy` (`base.py`) with `evaluate(probability, current_bankroll) -> fraction`. `kelly.py` = Kelly / Fractional / DrawdownAdjusted; `simple.py` = OptimalF, FixedFraction, CPPI, DynamicBankrollManagement, MertonShare, Naive. |
 | `keeks/simulators/` | Trial harnesses with `evaluate_strategy(strategy, bankroll)`: `repeated_binary.py` (fixed probability), `random_binary.py` (normal-distributed probabilities), `random_uncertain_binary.py` (adds outcome uncertainty). Seeded for reproducibility. |
 | `tests/` | 30 pytest files (~1041 tests) covering every strategy, simulator edge cases, bankruptcy protection, and the documented examples. CI runs these with coverage. |

@@ -67,17 +67,17 @@ SCENARIOS = {
     "standard": {
         "probabilities": None,
         "fee": 0.01,
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
     "cash-heavy": {
         "probabilities": (0.05, 0.05, 0.05, 0.05, 0.02, 0.03),
         "fee": 0.01,
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
     "fee-heavy": {
         "probabilities": None,
         "fee": 0.50,
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
 }
 
@@ -105,12 +105,13 @@ def run_case(allocator_name, scenario_name, seed, trials):
     scenario = SCENARIOS[scenario_name]
     allocator = ALLOCATOR_FACTORIES[allocator_name]()
     bankroll = BankRoll(
-        initial_funds=INITIAL_FUNDS, max_draw_down=scenario["max_draw_down"]
+        initial_funds=INITIAL_FUNDS,
+        max_transaction_loss=scenario["max_transaction_loss"],
     )
     simulator = AllocationSimulator(
         scenario_model(np.asarray(MATRIX, dtype=float)),
         probabilities=scenario["probabilities"],
-        transaction_costs=scenario["fee"],
+        fee_per_bet=scenario["fee"],
         trials=trials,
         seed=seed,
     )

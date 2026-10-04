@@ -36,17 +36,17 @@ SCENARIOS = {
     "standard": {
         "bets": ((0.55, 2.0, 1.0), (0.45, 3.0, 1.0), (0.30, 2.4, 1.0)),
         "fee": 0.01,
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
     "longshot-heavy": {
         "bets": ((0.08, 10.0, 1.0), (0.12, 8.0, 1.0), (0.06, 12.0, 1.0)),
         "fee": 0.0,
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
     "drawdown-tight": {
         "bets": ((0.60, 1.5, 1.0), (0.50, 1.8, 1.0), (0.55, 1.6, 1.0)),
         "fee": 0.0,
-        "max_draw_down": 0.05,
+        "max_transaction_loss": 0.05,
     },
 }
 
@@ -56,13 +56,13 @@ SCENARIOS = {
 # aggregate safe-stake cap.
 STRATEGY_FACTORIES = {
     "Flat stakes": lambda s: _FlatStakesStrategy(
-        payoffs=_payoffs(s), loss=_loss(s), fraction=0.02, transaction_cost=0.0
+        payoffs=_payoffs(s), loss=_loss(s), fraction=0.02, transaction_cost_rate=0.0
     ),
     "Probability weighted": lambda s: _ProbabilityWeightedStrategy(
-        payoffs=_payoffs(s), loss=_loss(s), aggregate=0.9, transaction_cost=0.0
+        payoffs=_payoffs(s), loss=_loss(s), aggregate=0.9, transaction_cost_rate=0.0
     ),
     "Losing-batch tracking": lambda s: _LosingBatchTrackingStrategy(
-        payoffs=_payoffs(s), loss=_loss(s), base_total=0.3, transaction_cost=0.0
+        payoffs=_payoffs(s), loss=_loss(s), base_total=0.3, transaction_cost_rate=0.0
     ),
 }
 
@@ -85,8 +85,8 @@ def _loss(scenario):
 class _FlatStakesStrategy(BaseMultiOutcomeStrategy):
     """The same fraction on every bet, every trial."""
 
-    def __init__(self, payoffs, loss, fraction, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, fraction, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._fraction = fraction
 
     def evaluate(self, probabilities, _current_bankroll):
@@ -96,8 +96,8 @@ class _FlatStakesStrategy(BaseMultiOutcomeStrategy):
 class _ProbabilityWeightedStrategy(BaseMultiOutcomeStrategy):
     """Stakes proportional to each bet's probability under a fixed aggregate."""
 
-    def __init__(self, payoffs, loss, aggregate, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, aggregate, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._aggregate = aggregate
 
     def evaluate(self, probabilities, _current_bankroll):
@@ -109,16 +109,16 @@ class _ProbabilityWeightedStrategy(BaseMultiOutcomeStrategy):
 class _LosingBatchTrackingStrategy(BaseMultiOutcomeStrategy):
     """Grows the aggregate stake after all-losing batches, under the cap."""
 
-    def __init__(self, payoffs, loss, base_total, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, base_total, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._base_total = base_total
         self._losing_batches = 0
 
     def update_bankroll(self, _current_bankroll):
         pass
 
-    def record_settlement(self, won_bets, _return_pcts):
-        staked = [won for won in won_bets if won is not None]
+    def record_settlement(self, won, _realized_returns):
+        staked = [flag for flag in won if flag is not None]
         if staked and not any(staked):
             self._losing_batches += 1
 
@@ -135,11 +135,12 @@ def run_case(strategy_name, scenario_name, seed, trials):
     scenario = SCENARIOS[scenario_name]
     strategy = STRATEGY_FACTORIES[strategy_name](scenario)
     bankroll = BankRoll(
-        initial_funds=INITIAL_FUNDS, max_draw_down=scenario["max_draw_down"]
+        initial_funds=INITIAL_FUNDS,
+        max_transaction_loss=scenario["max_transaction_loss"],
     )
     simulator = PortfolioSimulator(
         bets=scenario["bets"],
-        transaction_costs=scenario["fee"],
+        fee_per_bet=scenario["fee"],
         trials=trials,
         seed=seed,
     )

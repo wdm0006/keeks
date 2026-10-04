@@ -33,7 +33,7 @@ class _WinOneBetStrategy:
         self._stakes = [0.0] * m
         self._stakes[index] = fraction
         self.won_flags = []
-        self.return_pcts = []
+        self.realized_returns = []
 
     def evaluate(self, _probabilities, _current_bankroll):
         return _validate_stake_fractions(tuple(self._stakes))
@@ -41,9 +41,9 @@ class _WinOneBetStrategy:
     def update_bankroll(self, _current_bankroll):
         pass
 
-    def record_settlement(self, won_bets, return_pcts):
-        self.won_flags.append(won_bets)
-        self.return_pcts.append(return_pcts)
+    def record_settlement(self, won, realized_returns):
+        self.won_flags.append(won)
+        self.realized_returns.append(realized_returns)
 
 
 class _RejectingStrategy:
@@ -59,11 +59,11 @@ class _RejectingStrategy:
 def run_simulation(seed, m=3, trials=50):
     simulator = PortfolioSimulator(
         bets=[(0.55, 2.0, 1.0), (0.45, 3.0, 1.0), (0.30, 2.4, 1.0)][:m],
-        transaction_costs=0.01,
+        fee_per_bet=0.01,
         trials=trials,
         seed=seed,
     )
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     strategy = _FixedFractionMultiOutcome((0.05,) * m)
     simulator.evaluate_strategy(strategy, bankroll)
     return tuple(bankroll.history)
@@ -96,11 +96,13 @@ def survivor_hook_values(bets, survivor=SURVIVOR):
     index = bets.index(survivor)
     simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
     strategy = _WinOneBetStrategy(len(bets), index=index)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     values = [
         (won[index], returns[index])
-        for won, returns in zip(strategy.won_flags, strategy.return_pcts, strict=True)
+        for won, returns in zip(
+            strategy.won_flags, strategy.realized_returns, strict=True
+        )
     ]
     assert {won for won, _return_pct in values} == {False, True}
     return values
@@ -129,7 +131,7 @@ def test_distinct_bets_receive_independent_streams():
     simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
     strategy = _WinOneBetStrategy(2, index=0)
     strategy._stakes[1] = 0.25
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     first = [won[0] for won in strategy.won_flags]
     second = [won[1] for won in strategy.won_flags]
@@ -142,7 +144,7 @@ def test_stream_identity_distinguishes_exact_validated_float_bits():
     simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
     strategy = _WinOneBetStrategy(2, index=0)
     strategy._stakes[1] = 0.25
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(strategy, bankroll)
     first = [won[0] for won in strategy.won_flags]
     second = [won[1] for won in strategy.won_flags]
@@ -156,7 +158,7 @@ def test_duplicate_bets_use_replayable_independent_occurrence_streams():
         simulator = PortfolioSimulator(bets=bets, trials=80, seed=42)
         strategy = _WinOneBetStrategy(2, index=0)
         strategy._stakes[1] = 0.25
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
         simulator.evaluate_strategy(strategy, bankroll)
         return tuple(zip(*(won for won in strategy.won_flags), strict=True))
 
@@ -168,22 +170,22 @@ def test_duplicate_bets_use_replayable_independent_occurrence_streams():
 def test_validation_failure_consumes_no_draws():
     simulator = PortfolioSimulator(
         bets=[(0.55, 2.0, 1.0), (0.45, 3.0, 1.0)],
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         trials=25,
         seed=99,
     )
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     with pytest.raises(ValueError, match="sum to no more than one"):
         simulator.evaluate_strategy(_RejectingStrategy((0.6, 0.6)), bankroll)
     # The refused run left nothing behind: the same simulator still replays
     # a fresh same-seed run exactly.
     pristine = PortfolioSimulator(
         bets=[(0.55, 2.0, 1.0), (0.45, 3.0, 1.0)],
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         trials=25,
         seed=99,
     )
-    other = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    other = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     pristine.evaluate_strategy(_FixedFractionMultiOutcome((0.1, 0.1)), other)
     simulator.evaluate_strategy(_FixedFractionMultiOutcome((0.1, 0.1)), bankroll)
     assert bankroll.history == other.history

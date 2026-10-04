@@ -30,15 +30,15 @@ MATRIX = [
 WEIGHTS = (0.4, 0.35, 0.25)
 
 
-def run_simulation(seed, trials=50, probabilities=None, transaction_costs=0.01):
+def run_simulation(seed, trials=50, probabilities=None, fee_per_bet=0.01):
     simulator = AllocationSimulator(
         scenario_model(MATRIX),
         probabilities=probabilities,
-        transaction_costs=transaction_costs,
+        fee_per_bet=fee_per_bet,
         trials=trials,
         seed=seed,
     )
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(FixedWeights(WEIGHTS), bankroll)
     return tuple(bankroll.history)
 
@@ -99,17 +99,17 @@ class _FixedFraction:
 
 def test_validation_failure_consumes_no_draws():
     simulator = AllocationSimulator(
-        scenario_model(MATRIX), transaction_costs=0.0, trials=25, seed=99
+        scenario_model(MATRIX), fee_per_bet=0.0, trials=25, seed=99
     )
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     with pytest.raises(ValueError, match="sum to no more than one"):
         simulator.evaluate_strategy(_RejectingAllocator(), bankroll)
     # The refused run left nothing behind: the same simulator still replays
     # a fresh same-seed run exactly.
     pristine = AllocationSimulator(
-        scenario_model(MATRIX), transaction_costs=0.0, trials=25, seed=99
+        scenario_model(MATRIX), fee_per_bet=0.0, trials=25, seed=99
     )
-    other = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    other = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     pristine.evaluate_strategy(_FixedFraction(), other)
     simulator.evaluate_strategy(_FixedFraction(), bankroll)
     assert bankroll.history == other.history
@@ -130,7 +130,7 @@ def test_seeded_run_draws_one_batch_per_evaluation():
     # The simulator spends exactly one sampling call per run, sized to the
     # trial count - not one call per trial.
     model = _CountingModel()
-    simulator = AllocationSimulator(model, transaction_costs=0.0, trials=13, seed=3)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    simulator = AllocationSimulator(model, fee_per_bet=0.0, trials=13, seed=3)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_FixedFraction(), bankroll)
     assert model.calls == [13]

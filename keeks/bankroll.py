@@ -9,7 +9,7 @@ class BankRoll:
     """
     A class representing a bankroll for betting or investment strategies.
 
-    The BankRoll class manages funds, tracks history, and enforces drawdown limits
+    The BankRoll class manages funds, tracks history, and enforces transaction-loss limits
     to prevent catastrophic losses. It provides methods for depositing and withdrawing
     funds, as well as visualizing the bankroll history.
 
@@ -19,7 +19,7 @@ class BankRoll:
         The starting amount of money in the bankroll.
     percent_bettable : float, default=1.0
         The percentage of total funds that can be used for betting (0.0 to 1.0).
-    max_draw_down : float or None, default=None
+    max_transaction_loss : float or None, default=None
         The maximum fraction of current funds that a single withdrawal may
         remove (0.0 to 1.0). ``None`` (the default) enforces no per-removal
         cap. A refused removal raises :class:`RuinError` naming the
@@ -34,16 +34,20 @@ class BankRoll:
     """
 
     def __init__(
-        self, initial_funds=0.0, percent_bettable=1.0, max_draw_down=None, verbose=0
+        self,
+        initial_funds=0.0,
+        percent_bettable=1.0,
+        max_transaction_loss=None,
+        verbose=0,
     ):
         self._validate_nonnegative_finite(initial_funds, "initial_funds")
         self._validate_unit_interval(percent_bettable, "percent_bettable")
-        if max_draw_down is not None:
-            self._validate_unit_interval(max_draw_down, "max_draw_down")
+        if max_transaction_loss is not None:
+            self._validate_unit_interval(max_transaction_loss, "max_transaction_loss")
 
         self._bank = initial_funds
         self.percent_bettable = percent_bettable
-        self.max_draw_down = max_draw_down
+        self.max_transaction_loss = max_transaction_loss
         self.verbose = verbose
         self.history = [initial_funds]
 
@@ -63,22 +67,25 @@ class BankRoll:
             raise ValueError(f"{name} must be between 0 and 1")
 
     def _remove_with_limits(self, amount, description):
-        # Shared removal path for withdraw/remove_funds/bet so every public
-        # removal enforces the same bankruptcy and drawdown safeguards.
+        # Shared removal path for withdraw/bet so every public
+        # removal enforces the same bankruptcy and transaction-loss safeguards.
         if self._bank - amount < 0:
             raise RuinError(
                 f"Refused {description} of {amount:.2f}: current funds are "
                 f"{self._bank:.2f} and the removal would cause bankruptcy "
-                f"(configured max_draw_down: {self.max_draw_down})"
+                f"(configured max_transaction_loss: {self.max_transaction_loss})"
             )
 
-        if self.max_draw_down is not None and amount > self.max_draw_down * self._bank:
-            limit_amount = self.max_draw_down * self._bank
+        if (
+            self.max_transaction_loss is not None
+            and amount > self.max_transaction_loss * self._bank
+        ):
+            limit_amount = self.max_transaction_loss * self._bank
             raise RuinError(
                 f"Refused {description} of {amount:.2f}: it exceeds the "
-                f"configured drawdown limit (max_draw_down={self.max_draw_down}, "
+                f"configured transaction-loss limit (max_transaction_loss={self.max_transaction_loss}, "
                 f"i.e. at most {limit_amount:.2f} of current funds: "
-                f"{self._bank:.2f}); pass max_draw_down=None to lift the cap"
+                f"{self._bank:.2f}); pass max_transaction_loss=None to lift the cap"
             )
 
         self._bank -= amount
@@ -117,46 +124,46 @@ class BankRoll:
         """
         return round(self._bank, 2)
 
-    def deposit(self, amt):
+    def deposit(self, amount):
         """
         Add funds to the bankroll.
 
         Parameters
         ----------
-        amt : float
+        amount : float
             The amount to deposit into the bankroll.
         """
-        self._validate_nonnegative_finite(amt, "amt")
-        self._bank += amt
+        self._validate_nonnegative_finite(amount, "amount")
+        self._bank += amount
         self.update_history()
 
-    def withdraw(self, amt):
+    def withdraw(self, amount):
         """
         Remove funds from the bankroll.
 
-        This method enforces the max_draw_down limit if set, raising a RuinError
-        if the withdrawal would exceed the allowed drawdown or cause bankruptcy.
+        This method enforces the max_transaction_loss limit if set, raising a RuinError
+        if the withdrawal would exceed the allowed transaction loss or cause bankruptcy.
 
         Parameters
         ----------
-        amt : float
+        amount : float
             The amount to withdraw from the bankroll.
 
         Raises
         ------
         RuinError
-            If the withdrawal would exceed the maximum allowed drawdown or
+            If the withdrawal would exceed the maximum allowed transaction loss or
             cause the bankroll to go negative (bankruptcy).
         """
-        self._validate_nonnegative_finite(amt, "amt")
-        self._remove_with_limits(amt, "withdrawal")
+        self._validate_nonnegative_finite(amount, "amount")
+        self._remove_with_limits(amount, "withdrawal")
 
     def bet(self, amount):
         """
         Place a bet with the specified amount.
 
-        This method enforces the max_draw_down limit if set, raising a RuinError
-        if the bet would exceed the allowed drawdown or cause bankruptcy.
+        This method enforces the max_transaction_loss limit if set, raising a RuinError
+        if the bet would exceed the allowed transaction loss or cause bankruptcy.
 
         Parameters
         ----------
@@ -168,44 +175,13 @@ class BankRoll:
         ValueError
             If the bet amount exceeds the bettable funds.
         RuinError
-            If the bet would exceed the maximum allowed drawdown or
+            If the bet would exceed the maximum allowed transaction loss or
             cause the bankroll to go negative (bankruptcy).
         """
         self._validate_nonnegative_finite(amount, "amount")
         if amount > self.bettable_funds:
             raise ValueError("Bet amount exceeds bettable funds")
         self._remove_with_limits(amount, "bet")
-
-    def add_funds(self, amount):
-        """
-        Add funds to the bankroll after a winning bet.
-
-        Parameters
-        ----------
-        amount : float
-            The amount to add to the bankroll.
-        """
-        self._validate_nonnegative_finite(amount, "amount")
-        self._bank += amount
-        self.update_history()
-
-    def remove_funds(self, amount):
-        """
-        Remove funds from the bankroll after a losing bet.
-
-        Parameters
-        ----------
-        amount : float
-            The amount to remove from the bankroll.
-
-        Raises
-        ------
-        RuinError
-            If the removal would exceed the maximum allowed drawdown or
-            cause the bankroll to go negative (bankruptcy).
-        """
-        self._validate_nonnegative_finite(amount, "amount")
-        self._remove_with_limits(amount, "removal")
 
     def plot_history(self, fname=None):
         """

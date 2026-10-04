@@ -24,12 +24,12 @@ class RepeatedBinarySimulator:
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_costs : float
+    fee_per_bet : float
         The flat fee charged once per settled bet, regardless of outcome. This is
         an absolute bankroll amount, not a fraction of the stake, so it does not
         scale with bet size: it is subtracted from a winning settlement and added
         to a losing one. Note this differs in unit from the singular
-        ``transaction_cost`` taken by strategies in ``keeks.binary_strategies``,
+        ``transaction_cost_rate`` taken by strategies in ``keeks.binary_strategies``,
         which is a per-unit fraction of the bet used for sizing.
     probability : float
         The fixed probability of a successful outcome for all trials.
@@ -43,20 +43,18 @@ class RepeatedBinarySimulator:
     ------
     ValueError
         If ``payoff`` is not finite and positive, if ``loss`` or
-        ``transaction_costs`` is not finite and nonnegative, if ``probability``
+        ``fee_per_bet`` is not finite and nonnegative, if ``probability``
         is not finite within ``[0, 1]``, or if ``trials`` is not a nonnegative
         integer, or if ``seed`` is not a nonnegative integer or ``None``.
     """
 
-    def __init__(
-        self, payoff, loss, transaction_costs, probability, trials=1000, seed=None
-    ):
+    def __init__(self, payoff, loss, fee_per_bet, probability, trials=1000, seed=None):
         (
             self.payoff,
             self.loss,
-            self.transaction_costs,
+            self.fee_per_bet,
             self.trials,
-        ) = _validate_simulator_controls(payoff, loss, transaction_costs, trials)
+        ) = _validate_simulator_controls(payoff, loss, fee_per_bet, trials)
         self.probability = _validate_simulator_probability(probability, "Probability")
         self.seed = _validate_simulator_seed(seed)
         self._outcome_rng = random.Random(self.seed) if self.seed is not None else None
@@ -96,9 +94,9 @@ class RepeatedBinarySimulator:
         update_bankroll = getattr(strategy, "update_bankroll", None)
         if not callable(update_bankroll):
             update_bankroll = None
-        record_result = getattr(strategy, "record_result", None)
-        if not callable(record_result):
-            record_result = None
+        record_settlement = getattr(strategy, "record_settlement", None)
+        if not callable(record_settlement):
+            record_settlement = None
 
         for _ in range(self.trials):
             # Stop if bankrupt
@@ -126,16 +124,16 @@ class RepeatedBinarySimulator:
                     )
                     won = outcome < self.probability
                     if won:
-                        amt = (self.payoff * bet_amount) - self.transaction_costs
-                        if amt >= 0:
-                            bankroll.deposit(amt)
+                        amount = (self.payoff * bet_amount) - self.fee_per_bet
+                        if amount >= 0:
+                            bankroll.deposit(amount)
                         else:
-                            bankroll.withdraw(abs(amt))
-                        return_pct = amt / current_bankroll
+                            bankroll.withdraw(abs(amount))
+                        realized_return = amount / current_bankroll
                     else:
-                        amt = (self.loss * bet_amount) + self.transaction_costs
-                        bankroll.withdraw(amt)
-                        return_pct = -amt / current_bankroll
+                        amount = (self.loss * bet_amount) + self.fee_per_bet
+                        bankroll.withdraw(amount)
+                        realized_return = -amount / current_bankroll
                 except RuinError as exc:
                     # Settlement exceeded a bankroll safeguard; stop the run
                     # loudly rather than silently: the warning carries the
@@ -143,5 +141,5 @@ class RepeatedBinarySimulator:
                     warnings.warn(f"Simulation stopped early: {exc}", stacklevel=2)
                     break
 
-                if record_result is not None:
-                    record_result(won, return_pct)
+                if record_settlement is not None:
+                    record_settlement((won,), (realized_return,))

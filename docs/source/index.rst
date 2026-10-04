@@ -47,16 +47,16 @@ Quick Example
    from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 
    # Create a bankroll with initial funds
-   bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+   bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.3)
 
    # Create a Kelly Criterion strategy
-   strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
+   strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.01)
 
    # Create a simulator with a fixed probability
    simulator = RepeatedBinarySimulator(
        payoff=1.0, 
        loss=1.0, 
-       transaction_costs=0.01, 
+       fee_per_bet=0.01, 
        probability=0.55,  # 55% chance of winning
        trials=1000
    )

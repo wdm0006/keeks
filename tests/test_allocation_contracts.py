@@ -53,8 +53,8 @@ class _HookAllocator(_EqualWeightAllocator):
     def update_bankroll(self, current_bankroll):
         self.recorded_bankrolls.append(current_bankroll)
 
-    def record_settlement(self, realized_returns):
-        self.recorded_settlements.append(realized_returns)
+    def record_settlement(self, won, realized_returns):
+        self.recorded_settlements.append((won, realized_returns))
 
 
 class _ScenarioBoundAllocator(BaseAllocationStrategy):
@@ -134,7 +134,7 @@ def test_optional_hooks_resolve_getattr_style():
     assert callable(record_settlement)
 
     update_bankroll(150.0)
-    record_settlement(np.asarray([0.01, -0.02]))
+    record_settlement((True, False), np.asarray([0.01, -0.02]))
 
     assert allocator.recorded_bankrolls == [150.0]
     assert len(allocator.recorded_settlements) == 1
@@ -200,7 +200,7 @@ def test_validate_weights_option_count_gate():
 @pytest.mark.parametrize(
     ("weights", "message"),
     [
-        # None coerces to a 0-d nan array, mirroring normalize_probabilities.
+        # None coerces to a 0-d nan array, mirroring validate_probabilities.
         (None, "Strategy weights must be one-dimensional"),
         (object(), "Strategy weights must be a finite sequence"),
         (["a", "b"], "Strategy weights must be a finite sequence"),
@@ -385,7 +385,7 @@ def test_validate_scenarios_probabilities_must_match_rows():
     ],
 )
 def test_validate_scenarios_probabilities_validation_propagates(probabilities, message):
-    """Row probabilities go through normalize_probabilities unchanged."""
+    """Row probabilities go through validate_probabilities unchanged."""
     with pytest.raises(ValueError, match=f"^{re.escape(message)}$"):
         _validate_scenarios(SIMULATOR_SCENARIOS, probabilities)
 

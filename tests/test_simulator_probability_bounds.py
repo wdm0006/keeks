@@ -42,7 +42,7 @@ def _strategy():
     # 0.5 * min(2p - 1, 1.0), so 0.6 -> 0.1 and 1.0 -> 0.5.
     return RecordingStrategy(
         FractionalKellyCriterion(
-            payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.5
+            payoff=1.0, loss=1.0, transaction_cost_rate=0.0, fraction=0.5
         )
     )
 
@@ -73,7 +73,7 @@ def test_random_binary_clamps_sample_above_one(stub_draws):
     strategy = _strategy()
 
     RandomBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [1.0]
@@ -88,7 +88,7 @@ def test_random_binary_clamps_sample_below_zero(stub_draws):
     strategy = _strategy()
 
     RandomBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [0.0]
@@ -103,7 +103,7 @@ def test_random_binary_leaves_in_range_sample_alone(stub_draws):
     strategy = _strategy()
 
     RandomBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [0.6]
@@ -118,7 +118,7 @@ def test_random_uncertain_binary_clamps_sample_above_one(stub_draws):
     strategy = _strategy()
 
     RandomUncertainBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [1.0]
@@ -133,7 +133,7 @@ def test_random_uncertain_binary_clamps_sample_below_zero(stub_draws):
     strategy = _strategy()
 
     RandomUncertainBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [0.0]
@@ -149,7 +149,7 @@ def test_random_uncertain_binary_outcome_at_negative_tail_loses(stub_draws):
     strategy = _strategy()
 
     RandomUncertainBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [0.6]
@@ -164,7 +164,7 @@ def test_random_uncertain_binary_leaves_in_range_samples_alone(stub_draws):
     strategy = _strategy()
 
     RandomUncertainBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1
     ).evaluate_strategy(strategy, bankroll)
 
     assert strategy.probabilities == [0.6]

@@ -13,8 +13,9 @@ Descriptive inputs bind at construction, and an allocator reprices by fresh
 construction, matching the multi-outcome convention. Weights are scale-free:
 they ignore the bankroll level, and every allocator returns all-zero weights
 when the bankroll is nonpositive. Online allocators are the same ABC plus one
-stateful hook - ``record_settlement(realized_returns)``, called once per
-staked period with the realized joint simple-return vector.
+stateful hook - ``record_settlement(won, realized_returns)``, called once per
+staked period with the per-option outcome flags and the realized joint
+simple-return vector.
 
 The joint-return input models (:mod:`keeks.allocation.models`) are the
 allocation layer's universal input currency: one sampling contract -
@@ -32,7 +33,8 @@ The allocation simulator (:mod:`keeks.allocation.simulators`) replays any
 allocator over realizations from any joint-return model through the bankroll
 machinery: :class:`AllocationSimulator` settles batch-net per period with
 keeks' seeding and refuse-then-stop conventions, fires the
-``record_settlement`` hook with the realized joint simple-return vector for
+``record_settlement(won, realized_returns)`` hook with the per-option
+outcome flags and the realized joint simple-return vector for
 the online family, and treats residual probability mass as an all-cash
 period.
 
@@ -91,7 +93,7 @@ from keeks.allocation.plots import (
     bankroll_paths,
     correlation_heatmap,
     dendrogram,
-    drawdown,
+    drawdown_history,
     efficient_frontier,
     risk_contributions,
     scenario_losses,
@@ -109,7 +111,7 @@ __all__ = [
     "black_litterman_mean",
     "correlation_heatmap",
     "dendrogram",
-    "drawdown",
+    "drawdown_history",
     "efficient_frontier",
     "ExponentialGradient",
     "FixedWeights",

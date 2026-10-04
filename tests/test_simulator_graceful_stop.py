@@ -1,6 +1,6 @@
 """Tests that simulators stop gracefully on RuinError instead of crashing.
 
-A ``BankRoll`` configured with an explicit ``max_draw_down=0.3`` vetoes any
+A ``BankRoll`` configured with an explicit ``max_transaction_loss=0.3`` vetoes any
 single settlement removing more than 30% of current funds by raising
 ``RuinError``. A strategy that stakes a large fraction (here 50%) trips that
 limit on the first losing bet. The simulators should catch it, re-report the
@@ -32,14 +32,14 @@ def _aggressive_strategy():
     # Stakes 50% of the bankroll whenever probability >= 0.5, so a single loss
     # against a 0.3 drawdown cap trips the limit.
     return FixedFractionStrategy(
-        fraction=0.5, payoff=1.0, loss=1.0, transaction_cost=0.0
+        fraction=0.5, payoff=1.0, loss=1.0, transaction_cost_rate=0.0
     )
 
 
 def test_repeated_binary_stops_gracefully():
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.3)
     simulator = RepeatedBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, probability=0.7, trials=1000
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, probability=0.7, trials=1000
     )
 
     # Must not raise RuinError, and the refusal is loud: the warning carries
@@ -53,9 +53,9 @@ def test_repeated_binary_stops_gracefully():
 
 
 def test_random_binary_stops_gracefully():
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.3)
     simulator = RandomBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1000
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1000
     )
 
     with pytest.warns(UserWarning, match=r"Simulation stopped early: Refused"):
@@ -65,9 +65,9 @@ def test_random_binary_stops_gracefully():
 
 
 def test_random_uncertain_binary_stops_gracefully():
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.3)
     simulator = RandomUncertainBinarySimulator(
-        payoff=1.0, loss=1.0, transaction_costs=0.0, trials=1000
+        payoff=1.0, loss=1.0, fee_per_bet=0.0, trials=1000
     )
 
     with pytest.warns(UserWarning, match=r"Simulation stopped early: Refused"):

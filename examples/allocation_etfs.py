@@ -39,7 +39,7 @@ Notes on honesty of the numbers:
   one call from its model, so every allocator inside a pass meets the same
   realizations (common random numbers) — the comparison is the allocators',
   not the draw luck's.
-* ``transaction_costs`` stays at zero: the simulator's fee is a flat absolute
+* ``fee_per_bet`` stays at zero: the simulator's fee is a flat absolute
   amount per staked period, and a nonzero flat fee on a 1000-period daily
   replay would measure the fee, not the allocators. The cost-unit split is
   documented in the README.
@@ -72,7 +72,7 @@ from keeks import (  # noqa: E402
     MeanVariance,
     RiskBudgeting,
     bankroll_paths,
-    drawdown,
+    drawdown_history,
     fit_marginals_model,
     scenario_model,
     weight_evolution,
@@ -188,8 +188,8 @@ class WeightRecording(BaseAllocationStrategy):
         self.recorded.append([float(weight) for weight in weights])
         return weights
 
-    def record_settlement(self, realized_returns):
-        self.inner.record_settlement(realized_returns)
+    def record_settlement(self, won, realized_returns):
+        self.inner.record_settlement(won, realized_returns)
 
 
 def build_allocators(scenarios, mean, covariance):
@@ -231,9 +231,9 @@ def run_pass(model, allocators, trials=TRIALS, seed=SEED):
     """
     histories = {}
     for name, allocation in allocators.items():
-        bankroll = BankRoll(initial_funds=INITIAL_FUNDS, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=INITIAL_FUNDS, max_transaction_loss=None)
         simulator = AllocationSimulator(
-            model, transaction_costs=TRANSACTION_COSTS, trials=trials, seed=seed
+            model, fee_per_bet=TRANSACTION_COSTS, trials=trials, seed=seed
         )
         simulator.evaluate_strategy(allocation, bankroll)
         histories[name] = [float(value) for value in bankroll.history]
@@ -301,7 +301,7 @@ def save_growth_chart(histories, path, title):
 
 def save_drawdown_chart(history, path, title):
     """Drawdown curve of one allocator's replay, via ``drawdown``."""
-    axes = drawdown(history)
+    axes = drawdown_history(history)
     axes.set_title(title, fontsize=11)
     axes.figure.savefig(path, dpi=200)
 

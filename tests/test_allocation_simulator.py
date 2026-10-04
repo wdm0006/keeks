@@ -79,7 +79,8 @@ class _RecordingAllocator:
     def update_bankroll(self, total_funds):
         self.events.append(("hook", total_funds))
 
-    def record_settlement(self, realized_returns):
+    def record_settlement(self, won, realized_returns):
+        del won  # hooks must accept the outcome flags; only returns matter
         self.settlements.append(realized_returns)
 
 
@@ -124,12 +125,12 @@ def test_constructor_rejects_invalid_probabilities():
         AllocationSimulator(model, probabilities=[-0.1, 0.2])
 
 
-def test_constructor_rejects_non_finite_or_negative_transaction_costs():
+def test_constructor_rejects_non_finite_or_negative_fee_per_bet():
     model = _ScriptedModel(MATRIX)
     with pytest.raises(ValueError, match="non-negative"):
-        AllocationSimulator(model, transaction_costs=-0.01)
+        AllocationSimulator(model, fee_per_bet=-0.01)
     with pytest.raises(ValueError):
-        AllocationSimulator(model, transaction_costs=np.nan)
+        AllocationSimulator(model, fee_per_bet=np.nan)
 
 
 def test_constructor_rejects_non_integer_or_negative_trials():
@@ -147,7 +148,7 @@ def test_constructor_rejects_invalid_seeds():
 
 def test_one_transaction_per_settled_period():
     model = _ScriptedModel(MATRIX)
-    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=4, seed=1)
     simulator.evaluate_strategy(_RecordingAllocator([0.5, 0.25, 0.25]), bankroll)
     assert len(bankroll.transactions) == 4
@@ -159,8 +160,8 @@ def test_settlement_amount_is_batch_net_minus_the_flat_fee():
     # funds as they stood when the trial began, per-option amounts, one net.
     weights = (0.5, 0.25, 0.25)
     model = _ScriptedModel(MATRIX)
-    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_draw_down=None)
-    simulator = AllocationSimulator(model, transaction_costs=0.25, trials=1, seed=1)
+    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_transaction_loss=None)
+    simulator = AllocationSimulator(model, fee_per_bet=0.25, trials=1, seed=1)
     simulator.evaluate_strategy(_RecordingAllocator(weights), bankroll)
     amounts = [1000.0 * w * r for w, r in zip(weights, MATRIX[0], strict=True)]
     expected_net = sum(amounts) - 0.25
@@ -173,7 +174,7 @@ def test_settlement_amount_is_batch_net_minus_the_flat_fee():
 def test_losing_period_withdraws_the_net_loss():
     weights = (0.5, 0.25, 0.25)
     model = _ScriptedModel([[-0.01, 0.005, -0.02]])
-    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=1, seed=2)
     simulator.evaluate_strategy(_RecordingAllocator(weights), bankroll)
     amounts = [
@@ -185,7 +186,7 @@ def test_losing_period_withdraws_the_net_loss():
 
 def test_invalid_weights_rejected_before_any_draw():
     model = _ScriptedModel(MATRIX)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=5, seed=3)
     allocation = _RecordingAllocator(raw=(0.6, 0.6, 0.0))
     with pytest.raises(ValueError, match="sum to no more than one"):
@@ -198,7 +199,7 @@ def test_wrong_weight_count_rejected_before_any_draw():
     # A scenario model states its option count without sampling, so the
     # length gate runs before the draw too.
     model = scenario_model(MATRIX)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=5, seed=3)
     with pytest.raises(ValueError, match="exactly 3 weights"):
         simulator.evaluate_strategy(_RecordingAllocator(raw=(0.5, 0.5)), bankroll)
@@ -209,7 +210,7 @@ def test_opaque_model_length_gate_lands_at_the_first_settlement():
     # An opaque model reveals its option count only by sampling; the length
     # gate then fires right after the draw and before anything settles.
     model = _ScriptedModel(MATRIX)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=5, seed=3)
     allocation = _RecordingAllocator(raw=(0.5, 0.5))
     with pytest.raises(ValueError, match="exactly 3"):
@@ -221,8 +222,8 @@ def test_opaque_model_length_gate_lands_at_the_first_settlement():
 
 def test_zero_weight_trials_skip_draws_fees_and_settlements():
     model = _ScriptedModel(MATRIX)
-    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_draw_down=None)
-    simulator = AllocationSimulator(model, transaction_costs=0.5, trials=3, seed=2)
+    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_transaction_loss=None)
+    simulator = AllocationSimulator(model, fee_per_bet=0.5, trials=3, seed=2)
     allocation = _RecordingAllocator([0.0, 0.0, 0.0])
     simulator.evaluate_strategy(allocation, bankroll)
     assert model.sample_calls == []
@@ -235,7 +236,7 @@ def test_zero_weight_trials_skip_draws_fees_and_settlements():
 
 def test_update_bankroll_fires_before_each_evaluation():
     model = _ScriptedModel(MATRIX)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=2, seed=4)
     allocation = _RecordingAllocator([0.5, 0.25, 0.25])
     simulator.evaluate_strategy(allocation, bankroll)
@@ -253,7 +254,7 @@ def test_record_settlement_receives_the_realized_vector_in_trial_order():
     # No probabilities: the model's draws are the trial sequence - row t
     # settles trial t.
     model = _ScriptedModel(MATRIX[:2])
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=3, seed=4)
     allocation = _RecordingAllocator([0.5, 0.25, 0.25])
     simulator.evaluate_strategy(allocation, bankroll)
@@ -266,7 +267,7 @@ def test_record_settlement_receives_the_realized_vector_in_trial_order():
 
 def test_static_allocators_run_without_hooks():
     model = _ScriptedModel(MATRIX)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=2, seed=5)
     simulator.evaluate_strategy(_StaticAllocator([0.2, 0.2, 0.2]), bankroll)
     assert len(bankroll.history) == 3
@@ -276,9 +277,9 @@ def test_residual_probability_mass_is_an_all_cash_period():
     # probabilities=[0.25] leaves 0.75 of every trial's mass in cash: some
     # trials stake the single state, some are all-cash periods.
     model = _ScriptedModel(MATRIX[:1])
-    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(
-        model, probabilities=[0.25], transaction_costs=0.5, trials=40, seed=11
+        model, probabilities=[0.25], fee_per_bet=0.5, trials=40, seed=11
     )
     allocation = _RecordingAllocator([0.5, 0.25, 0.25])
     simulator.evaluate_strategy(allocation, bankroll)
@@ -293,7 +294,7 @@ def test_residual_probability_mass_is_an_all_cash_period():
 
 def test_drawdown_refusal_refuses_then_stops():
     model = _ScriptedModel([[-0.03, -0.03, -0.03]])
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.01)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.01)
     simulator = AllocationSimulator(model, trials=5, seed=5)
     allocation = _RecordingAllocator([0.4, 0.3, 0.3])
     with pytest.warns(
@@ -310,7 +311,7 @@ def test_drawdown_refusal_refuses_then_stops():
 
 def test_bankruptcy_stops_the_simulation():
     model = _ScriptedModel([[-1.0, -1.0, -1.0]])
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=5, seed=6)
     allocation = _RecordingAllocator([0.4, 0.3, 0.3])
     simulator.evaluate_strategy(allocation, bankroll)
@@ -323,7 +324,7 @@ def test_scenario_bound_allocator_gate_runs_before_any_draw():
     model = scenario_model(MATRIX)
     other = [[r[0], r[1], r[2]] for r in MATRIX]
     other[0] = [0.5, -0.5, 0.1]
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=2, seed=7)
     with pytest.raises(ValueError, match="do not match the"):
         simulator.evaluate_strategy(
@@ -337,7 +338,7 @@ def test_scenario_gate_fires_even_with_zero_trials():
     # incompatibility, not a per-trial accident.
     model = scenario_model(MATRIX)
     other = [[0.5, -0.5, 0.1]] + MATRIX[1:]
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=0, seed=7)
     with pytest.raises(ValueError, match="do not match the"):
         simulator.evaluate_strategy(
@@ -347,7 +348,7 @@ def test_scenario_gate_fires_even_with_zero_trials():
 
 def test_scenario_gate_passes_matched_and_unbound_allocators():
     model = scenario_model(MATRIX)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=1, seed=7)
     matched = _RecordingAllocator([0.5, 0.25, 0.25], scenarios=MATRIX)
     simulator.evaluate_strategy(matched, bankroll)
@@ -359,7 +360,7 @@ def test_scenario_gate_passes_matched_and_unbound_allocators():
 
 def test_zero_trials_settle_nothing():
     model = _ScriptedModel(MATRIX)
-    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=0, seed=7)
     allocation = _RecordingAllocator([0.5, 0.25, 0.25])
     simulator.evaluate_strategy(allocation, bankroll)
@@ -370,7 +371,7 @@ def test_zero_trials_settle_nothing():
 
 def test_depleted_bankroll_breaks_before_the_first_hook():
     model = _ScriptedModel(MATRIX)
-    bankroll = BankRoll(initial_funds=0.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=0.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=3, seed=7)
     allocation = _RecordingAllocator([0.5, 0.25, 0.25])
     simulator.evaluate_strategy(allocation, bankroll)
@@ -392,7 +393,7 @@ def test_model_draw_width_mismatch_is_a_contract_violation():
     # Weights matching the probe (2) but draws carrying 3 columns: the
     # draw-time reconciliation catches the inconsistent model.
     model = _WrongWidthModel()
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=2, seed=8)
     with pytest.raises(ValueError, match="option count is fixed"):
         simulator.evaluate_strategy(_RecordingAllocator(raw=(0.5, 0.5)), bankroll)
@@ -418,7 +419,7 @@ def test_unseeded_runs_use_a_fresh_generator():
     model = _ScriptedModel(MATRIX)
     simulator = AllocationSimulator(model, trials=3)
     assert simulator.seed is None
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(_StaticAllocator([0.2, 0.2, 0.2]), bankroll)
     assert model.sample_calls == [3]
     assert len(bankroll.history) == 4
@@ -446,7 +447,7 @@ def test_random_runs_preserve_the_bankroll_and_hook_contract(
     weights = (rng.dirichlet(np.ones(option_count)) * 0.8).tolist()
     model = scenario_model(matrix)
     allocation = _RecordingAllocator(weights)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(model, trials=trials, seed=seed)
     simulator.evaluate_strategy(allocation, bankroll)
     assert bankroll.history[0] == 1000.0
@@ -471,7 +472,7 @@ def test_random_cash_weights_keep_the_residual_mass_in_cash(option_count, seed):
     matrix = rng.normal(0.0, 0.02, size=(6, option_count))
     model = scenario_model(matrix)
     allocation = _RecordingAllocator([1.0 / option_count] * option_count)
-    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = _RecordingBankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator = AllocationSimulator(
         model, probabilities=[0.1] * option_count, trials=25, seed=seed
     )

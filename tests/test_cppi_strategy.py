@@ -19,7 +19,7 @@ def test_basic_functionality():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0,  # No transaction costs for basic test
+        transaction_cost_rate=0,  # No transaction costs for basic test
     )
 
     # Initial bankroll = 1000, floor = 500, cushion = 500
@@ -52,7 +52,7 @@ def test_min_probability_threshold():
         initial_bankroll=1000,
         payoff=1,
         loss=1,
-        transaction_cost=0,  # No transaction costs for this test
+        transaction_cost_rate=0,  # No transaction costs for this test
         min_probability=0.5,
     )
 
@@ -75,7 +75,7 @@ def test_floor_protection():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0,  # No transaction costs for this test
+        transaction_cost_rate=0,  # No transaction costs for this test
     )
 
     # Initial bankroll = 1000, floor = 800, cushion = 200
@@ -114,7 +114,7 @@ def test_multiplier_effect():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0,  # No transaction costs for this test
+        transaction_cost_rate=0,  # No transaction costs for this test
     )
 
     # Medium multiplier
@@ -124,7 +124,7 @@ def test_multiplier_effect():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0,
+        transaction_cost_rate=0,
     )
 
     # High multiplier (aggressive)
@@ -134,7 +134,7 @@ def test_multiplier_effect():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0,
+        transaction_cost_rate=0,
     )
 
     # All have same bankroll, floor (500), and cushion (500)
@@ -236,14 +236,14 @@ def test_simulation():
     """Test the strategy in a simulation with a favorable edge."""
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.60  # Increased edge to compensate for transaction costs
     trials = 300
     initial_bankroll = 1000
 
     # Initialize bankroll and strategy
     bankroll = BankRoll(
-        initial_funds=initial_bankroll, percent_bettable=1.0, max_draw_down=None
+        initial_funds=initial_bankroll, percent_bettable=1.0, max_transaction_loss=None
     )
     strategy = CPPIStrategy(
         floor_fraction=0.5,
@@ -251,7 +251,7 @@ def test_simulation():
         initial_bankroll=initial_bankroll,
         payoff=payoff,
         loss=loss,
-        transaction_cost=transaction_cost,
+        transaction_cost_rate=transaction_cost_rate,
     )
 
     # Track bankroll history
@@ -263,7 +263,7 @@ def test_simulation():
     simulator = RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )
@@ -283,7 +283,7 @@ def test_simulation():
     assert len(bankroll_history) > 1
 
 
-def test_transaction_costs():
+def test_transaction_cost_rate():
     """Test that transaction costs reduce the bet size."""
     initial_bankroll = 1000
     strategy_no_costs = CPPIStrategy(
@@ -292,7 +292,7 @@ def test_transaction_costs():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0,
+        transaction_cost_rate=0,
     )
 
     strategy_with_costs = CPPIStrategy(
@@ -301,7 +301,7 @@ def test_transaction_costs():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0.01,
+        transaction_cost_rate=0.01,
     )
 
     # Strategy with transaction costs should bet less
@@ -319,7 +319,7 @@ def test_max_safe_bet():
         initial_bankroll=initial_bankroll,
         payoff=1,
         loss=1,
-        transaction_cost=0.01,
+        transaction_cost_rate=0.01,
     )
 
     # Test with a very small bankroll where max safe bet would be less than CPPI exposure

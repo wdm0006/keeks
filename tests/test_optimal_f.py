@@ -13,7 +13,7 @@ random.seed(42)
 def test_basic_functionality():
     """Test that OptimalF correctly calculates optimal bet sizes based on win rate."""
     strategy = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0, max_risk_fraction=0.2
+        win_rate=0.6, payoff=1, loss=1, transaction_cost_rate=0, max_risk_fraction=0.2
     )
 
     # With 60% win rate and 1:1 payoff ratio, optimal f should be 0.2
@@ -28,7 +28,11 @@ def test_basic_functionality():
 def test_min_probability_threshold():
     """Test that the strategy respects the minimum probability threshold."""
     strategy = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0.01, max_risk_fraction=0.2
+        win_rate=0.6,
+        payoff=1,
+        loss=1,
+        transaction_cost_rate=0.01,
+        max_risk_fraction=0.2,
     )
 
     # Should bet when probability > 0.5 (default threshold)
@@ -39,10 +43,10 @@ def test_min_probability_threshold():
 def test_win_rate_controls_bet_size():
     """Test that historical win rate, not trial probability, controls sizing."""
     conservative = OptimalF(
-        win_rate=0.55, payoff=2, loss=1, transaction_cost=0, max_risk_fraction=1
+        win_rate=0.55, payoff=2, loss=1, transaction_cost_rate=0, max_risk_fraction=1
     )
     aggressive = OptimalF(
-        win_rate=0.7, payoff=2, loss=1, transaction_cost=0, max_risk_fraction=1
+        win_rate=0.7, payoff=2, loss=1, transaction_cost_rate=0, max_risk_fraction=1
     )
 
     assert conservative.evaluate(0.8, 1000) == pytest.approx(0.325)
@@ -56,7 +60,7 @@ def test_probability_gate_applies_regardless_of_win_rate(win_rate):
         win_rate=win_rate,
         payoff=2,
         loss=1,
-        transaction_cost=0,
+        transaction_cost_rate=0,
         max_risk_fraction=1,
     )
 
@@ -67,12 +71,20 @@ def test_payoff_ratio_effect():
     """Test how different payoff ratios affect the optimal bet size."""
     # Low payoff ratio (conservative)
     strategy_low = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0.01, max_risk_fraction=0.2
+        win_rate=0.6,
+        payoff=1,
+        loss=1,
+        transaction_cost_rate=0.01,
+        max_risk_fraction=0.2,
     )
 
     # High payoff ratio (aggressive)
     strategy_high = OptimalF(
-        win_rate=0.6, payoff=2, loss=1, transaction_cost=0.01, max_risk_fraction=0.2
+        win_rate=0.6,
+        payoff=2,
+        loss=1,
+        transaction_cost_rate=0.01,
+        max_risk_fraction=0.2,
     )
 
     # Higher payoff ratio should result in larger bet size
@@ -87,13 +99,17 @@ def test_invalid_parameters():
             win_rate=-0.1,
             payoff=1,
             loss=1,
-            transaction_cost=0.01,
+            transaction_cost_rate=0.01,
             max_risk_fraction=0.2,
         )
 
     with pytest.raises(ValueError, match="Win rate must be between 0 and 1"):
         OptimalF(
-            win_rate=1.1, payoff=1, loss=1, transaction_cost=0.01, max_risk_fraction=0.2
+            win_rate=1.1,
+            payoff=1,
+            loss=1,
+            transaction_cost_rate=0.01,
+            max_risk_fraction=0.2,
         )
 
     # Max risk fraction must be between 0 and 1
@@ -101,7 +117,11 @@ def test_invalid_parameters():
         ValueError, match="Maximum risk fraction must be between 0 and 1"
     ):
         OptimalF(
-            win_rate=0.6, payoff=1, loss=1, transaction_cost=0.01, max_risk_fraction=1.1
+            win_rate=0.6,
+            payoff=1,
+            loss=1,
+            transaction_cost_rate=0.01,
+            max_risk_fraction=1.1,
         )
 
 
@@ -109,20 +129,20 @@ def test_simulation():
     """Test the strategy in a simulation with varying performance."""
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.60  # Increased edge to compensate for transaction costs
     trials = 300
     initial_bankroll = 1000
 
     # Initialize bankroll and strategy
     bankroll = BankRoll(
-        initial_funds=initial_bankroll, percent_bettable=1.0, max_draw_down=None
+        initial_funds=initial_bankroll, percent_bettable=1.0, max_transaction_loss=None
     )
     strategy = OptimalF(
         win_rate=0.60,  # Match the actual probability
         payoff=payoff,
         loss=loss,
-        transaction_cost=transaction_cost,
+        transaction_cost_rate=transaction_cost_rate,
         max_risk_fraction=0.15,  # More conservative risk limit
     )
 
@@ -135,7 +155,7 @@ def test_simulation():
     simulator = RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )
@@ -150,14 +170,18 @@ def test_simulation():
     assert len(bankroll_history) > 1
 
 
-def test_transaction_costs():
+def test_transaction_cost_rate():
     """Test that transaction costs reduce the optimal bet size."""
     strategy_no_costs = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0, max_risk_fraction=0.2
+        win_rate=0.6, payoff=1, loss=1, transaction_cost_rate=0, max_risk_fraction=0.2
     )
 
     strategy_with_costs = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0.01, max_risk_fraction=0.2
+        win_rate=0.6,
+        payoff=1,
+        loss=1,
+        transaction_cost_rate=0.01,
+        max_risk_fraction=0.2,
     )
 
     # Strategy with transaction costs should bet less
@@ -167,7 +191,11 @@ def test_transaction_costs():
 
     # Test that when transaction costs make the bet unprofitable, optimal f is 0
     strategy_high_costs = OptimalF(
-        win_rate=0.52, payoff=1, loss=1, transaction_cost=0.05, max_risk_fraction=0.2
+        win_rate=0.52,
+        payoff=1,
+        loss=1,
+        transaction_cost_rate=0.05,
+        max_risk_fraction=0.2,
     )
 
     assert strategy_high_costs.evaluate(0.52, 1000) == pytest.approx(0.0)
@@ -176,12 +204,12 @@ def test_transaction_costs():
 def test_max_safe_bet():
     """Test that the strategy respects the maximum safe bet limit."""
     risk_capped = OptimalF(
-        win_rate=0.9, payoff=10, loss=1, transaction_cost=0, max_risk_fraction=0.2
+        win_rate=0.9, payoff=10, loss=1, transaction_cost_rate=0, max_risk_fraction=0.2
     )
     assert risk_capped.evaluate(0.6, 1000) == pytest.approx(0.2)
 
     safety_capped = OptimalF(
-        win_rate=0.9, payoff=10, loss=4, transaction_cost=0, max_risk_fraction=1
+        win_rate=0.9, payoff=10, loss=4, transaction_cost_rate=0, max_risk_fraction=1
     )
     # Vince f* = 0.86 risk fraction; staking s risks s * 4, so the returned
     # stake is 0.86 / 4 = 0.215, inside the 1/(loss + cost) = 0.25 safe bound.
@@ -193,7 +221,7 @@ def test_ralph_vince_formula():
     """Test that OptimalF follows Ralph Vince's formula."""
     # Case 1: 60% win rate, 1:1 payoff/loss ratio
     strategy1 = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0, max_risk_fraction=0.5
+        win_rate=0.6, payoff=1, loss=1, transaction_cost_rate=0, max_risk_fraction=0.5
     )
 
     # Ralph Vince's formula: f* = W - (1-W)/(R/L)
@@ -202,7 +230,7 @@ def test_ralph_vince_formula():
 
     # Case 2: 55% win rate, 2:1 payoff/loss ratio
     strategy2 = OptimalF(
-        win_rate=0.55, payoff=2, loss=1, transaction_cost=0, max_risk_fraction=0.5
+        win_rate=0.55, payoff=2, loss=1, transaction_cost_rate=0, max_risk_fraction=0.5
     )
 
     # f* = 0.55 - 0.45/(2/1) = 0.55 - 0.225 = 0.325
@@ -210,7 +238,7 @@ def test_ralph_vince_formula():
 
     # Case 3: With transaction costs
     strategy3 = OptimalF(
-        win_rate=0.6, payoff=1, loss=1, transaction_cost=0.1, max_risk_fraction=0.5
+        win_rate=0.6, payoff=1, loss=1, transaction_cost_rate=0.1, max_risk_fraction=0.5
     )
 
     # Adjusted reward = 1 - 0.1 = 0.9
@@ -229,7 +257,7 @@ def _twr(stake, win_rate, payoff, loss):
     ("win_rate", "payoff", "loss", "expected_stake"),
     [
         # f* = W - (1-W)*L/R is a *risk* fraction; the stake divides it by
-        # loss + transaction_cost, so expectations below are f*/(loss + cost).
+        # loss + transaction_cost_rate, so expectations below are f*/(loss + cost).
         (0.6, 1, 0.5, 0.8),  # f* = 0.4, each staked unit risks 0.5
         (0.6, 1, 1.0, 0.2),  # loss + cost = 1: stake equals Vince's f
         (0.7, 1, 1.5, 0.25 / 1.5),  # f* = 0.25, each staked unit risks 1.5
@@ -241,7 +269,7 @@ def test_stake_is_twr_optimal(win_rate, payoff, loss, expected_stake):
         win_rate=win_rate,
         payoff=payoff,
         loss=loss,
-        transaction_cost=0,
+        transaction_cost_rate=0,
         max_risk_fraction=1,
     )
 
@@ -258,10 +286,10 @@ def test_stake_is_twr_optimal(win_rate, payoff, loss, expected_stake):
 def test_stake_conversion_dominates_raw_vince_fraction_on_twr():
     """The audit's growth reference points: converting the fraction wins TWR."""
     under_even = OptimalF(
-        win_rate=0.6, payoff=1, loss=0.5, transaction_cost=0, max_risk_fraction=1
+        win_rate=0.6, payoff=1, loss=0.5, transaction_cost_rate=0, max_risk_fraction=1
     )
     over_even = OptimalF(
-        win_rate=0.7, payoff=1, loss=1.5, transaction_cost=0, max_risk_fraction=1
+        win_rate=0.7, payoff=1, loss=1.5, transaction_cost_rate=0, max_risk_fraction=1
     )
 
     # loss=0.5: converted stake 0.8 grows 1.15991 per cycle vs 1.11921 for the

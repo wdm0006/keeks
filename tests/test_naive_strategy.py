@@ -10,7 +10,7 @@ random.seed(42)
 
 
 def test_even_odds():
-    strategy = NaiveStrategy(payoff=1, loss=1, transaction_cost=0)
+    strategy = NaiveStrategy(payoff=1, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 60% chance of winning
@@ -25,15 +25,15 @@ def test_even_odds():
 def test_simulation():
     payoff = 1
     loss = 1
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.55  # Positive EV but with high risk
     trials = 1_000
     initial_bankroll = 1000
 
     bankroll = BankRoll(
-        initial_funds=initial_bankroll, percent_bettable=1, max_draw_down=0.3
+        initial_funds=initial_bankroll, percent_bettable=1, max_transaction_loss=0.3
     )
-    strategy = NaiveStrategy(payoff, loss, transaction_cost)
+    strategy = NaiveStrategy(payoff, loss, transaction_cost_rate)
 
     # Track bankroll history
     bankroll_history = [initial_bankroll]
@@ -52,10 +52,10 @@ def test_simulation():
         # Simulate the bet outcome
         if random.random() < probability:
             # Win
-            bankroll.add_funds(bet_amount * (payoff - transaction_cost))
+            bankroll.deposit(bet_amount * (payoff - transaction_cost_rate))
         else:
             # Loss
-            bankroll.remove_funds(bet_amount * (loss + transaction_cost))
+            bankroll.withdraw(bet_amount * (loss + transaction_cost_rate))
 
         # Record bankroll history
         bankroll_history.append(bankroll.total_funds)
@@ -69,7 +69,7 @@ def test_simulation():
 
 
 def test_known_cases():
-    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost=0)
+    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 50% chance of winning with 2:1 payoff
@@ -85,8 +85,8 @@ def test_known_cases():
     assert strategy.evaluate(0.4, current_bankroll) == pytest.approx(0.1)
 
 
-def test_transaction_costs():
-    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost=0.01)
+def test_transaction_cost_rate():
+    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost_rate=0.01)
     current_bankroll = 1000
 
     # 60% chance of winning with 2:1 payoff and 1% transaction cost
@@ -96,7 +96,7 @@ def test_transaction_costs():
 
 
 def test_zero_probability():
-    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost=0)
+    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 0% chance of winning should return 0 bet size
@@ -104,7 +104,7 @@ def test_zero_probability():
 
 
 def test_one_probability():
-    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost=0)
+    strategy = NaiveStrategy(payoff=2, loss=1, transaction_cost_rate=0)
     current_bankroll = 1000
 
     # 100% chance of winning should bet maximum safe amount
