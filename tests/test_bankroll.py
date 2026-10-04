@@ -5,7 +5,7 @@ from keeks.utils import RuinError
 
 
 def test_transactions():
-    br = BankRoll(initial_funds=1000, percent_bettable=1, max_draw_down=1)
+    br = BankRoll(initial_funds=1000, percent_bettable=1, max_transaction_loss=1)
     assert br.bettable_funds == 1000
     assert br.total_funds == 1000
 
@@ -23,7 +23,7 @@ def test_transactions():
 
 
 def test_percent_bettable():
-    br = BankRoll(initial_funds=1000, percent_bettable=0.5, max_draw_down=1)
+    br = BankRoll(initial_funds=1000, percent_bettable=0.5, max_transaction_loss=1)
     assert br.bettable_funds == 500
     assert br.total_funds == 1000
 
@@ -36,10 +36,28 @@ def test_percent_bettable():
     assert br.total_funds == 1000
 
 
-def test_drawdown_limit():
-    br = BankRoll(initial_funds=1000, percent_bettable=0.5, max_draw_down=0.3)
-    with pytest.raises(RuinError, match=r"^You lost too much"):
+def test_transaction_loss_limit():
+    br = BankRoll(initial_funds=1000, percent_bettable=0.5, max_transaction_loss=0.3)
+    with pytest.raises(
+        RuinError,
+        match=(
+            r"^Refused withdrawal of 400.00: it exceeds the configured transaction-loss "
+            r"limit \(max_transaction_loss=0.3, i.e. at most 300.00 of current funds: "
+            r"1000.00\); pass max_transaction_loss=None to lift the cap$"
+        ),
+    ):
         br.withdraw(400)
+
+
+def test_default_has_no_transaction_loss_cap():
+    """The default BankRoll enforces no per-removal cap (max_transaction_loss=None)."""
+    br = BankRoll(initial_funds=100)
+
+    assert br.max_transaction_loss is None
+
+    br.withdraw(100)
+
+    assert br.total_funds == 0
 
 
 @pytest.mark.parametrize(
@@ -52,9 +70,9 @@ def test_drawdown_limit():
         ("percent_bettable", -0.1),
         ("percent_bettable", 1.1),
         ("percent_bettable", float("nan")),
-        ("max_draw_down", -0.1),
-        ("max_draw_down", 1.1),
-        ("max_draw_down", float("inf")),
+        ("max_transaction_loss", -0.1),
+        ("max_transaction_loss", 1.1),
+        ("max_transaction_loss", float("inf")),
     ],
 )
 def test_invalid_configuration_raises_value_error(argument, value):
@@ -62,8 +80,8 @@ def test_invalid_configuration_raises_value_error(argument, value):
         BankRoll(**{argument: value})
 
 
-def test_none_disables_drawdown_limit():
-    br = BankRoll(initial_funds=100, max_draw_down=None)
+def test_none_disables_transaction_loss_limit():
+    br = BankRoll(initial_funds=100, max_transaction_loss=None)
 
     br.withdraw(100)
 
@@ -72,11 +90,11 @@ def test_none_disables_drawdown_limit():
 
 @pytest.mark.parametrize(
     "method_name",
-    ["deposit", "withdraw", "bet", "add_funds", "remove_funds"],
+    ["deposit", "withdraw", "bet"],
 )
 @pytest.mark.parametrize("amount", [-1, float("nan"), float("inf"), float("-inf")])
 def test_invalid_transaction_does_not_mutate_bankroll(method_name, amount):
-    br = BankRoll(initial_funds=100, max_draw_down=1)
+    br = BankRoll(initial_funds=100, max_transaction_loss=1)
     original_history = br.history.copy()
 
     with pytest.raises(ValueError, match=r"must be a finite, nonnegative number$"):
@@ -86,21 +104,21 @@ def test_invalid_transaction_does_not_mutate_bankroll(method_name, amount):
     assert br.history == original_history
 
 
-@pytest.mark.parametrize("method_name", ["withdraw", "remove_funds", "bet"])
-def test_zero_drawdown_rejects_positive_removal_without_mutation(method_name):
-    br = BankRoll(initial_funds=100, max_draw_down=0)
+@pytest.mark.parametrize("method_name", ["withdraw", "bet"])
+def test_zero_transaction_loss_rejects_positive_removal_without_mutation(method_name):
+    br = BankRoll(initial_funds=100, max_transaction_loss=0)
     original_history = br.history.copy()
 
-    with pytest.raises(RuinError, match=r"^You lost too much"):
+    with pytest.raises(RuinError, match=r"Refused .* of 1\.00: it exceeds"):
         getattr(br, method_name)(1)
 
     assert br.total_funds == 100
     assert br.history == original_history
 
 
-@pytest.mark.parametrize("method_name", ["withdraw", "remove_funds", "bet"])
-def test_zero_amount_is_allowed_with_zero_drawdown(method_name):
-    br = BankRoll(initial_funds=100, max_draw_down=0)
+@pytest.mark.parametrize("method_name", ["withdraw", "bet"])
+def test_zero_amount_is_allowed_with_zero_transaction_loss(method_name):
+    br = BankRoll(initial_funds=100, max_transaction_loss=0)
 
     getattr(br, method_name)(0)
 
@@ -108,19 +126,26 @@ def test_zero_amount_is_allowed_with_zero_drawdown(method_name):
     assert br.history == [100, 100]
 
 
-def test_bet_above_drawdown_limit_does_not_mutate_bankroll():
-    br = BankRoll(initial_funds=100, max_draw_down=0.5)
+def test_bet_above_transaction_loss_limit_does_not_mutate_bankroll():
+    br = BankRoll(initial_funds=100, max_transaction_loss=0.5)
     original_history = br.history.copy()
 
-    with pytest.raises(RuinError, match=r"^You lost too much"):
+    with pytest.raises(
+        RuinError,
+        match=(
+            r"^Refused bet of 50.01: it exceeds the configured transaction-loss "
+            r"limit \(max_transaction_loss=0.5, i.e. at most 50.00 of current funds: "
+            r"100.00\); pass max_transaction_loss=None to lift the cap$"
+        ),
+    ):
         br.bet(50.01)
 
     assert br.total_funds == 100
     assert br.history == original_history
 
 
-def test_bet_at_drawdown_limit_succeeds():
-    br = BankRoll(initial_funds=100, max_draw_down=0.5)
+def test_bet_at_transaction_loss_limit_succeeds():
+    br = BankRoll(initial_funds=100, max_transaction_loss=0.5)
 
     br.bet(50)
 
@@ -128,8 +153,8 @@ def test_bet_at_drawdown_limit_succeeds():
     assert br.history == [100, 50]
 
 
-def test_bet_above_bettable_funds_raises_before_drawdown_check():
-    br = BankRoll(initial_funds=100, percent_bettable=0.1, max_draw_down=None)
+def test_bet_above_bettable_funds_raises_before_transaction_loss_check():
+    br = BankRoll(initial_funds=100, percent_bettable=0.1, max_transaction_loss=None)
     original_history = br.history.copy()
 
     with pytest.raises(ValueError, match=r"^Bet amount exceeds bettable funds$"):
@@ -140,7 +165,7 @@ def test_bet_above_bettable_funds_raises_before_drawdown_check():
 
 
 def test_none_disables_drawdown_limit_for_bet():
-    br = BankRoll(initial_funds=100, max_draw_down=None)
+    br = BankRoll(initial_funds=100, max_transaction_loss=None)
 
     br.bet(100)
 
@@ -154,7 +179,7 @@ def test_plot_history_saves_figure_to_file(tmp_path):
 
     matplotlib.use("Agg", force=True)
 
-    br = BankRoll(initial_funds=100, max_draw_down=None)
+    br = BankRoll(initial_funds=100, max_transaction_loss=None)
     br.deposit(50)
     fname = tmp_path / "bankroll.png"
 
@@ -170,7 +195,7 @@ def test_plot_history_display_branch_is_headless_safe():
 
     matplotlib.use("Agg", force=True)
 
-    br = BankRoll(initial_funds=100, max_draw_down=None)
+    br = BankRoll(initial_funds=100, max_transaction_loss=None)
     br.deposit(50)
 
     br.plot_history()

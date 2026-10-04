@@ -1,47 +1,83 @@
 import abc
 
+import numpy as np
+
+from keeks.params import ParameterMixin
 from keeks.utils import _require_finite
 
 __author__ = "willmcginnis"
 
 
-class BaseStrategy(abc.ABC):
+class BaseStrategy(ParameterMixin, abc.ABC):
     """
     Abstract base class for all binary betting strategies.
 
     This class defines the interface that all binary betting strategies must implement.
     Concrete strategy implementations should inherit from this class and implement
     the evaluate method.
+
+    Beyond ``evaluate``, the simulators in ``keeks.simulators`` resolve two
+    optional hooks ``getattr``-style once per run and fire them around each
+    settled bet. This base class implements neither, so a strategy may omit
+    them freely: the simulator skips the hook and the strategy stays
+    stateless. A stateful strategy that needs the feedback but omits the
+    hook simply sizes from stale state - there is no error, which is why the
+    contract is documented here.
+
+    - ``update_bankroll(current_bankroll)`` - fired at the top of every
+      trial, before ``evaluate``, with the bankroll's current total funds,
+      so an adaptive strategy can size from the bankroll as it stands
+      (:class:`keeks.binary_strategies.CPPIStrategy` ratchets its floor from
+      it). Not fired once the bankroll is depleted - the simulation has
+      already stopped.
+
+    - ``record_settlement(won, realized_returns)`` - fired once per *settled*
+      bet, after the bankroll transfer: ``won`` holds the bet's realized
+      outcome (one entry per settled option - a single ``True`` or ``False``
+      for the binary simulators) and ``realized_returns`` the realized
+      simple return per option on the bankroll, positive or negative. Not
+      fired for trials the strategy sits out (a zero stake),
+      and not fired for a settlement a bankroll safeguard refused - a
+      refused settlement leaves the bankroll unchanged and stops the
+      simulation, so there is no result to report
+      (:class:`keeks.binary_strategies.DynamicBankrollManagement` tracks
+      streaks and volatility through this hook).
+
+    A hook should not raise: exceptions other than the simulator's own
+    ``RuinError`` settlement handling propagate to the caller.
     """
 
-    def __init__(self, payoff: float, loss: float, transaction_cost: float = 0):
+    def __init__(self, payoff: float, loss: float, transaction_cost_rate: float = 0):
         """
         Initialize the strategy.
 
         Parameters
         ----------
         payoff : float
-            The payoff multiplier for winning.
+            The payoff multiplier for winning: the *net* amount won per unit
+            staked, excluding the stake's return - decimal odds minus one, so
+            even money is ``1.0`` and decimal odds ``3.0`` are ``payoff=2.0``.
+            This is the opposite of the multi-outcome and allocation layers,
+            where the same name means the decimal odds themselves.
         loss : float
             The loss multiplier for losing.
-        transaction_cost : float, optional
+        transaction_cost_rate : float, optional
             The transaction cost as a fraction of each unit staked, by default 0.
             This is a per-unit *fractional* cost that enters the sizing formulas
             alongside ``payoff`` and ``loss`` (Kelly, for instance, computes
-            ``payoff - transaction_cost``), so ``0.01`` means one percent of the
+            ``payoff - transaction_cost_rate``), so ``0.01`` means one percent of the
             stake and the fee it represents grows with the bet.
 
-            The simulators in ``keeks.simulators`` take a near-identically named
-            ``transaction_costs`` (plural) that is an *absolute* bankroll amount
-            charged once per settled bet, independent of stake size. The two are
-            different units: passing the same number to both models two very
-            different costs.
+            The simulators in ``keeks.simulators`` take ``fee_per_bet``: an
+            *absolute* bankroll amount charged once per settled bet,
+            independent of stake size. The two are different units: passing
+            the same number to both models two very different costs.
 
         Raises
         ------
         ValueError
-            If any of payoff, loss or transaction_cost is not a finite number, if
-            payoff is not positive, loss is negative, or loss + transaction_cost
+            If any of payoff, loss or transaction_cost_rate is not a finite number, if
+            payoff is not positive, loss is negative, or loss + transaction_cost_rate
             is not positive.
         """
         payoff = _require_finite(payoff, "Payoff")
@@ -50,21 +86,23 @@ class BaseStrategy(abc.ABC):
         loss = _require_finite(loss, "Loss")
         if loss < 0:
             raise ValueError("Loss must be non-negative")
-        transaction_cost = _require_finite(transaction_cost, "Transaction cost")
-        if transaction_cost < 0:
-            raise ValueError("Transaction cost must be non-negative")
-        if loss + transaction_cost <= 0:
+        transaction_cost_rate = _require_finite(
+            transaction_cost_rate, "Transaction cost rate"
+        )
+        if transaction_cost_rate < 0:
+            raise ValueError("Transaction cost rate must be non-negative")
+        if loss + transaction_cost_rate <= 0:
             raise ValueError(
-                "Total cost (loss + transaction_cost) must be greater than 0"
+                "Total cost (loss + transaction_cost_rate) must be greater than 0"
             )
 
         self.payoff = payoff
         self.loss = loss
-        self.transaction_cost = transaction_cost
+        self.transaction_cost_rate = transaction_cost_rate
         # Constructor-only constant: for a positive bankroll the bankroll term
-        # in current_bankroll / (loss + transaction_cost) cancels, so the cap
+        # in current_bankroll / (loss + transaction_cost_rate) cancels, so the cap
         # is a fixed fraction.
-        self._max_safe_fraction = min(1.0, 1.0 / (loss + transaction_cost))
+        self._max_safe_fraction = min(1.0, 1.0 / (loss + transaction_cost_rate))
 
     def get_max_safe_bet(self, current_bankroll: float) -> float:
         """
@@ -89,9 +127,9 @@ class BaseStrategy(abc.ABC):
         Notes
         -----
         The maximum stake that cannot drive the bankroll negative is
-        ``current_bankroll / (loss + transaction_cost)``; expressed as a
+        ``current_bankroll / (loss + transaction_cost_rate)``; expressed as a
         proportion of the bankroll the bankroll term cancels, so for a positive
-        bankroll this is exactly ``min(1.0, 1 / (loss + transaction_cost))``.
+        bankroll this is exactly ``min(1.0, 1 / (loss + transaction_cost_rate))``.
         A non-positive bankroll has no safe stake at all, so the answer there is
         ``0.0``.
         """
@@ -102,12 +140,12 @@ class BaseStrategy(abc.ABC):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -189,7 +227,8 @@ class BaseStrategy(abc.ABC):
         Returns
         -------
         float
-            The proportion of the bankroll to bet.
+            The proportion of the bankroll to bet - ``0.0`` for a
+            nonpositive bankroll, where there is nothing left to stake.
 
         Raises
         ------

@@ -38,21 +38,21 @@ SCENARIOS = {
         "loss": 1.0,
         "fee": 0.01,
         "probabilities": (0.42, 0.27, 0.28),
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
     "residual-heavy": {
         "payoffs": (2.5, 2.2, 3.0),
         "loss": 1.0,
         "fee": 0.0,
         "probabilities": (0.2, 0.15, 0.1),
-        "max_draw_down": None,
+        "max_transaction_loss": None,
     },
     "fee-heavy": {
         "payoffs": (1.2, 1.1, 1.3),
         "loss": 0.7,
         "fee": 0.5,
         "probabilities": (0.45, 0.3, 0.2),
-        "max_draw_down": 0.05,
+        "max_transaction_loss": 0.05,
     },
 }
 
@@ -62,13 +62,13 @@ SCENARIOS = {
 # aggregate safe-stake cap.
 STRATEGY_FACTORIES = {
     "Flat stakes": lambda s: _FlatStakesStrategy(
-        payoffs=s["payoffs"], loss=s["loss"], fraction=0.02, transaction_cost=0.0
+        payoffs=s["payoffs"], loss=s["loss"], fraction=0.02, transaction_cost_rate=0.0
     ),
     "Probability weighted": lambda s: _ProbabilityWeightedStrategy(
-        payoffs=s["payoffs"], loss=s["loss"], aggregate=0.9, transaction_cost=0.0
+        payoffs=s["payoffs"], loss=s["loss"], aggregate=0.9, transaction_cost_rate=0.0
     ),
     "Void tracking": lambda s: _VoidTrackingStrategy(
-        payoffs=s["payoffs"], loss=s["loss"], base_total=0.3, transaction_cost=0.0
+        payoffs=s["payoffs"], loss=s["loss"], base_total=0.3, transaction_cost_rate=0.0
     ),
 }
 
@@ -81,8 +81,8 @@ TRIAL_COUNTS = (7, 53, 400)
 class _FlatStakesStrategy(BaseMultiOutcomeStrategy):
     """The same fraction on every leg, every trial."""
 
-    def __init__(self, payoffs, loss, fraction, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, fraction, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._fraction = fraction
 
     def evaluate(self, probabilities, _current_bankroll):
@@ -92,8 +92,8 @@ class _FlatStakesStrategy(BaseMultiOutcomeStrategy):
 class _ProbabilityWeightedStrategy(BaseMultiOutcomeStrategy):
     """Stakes proportional to each leg's probability under a fixed aggregate."""
 
-    def __init__(self, payoffs, loss, aggregate, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, aggregate, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._aggregate = aggregate
 
     def evaluate(self, probabilities, _current_bankroll):
@@ -105,16 +105,16 @@ class _ProbabilityWeightedStrategy(BaseMultiOutcomeStrategy):
 class _VoidTrackingStrategy(BaseMultiOutcomeStrategy):
     """Grows the aggregate stake after voids, under the safe-stake cap."""
 
-    def __init__(self, payoffs, loss, base_total, transaction_cost=0):
-        super().__init__(payoffs, loss, transaction_cost)
+    def __init__(self, payoffs, loss, base_total, transaction_cost_rate=0):
+        super().__init__(payoffs, loss, transaction_cost_rate)
         self._base_total = base_total
         self._voids = 0
 
     def update_bankroll(self, _current_bankroll):
         pass
 
-    def record_settlement(self, won_leg, _return_pcts):
-        if won_leg is None:
+    def record_settlement(self, won, _realized_returns):
+        if all(flag is None for flag in won):
             self._voids += 1
 
     def evaluate(self, probabilities, current_bankroll):
@@ -130,12 +130,13 @@ def run_case(strategy_name, scenario_name, seed, trials):
     scenario = SCENARIOS[scenario_name]
     strategy = STRATEGY_FACTORIES[strategy_name](scenario)
     bankroll = BankRoll(
-        initial_funds=INITIAL_FUNDS, max_draw_down=scenario["max_draw_down"]
+        initial_funds=INITIAL_FUNDS,
+        max_transaction_loss=scenario["max_transaction_loss"],
     )
     simulator = RepeatedMultiOutcomeSimulator(
         payoffs=scenario["payoffs"],
         loss=scenario["loss"],
-        transaction_costs=scenario["fee"],
+        fee_per_bet=scenario["fee"],
         probabilities=scenario["probabilities"],
         trials=trials,
         seed=seed,

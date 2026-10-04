@@ -5,8 +5,8 @@ The Kelly criterion generalizes from one binary bet to N legs. Staking the
 fractions ``f_1..f_N`` of the bankroll on legs quoted at decimal odds
 ``payoff_i`` (a winning leg pays ``payoff_i`` times its stake, stake
 included), the net win per unit staked on leg ``i`` is
-``a_i = payoff_i - 1 - transaction_cost`` and every losing leg costs
-``l = loss + transaction_cost`` per unit. Exactly one leg realizes, so the
+``a_i = payoff_i - 1 - transaction_cost_rate`` and every losing leg costs
+``l = loss + transaction_cost_rate`` per unit. Exactly one leg realizes, so the
 bankroll multiplier when leg ``j`` wins is
 ``1 + a_j f_j - l * sum_{k != j} f_k`` and the log-growth optimal allocation
 maximizes::
@@ -35,7 +35,7 @@ from keeks.multi_outcome.base import BaseMultiOutcomeStrategy, _validate_stake_f
 from keeks.utils import (
     PROBABILITY_SUM_TOLERANCE,
     _require_finite,
-    normalize_probabilities,
+    validate_probabilities,
 )
 
 __author__ = "willmcginnis"
@@ -384,10 +384,10 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
 
     Sizes one stake fraction per leg to maximize the expected log growth of
     the bankroll: ``sum_i p_i * log(1 + a_i f_i - l * sum_{k != i} f_k)``
-    where ``a_i = payoff_i - 1 - transaction_cost`` is the net win per unit
+    where ``a_i = payoff_i - 1 - transaction_cost_rate`` is the net win per unit
     staked on leg ``i`` (the payoffs are decimal odds: a winning leg pays its
     payoff times its stake, stake included) and ``l = loss +
-    transaction_cost`` is the per-unit charge on every losing leg. Exactly one
+    transaction_cost_rate`` is the per-unit charge on every losing leg. Exactly one
     leg realizes per round, so staking two legs is a hedge inside one market,
     not two independent bets.
 
@@ -416,15 +416,15 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
         The decimal-odds multiplier paid by each mutually exclusive leg, in
         leg order, on top of the stake's own return. Every payoff must be
         finite and greater than 0; a leg whose payoff cannot beat its costs
-        (``payoff <= 1 + transaction_cost``) is never staked.
+        (``payoff <= 1 + transaction_cost_rate``) is never staked.
     loss : float
         The loss multiplier applied to every losing leg's stake.
-    transaction_cost : float, optional
+    transaction_cost_rate : float, optional
         The transaction cost as a fraction of each unit staked, by default 0.
         This is a per-unit *fractional* cost that enters the sizing formulas
         alongside ``payoffs`` and ``loss``, so ``0.01`` means one percent of
         the stake. Note this differs in unit from the simulators' flat
-        per-settlement ``transaction_costs`` fee.
+        per-settlement ``fee_per_bet`` flat fee.
     min_probability : float, default=0.5
         The minimum leg probability for the two-leg binary fallback to place
         a stake, mirroring
@@ -435,8 +435,8 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
     ------
     ValueError
         If ``payoffs`` is not a non-empty one-dimensional sequence of finite
-        numbers greater than 0, if ``loss`` or ``transaction_cost`` is not a
-        finite nonnegative number with ``loss + transaction_cost > 0``, or if
+        numbers greater than 0, if ``loss`` or ``transaction_cost_rate`` is not a
+        finite nonnegative number with ``loss + transaction_cost_rate > 0``, or if
         ``min_probability`` is outside ``[0, 1]``.
 
     Examples
@@ -449,7 +449,7 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
     >>> strategy = MultiOutcomeKellyCriterion(payoffs=(3.0, 1.5), loss=1.0)
     >>> strategy.evaluate([0.5, 0.5], 1000.0)
     (0.25, 0.0)
-    >>> KellyCriterion(payoff=2.0, loss=1.0, transaction_cost=0).evaluate(0.5, 1000.0)
+    >>> KellyCriterion(payoff=2.0, loss=1.0, transaction_cost_rate=0).evaluate(0.5, 1000.0)
     0.25
 
     A 1X2 market where only leg 0 has a standalone edge still splits the
@@ -462,7 +462,7 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
     >>> stakes = strategy.evaluate([0.42, 0.27, 0.28], 1000.0)
     >>> tuple(round(stake, 6) for stake in stakes)
     (0.203681, 0.06253, 0.0)
-    >>> KellyCriterion(payoff=2.2, loss=1.0, transaction_cost=0, min_probability=0.4).evaluate(0.42, 1000.0)
+    >>> KellyCriterion(payoff=2.2, loss=1.0, transaction_cost_rate=0, min_probability=0.4).evaluate(0.42, 1000.0)
     0.15636363636363632
     """
 
@@ -470,7 +470,7 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
         self,
         payoffs: Sequence[float],
         loss: float,
-        transaction_cost: float = 0,
+        transaction_cost_rate: float = 0,
         min_probability: float = 0.5,
     ):
         """
@@ -483,7 +483,7 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
             in leg order. Every payoff must be finite and greater than 0.
         loss : float
             The loss multiplier applied to every losing leg's stake.
-        transaction_cost : float, optional
+        transaction_cost_rate : float, optional
             The transaction cost as a fraction of each unit staked, by default 0.
         min_probability : float, default=0.5
             The minimum leg probability for the two-leg binary fallback to
@@ -494,7 +494,7 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
         ValueError
             If any constructor argument is outside its documented range.
         """
-        super().__init__(payoffs, loss, transaction_cost)
+        super().__init__(payoffs, loss, transaction_cost_rate)
         if not 0 <= min_probability <= 1:
             raise ValueError("Minimum probability must be between 0 and 1")
         self.min_probability = min_probability
@@ -502,16 +502,18 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
         # the per-unit fractional cost. Shared per-unit charge on every
         # losing leg.
         self._net_gains = tuple(
-            payoff - 1.0 - transaction_cost for payoff in self.payoffs
+            payoff - 1.0 - transaction_cost_rate for payoff in self.payoffs
         )
-        self._total_cost = loss + transaction_cost
+        self._total_cost = loss + transaction_cost_rate
         # At N=2 the allocation is exact binary Kelly per leg, scored by the
         # same class the golden tests pin. A leg whose decimal payoff cannot
         # return a positive profit has no scorer and is never staked.
         self._binary_scorers: tuple[KellyCriterion | None, ...] | None = None
         if len(self.payoffs) == 2:
             self._binary_scorers = tuple(
-                KellyCriterion(payoff - 1.0, loss, transaction_cost, min_probability)
+                KellyCriterion(
+                    payoff - 1.0, loss, transaction_cost_rate, min_probability
+                )
                 if payoff > 1.0
                 else None
                 for payoff in self.payoffs
@@ -528,7 +530,7 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
         probabilities : sequence of float
             The probability of each mutually exclusive leg, in leg order.
             Must be a valid probability vector per
-            :func:`keeks.utils.normalize_probabilities` and match the number
+            :func:`keeks.utils.validate_probabilities` and match the number
             of payoffs.
         current_bankroll : float
             The current bankroll amount. The optimal fractions do not depend
@@ -548,7 +550,7 @@ class MultiOutcomeKellyCriterion(BaseMultiOutcomeStrategy):
             match the number of payoffs, or if ``current_bankroll`` is not
             finite.
         """
-        probabilities = normalize_probabilities(probabilities)
+        probabilities = validate_probabilities(probabilities)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
         if len(probabilities) != len(self.payoffs):
             raise ValueError(

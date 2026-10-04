@@ -84,11 +84,12 @@ rates separately.
 
 **Fixed inputs.** $1,000 starting bankroll, 500 bets, 200 paths, even money
 (``payoff = 1.0``, ``loss = 1.0``), ``percent_bettable = 1.0``. The base scenario
-is a 55% win probability, a zero cost input, no estimate error, and the library's
-default ``max_draw_down = 0.3``.
+is a 55% win probability, a zero cost input, no estimate error, and an explicit
+``max_transaction_loss = 0.3`` — the library default is ``None`` (no
+per-settlement cap), so the benchmark passes the cap it studies.
 
 The strategies are configured once each: full Kelly; fractional Kelly at 0.5;
-drawdown-adjusted Kelly at ``max_acceptable_drawdown = 0.2``; Optimal f with
+drawdown-adjusted Kelly at ``max_transaction_loss = 0.2``; Optimal f with
 ``win_rate`` set to the scenario's true probability and
 ``max_risk_fraction = 0.2``; the naive expected-value rule; a flat 2% fixed
 fraction; CPPI with an 80% floor and a multiplier of 2; dynamic bankroll
@@ -98,7 +99,7 @@ management with a 5% base fraction; and the Merton share at
 Base scenario
 -------------
 
-55% win probability, even money, no cost, no estimate error, ``max_draw_down =
+55% win probability, even money, no cost, no estimate error, ``max_transaction_loss =
 0.3``. All figures are dollars unless marked otherwise; "Stake" is the fraction
 of the bankroll wagered on the first bet, "MDD" is maximum drawdown.
 
@@ -179,9 +180,9 @@ the flat 2% rule stakes, so four of the nine produce the same path.
 What the cost input actually does
 ---------------------------------
 
-Strategies treat ``transaction_cost`` as a **per-unit fractional** cost, folded
+Strategies treat ``transaction_cost_rate`` as a **per-unit fractional** cost, folded
 into the payoff and loss multipliers before the growth optimum is computed.
-Simulators treat ``transaction_costs`` as a **flat fee per settled bet**. The same
+Simulators treat ``fee_per_bet`` as a **flat fee per settled bet**. The same
 number means different things on the two sides, and at a $1,000 bankroll the
 difference is three orders of magnitude:
 
@@ -206,25 +207,25 @@ the parameter for sizing entirely: ``FixedFractionStrategy`` by design, and
 ``DynamicBankrollManagement`` because its ``min_fraction`` floor holds it at 5%
 regardless.
 
-If you want to model real friction, scale the flat ``transaction_costs`` against
+If you want to model real friction, scale the flat ``fee_per_bet`` against
 the bankroll and stake sizes you actually expect, and do not assume the same
 number on the strategy side is doing comparable work.
 
-``max_draw_down`` is a per-settlement cap, not a risk budget
+``max_transaction_loss`` is a per-settlement cap, not a risk budget
 ------------------------------------------------------------
 
-``BankRoll`` refuses any single withdrawal larger than ``max_draw_down`` times
+``BankRoll`` refuses any single withdrawal larger than ``max_transaction_loss`` times
 current funds and raises ``RuinError``; the simulator catches it and stops the
 run. It is a cap on one settlement, not on cumulative peak-to-trough loss, and
 that makes it behave as a switch rather than a dial:
 
 .. figure:: ../../benchmarks/output/early_stops_by_drawdown_limit.png
    :alt: Grouped bar chart of the percentage of runs that stopped before 500 bets,
-         for nine strategies at four values of max_draw_down, drawn in greyscale
+         for nine strategies at four values of max_transaction_loss, drawn in greyscale
          with four distinct hatch patterns. Every bar is either 0 percent or 100
          percent. At a cap of 0.03 all strategies except Fixed fraction 2% stop on
          every path. At a cap of 0.08 only Kelly, Optimal f and Naive stop, again
-         on every path. At the default cap of 0.30 and with no cap at
+         on every path. At a cap of 0.30 and with no cap at
          all, no strategy stops and every bar is zero.
    :width: 100%
 
@@ -234,8 +235,9 @@ Every bar is either zero or full height. A strategy stakes a roughly fixed
 fraction, so the cap either sits above that fraction and never binds, or sits
 below it and kills the run on the first losing bet — at a cap of 0.08 the Kelly
 group stops after a median of 2 bets.
-The default ``max_draw_down = 0.3`` never binds for any of the
-nine at a 55% edge, because none of them stakes more than 10%.
+The explicit ``max_transaction_loss = 0.3`` never binds for any of the
+nine at a 55% edge, because none of them stakes more than 10% — the library
+default is ``None`` (uncapped), which is the study's "no cap" bar.
 
 There is a second-order trap: a stopped run has a *lower* measured maximum
 drawdown than a completed one, because the losing settlement is refused rather
@@ -244,7 +246,7 @@ which is a number produced by not playing.
 
 If you want a cumulative drawdown budget, use ``DrawdownAdjustedKelly``, which
 shrinks the bet fraction, or ``CPPIStrategy``, which holds a floor. Do not read
-``max_draw_down`` as one.
+``max_transaction_loss`` as one.
 
 How each axis moves the result
 ------------------------------
@@ -282,7 +284,7 @@ Fixed fraction 2%        0         0                0         0          0      
 CPPI                     0         0                0         0          0          0        0        0         100       0
 =======================  ========  ===============  ========  =========  =========  =======  =======  ========  ========  ========
 
-Every early stop in this matrix is a ``max_draw_down`` breach. No path in any
+Every early stop in this matrix is a ``max_transaction_loss`` breach. No path in any
 scenario reached bankruptcy, which is what the drawdown cap is there to prevent.
 
 **Edge.** Growth is extremely sensitive to it. Moving from a 55% to a 60% win
@@ -334,7 +336,7 @@ What it does support:
   that it buys robustness to estimation error rather than just lower variance —
   is visible in this matrix.
 * **If you want a cumulative drawdown budget**, use ``DrawdownAdjustedKelly`` or
-  ``CPPIStrategy``. ``max_draw_down`` will not give you one.
+  ``CPPIStrategy``. ``max_transaction_loss`` will not give you one.
 * **If you want a control to measure a strategy against**, use
   ``FixedFractionStrategy``. ``NaiveStrategy`` is Kelly for a standard binary bet.
 * **If capital preservation dominates**, CPPI had the tightest distribution of the

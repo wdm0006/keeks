@@ -10,7 +10,7 @@ from keeks.utils import RuinError
 
 def test_withdraw_prevents_negative_bankroll():
     """Test that withdraw() prevents bankroll from going negative."""
-    bankroll = BankRoll(initial_funds=100, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=100, max_transaction_loss=None)
 
     # Try to withdraw more than available
     with pytest.raises(RuinError, match="bankruptcy"):
@@ -20,21 +20,9 @@ def test_withdraw_prevents_negative_bankroll():
     assert bankroll.total_funds == 100
 
 
-def test_remove_funds_prevents_negative_bankroll():
-    """Test that remove_funds() prevents bankroll from going negative."""
-    bankroll = BankRoll(initial_funds=100, max_draw_down=None)
-
-    # Try to remove more than available
-    with pytest.raises(RuinError, match="bankruptcy"):
-        bankroll.remove_funds(150)
-
-    # Bankroll should be unchanged
-    assert bankroll.total_funds == 100
-
-
 def test_exact_withdrawal_works():
     """Test that withdrawing exact amount works."""
-    bankroll = BankRoll(initial_funds=100, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=100, max_transaction_loss=None)
 
     # Withdraw exact amount
     bankroll.withdraw(100)
@@ -51,20 +39,20 @@ def test_simulator_stops_at_bankruptcy():
 
     random.seed(999)  # Seed that causes early bankruptcy
 
-    bankroll = BankRoll(initial_funds=100, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=100, max_transaction_loss=None)
     # Use fixed fraction strategy that will bet regardless of odds
     strategy = FixedFractionStrategy(
         fraction=0.25,  # Bet 25% each time
         payoff=1.0,
         loss=1.0,
-        transaction_cost=0.0,
+        transaction_cost_rate=0.0,
         min_probability=0.0,  # Bet even with bad odds
     )
 
     simulator = RepeatedBinarySimulator(
         payoff=1.0,
         loss=1.0,
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         probability=0.3,  # Bad odds
         trials=1000,
     )
@@ -78,23 +66,28 @@ def test_simulator_stops_at_bankruptcy():
     assert bankroll.total_funds >= 0
 
 
-def test_drawdown_check_uses_pre_withdrawal_amount():
-    """Test that drawdown check uses amount before withdrawal."""
-    bankroll = BankRoll(initial_funds=1000, max_draw_down=0.2)
+def test_transaction_loss_check_uses_pre_withdrawal_amount():
+    """Test that the transaction-loss check uses amount before withdrawal."""
+    bankroll = BankRoll(initial_funds=1000, max_transaction_loss=0.2)
 
     # Try to withdraw 250 (25% of 1000, exceeds 20% limit)
-    with pytest.raises(RuinError, match="slow down"):
+    with pytest.raises(
+        RuinError,
+        match=r"Refused withdrawal of 250\.00: it exceeds the configured "
+        r"transaction-loss limit \(max_transaction_loss=0.2, i\.e\. at most 200\.00 of "
+        r"current funds: 1000\.00\)",
+    ):
         bankroll.withdraw(250)
 
     # Bankroll should be unchanged
     assert bankroll.total_funds == 1000
 
 
-def test_bankruptcy_check_before_drawdown_check():
-    """Test that bankruptcy is checked before drawdown."""
-    bankroll = BankRoll(initial_funds=100, max_draw_down=0.5)
+def test_bankruptcy_check_before_transaction_loss_check():
+    """Test that bankruptcy is checked before the transaction-loss cap."""
+    bankroll = BankRoll(initial_funds=100, max_transaction_loss=0.5)
 
-    # Try to withdraw 150 (would cause bankruptcy, even though > max_draw_down)
+    # Try to withdraw 150 (would cause bankruptcy, even though > max_transaction_loss)
     with pytest.raises(RuinError, match="bankruptcy"):
         bankroll.withdraw(150)
 
@@ -104,16 +97,16 @@ def test_bankruptcy_check_before_drawdown_check():
 
 def test_transaction_cost_correctly_increases_loss():
     """Test that transaction costs are added to losses, not subtracted."""
-    bankroll = BankRoll(initial_funds=1000, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000, max_transaction_loss=None)
     initial = bankroll.total_funds
 
     # Simulate a loss with transaction cost
     bet_amount = 100
     loss_multiplier = 1.0
-    transaction_cost = 5
+    transaction_cost_rate = 5
 
     # Expected: lose bet amount + transaction cost
-    expected_loss = (bet_amount * loss_multiplier) + transaction_cost
+    expected_loss = (bet_amount * loss_multiplier) + transaction_cost_rate
 
     bankroll.withdraw(expected_loss)
 
@@ -128,13 +121,13 @@ def test_no_negative_values_in_history():
 
     random.seed(42)
 
-    bankroll = BankRoll(initial_funds=50, max_draw_down=None)
-    strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+    bankroll = BankRoll(initial_funds=50, max_transaction_loss=None)
+    strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
 
     simulator = RepeatedBinarySimulator(
         payoff=1.0,
         loss=1.0,
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         probability=0.4,  # Negative expectation
         trials=100,
     )
@@ -149,7 +142,7 @@ def test_no_negative_values_in_history():
 
 def test_multiple_small_losses_dont_go_negative():
     """Test that multiple small losses stop at zero, not negative."""
-    bankroll = BankRoll(initial_funds=10, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=10, max_transaction_loss=None)
 
     # Withdraw in small increments
     bankroll.withdraw(3)

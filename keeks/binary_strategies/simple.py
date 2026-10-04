@@ -1,4 +1,5 @@
 import operator
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -27,11 +28,13 @@ class NaiveStrategy(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     """
 
-    def __init__(self, payoff, loss, transaction_cost):
+    def __init__(
+        self, payoff: float, loss: float, transaction_cost_rate: float
+    ) -> None:
         """
         Initialize the NaiveStrategy.
 
@@ -41,17 +44,17 @@ class NaiveStrategy(BaseStrategy):
             The amount won per unit bet on a successful outcome.
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
-        transaction_cost : float
+        transaction_cost_rate : float
             The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         """
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the bet size based on expected value.
 
         The expected value is calculated as:
-        EV = (probability * payoff) - ((1 - probability) * loss) - transaction_cost
+        EV = (probability * payoff) - ((1 - probability) * loss) - transaction_cost_rate
 
         If EV is positive, bet a fixed fraction of the bankroll.
         If EV is negative, do not bet.
@@ -75,7 +78,7 @@ class NaiveStrategy(BaseStrategy):
         expected_value = (
             (probability * self.payoff)
             - ((1 - probability) * self.loss)
-            - self.transaction_cost
+            - self.transaction_cost_rate
         )
 
         # If expected value is negative, do not bet
@@ -90,12 +93,12 @@ class NaiveStrategy(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -164,13 +167,20 @@ class FixedFractionStrategy(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float, default=0
+    transaction_cost_rate : float, default=0
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     min_probability : float, default=0.5
         The minimum probability required to place a bet.
     """
 
-    def __init__(self, fraction, payoff, loss, transaction_cost=0, min_probability=0.5):
+    def __init__(
+        self,
+        fraction: float,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float = 0,
+        min_probability: float = 0.5,
+    ) -> None:
         """
         Initialize the FixedFractionStrategy.
 
@@ -182,7 +192,7 @@ class FixedFractionStrategy(BaseStrategy):
             The amount won per unit bet on a successful outcome.
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
-        transaction_cost : float, default=0
+        transaction_cost_rate : float, default=0
             The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         min_probability : float, default=0.5
             The minimum probability required to place a bet.
@@ -192,11 +202,11 @@ class FixedFractionStrategy(BaseStrategy):
         if not 0 <= min_probability <= 1:
             raise ValueError("Minimum probability must be between 0 and 1")
 
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
         self.fraction = fraction
         self.min_probability = min_probability
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Return the fixed fraction if the probability meets the minimum threshold.
 
@@ -222,12 +232,12 @@ class FixedFractionStrategy(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -291,7 +301,7 @@ class CPPIStrategy(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     min_probability : float, default=0.5
         The minimum probability required to place a bet.
@@ -299,14 +309,14 @@ class CPPIStrategy(BaseStrategy):
 
     def __init__(
         self,
-        floor_fraction,
-        multiplier,
-        initial_bankroll,
-        payoff,
-        loss,
-        transaction_cost=0,
-        min_probability=0.5,
-    ):
+        floor_fraction: float,
+        multiplier: float,
+        initial_bankroll: float,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float = 0,
+        min_probability: float = 0.5,
+    ) -> None:
         """Initialize the CPPI strategy."""
         if not 0 < floor_fraction < 1:
             raise ValueError("Floor fraction must be between 0 and 1")
@@ -319,15 +329,16 @@ class CPPIStrategy(BaseStrategy):
         if not 0 <= min_probability <= 1:
             raise ValueError("Minimum probability must be between 0 and 1")
 
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
         self.floor_fraction = floor_fraction
         self.multiplier = multiplier
+        self.initial_bankroll = initial_bankroll
         self.floor = floor_fraction * initial_bankroll
         self.min_probability = min_probability
         self.current_bankroll = initial_bankroll
         self.peak_bankroll = initial_bankroll
 
-    def update_bankroll(self, new_bankroll):
+    def update_bankroll(self, new_bankroll: float) -> None:
         """
         Update the current bankroll value and adjust floor based on peak value.
 
@@ -342,7 +353,7 @@ class CPPIStrategy(BaseStrategy):
             # Adjust floor to maintain the same fraction of peak value
             self.floor = self.floor_fraction * self.peak_bankroll
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the CPPI bet size based on the cushion above the floor.
 
@@ -370,9 +381,9 @@ class CPPIStrategy(BaseStrategy):
             return 0.0
 
         # Calculate expected value per unit bet
-        expected_value = probability * (self.payoff - self.transaction_cost) - (
+        expected_value = probability * (self.payoff - self.transaction_cost_rate) - (
             1 - probability
-        ) * (self.loss + self.transaction_cost)
+        ) * (self.loss + self.transaction_cost_rate)
 
         # If expected value is negative, don't bet
         # Note: We allow small positive edges (even < 1%) for realistic scenarios
@@ -401,7 +412,7 @@ class CPPIStrategy(BaseStrategy):
             # Calculate the maximum bet that ensures we stay above the floor
             # even in the worst case (loss + transaction cost)
             max_floor_bet = (current_bankroll - self.floor) / (
-                current_bankroll * (self.loss + self.transaction_cost)
+                current_bankroll * (self.loss + self.transaction_cost_rate)
             )
 
             # Get the maximum safe bet considering ruin
@@ -414,12 +425,12 @@ class CPPIStrategy(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -494,7 +505,7 @@ class DynamicBankrollManagement(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     window_size : int, default=10
         The number of recent results to consider for adjustments.
@@ -509,15 +520,15 @@ class DynamicBankrollManagement(BaseStrategy):
 
     def __init__(
         self,
-        base_fraction,
-        payoff,
-        loss,
-        transaction_cost,
-        window_size=10,
-        max_fraction=0.2,
-        min_fraction=0.05,
-        min_probability=0.5,
-    ):
+        base_fraction: float,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float,
+        window_size: int = 10,
+        max_fraction: float = 0.2,
+        min_fraction: float = 0.05,
+        min_probability: float = 0.5,
+    ) -> None:
         """
         Initialize the DynamicBankrollManagement strategy.
         """
@@ -538,41 +549,45 @@ class DynamicBankrollManagement(BaseStrategy):
         if not 0 <= min_probability <= 1:
             raise ValueError("Minimum probability must be between 0 and 1")
 
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
         self.base_fraction = base_fraction
         self.window_size = window_size
         self.max_fraction = max_fraction
         self.min_fraction = min_fraction
         self.min_probability = min_probability
         self.results = []
-        # Volatility cache for the current window; record_result is the only
-        # in-library mutator of the window and invalidates it. External code
-        # mutating ``results`` directly bypasses invalidation.
+        # Volatility cache for the current window; record_settlement is the
+        # only in-library mutator of the window and invalidates it. External
+        # code mutating ``results`` directly bypasses invalidation.
         self._volatility_cache = None
         self.initial_bankroll = None
         self.current_bankroll = None
         self.peak_bankroll = None
 
-    def record_result(self, won, return_pct=None):
+    def record_settlement(
+        self, won: Sequence[bool], realized_returns: Sequence[float] | None = None
+    ) -> None:
         """
-        Record the result of a bet.
+        Record the result of a settled bet.
 
         Parameters
         ----------
-        won : bool
-            Whether the bet was won.
-        return_pct : float, optional
-            The return percentage of the bet. If not provided, calculated from won/loss.
+        won : sequence of bool
+            One entry per settled option: ``True`` for a win, ``False`` for
+            a loss.
+        realized_returns : sequence of float, optional
+            The realized simple return per option on the bankroll. If not
+            provided, calculated from ``won`` and the strategy's odds.
         """
-        if return_pct is None:
-            return_pct = self.payoff if won else -self.loss
+        if realized_returns is None:
+            realized_returns = (self.payoff,) if won[0] else (-self.loss,)
 
-        self.results.append(return_pct)
+        self.results.append(realized_returns[0])
         if len(self.results) > self.window_size:
             self.results.pop(0)
         self._volatility_cache = None
 
-    def get_streak_factor(self):
+    def get_streak_factor(self) -> float:
         """Calculate the adjustment factor based on recent performance."""
         if not self.results:
             return 1.0
@@ -591,7 +606,7 @@ class DynamicBankrollManagement(BaseStrategy):
         win_ratio = wins / (wins + losses)
         return 1.0 + ((win_ratio - 0.5) * scale)
 
-    def get_volatility_factor(self):
+    def get_volatility_factor(self) -> float:
         """Calculate the adjustment factor based on return volatility."""
         if not self.results:
             return 1.0
@@ -607,7 +622,7 @@ class DynamicBankrollManagement(BaseStrategy):
         scale = min(len(self.results), self.window_size) / self.window_size
         return max(0.5, 1.0 - (volatility * scale))
 
-    def get_drawdown_factor(self):
+    def get_drawdown_factor(self) -> float:
         """Calculate the adjustment factor based on current drawdown."""
         if self.current_bankroll is None or self.peak_bankroll is None:
             return 1.0
@@ -618,7 +633,7 @@ class DynamicBankrollManagement(BaseStrategy):
         drawdown = 1.0 - (self.current_bankroll / self.peak_bankroll)
         return max(0.5, 1.0 - drawdown)
 
-    def get_probability_factor(self, probability):
+    def get_probability_factor(self, probability: float) -> float:
         """Calculate the adjustment factor based on probability."""
         # Only apply probability factor if we have some results
         if not self.results:
@@ -627,7 +642,7 @@ class DynamicBankrollManagement(BaseStrategy):
         # Scale linearly from 0.5 at 50% probability to 1.5 at 100% probability
         return max(0.5, min(1.5, 1.0 + (probability - 0.5)))
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the bet size based on all adjustment factors.
 
@@ -679,12 +694,12 @@ class DynamicBankrollManagement(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -746,7 +761,7 @@ class OptimalF(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     win_rate : float
         The historical or expected win rate (between 0 and 1).
@@ -754,7 +769,14 @@ class OptimalF(BaseStrategy):
         The maximum fraction of bankroll that can be risked on a single bet.
     """
 
-    def __init__(self, payoff, loss, transaction_cost, win_rate, max_risk_fraction=0.2):
+    def __init__(
+        self,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float,
+        win_rate: float,
+        max_risk_fraction: float = 0.2,
+    ) -> None:
         """
         Initialize the OptimalF strategy.
 
@@ -764,7 +786,7 @@ class OptimalF(BaseStrategy):
             The amount won per unit bet on a successful outcome.
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
-        transaction_cost : float
+        transaction_cost_rate : float
             The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         win_rate : float
             The historical or expected win rate (between 0 and 1).
@@ -776,11 +798,11 @@ class OptimalF(BaseStrategy):
         if not 0 < max_risk_fraction <= 1:
             raise ValueError("Maximum risk fraction must be between 0 and 1")
 
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
         self.win_rate = win_rate
         self.max_risk_fraction = max_risk_fraction
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the optimal f bet size based on win rate and payoff ratio.
 
@@ -801,7 +823,7 @@ class OptimalF(BaseStrategy):
         float
             The optimal proportion of the bankroll to stake: Ralph Vince's
             optimal f converted from a risk fraction to a stake fraction.
-            The two coincide only when ``loss + transaction_cost`` is 1.
+            The two coincide only when ``loss + transaction_cost_rate`` is 1.
         """
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
@@ -812,8 +834,8 @@ class OptimalF(BaseStrategy):
         adjusted_loss_rate = 1 - adjusted_win_rate
 
         # Calculate the risk-to-reward ratio (R-multiple)
-        reward = self.payoff - self.transaction_cost
-        risk = self.loss + self.transaction_cost
+        reward = self.payoff - self.transaction_cost_rate
+        risk = self.loss + self.transaction_cost_rate
 
         # If transaction costs make the bet unprofitable, don't bet
         if reward <= 0:
@@ -828,8 +850,8 @@ class OptimalF(BaseStrategy):
         optimal_f = min(max(0, optimal_f), self.max_risk_fraction)
 
         # Vince's f is a *risk* fraction: staking a fraction s of the bankroll
-        # puts s * (loss + transaction_cost) at risk, so the TWR-optimal stake
-        # is f* / (loss + transaction_cost), the Kelly closed form
+        # puts s * (loss + transaction_cost_rate) at risk, so the TWR-optimal stake
+        # is f* / (loss + transaction_cost_rate), the Kelly closed form
         # W/(l+c) - (1-W)/(b-c) for this game. evaluate() returns a stake
         # fraction, so convert; the two agree only when loss + cost == 1.
         stake_fraction = optimal_f / risk
@@ -839,12 +861,12 @@ class OptimalF(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -919,7 +941,7 @@ class MertonShare(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     risk_aversion : float, default=2.0
         The coefficient of relative risk aversion (γ). Common values:
@@ -940,13 +962,13 @@ class MertonShare(BaseStrategy):
 
     def __init__(
         self,
-        payoff,
-        loss,
-        transaction_cost,
-        risk_aversion=2.0,
-        min_probability=0.5,
-        max_fraction=1.0,
-    ):
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float,
+        risk_aversion: float = 2.0,
+        min_probability: float = 0.5,
+        max_fraction: float = 1.0,
+    ) -> None:
         """
         Initialize the MertonShare strategy.
 
@@ -956,7 +978,7 @@ class MertonShare(BaseStrategy):
             The amount won per unit bet on a successful outcome.
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
-        transaction_cost : float
+        transaction_cost_rate : float
             The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
         risk_aversion : float, default=2.0
             The coefficient of relative risk aversion.
@@ -973,12 +995,12 @@ class MertonShare(BaseStrategy):
         if not 0 < max_fraction <= 1:
             raise ValueError("Maximum fraction must be between 0 and 1")
 
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
         self.risk_aversion = risk_aversion
         self.min_probability = min_probability
         self.max_fraction = max_fraction
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the Merton Share bet size using CRRA utility.
 
@@ -1001,9 +1023,9 @@ class MertonShare(BaseStrategy):
 
         # Calculate expected return accounting for transaction costs
         # Expected return = p * (payoff - tc) - (1-p) * (loss + tc)
-        expected_return = probability * (self.payoff - self.transaction_cost) - (
+        expected_return = probability * (self.payoff - self.transaction_cost_rate) - (
             1 - probability
-        ) * (self.loss + self.transaction_cost)
+        ) * (self.loss + self.transaction_cost_rate)
 
         # Don't bet if expected return is non-positive
         if expected_return <= 0:
@@ -1038,12 +1060,12 @@ class MertonShare(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 

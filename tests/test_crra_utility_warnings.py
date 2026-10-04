@@ -88,7 +88,7 @@ class TestEntryPricingIsSilent:
 
     def test_kelly_max_entry_price(self):
         # Kelly prices from log utility, so this exercises the log branch.
-        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0)
+        strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0)
         with _no_warnings():
             price = strategy.calculate_max_entry_price(
                 WIPEOUT_OUTCOMES,
@@ -102,7 +102,7 @@ class TestEntryPricingIsSilent:
         strategy = MertonShare(
             payoff=1.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             risk_aversion=risk_aversion,
         )
         with _no_warnings():

@@ -9,14 +9,14 @@ independent binary bets** — M bookmaker markets all settling at once.
 The strategy contract is the binary contract made vector-valued: a strategy
 receives one probability per leg and returns one stake fraction of the
 bankroll per leg. Probabilities are validated by
-:func:`keeks.utils.normalize_probabilities` — finite, nonnegative, summing to
+:func:`keeks.utils.validate_probabilities` — finite, nonnegative, summing to
 no more than one within tolerance — and probability mass below one models a
 void or push round on which no leg settles. The returned fractions are each
 in ``[0, 1]`` and sum to at most one: the legs together can never promise
 more of the bankroll than it holds. Payoffs are decimal odds (a winning leg
 pays its payoff multiplier times its stake, stake included), and strategies
-price with a per-unit fractional ``transaction_cost`` while the simulators
-charge a flat per-settlement ``transaction_costs`` fee — the two units are
+price with a per-unit fractional ``transaction_cost_rate`` while the simulators
+charge a flat per-settlement ``fee_per_bet`` fee — the two units are
 documented at every entry point and are never interchangeable.
 
 The Strategy Contract

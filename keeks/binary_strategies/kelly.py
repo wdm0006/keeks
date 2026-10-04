@@ -1,3 +1,7 @@
+import warnings
+
+import numpy as np
+
 from keeks.binary_strategies.base import BaseStrategy
 from keeks.utils import _require_finite, _validate_probability, find_indifference_price
 
@@ -11,48 +15,76 @@ class KellyCriterion(BaseStrategy):
     The Kelly Criterion is a mathematical formula that determines the optimal
     size of a series of bets to maximize long-term growth rate.
 
+    By default the gate is edge-aware: a bet the Kelly formula itself sizes
+    positively is always sized, and a bet with no positive edge returns 0.0.
+    An optional ``min_probability`` longshot gate can additionally refuse
+    low-probability bets - loudly, when the refused bet is one the formula
+    would have sized.
+
     Parameters
     ----------
     payoff : float
-        The amount won per unit bet on a successful outcome.
+        The amount won per unit bet on a successful outcome: the *net* win,
+        excluding the stake's return - decimal odds minus one, so even money
+        is ``1.0``. Unlike here, ``BinaryBetsModel`` and the multi-outcome
+        layer read ``payoff`` as the decimal odds themselves.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
-    min_probability : float, default=0.5
-        The minimum probability required to place a bet. The default is a
-        lossy gate for better-than-even payoffs: with ``payoff=10``,
-        ``loss=1`` and probability 0.3, the true Kelly fraction is about
-        0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.
-        Pass a lower ``min_probability`` to size such bets.
+    min_probability : float or None, optional
+        An optional longshot gate: when set, bets with a win probability
+        below it return 0.0 even when the Kelly fraction is positive, and a
+        ``UserWarning`` names the suppressed fraction so the refusal is
+        never silent. The default (``None``) sizes on edge alone: with
+        ``payoff=10``, ``loss=1`` and probability 0.3, the true Kelly
+        fraction of about 0.23 is placed instead of being zeroed.
+
+    Examples
+    --------
+    >>> strategy = KellyCriterion(payoff=10, loss=1, transaction_cost_rate=0)
+    >>> # Edge-aware by default: the formula sizes this longshot at 0.23.
+    >>> round(strategy.evaluate(0.3, 1000.0), 4)
+    0.23
+    >>> # A bet with no positive edge refuses itself.
+    >>> round(strategy.evaluate(0.05, 1000.0), 4)
+    0
     """
 
-    def __init__(self, payoff, loss, transaction_cost, min_probability=0.5):
+    def __init__(
+        self,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float,
+        min_probability: float | None = None,
+    ) -> None:
         """
         Initialize the Kelly Criterion strategy.
 
         Parameters
         ----------
         payoff : float
-            The amount won per unit bet on a successful outcome.
+            The amount won per unit bet on a successful outcome: the *net*
+            win, excluding the stake's return - decimal odds minus one, so
+            even money is ``1.0``. Unlike here, ``BinaryBetsModel`` and the
+            multi-outcome layer read ``payoff`` as the decimal odds itself.
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
-        transaction_cost : float
+        transaction_cost_rate : float
             The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
-        min_probability : float, default=0.5
-            The minimum probability required to place a bet. The default is a
-            lossy gate for better-than-even payoffs: with ``payoff=10``,
-            ``loss=1`` and probability 0.3, the true Kelly fraction is about
-            0.23, but ``evaluate`` returns 0.0 because 0.3 is below the gate.
-            Pass a lower ``min_probability`` to size such bets.
+        min_probability : float or None, optional
+            An optional longshot gate: when set, bets with a win probability
+            below it return 0.0 even when the Kelly fraction is positive, and
+            a ``UserWarning`` names the suppressed fraction. ``None`` (the
+            default) sizes on edge alone.
         """
-        if not 0 <= min_probability <= 1:
+        if min_probability is not None and not 0 <= min_probability <= 1:
             raise ValueError("Minimum probability must be between 0 and 1")
 
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
         self.min_probability = min_probability
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the optimal Kelly bet size.
 
@@ -69,6 +101,12 @@ class KellyCriterion(BaseStrategy):
         Unlike the classic formula, which assumes the entire stake is lost, this
         formula explicitly accounts for the loss multiplier used by this library.
 
+        The gate is edge-aware: a bet the formula sizes positively is never
+        silently zeroed. When ``min_probability`` is set and the probability
+        falls below it, a formula-positive bet is refused with a warning
+        naming the suppressed fraction; a formula-negative bet refuses
+        silently, because the formula itself declines it.
+
         Parameters
         ----------
         probability : float
@@ -83,16 +121,14 @@ class KellyCriterion(BaseStrategy):
         """
         probability = _validate_probability(probability)
         current_bankroll = _require_finite(current_bankroll, "Current bankroll")
-        if probability < self.min_probability:
-            return 0.0
 
         # Calculate probability of losing
         q = 1 - probability
 
         # Calculate Kelly fraction with transaction costs incorporated
         # Adjust payoff and loss for transaction costs
-        adjusted_payoff = self.payoff - self.transaction_cost
-        adjusted_loss = self.loss + self.transaction_cost
+        adjusted_payoff = self.payoff - self.transaction_cost_rate
+        adjusted_loss = self.loss + self.transaction_cost_rate
 
         # Recalculate net odds with transaction costs
         if adjusted_payoff <= 0 or adjusted_loss <= 0:
@@ -101,17 +137,29 @@ class KellyCriterion(BaseStrategy):
         # Calculate Kelly fraction with adjusted payoff and loss
         kelly_fraction = probability / adjusted_loss - q / adjusted_payoff
 
+        if self.min_probability is not None and probability < self.min_probability:
+            if kelly_fraction > 0:
+                warnings.warn(
+                    f"min_probability gate: probability {probability} is below "
+                    f"min_probability={self.min_probability}, but the Kelly "
+                    f"formula sizes this bet positively at {kelly_fraction:.4f} "
+                    "of bankroll; the bet is refused anyway. Pass "
+                    "min_probability=None to size every positive-edge bet.",
+                    stacklevel=2,
+                )
+            return 0.0
+
         # Ensure we never bet more than would result in negative bankroll
         return min(max(0, kelly_fraction), self.get_max_safe_bet(current_bankroll))
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -172,23 +220,25 @@ class FractionalKellyCriterion(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
     fraction : float
         The fraction of the full Kelly bet to use (typically between 0 and 1).
     """
 
-    def __init__(self, payoff, loss, transaction_cost, fraction):
+    def __init__(
+        self, payoff: float, loss: float, transaction_cost_rate: float, fraction: float
+    ) -> None:
         if not 0 <= fraction <= 1:
             raise ValueError("Fraction must be between 0 and 1")
 
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
         self.fraction = fraction
         # Constructed once: the inner Kelly strategy depends only on
         # constructor arguments, and strategies are immutable after init.
-        self._kelly = KellyCriterion(payoff, loss, transaction_cost)
+        self._kelly = KellyCriterion(payoff, loss, transaction_cost_rate)
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the fractional Kelly bet size.
 
@@ -210,12 +260,12 @@ class FractionalKellyCriterion(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -268,7 +318,8 @@ class DrawdownAdjustedKelly(BaseStrategy):
     """
     Implementation of the Drawdown-Adjusted Kelly Criterion for binary betting.
 
-    This strategy adjusts the Kelly bet size based on a maximum acceptable drawdown.
+    This strategy adjusts the Kelly bet size based on the maximum per-bet
+    transaction loss it tolerates.
     It provides a more conservative approach by reducing the bet size to minimize
     the risk of large drawdowns.
 
@@ -278,13 +329,21 @@ class DrawdownAdjustedKelly(BaseStrategy):
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_cost : float
+    transaction_cost_rate : float
         The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
-    max_acceptable_drawdown : float
-        The maximum acceptable drawdown as a fraction of the bankroll (0 to 1).
+    max_transaction_loss : float
+        The maximum transaction loss tolerated per bet, as a fraction of the
+        bankroll (0 to 1, exclusive) - a per-removal cap the sizing scale
+        keys off, not peak-to-trough drawdown monitoring.
     """
 
-    def __init__(self, payoff, loss, transaction_cost, max_acceptable_drawdown=0.2):
+    def __init__(
+        self,
+        payoff: float,
+        loss: float,
+        transaction_cost_rate: float,
+        max_transaction_loss: float = 0.2,
+    ) -> None:
         """
         Initialize the DrawdownAdjustedKelly strategy.
 
@@ -294,30 +353,32 @@ class DrawdownAdjustedKelly(BaseStrategy):
             The amount won per unit bet on a successful outcome.
         loss : float
             The amount lost per unit bet on an unsuccessful outcome.
-        transaction_cost : float
+        transaction_cost_rate : float
             The transaction cost as a fraction of each unit staked (per-unit, not a fixed per-transaction amount).
-        max_acceptable_drawdown : float, default=0.2
-            The maximum acceptable drawdown as a fraction of the bankroll.
+        max_transaction_loss : float, default=0.2
+            The maximum transaction loss tolerated per bet, as a fraction of
+            the bankroll (0 to 1, exclusive) - a per-removal cap, not
+            peak-to-trough drawdown monitoring.
 
         Raises
         ------
         ValueError
-            If max_acceptable_drawdown is not between 0 and 1 (exclusive).
+            If max_transaction_loss is not between 0 and 1 (exclusive).
         """
-        super().__init__(payoff, loss, transaction_cost)
+        super().__init__(payoff, loss, transaction_cost_rate)
 
-        if not 0 < max_acceptable_drawdown < 1:
+        if not 0 < max_transaction_loss < 1:
             raise ValueError(
-                "Maximum acceptable drawdown must be between 0 and 1 (exclusive)"
+                "Maximum transaction loss must be between 0 and 1 (exclusive)"
             )
 
-        self.max_acceptable_drawdown = max_acceptable_drawdown
+        self.max_transaction_loss = max_transaction_loss
         # Constructed once: the inner Kelly strategy depends only on
         # constructor arguments, and strategies are immutable after init.
-        self._kelly = KellyCriterion(payoff, loss, transaction_cost)
-        self._drawdown_factor = min(1.0, max_acceptable_drawdown / 0.5)
+        self._kelly = KellyCriterion(payoff, loss, transaction_cost_rate)
+        self._drawdown_factor = min(1.0, max_transaction_loss / 0.5)
 
-    def evaluate(self, probability, current_bankroll):
+    def evaluate(self, probability: float, current_bankroll: float) -> float:
         """
         Calculate the drawdown-adjusted Kelly bet size.
 
@@ -338,7 +399,8 @@ class DrawdownAdjustedKelly(BaseStrategy):
         """
         # The inner Kelly evaluate validates both arguments and caps at the
         # max-safe fraction; the wrapper only rescales its result. Full Kelly
-        # has an expected drawdown of around 50%, so scale by max drawdown / 0.5.
+        # has an expected drawdown of around 50%, so scale by
+        # max_transaction_loss / 0.5.
         full_kelly = self._kelly.evaluate(probability, current_bankroll)
 
         # Apply the drawdown adjustment
@@ -349,12 +411,12 @@ class DrawdownAdjustedKelly(BaseStrategy):
 
     def calculate_max_entry_price(
         self,
-        outcomes,
-        probabilities,
-        current_wealth,
-        tolerance=0.01,
-        max_search_fraction=0.5,
-    ):
+        outcomes: np.typing.ArrayLike,
+        probabilities: np.typing.ArrayLike,
+        current_wealth: float,
+        tolerance: float = 0.01,
+        max_search_fraction: float = 0.5,
+    ) -> float:
         """
         Calculate maximum price willing to pay for a one-time gamble.
 
@@ -390,7 +452,7 @@ class DrawdownAdjustedKelly(BaseStrategy):
         Notes
         -----
         Uses the same drawdown adjustment factor as the betting strategy:
-        drawdown_factor = min(1.0, max_acceptable_drawdown / 0.5)
+        drawdown_factor = min(1.0, max_transaction_loss / 0.5)
         """
         # Get full Kelly price
         kelly_price = self._kelly.calculate_max_entry_price(

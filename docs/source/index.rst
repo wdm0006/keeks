@@ -47,16 +47,16 @@ Quick Example
    from keeks.simulators.repeated_binary import RepeatedBinarySimulator
 
    # Create a bankroll with initial funds
-   bankroll = BankRoll(initial_funds=1000.0, max_draw_down=0.3)
+   bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=0.3)
 
    # Create a Kelly Criterion strategy
-   strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.01)
+   strategy = KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.01)
 
    # Create a simulator with a fixed probability
    simulator = RepeatedBinarySimulator(
        payoff=1.0, 
        loss=1.0, 
-       transaction_costs=0.01, 
+       fee_per_bet=0.01, 
        probability=0.55,  # 55% chance of winning
        trials=1000
    )
@@ -80,6 +80,7 @@ Keeks implements various bankroll allocation strategies:
 - **CPPI (Constant Proportion Portfolio Insurance)**: Strategy that protects a floor value while allowing upside exposure
 - **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
 - **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
+- **Portfolio Allocation**: Size portfolios across distribution-valued options - mean-variance, risk budgeting, HRP, mean-CVaR, and online methods over one configurable joint-return input model (see :doc:`allocation`)
 
 Each strategy offers different tradeoffs between risk and reward, allowing you to select the approach that best matches your investment goals and risk tolerance.
 
@@ -129,8 +130,11 @@ Contents
    binary_strategies
    simulators
    multi_outcome
+   allocation
+   allocation_plots
    bankroll
    utils
+   checks
 
 Indices and tables
 ==================

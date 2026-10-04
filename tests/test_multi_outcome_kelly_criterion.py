@@ -42,7 +42,7 @@ GOLDEN_CASES = [
 
 
 def _expected_binary_legs(
-    payoffs, probabilities, loss, transaction_cost, min_probability, bankroll
+    payoffs, probabilities, loss, transaction_cost_rate, min_probability, bankroll
 ):
     """The per-leg binary Kelly stakes the two-leg fallback must reproduce."""
     legs = []
@@ -51,7 +51,7 @@ def _expected_binary_legs(
             scorer = KellyCriterion(
                 payoff=payoff - 1.0,
                 loss=loss,
-                transaction_cost=transaction_cost,
+                transaction_cost_rate=transaction_cost_rate,
                 min_probability=min_probability,
             )
             legs.append(scorer.evaluate(probability, bankroll))
@@ -60,7 +60,7 @@ def _expected_binary_legs(
     return tuple(legs)
 
 
-def _objective(stakes, probabilities, payoffs, loss, transaction_cost):
+def _objective(stakes, probabilities, payoffs, loss, transaction_cost_rate):
     """
     The expected log growth the strategy maximizes.
 
@@ -75,8 +75,8 @@ def _objective(stakes, probabilities, payoffs, loss, transaction_cost):
             continue
         multiplier = (
             1.0
-            + (payoff - 1.0 - transaction_cost) * stake
-            - (loss + transaction_cost) * (total - stake)
+            + (payoff - 1.0 - transaction_cost_rate) * stake
+            - (loss + transaction_cost_rate) * (total - stake)
         )
         if multiplier <= 0.0:
             return -math.inf
@@ -92,23 +92,23 @@ def _objective(stakes, probabilities, payoffs, loss, transaction_cost):
         "payoffs",
         "probabilities",
         "loss",
-        "transaction_cost",
+        "transaction_cost_rate",
         "min_probability",
         "bankroll",
     ),
     GOLDEN_CASES,
 )
 def test_two_leg_matches_binary_kelly_exactly(
-    payoffs, probabilities, loss, transaction_cost, min_probability, bankroll
+    payoffs, probabilities, loss, transaction_cost_rate, min_probability, bankroll
 ):
     strategy = MultiOutcomeKellyCriterion(
         payoffs=payoffs,
         loss=loss,
-        transaction_cost=transaction_cost,
+        transaction_cost_rate=transaction_cost_rate,
         min_probability=min_probability,
     )
     assert strategy.evaluate(probabilities, bankroll) == _expected_binary_legs(
-        payoffs, probabilities, loss, transaction_cost, min_probability, bankroll
+        payoffs, probabilities, loss, transaction_cost_rate, min_probability, bankroll
     )
 
 
@@ -117,7 +117,7 @@ def test_two_leg_golden_pinned_fractions():
     strategy = MultiOutcomeKellyCriterion(payoffs=(3.0, 1.5), loss=1.0)
     assert strategy.evaluate([0.5, 0.5], 1000.0) == (0.25, 0.0)
     tc_strategy = MultiOutcomeKellyCriterion(
-        payoffs=(3.0, 1.5), loss=1.0, transaction_cost=0.01
+        payoffs=(3.0, 1.5), loss=1.0, transaction_cost_rate=0.01
     )
     assert tc_strategy.evaluate([0.6, 0.4], 500.0) == (0.3930543808149659, 0.0)
 
@@ -316,7 +316,7 @@ def test_all_zero_edge_market_stakes_nothing():
 
 def test_payoff_below_total_cost_never_staked():
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=(3.0, 1.02, 1.02), loss=1.0, transaction_cost=0.02
+        payoffs=(3.0, 1.02, 1.02), loss=1.0, transaction_cost_rate=0.02
     )
     stakes = strategy.evaluate([0.5, 0.25, 0.25], 1000.0)
     assert stakes[1] == 0.0
@@ -377,17 +377,17 @@ def _markets(draw):
         st.lists(st.floats(1.01, 50.0, allow_nan=False), min_size=legs, max_size=legs)
     )
     loss = draw(st.floats(0.0, 2.0, allow_nan=False))
-    transaction_cost = draw(st.floats(0.0, 0.05, allow_nan=False))
-    assume(loss + transaction_cost > 0.0)
+    transaction_cost_rate = draw(st.floats(0.0, 0.05, allow_nan=False))
+    assume(loss + transaction_cost_rate > 0.0)
     bankroll = draw(st.floats(1.0, 1e6, allow_nan=False))
-    return payoffs, probabilities, loss, transaction_cost, bankroll
+    return payoffs, probabilities, loss, transaction_cost_rate, bankroll
 
 
 @given(market=_markets())
 def test_stakes_satisfy_the_vector_contract(market):
-    payoffs, probabilities, loss, transaction_cost, bankroll = market
+    payoffs, probabilities, loss, transaction_cost_rate, bankroll = market
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=payoffs, loss=loss, transaction_cost=transaction_cost
+        payoffs=payoffs, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
     stakes = strategy.evaluate(probabilities, bankroll)
     assert strategy.evaluate(probabilities, bankroll) == stakes  # deterministic
@@ -401,9 +401,9 @@ def test_stakes_satisfy_the_vector_contract(market):
 @given(market=_markets())
 def test_no_positive_probability_leg_risks_ruin(market):
     """Every multiplier a realized outcome can produce must stay positive."""
-    payoffs, probabilities, loss, transaction_cost, bankroll = market
+    payoffs, probabilities, loss, transaction_cost_rate, bankroll = market
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=payoffs, loss=loss, transaction_cost=transaction_cost
+        payoffs=payoffs, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
     stakes = strategy.evaluate(probabilities, bankroll)
     total = sum(stakes)
@@ -412,8 +412,8 @@ def test_no_positive_probability_leg_risks_ruin(market):
             continue
         multiplier = (
             1.0
-            + (payoff - 1.0 - transaction_cost) * stake
-            - (loss + transaction_cost) * (total - stake)
+            + (payoff - 1.0 - transaction_cost_rate) * stake
+            - (loss + transaction_cost_rate) * (total - stake)
         )
         assert multiplier > 0.0
 
@@ -429,24 +429,26 @@ def _markets_with_zero_edge_leg(draw):
         weights, total = [1.0] * legs, float(legs)
     scale = min(1.0, total)
     probabilities = [weight / total * scale for weight in weights]
-    transaction_cost = draw(st.floats(0.0, 0.05, allow_nan=False))
-    zero_edge_payoff = draw(st.floats(1.0, 1.0 + transaction_cost, allow_nan=False))
+    transaction_cost_rate = draw(st.floats(0.0, 0.05, allow_nan=False))
+    zero_edge_payoff = draw(
+        st.floats(1.0, 1.0 + transaction_cost_rate, allow_nan=False)
+    )
     payoffs = [zero_edge_payoff] + draw(
         st.lists(
             st.floats(1.01, 50.0, allow_nan=False), min_size=legs - 1, max_size=legs - 1
         )
     )
     loss = draw(st.floats(0.0, 2.0, allow_nan=False))
-    assume(loss + transaction_cost > 0.0)
+    assume(loss + transaction_cost_rate > 0.0)
     bankroll = draw(st.floats(1.0, 1e6, allow_nan=False))
-    return payoffs, probabilities, loss, transaction_cost, bankroll
+    return payoffs, probabilities, loss, transaction_cost_rate, bankroll
 
 
 @given(market=_markets_with_zero_edge_leg())
 def test_zero_edge_leg_never_staked(market):
-    payoffs, probabilities, loss, transaction_cost, bankroll = market
+    payoffs, probabilities, loss, transaction_cost_rate, bankroll = market
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=payoffs, loss=loss, transaction_cost=transaction_cost
+        payoffs=payoffs, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
     stakes = strategy.evaluate(probabilities, bankroll)
     assert stakes[0] == 0.0
@@ -467,17 +469,17 @@ def _markets_with_zero_probability_leg(draw):
         st.lists(st.floats(1.01, 50.0, allow_nan=False), min_size=legs, max_size=legs)
     )
     loss = draw(st.floats(0.0, 2.0, allow_nan=False))
-    transaction_cost = draw(st.floats(0.0, 0.05, allow_nan=False))
-    assume(loss + transaction_cost > 0.0)
+    transaction_cost_rate = draw(st.floats(0.0, 0.05, allow_nan=False))
+    assume(loss + transaction_cost_rate > 0.0)
     bankroll = draw(st.floats(1.0, 1e6, allow_nan=False))
-    return payoffs, probabilities, loss, transaction_cost, bankroll
+    return payoffs, probabilities, loss, transaction_cost_rate, bankroll
 
 
 @given(market=_markets_with_zero_probability_leg())
 def test_zero_probability_leg_never_staked(market):
-    payoffs, probabilities, loss, transaction_cost, bankroll = market
+    payoffs, probabilities, loss, transaction_cost_rate, bankroll = market
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=payoffs, loss=loss, transaction_cost=transaction_cost
+        payoffs=payoffs, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
     stakes = strategy.evaluate(probabilities, bankroll)
     assert stakes[0] == 0.0
@@ -492,29 +494,29 @@ def _fully_priced_two_leg_markets(draw):
         st.lists(st.floats(1.01, 50.0, allow_nan=False), min_size=2, max_size=2)
     )
     loss = draw(st.floats(0.0, 2.0, allow_nan=False))
-    transaction_cost = draw(st.floats(0.0, 0.05, allow_nan=False))
-    assume(loss + transaction_cost > 0.0)
+    transaction_cost_rate = draw(st.floats(0.0, 0.05, allow_nan=False))
+    assume(loss + transaction_cost_rate > 0.0)
     bankroll = draw(st.floats(1.0, 1e6, allow_nan=False))
-    return payoffs, probabilities, loss, transaction_cost, bankroll
+    return payoffs, probabilities, loss, transaction_cost_rate, bankroll
 
 
 @given(market=_fully_priced_two_leg_markets())
 def test_two_leg_falls_back_to_binary_kelly(market):
     """For fully priced books with one priced leg, output is exact binary Kelly."""
-    payoffs, probabilities, loss, transaction_cost, bankroll = market
+    payoffs, probabilities, loss, transaction_cost_rate, bankroll = market
     min_probability = 0.5
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=payoffs, loss=loss, transaction_cost=transaction_cost
+        payoffs=payoffs, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
     stakes = strategy.evaluate(probabilities, bankroll)
     expected = _expected_binary_legs(
-        payoffs, probabilities, loss, transaction_cost, min_probability, bankroll
+        payoffs, probabilities, loss, transaction_cost_rate, min_probability, bankroll
     )
     # Mirror the delegation's full gate: at most one positive binary stake,
     # every relevant multiplier above the log-domain floor, and no other leg
     # with an improving direction at that point.
-    net_gains = [payoff - 1.0 - transaction_cost for payoff in payoffs]
-    total_cost = loss + transaction_cost
+    net_gains = [payoff - 1.0 - transaction_cost_rate for payoff in payoffs]
+    total_cost = loss + transaction_cost_rate
     assume(sum(stake > 0.0 for stake in expected) <= 1)
     assume(
         _multipliers_within_floor(list(expected), net_gains, total_cost, probabilities)
@@ -546,13 +548,13 @@ def test_two_leg_void_mass_routes_to_the_joint_solver():
 @given(market=_markets())
 def test_objective_beats_naive_allocations(market):
     """The optimizer must not lose to zero, all-on-one-leg, or equal splits."""
-    payoffs, probabilities, loss, transaction_cost, bankroll = market
+    payoffs, probabilities, loss, transaction_cost_rate, bankroll = market
     strategy = MultiOutcomeKellyCriterion(
-        payoffs=payoffs, loss=loss, transaction_cost=transaction_cost
+        payoffs=payoffs, loss=loss, transaction_cost_rate=transaction_cost_rate
     )
     stakes = strategy.evaluate(probabilities, bankroll)
-    best = _objective(stakes, probabilities, payoffs, loss, transaction_cost)
-    cap = min(1.0, 1.0 / (loss + transaction_cost))
+    best = _objective(stakes, probabilities, payoffs, loss, transaction_cost_rate)
+    cap = min(1.0, 1.0 / (loss + transaction_cost_rate))
     candidates = [(0.0,) * len(payoffs)]
     candidates.extend(
         tuple(cap if leg == hero else 0.0 for leg in range(len(payoffs)))
@@ -563,7 +565,9 @@ def test_objective_beats_naive_allocations(market):
     for candidate in candidates:
         assert (
             best
-            >= _objective(candidate, probabilities, payoffs, loss, transaction_cost)
+            >= _objective(
+                candidate, probabilities, payoffs, loss, transaction_cost_rate
+            )
             - 1e-12
         )
 
@@ -575,12 +579,12 @@ def test_simulator_integration():
     simulator = RepeatedMultiOutcomeSimulator(
         payoffs=(3.2, 3.4, 2.4),
         loss=1.0,
-        transaction_costs=0.0,
+        fee_per_bet=0.0,
         probabilities=[0.42, 0.27, 0.28],
         trials=100,
         seed=42,
     )
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     simulator.evaluate_strategy(
         MultiOutcomeKellyCriterion(payoffs=(3.2, 3.4, 2.4), loss=1.0), bankroll
     )

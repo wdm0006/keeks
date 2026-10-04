@@ -1,7 +1,10 @@
 import random
+import warnings
+from typing import TYPE_CHECKING
 
 import numpy as np
 
+from keeks.binary_strategies.base import BaseStrategy
 from keeks.utils import (
     RuinError,
     _validate_simulator_controls,
@@ -10,6 +13,9 @@ from keeks.utils import (
     _validate_stake_fraction,
     _validate_strategy_odds,
 )
+
+if TYPE_CHECKING:
+    from keeks.bankroll import BankRoll
 
 
 class RandomUncertainBinarySimulator:
@@ -26,12 +32,12 @@ class RandomUncertainBinarySimulator:
         The amount won per unit bet on a successful outcome.
     loss : float
         The amount lost per unit bet on an unsuccessful outcome.
-    transaction_costs : float
+    fee_per_bet : float
         The flat fee charged once per settled bet, regardless of outcome. This is
         an absolute bankroll amount, not a fraction of the stake, so it does not
         scale with bet size: it is subtracted from a winning settlement and added
         to a losing one. Note this differs in unit from the singular
-        ``transaction_cost`` taken by strategies in ``keeks.binary_strategies``,
+        ``transaction_cost_rate`` taken by strategies in ``keeks.binary_strategies``,
         which is a per-unit fraction of the bet used for sizing.
     trials : int, default=1000
         The number of betting trials to simulate.
@@ -51,27 +57,83 @@ class RandomUncertainBinarySimulator:
     ------
     ValueError
         If ``payoff`` is not finite and positive, if ``loss``,
-        ``transaction_costs``, ``stdev`` or ``uncertainty_stdev`` is not finite
+        ``fee_per_bet``, ``stdev`` or ``uncertainty_stdev`` is not finite
         and nonnegative, if ``trials`` is not a nonnegative integer, or if
         ``seed`` is not a nonnegative integer or ``None``.
+
+    Notes
+    -----
+    **RNG family and seeding.** Like :class:`RandomBinarySimulator`, this
+    simulator mixes two generator families: bet outcomes draw from Python's
+    :class:`random.Random` and both the win probabilities and the
+    uncertainty adjustments from one numpy :class:`numpy.random.Generator`
+    (``default_rng``). With a ``seed``, all generators are private instances
+    driven by that one integer and a seeded run replays byte-identically;
+    without one, every draw falls back to the process-global generators.
+    Cross-family seeded comparisons with the multi-outcome and allocation
+    simulators, which draw from spawned ``SeedSequence`` children only, are
+    not aligned by seed alone - see the reproducibility contracts there.
     """
 
     def __init__(
         self,
-        payoff,
-        loss,
-        transaction_costs,
-        trials=1000,
-        stdev=0.1,
-        uncertainty_stdev=0.05,
-        seed=None,
-    ):
+        payoff: float,
+        loss: float,
+        fee_per_bet: float,
+        trials: int = 1000,
+        stdev: float = 0.1,
+        uncertainty_stdev: float = 0.05,
+        seed: int | None = None,
+    ) -> None:
+        """
+        Initialize the simulator.
+
+        Parameters
+        ----------
+        payoff : float
+            The amount won per unit bet on a successful outcome: the *net*
+            win, excluding the stake's return - decimal odds minus one.
+        loss : float
+            The amount lost per unit bet on an unsuccessful outcome: a
+            positive multiplier on the staked amount.
+        fee_per_bet : float
+            The flat fee charged once per settled bet, in currency - an
+            absolute bankroll amount, not a fraction of the stake, so it
+            does not scale with bet size. This differs in unit from the
+            singular ``transaction_cost_rate`` taken by strategies in
+            ``keeks.binary_strategies``, which is a per-unit fraction of
+            the stake used for sizing.
+        trials : int, default=1000
+            The number of betting trials to simulate.
+        stdev : float, default=0.1
+            The standard deviation, on the probability scale, of the normal
+            distribution used to generate win probabilities. Samples are
+            clamped to ``[0.0, 1.0]``.
+        uncertainty_stdev : float, default=0.05
+            The standard deviation, on the probability scale, of the normal
+            distribution used to perturb the actual outcome probability -
+            the imperfect-information channel. The resulting outcome
+            probability is clamped to ``[0.0, 1.0]``.
+        seed : int or None, default=None
+            Seed for the simulator's private outcome, probability, and
+            uncertainty generators. When omitted, the process-global
+            ``random`` and ``numpy.random`` generators are used for backward
+            compatibility and no replay is promised.
+
+        Raises
+        ------
+        ValueError
+            If ``payoff`` is not finite and positive, if ``loss``,
+            ``fee_per_bet``, ``stdev`` or ``uncertainty_stdev`` is not finite
+            and nonnegative, if ``trials`` is not a nonnegative integer, or
+            if ``seed`` is not a nonnegative integer or ``None``.
+        """
         (
             self.payoff,
             self.loss,
-            self.transaction_costs,
+            self.fee_per_bet,
             self.trials,
-        ) = _validate_simulator_controls(payoff, loss, transaction_costs, trials)
+        ) = _validate_simulator_controls(payoff, loss, fee_per_bet, trials)
         self.stdev = _validate_simulator_stdev(stdev, "Standard deviation")
         self.uncertainty_stdev = _validate_simulator_stdev(
             uncertainty_stdev, "Uncertainty standard deviation"
@@ -82,7 +144,7 @@ class RandomUncertainBinarySimulator:
             np.random.default_rng(self.seed) if self.seed is not None else None
         )
 
-    def evaluate_strategy(self, strategy, bankroll):
+    def evaluate_strategy(self, strategy: BaseStrategy, bankroll: "BankRoll") -> None:
         """
         Evaluate a betting strategy over multiple trials with uncertainty.
 
@@ -118,9 +180,9 @@ class RandomUncertainBinarySimulator:
         update_bankroll = getattr(strategy, "update_bankroll", None)
         if not callable(update_bankroll):
             update_bankroll = None
-        record_result = getattr(strategy, "record_result", None)
-        if not callable(record_result):
-            record_result = None
+        record_settlement = getattr(strategy, "record_settlement", None)
+        if not callable(record_settlement):
+            record_settlement = None
         probability_rng = self._probability_rng
 
         for _ in range(self.trials):
@@ -183,19 +245,22 @@ class RandomUncertainBinarySimulator:
                     )
                     won = outcome < outcome_probability
                     if won:
-                        amt = (self.payoff * bet_amount) - self.transaction_costs
-                        if amt >= 0:
-                            bankroll.deposit(amt)
+                        amount = (self.payoff * bet_amount) - self.fee_per_bet
+                        if amount >= 0:
+                            bankroll.deposit(amount)
                         else:
-                            bankroll.withdraw(abs(amt))
-                        return_pct = amt / current_bankroll
+                            bankroll.withdraw(abs(amount))
+                        realized_return = amount / current_bankroll
                     else:
-                        amt = (self.loss * bet_amount) + self.transaction_costs
-                        bankroll.withdraw(amt)
-                        return_pct = -amt / current_bankroll
-                except RuinError:
-                    # Settlement exceeded a bankroll safeguard; stop gracefully
+                        amount = (self.loss * bet_amount) + self.fee_per_bet
+                        bankroll.withdraw(amount)
+                        realized_return = -amount / current_bankroll
+                except RuinError as exc:
+                    # Settlement exceeded a bankroll safeguard; stop the run
+                    # loudly rather than silently: the warning carries the
+                    # refused amount, the configured limit, and current funds.
+                    warnings.warn(f"Simulation stopped early: {exc}", stacklevel=2)
                     break
 
-                if record_result is not None:
-                    record_result(won, return_pct)
+                if record_settlement is not None:
+                    record_settlement((won,), (realized_return,))

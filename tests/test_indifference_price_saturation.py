@@ -131,29 +131,29 @@ class TestStrategyDelegation:
         "strategy_factory",
         [
             pytest.param(
-                lambda: KellyCriterion(payoff=1.0, loss=1.0, transaction_cost=0.0),
+                lambda: KellyCriterion(payoff=1.0, loss=1.0, transaction_cost_rate=0.0),
                 id="KellyCriterion",
             ),
             pytest.param(
                 lambda: FractionalKellyCriterion(
-                    payoff=1.0, loss=1.0, transaction_cost=0.0, fraction=0.5
+                    payoff=1.0, loss=1.0, transaction_cost_rate=0.0, fraction=0.5
                 ),
                 id="FractionalKellyCriterion",
             ),
             pytest.param(
                 lambda: DrawdownAdjustedKelly(
-                    payoff=1.0, loss=1.0, transaction_cost=0.0
+                    payoff=1.0, loss=1.0, transaction_cost_rate=0.0
                 ),
                 id="DrawdownAdjustedKelly",
             ),
             pytest.param(
                 lambda: OptimalF(
-                    payoff=1.0, loss=1.0, transaction_cost=0.0, win_rate=0.6
+                    payoff=1.0, loss=1.0, transaction_cost_rate=0.0, win_rate=0.6
                 ),
                 id="OptimalF",
             ),
             pytest.param(
-                lambda: MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.01),
+                lambda: MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0.01),
                 id="MertonShare",
             ),
         ],
@@ -168,12 +168,12 @@ class TestStrategyDelegation:
         "strategy_factory",
         [
             pytest.param(
-                lambda: NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost=0.0),
+                lambda: NaiveStrategy(payoff=1.0, loss=1.0, transaction_cost_rate=0.0),
                 id="NaiveStrategy",
             ),
             pytest.param(
                 lambda: FixedFractionStrategy(
-                    fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.0
+                    fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.0
                 ),
                 id="FixedFractionStrategy",
             ),
@@ -189,7 +189,7 @@ class TestStrategyDelegation:
             ),
             pytest.param(
                 lambda: DynamicBankrollManagement(
-                    base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost=0.0
+                    base_fraction=0.1, payoff=1.0, loss=1.0, transaction_cost_rate=0.0
                 ),
                 id="DynamicBankrollManagement",
             ),

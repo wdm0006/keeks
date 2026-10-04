@@ -42,7 +42,9 @@ def test_every_exported_strategy_is_benchmarked():
         type(factory(BENCHMARK.BASE)).__name__
         for factory in BENCHMARK.STRATEGY_FACTORIES.values()
     }
-    assert built == set(binary_strategies.__all__)
+    # BaseStrategy is exported (like every generation's ABC) but is abstract,
+    # so it builds nothing and benchmarks nothing.
+    assert built == set(binary_strategies.__all__) - {"BaseStrategy"}
 
 
 @pytest.mark.parametrize("strategy_name", list(BENCHMARK.STRATEGY_FACTORIES))
@@ -124,7 +126,9 @@ def test_stateful_strategies_start_each_path_from_scratch(short_run):
 
 def test_early_stops_are_reported_with_a_reason(short_run):
     """A cap below the stake ends every run, and the cause is recorded, not guessed."""
-    scenario = short_run._variant("test-tight", "test", "test", max_draw_down=0.01)
+    scenario = short_run._variant(
+        "test-tight", "test", "test", max_transaction_loss=0.01
+    )
     results = [short_run.run_path(scenario, "Kelly", i) for i in range(10)]
     summary = short_run.summarise(scenario, "Kelly", results)
     assert summary["early_stop_rate"] == 1.0

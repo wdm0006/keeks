@@ -12,7 +12,9 @@ random.seed(42)
 
 def test_basic_functionality():
     """Test that MertonShare correctly calculates optimal bet sizes."""
-    strategy = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.0)
+    strategy = MertonShare(
+        payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=2.0
+    )
 
     # With 60% probability and 1:1 payoff ratio
     # Expected return = 0.6 * 1.0 - 0.4 * 1.0 = 0.2
@@ -26,17 +28,17 @@ def test_risk_aversion_effect():
     """Test how different risk aversion levels affect the bet size."""
     # Low risk aversion (aggressive)
     strategy_low = MertonShare(
-        payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=1.0
+        payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=1.0
     )
 
     # Moderate risk aversion
     strategy_moderate = MertonShare(
-        payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.0
+        payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=2.0
     )
 
     # High risk aversion (conservative)
     strategy_high = MertonShare(
-        payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=5.0
+        payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=5.0
     )
 
     # Higher risk aversion should result in smaller bet sizes
@@ -52,7 +54,7 @@ def test_risk_aversion_effect():
 def test_min_probability_threshold():
     """Test that the strategy respects the minimum probability threshold."""
     strategy = MertonShare(
-        payoff=1.0, loss=1.0, transaction_cost=0, min_probability=0.55
+        payoff=1.0, loss=1.0, transaction_cost_rate=0, min_probability=0.55
     )
 
     # Should bet when probability >= min_probability
@@ -62,19 +64,19 @@ def test_min_probability_threshold():
     assert strategy.evaluate(0.54, 1000) == pytest.approx(0.0)
 
 
-def test_transaction_costs():
+def test_transaction_cost_rate():
     """Test how transaction costs affect the Merton Share."""
     # No transaction costs
-    strategy_no_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0)
+    strategy_no_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0)
 
     # With transaction costs
-    strategy_with_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.05)
+    strategy_with_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0.05)
 
-    # Transaction costs should reduce bet size
+    # Fee per bet should reduce bet size
     assert strategy_with_cost.evaluate(0.6, 1000) < strategy_no_cost.evaluate(0.6, 1000)
 
     # With large transaction costs that make betting unprofitable
-    strategy_large_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0.5)
+    strategy_large_cost = MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0.5)
 
     # Should not bet when transaction costs make betting unprofitable
     assert strategy_large_cost.evaluate(0.6, 1000) == pytest.approx(0.0)
@@ -85,7 +87,7 @@ def test_max_fraction_constraint():
     strategy = MertonShare(
         payoff=2.0,
         loss=1.0,
-        transaction_cost=0,
+        transaction_cost_rate=0,
         risk_aversion=0.5,
         max_fraction=0.25,
     )
@@ -98,29 +100,29 @@ def test_invalid_parameters():
     """Test that invalid parameters raise appropriate exceptions."""
     # Risk aversion must be positive
     with pytest.raises(ValueError, match="Risk aversion must be greater than 0"):
-        MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=0)
+        MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=0)
 
     with pytest.raises(ValueError, match="Risk aversion must be greater than 0"):
-        MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=-1.0)
+        MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=-1.0)
 
     # Min probability must be between 0 and 1
     with pytest.raises(ValueError, match="Minimum probability must be between 0 and 1"):
-        MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, min_probability=1.5)
+        MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0, min_probability=1.5)
 
     # Max fraction must be between 0 and 1
     with pytest.raises(ValueError, match="Maximum fraction must be between 0 and 1"):
-        MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, max_fraction=1.5)
+        MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0, max_fraction=1.5)
 
     with pytest.raises(ValueError, match="Maximum fraction must be between 0 and 1"):
-        MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, max_fraction=0)
+        MertonShare(payoff=1.0, loss=1.0, transaction_cost_rate=0, max_fraction=0)
 
     # Payoff must be positive (inherited from BaseStrategy)
     with pytest.raises(ValueError, match="Payoff must be greater than 0"):
-        MertonShare(payoff=0, loss=1.0, transaction_cost=0)
+        MertonShare(payoff=0, loss=1.0, transaction_cost_rate=0)
 
     # Loss must be non-negative (inherited from BaseStrategy)
     with pytest.raises(ValueError, match="Loss must be non-negative"):
-        MertonShare(payoff=1.0, loss=-1.0, transaction_cost=0)
+        MertonShare(payoff=1.0, loss=-1.0, transaction_cost_rate=0)
 
 
 @pytest.mark.parametrize("risk_aversion", [float("nan"), float("inf"), float("-inf")])
@@ -129,13 +131,15 @@ def test_nonfinite_risk_aversion_is_rejected(risk_aversion):
         MertonShare(
             payoff=1.0,
             loss=1.0,
-            transaction_cost=0,
+            transaction_cost_rate=0,
             risk_aversion=risk_aversion,
         )
 
 
 def test_valid_risk_aversion_is_stored_and_used():
-    strategy = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.5)
+    strategy = MertonShare(
+        payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=2.5
+    )
 
     assert strategy.risk_aversion == 2.5
     assert strategy.evaluate(0.6, 1000) == pytest.approx(0.0833333333333333)
@@ -144,7 +148,7 @@ def test_valid_risk_aversion_is_stored_and_used():
 def test_zero_probability():
     """Test behavior with 0% probability of winning."""
     strategy = MertonShare(
-        payoff=2.0, loss=1.0, transaction_cost=0, min_probability=0.0
+        payoff=2.0, loss=1.0, transaction_cost_rate=0, min_probability=0.0
     )
 
     # 0% chance of winning should result in no bet
@@ -154,7 +158,11 @@ def test_zero_probability():
 def test_one_probability():
     """Test behavior with 100% probability of winning."""
     strategy = MertonShare(
-        payoff=2.0, loss=1.0, transaction_cost=0, risk_aversion=1.0, max_fraction=1.0
+        payoff=2.0,
+        loss=1.0,
+        transaction_cost_rate=0,
+        risk_aversion=1.0,
+        max_fraction=1.0,
     )
 
     # 100% chance of winning has zero variance (no uncertainty)
@@ -170,7 +178,9 @@ def test_one_probability():
 
 def test_even_odds():
     """Test with even odds (1:1 payoff)."""
-    strategy = MertonShare(payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.0)
+    strategy = MertonShare(
+        payoff=1.0, loss=1.0, transaction_cost_rate=0, risk_aversion=2.0
+    )
     current_bankroll = 1000
 
     # 60% chance of winning
@@ -189,7 +199,9 @@ def test_even_odds():
 
 def test_favorable_odds():
     """Test with favorable payoff ratio."""
-    strategy = MertonShare(payoff=2.0, loss=1.0, transaction_cost=0, risk_aversion=2.0)
+    strategy = MertonShare(
+        payoff=2.0, loss=1.0, transaction_cost_rate=0, risk_aversion=2.0
+    )
     current_bankroll = 1000
 
     # 60% chance of winning with 2:1 payoff
@@ -204,24 +216,27 @@ def test_simulation_with_positive_edge():
     """Test the strategy in a simulation with positive expected value."""
     payoff = 1.0
     loss = 1.0
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.55  # Slight edge
     trials = 1000
     initial_bankroll = 1000
 
     # Initialize bankroll and strategy
     bankroll = BankRoll(
-        initial_funds=initial_bankroll, percent_bettable=1.0, max_draw_down=None
+        initial_funds=initial_bankroll, percent_bettable=1.0, max_transaction_loss=None
     )
     strategy = MertonShare(
-        payoff=payoff, loss=loss, transaction_cost=transaction_cost, risk_aversion=2.0
+        payoff=payoff,
+        loss=loss,
+        transaction_cost_rate=transaction_cost_rate,
+        risk_aversion=2.0,
     )
 
     # Set up simulator
     simulator = RepeatedBinarySimulator(
         payoff=payoff,
         loss=loss,
-        transaction_costs=transaction_cost,
+        fee_per_bet=transaction_cost_rate,
         probability=probability,
         trials=trials,
     )
@@ -237,7 +252,7 @@ def test_comparison_with_different_risk_aversions():
     """Compare performance across different risk aversion levels."""
     payoff = 1.0
     loss = 1.0
-    transaction_cost = 0.01
+    transaction_cost_rate = 0.01
     probability = 0.6
     trials = 500
 
@@ -245,18 +260,18 @@ def test_comparison_with_different_risk_aversions():
     for gamma in [1.0, 2.0, 3.0, 5.0]:
         random.seed(42)  # Reset seed for fair comparison
         bankroll = BankRoll(
-            initial_funds=1000, percent_bettable=1.0, max_draw_down=None
+            initial_funds=1000, percent_bettable=1.0, max_transaction_loss=None
         )
         strategy = MertonShare(
             payoff=payoff,
             loss=loss,
-            transaction_cost=transaction_cost,
+            transaction_cost_rate=transaction_cost_rate,
             risk_aversion=gamma,
         )
         simulator = RepeatedBinarySimulator(
             payoff=payoff,
             loss=loss,
-            transaction_costs=transaction_cost,
+            fee_per_bet=transaction_cost_rate,
             probability=probability,
             trials=trials,
         )
@@ -270,7 +285,9 @@ def test_comparison_with_different_risk_aversions():
 
 def test_variance_calculation():
     """Test that variance is calculated correctly for binary outcomes."""
-    strategy = MertonShare(payoff=2.0, loss=1.0, transaction_cost=0, risk_aversion=1.0)
+    strategy = MertonShare(
+        payoff=2.0, loss=1.0, transaction_cost_rate=0, risk_aversion=1.0
+    )
 
     # For p=0.6, payoff=2, loss=1:
     # Mean = 0.6 * 2 - 0.4 * 1 = 0.8
@@ -290,11 +307,11 @@ def test_conservative_behavior():
 
     payoff = 1.0
     loss = 1.0
-    transaction_cost = 0.0
+    transaction_cost_rate = 0.0
     probability = 0.6
 
-    kelly = KellyCriterion(payoff, loss, transaction_cost)
-    merton = MertonShare(payoff, loss, transaction_cost, risk_aversion=2.0)
+    kelly = KellyCriterion(payoff, loss, transaction_cost_rate)
+    merton = MertonShare(payoff, loss, transaction_cost_rate, risk_aversion=2.0)
 
     kelly_bet = kelly.evaluate(probability, 1000)
     merton_bet = merton.evaluate(probability, 1000)
@@ -306,7 +323,11 @@ def test_conservative_behavior():
 def test_extreme_probabilities():
     """Test behavior at extreme probability values."""
     strategy = MertonShare(
-        payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=2.0, min_probability=0.0
+        payoff=1.0,
+        loss=1.0,
+        transaction_cost_rate=0,
+        risk_aversion=2.0,
+        min_probability=0.0,
     )
 
     # Very low probability
@@ -322,7 +343,11 @@ def test_extreme_probabilities():
 def test_get_max_safe_bet():
     """Test that max safe bet constraint is respected."""
     strategy = MertonShare(
-        payoff=1.0, loss=1.0, transaction_cost=0, risk_aversion=0.1, max_fraction=1.0
+        payoff=1.0,
+        loss=1.0,
+        transaction_cost_rate=0,
+        risk_aversion=0.1,
+        max_fraction=1.0,
     )
 
     # With very low risk aversion, we might calculate a large bet
@@ -338,7 +363,7 @@ def test_get_max_safe_bet():
 def test_extreme_payoff_returns_finite_share():
     """A payoff whose square still fits in float64 returns a finite share."""
     strategy = MertonShare(
-        payoff=1e154, loss=1.0, transaction_cost=0, risk_aversion=2.0
+        payoff=1e154, loss=1.0, transaction_cost_rate=0, risk_aversion=2.0
     )
 
     share = strategy.evaluate(0.6, 1000)
@@ -354,7 +379,7 @@ def test_overflowing_payoff_saturates_to_zero_without_raising():
     0.0 instead of raising OverflowError as Python-float squaring did.
     """
     strategy = MertonShare(
-        payoff=1e155, loss=1.0, transaction_cost=0, risk_aversion=2.0
+        payoff=1e155, loss=1.0, transaction_cost_rate=0, risk_aversion=2.0
     )
 
     assert strategy.evaluate(0.6, 1000) == 0.0

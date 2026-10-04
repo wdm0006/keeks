@@ -64,8 +64,8 @@ class SettlementCounter:
 
     The simulator looks the hooks up on the strategy: ``update_bankroll``
     fires once per trial before staking, and the N-ary
-    ``record_settlement(won_leg, return_pcts)`` fires after a staked batch
-    settles - ``won_leg`` is ``None`` exactly for a void or push round.
+    ``record_settlement(won, realized_returns)`` fires after a staked batch
+    settles - ``won`` is all ``None`` exactly for a void or push round.
     """
 
     def __init__(self, *args, **kwargs):
@@ -77,9 +77,9 @@ class SettlementCounter:
     def update_bankroll(self, _total_funds):
         self.trials_played += 1
 
-    def record_settlement(self, won_leg, _return_pcts):
+    def record_settlement(self, won, _realized_returns):
         self.settlements += 1
-        if won_leg is None:
+        if all(flag is None for flag in won):
             self.void_rounds += 1
 
 
@@ -87,14 +87,14 @@ class CountingKelly(SettlementCounter, MultiOutcomeKellyCriterion):
     """Multi-outcome Kelly with the example's settlement counters attached."""
 
     def __init__(self):
-        super().__init__(payoffs=PAYOFFS, loss=LOSS, transaction_cost=0)
+        super().__init__(payoffs=PAYOFFS, loss=LOSS, transaction_cost_rate=0)
 
 
 class FlatStakesStrategy(SettlementCounter, BaseMultiOutcomeStrategy):
     """Stake a fixed fraction of the bankroll on every leg, win or lose."""
 
     def __init__(self, fraction):
-        super().__init__(payoffs=PAYOFFS, loss=LOSS, transaction_cost=0)
+        super().__init__(payoffs=PAYOFFS, loss=LOSS, transaction_cost_rate=0)
         self.fraction = fraction
 
     def evaluate(self, probabilities, _current_bankroll):
@@ -105,7 +105,7 @@ class FavoriteOnlyStrategy(SettlementCounter, BaseMultiOutcomeStrategy):
     """Stake a fixed fraction on the single most probable leg only."""
 
     def __init__(self, fraction):
-        super().__init__(payoffs=PAYOFFS, loss=LOSS, transaction_cost=0)
+        super().__init__(payoffs=PAYOFFS, loss=LOSS, transaction_cost_rate=0)
         self.fraction = fraction
 
     def evaluate(self, probabilities, _current_bankroll):
@@ -121,7 +121,7 @@ def run_simulation(strategy, simulation_index):
     simulator = RepeatedMultiOutcomeSimulator(
         payoffs=PAYOFFS,
         loss=LOSS,
-        transaction_costs=TRANSACTION_COSTS,
+        fee_per_bet=TRANSACTION_COSTS,
         probabilities=PROBABILITIES,
         trials=NUM_TRIALS,
         seed=BASE_SEED + simulation_index,
@@ -140,7 +140,7 @@ def demonstrate_seeded_replay():
         simulator = RepeatedMultiOutcomeSimulator(
             payoffs=PAYOFFS,
             loss=LOSS,
-            transaction_costs=TRANSACTION_COSTS,
+            fee_per_bet=TRANSACTION_COSTS,
             probabilities=PROBABILITIES,
             trials=REPLAY_TRIALS,
             seed=BASE_SEED,
@@ -162,7 +162,9 @@ def main():
     print("1X2 market: home 3.2 (42%), draw 3.4 (27%), away 2.4 (28%), 3% void\n")
 
     # Opening stake vector: the sizes Kelly actually recommends.
-    kelly = MultiOutcomeKellyCriterion(payoffs=PAYOFFS, loss=LOSS, transaction_cost=0)
+    kelly = MultiOutcomeKellyCriterion(
+        payoffs=PAYOFFS, loss=LOSS, transaction_cost_rate=0
+    )
     stakes = kelly.evaluate(PROBABILITIES, INITIAL_BANKROLL)
     print("Multi-outcome Kelly opening stakes (fraction of bankroll per leg):")
     print(f"  home {stakes[0]:.4f}, draw {stakes[1]:.4f}, away {stakes[2]:.4f}")

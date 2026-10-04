@@ -10,7 +10,7 @@ from keeks.simulators import (
 
 
 def build_simulator(simulator_cls):
-    common = {"payoff": 1.0, "loss": 1.0, "transaction_costs": 0.0, "seed": 11}
+    common = {"payoff": 1.0, "loss": 1.0, "fee_per_bet": 0.0, "seed": 11}
     if simulator_cls is RepeatedBinarySimulator:
         return simulator_cls(**common, probability=0.6, trials=5)
     return simulator_cls(**common, trials=5)
@@ -36,12 +36,12 @@ def test_update_bankroll_precedes_evaluate_each_trial(simulator_cls, expected_up
             self.events.append(("evaluate", current_bankroll))
             return 0.1
 
-        def record_result(self, _won, _return_pct):
-            self.events.append(("record_result", None))
+        def record_settlement(self, _won, _realized_returns):
+            self.events.append(("record_settlement", None))
 
     strategy = SpyStrategy()
     build_simulator(simulator_cls).evaluate_strategy(
-        strategy, BankRoll(initial_funds=1000.0, max_draw_down=None)
+        strategy, BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     )
 
     assert strategy.events == [
@@ -50,7 +50,7 @@ def test_update_bankroll_precedes_evaluate_each_trial(simulator_cls, expected_up
         for event in (
             ("update_bankroll", bankroll),
             ("evaluate", bankroll),
-            ("record_result", None),
+            ("record_settlement", None),
         )
     ]
 
@@ -83,7 +83,7 @@ def test_noncallable_update_bankroll_is_ignored(simulator_cls):
     ],
 )
 def test_cppi_seeded_histories_remain_unchanged(simulator_cls, expected_history):
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
     strategy = CPPIStrategy(
         floor_fraction=0.5,
         multiplier=2.0,

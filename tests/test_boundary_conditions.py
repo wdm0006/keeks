@@ -29,7 +29,7 @@ from keeks.utils import (
     _normalize_gamble,
     crra_utility,
     expected_utility,
-    normalize_probabilities,
+    validate_probabilities,
 )
 
 
@@ -39,7 +39,10 @@ class TestValidatorEndpoints:
     def test_kelly_min_probability_endpoints(self):
         for probability in (0.0, 1.0):
             strategy = KellyCriterion(
-                payoff=2.0, loss=1.0, transaction_cost=0.0, min_probability=probability
+                payoff=2.0,
+                loss=1.0,
+                transaction_cost_rate=0.0,
+                min_probability=probability,
             )
             assert strategy.min_probability == probability
 
@@ -49,13 +52,13 @@ class TestValidatorEndpoints:
             ValueError, match=r"^Minimum probability must be between 0 and 1$"
         ):
             KellyCriterion(
-                payoff=2.0, loss=1.0, transaction_cost=0.0, min_probability=bad
+                payoff=2.0, loss=1.0, transaction_cost_rate=0.0, min_probability=bad
             )
 
     @pytest.mark.parametrize("fraction", (0.0, 1.0))
     def test_fractional_kelly_endpoints(self, fraction):
         strategy = FractionalKellyCriterion(
-            payoff=2.0, loss=1.0, transaction_cost=0.0, fraction=fraction
+            payoff=2.0, loss=1.0, transaction_cost_rate=0.0, fraction=fraction
         )
         assert strategy.fraction == fraction
 
@@ -63,7 +66,7 @@ class TestValidatorEndpoints:
     def test_fractional_kelly_rejects_outside(self, bad):
         with pytest.raises(ValueError, match=r"^Fraction must be between 0 and 1$"):
             FractionalKellyCriterion(
-                payoff=2.0, loss=1.0, transaction_cost=0.0, fraction=bad
+                payoff=2.0, loss=1.0, transaction_cost_rate=0.0, fraction=bad
             )
 
     @pytest.mark.parametrize("fraction", (0.0, 1.0))
@@ -72,7 +75,7 @@ class TestValidatorEndpoints:
         strategy = FixedFractionStrategy(
             payoff=2.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             fraction=fraction,
             min_probability=min_probability,
         )
@@ -81,7 +84,7 @@ class TestValidatorEndpoints:
     def test_fixed_fraction_rejects_outside(self):
         with pytest.raises(ValueError, match=r"^Fraction must be between 0 and 1$"):
             FixedFractionStrategy(
-                payoff=2.0, loss=1.0, transaction_cost=0.0, fraction=1.01
+                payoff=2.0, loss=1.0, transaction_cost_rate=0.0, fraction=1.01
             )
 
     def test_dynamic_endpoints_and_clamps(self):
@@ -90,14 +93,14 @@ class TestValidatorEndpoints:
             base_fraction=0.0,
             payoff=2.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             min_fraction=0.1,
             max_fraction=0.1,
         )
         assert strategy.base_fraction == 0.0
 
         full = DynamicBankrollManagement(
-            base_fraction=1.0, payoff=2.0, loss=1.0, transaction_cost=0.0
+            base_fraction=1.0, payoff=2.0, loss=1.0, transaction_cost_rate=0.0
         )
         assert full.base_fraction == 1.0
 
@@ -105,7 +108,7 @@ class TestValidatorEndpoints:
             base_fraction=0.1,
             payoff=2.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             max_fraction=1.0,
         )
         assert one_bound.max_fraction == 1.0
@@ -141,20 +144,22 @@ class TestValidatorEndpoints:
             "base_fraction": 0.1,
             "payoff": 2.0,
             "loss": 1.0,
-            "transaction_cost": 0.0,
+            "transaction_cost_rate": 0.0,
         }
         parameters.update(kwargs)
         with pytest.raises(ValueError, match=message):
             DynamicBankrollManagement(**parameters)
 
     def test_optimal_f_endpoints(self):
-        zero_rate = OptimalF(payoff=2.0, loss=1.0, transaction_cost=0.0, win_rate=0.0)
+        zero_rate = OptimalF(
+            payoff=2.0, loss=1.0, transaction_cost_rate=0.0, win_rate=0.0
+        )
         assert zero_rate.win_rate == 0.0
 
         full_risk = OptimalF(
             payoff=2.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
             win_rate=1.0,
             max_risk_fraction=1.0,
         )
@@ -179,7 +184,7 @@ class TestValidatorEndpoints:
         parameters = {
             "payoff": 2.0,
             "loss": 1.0,
-            "transaction_cost": 0.0,
+            "transaction_cost_rate": 0.0,
             "win_rate": 0.6,
         }
         parameters.update(kwargs)
@@ -194,7 +199,7 @@ class TestValidatorEndpoints:
             initial_bankroll=0.5,
             payoff=2.0,
             loss=1.0,
-            transaction_cost=0.0,
+            transaction_cost_rate=0.0,
         )
         assert small.floor == 0.5 * 0.2
 
@@ -206,7 +211,7 @@ class TestValidatorEndpoints:
                 initial_bankroll=1000.0,
                 payoff=2.0,
                 loss=1.0,
-                transaction_cost=0.0,
+                transaction_cost_rate=0.0,
                 min_probability=probability,
             )
             assert strategy.min_probability == probability
@@ -236,7 +241,7 @@ class TestValidatorEndpoints:
             "initial_bankroll": 1000.0,
             "payoff": 2.0,
             "loss": 1.0,
-            "transaction_cost": 0.0,
+            "transaction_cost_rate": 0.0,
         }
         parameters.update(kwargs)
         with pytest.raises(ValueError, match=message):
@@ -244,18 +249,21 @@ class TestValidatorEndpoints:
 
     def test_merton_endpoints(self):
         tiny = MertonShare(
-            payoff=2.0, loss=1.0, transaction_cost=0.0, risk_aversion=1e-9
+            payoff=2.0, loss=1.0, transaction_cost_rate=0.0, risk_aversion=1e-9
         )
         assert tiny.risk_aversion == 1e-9
 
         capped = MertonShare(
-            payoff=2.0, loss=1.0, transaction_cost=0.0, max_fraction=1.0
+            payoff=2.0, loss=1.0, transaction_cost_rate=0.0, max_fraction=1.0
         )
         assert capped.max_fraction == 1.0
 
         for probability in (0.0, 1.0):
             strategy = MertonShare(
-                payoff=2.0, loss=1.0, transaction_cost=0.0, min_probability=probability
+                payoff=2.0,
+                loss=1.0,
+                transaction_cost_rate=0.0,
+                min_probability=probability,
             )
             assert strategy.min_probability == probability
 
@@ -274,19 +282,19 @@ class TestValidatorEndpoints:
     )
     def test_merton_rejects_outside(self, kwargs, message):
         with pytest.raises(ValueError, match=message):
-            MertonShare(payoff=2.0, loss=1.0, transaction_cost=0.0, **kwargs)
+            MertonShare(payoff=2.0, loss=1.0, transaction_cost_rate=0.0, **kwargs)
 
     @pytest.mark.parametrize("drawdown", (0.0, 1.0, 1.1))
     def test_drawdown_adjusted_kelly_rejects_outside(self, drawdown):
         with pytest.raises(
             ValueError,
-            match=r"^Maximum acceptable drawdown must be between 0 and 1 \(exclusive\)$",
+            match=r"^Maximum transaction loss must be between 0 and 1 \(exclusive\)$",
         ):
             DrawdownAdjustedKelly(
                 payoff=2.0,
                 loss=1.0,
-                transaction_cost=0.0,
-                max_acceptable_drawdown=drawdown,
+                transaction_cost_rate=0.0,
+                max_transaction_loss=drawdown,
             )
 
 
@@ -444,84 +452,84 @@ class TestNormalizeProbabilitiesBoundaries:
         with pytest.raises(
             ValueError, match=r"^Probabilities must be a finite sequence$"
         ):
-            normalize_probabilities("not numbers")
+            validate_probabilities("not numbers")
 
     def test_none_is_rejected_as_malformed_shape(self):
         """NumPy coerces None to nan, so None fails the shape check."""
         with pytest.raises(
             ValueError, match=r"^Probabilities must be one-dimensional$"
         ):
-            normalize_probabilities(None)
+            validate_probabilities(None)
 
     def test_cross_shape_rejected(self):
         with pytest.raises(
             ValueError, match=r"^Probabilities must be one-dimensional$"
         ):
-            normalize_probabilities([[0.5, 0.5]])
+            validate_probabilities([[0.5, 0.5]])
 
     def test_scalar_rejected(self):
         with pytest.raises(
             ValueError, match=r"^Probabilities must be one-dimensional$"
         ):
-            normalize_probabilities(0.5)
+            validate_probabilities(0.5)
 
     def test_empty_rejected(self):
         with pytest.raises(ValueError, match=r"^Probabilities must be non-empty$"):
-            normalize_probabilities([])
+            validate_probabilities([])
 
     def test_nan_rejected(self):
         with pytest.raises(
             ValueError, match=r"^Probabilities must contain only finite values$"
         ):
-            normalize_probabilities([0.5, math.nan])
+            validate_probabilities([0.5, math.nan])
 
     def test_infinite_rejected(self):
         with pytest.raises(
             ValueError, match=r"^Probabilities must contain only finite values$"
         ):
-            normalize_probabilities([0.5, math.inf])
+            validate_probabilities([0.5, math.inf])
 
         with pytest.raises(
             ValueError, match=r"^Probabilities must contain only finite values$"
         ):
-            normalize_probabilities([0.5, -math.inf])
+            validate_probabilities([0.5, -math.inf])
 
     def test_negative_probability_rejected(self):
         with pytest.raises(ValueError, match=r"^Probabilities must be nonnegative$"):
-            normalize_probabilities([1.5, -0.5])
+            validate_probabilities([1.5, -0.5])
 
     def test_sum_above_tolerance_window_rejected(self):
         # 1 + 5e-12 is an order of magnitude outside PROBABILITY_SUM_TOLERANCE.
         with pytest.raises(
             ValueError, match=r"^Probabilities must sum to no more than one$"
         ):
-            normalize_probabilities([1.0 + 5e-12])
+            validate_probabilities([1.0 + 5e-12])
 
     def test_sum_inside_tolerance_window_is_returned_unchanged(self):
         """Mass within the window is accepted as-is: no rescale, no padding."""
         probabilities = [1.0 + 5e-13]
-        cleaned = normalize_probabilities(probabilities)
+        cleaned = validate_probabilities(probabilities)
         assert cleaned.dtype == np.float64
         assert list(cleaned) == probabilities
 
     def test_deficit_is_left_in_place(self):
         """A sub-unity sum is returned untouched; completion is the caller's call."""
-        cleaned = normalize_probabilities([0.25, 0.25])
+        cleaned = validate_probabilities([0.25, 0.25])
         assert list(cleaned) == [0.25, 0.25]
 
     def test_integer_inputs_coerced_to_float64(self):
-        cleaned = normalize_probabilities([1, 0])
+        cleaned = validate_probabilities([1, 0])
         assert cleaned.dtype == np.float64
         assert list(cleaned) == [1.0, 0.0]
 
     def test_numpy_array_input_round_trips(self):
-        cleaned = normalize_probabilities(np.array([0.3, 0.7]))
+        cleaned = validate_probabilities(np.array([0.3, 0.7]))
         assert isinstance(cleaned, np.ndarray)
         assert list(cleaned) == [0.3, 0.7]
 
 
 class TestBankrollBoundaries:
-    """BankRoll numeric coercion and the max_draw_down=0 corner."""
+    """BankRoll numeric coercion and the max_transaction_loss=0 corner."""
 
     def test_non_numeric_amounts_rejected(self):
         with pytest.raises(
@@ -536,7 +544,7 @@ class TestBankrollBoundaries:
 
         bankroll = BankRoll(initial_funds=100.0)
         with pytest.raises(
-            ValueError, match=r"^amt must be a finite, nonnegative number$"
+            ValueError, match=r"^amount must be a finite, nonnegative number$"
         ):
             bankroll.deposit(None)
         with pytest.raises(
@@ -545,11 +553,16 @@ class TestBankrollBoundaries:
             bankroll.bet(None)
         assert bankroll.total_funds == 100.0
 
-    def test_zero_drawdown_rejects_any_positive_withdrawal(self):
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=0)
+    def test_zero_transaction_loss_rejects_any_positive_withdrawal(self):
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=0)
         bankroll.deposit(50.0)
 
-        with pytest.raises(RuinError, match=r"^You lost too much"):
+        with pytest.raises(
+            RuinError,
+            match=r"^Refused withdrawal of 1\.00: it exceeds the configured "
+            r"transaction-loss limit \(max_transaction_loss=0, i\.e\. at most 0\.00 of "
+            r"current funds: 150\.00\); pass max_transaction_loss=None to lift the cap$",
+        ):
             bankroll.withdraw(1.0)
 
         # A zero-amount withdrawal is still a no-op, not ruin.

@@ -52,7 +52,7 @@ from keeks.utils import (
     crra_utility,
     expected_utility,
     find_indifference_price,
-    normalize_probabilities,
+    validate_probabilities,
 )
 
 settings.register_profile("keeks", max_examples=50, deadline=None)
@@ -297,10 +297,10 @@ def test_normalize_gamble_rejects_negative_legs(gamble):
 # The public vector validator behind _normalize_gamble's validation half:
 # the same acceptance laws, minus the gamble-specific completion.
 @given(gamble=unit_gambles())
-def test_normalize_probabilities_round_trips_valid_vectors(gamble):
+def test_validate_probabilities_round_trips_valid_vectors(gamble):
     """Valid vectors pass through as an equal-length float64 array."""
     _, probabilities = gamble
-    cleaned = normalize_probabilities(probabilities)
+    cleaned = validate_probabilities(probabilities)
 
     assert cleaned.dtype == np.float64
     assert list(cleaned) == probabilities
@@ -309,16 +309,16 @@ def test_normalize_probabilities_round_trips_valid_vectors(gamble):
 
 
 @given(gamble=unit_gambles())
-def test_normalize_probabilities_is_idempotent(gamble):
+def test_validate_probabilities_is_idempotent(gamble):
     """A validated vector is itself valid, so revalidation changes nothing."""
     _, probabilities = gamble
-    cleaned = normalize_probabilities(probabilities)
+    cleaned = validate_probabilities(probabilities)
 
-    assert np.array_equal(normalize_probabilities(cleaned), cleaned)
+    assert np.array_equal(validate_probabilities(cleaned), cleaned)
 
 
 @given(gamble=unit_gambles(), excess=st.floats(1e-11, 1.0, allow_nan=False))
-def test_normalize_probabilities_rejects_mass_above_tolerance_window(gamble, excess):
+def test_validate_probabilities_rejects_mass_above_tolerance_window(gamble, excess):
     _, probabilities = gamble
     complete = probabilities + [max(0.0, 1.0 - sum(probabilities))]
     scaled = [p * (1.0 + excess) for p in complete]
@@ -327,29 +327,29 @@ def test_normalize_probabilities_rejects_mass_above_tolerance_window(gamble, exc
     with pytest.raises(
         ValueError, match=r"^Probabilities must sum to no more than one$"
     ):
-        normalize_probabilities(scaled)
+        validate_probabilities(scaled)
 
 
 @given(
     gamble=unit_gambles(),
     bad=st.sampled_from([math.nan, math.inf, -math.inf]),
 )
-def test_normalize_probabilities_rejects_non_finite_values(gamble, bad):
+def test_validate_probabilities_rejects_non_finite_values(gamble, bad):
     _, probabilities = gamble
     corrupted = probabilities[:-1] + [bad]
 
     with pytest.raises(
         ValueError, match=r"^Probabilities must contain only finite values$"
     ):
-        normalize_probabilities(corrupted)
+        validate_probabilities(corrupted)
 
 
 @given(gamble=unit_gambles())
-def test_normalize_probabilities_rejects_negative_vectors(gamble):
+def test_validate_probabilities_rejects_negative_vectors(gamble):
     _, probabilities = gamble
 
     with pytest.raises(ValueError, match=r"^Probabilities must be nonnegative$"):
-        normalize_probabilities([-0.1] + probabilities[1:])
+        validate_probabilities([-0.1] + probabilities[1:])
 
 
 @given(
@@ -498,8 +498,12 @@ def build_strategy(strategy_cls, draw):
     """Construct any shipped strategy from drawn economic controls."""
     payoff = draw(st.floats(0.5, 5.0, allow_nan=False))
     loss = draw(st.floats(0.5, 5.0, allow_nan=False))
-    transaction_cost = draw(st.floats(0.0, 0.05, allow_nan=False))
-    common = {"payoff": payoff, "loss": loss, "transaction_cost": transaction_cost}
+    transaction_cost_rate = draw(st.floats(0.0, 0.05, allow_nan=False))
+    common = {
+        "payoff": payoff,
+        "loss": loss,
+        "transaction_cost_rate": transaction_cost_rate,
+    }
 
     if strategy_cls is KellyCriterion:
         return KellyCriterion(**common)
@@ -507,7 +511,7 @@ def build_strategy(strategy_cls, draw):
         return FractionalKellyCriterion(fraction=draw(probabilities), **common)
     if strategy_cls is DrawdownAdjustedKelly:
         return DrawdownAdjustedKelly(
-            max_acceptable_drawdown=draw(st.floats(0.01, 0.99, allow_nan=False)),
+            max_transaction_loss=draw(st.floats(0.01, 0.99, allow_nan=False)),
             **common,
         )
     if strategy_cls is NaiveStrategy:
@@ -610,9 +614,9 @@ def test_fractional_kelly_entry_price_scales_kelly_price(fraction, data):
     outcomes, probabilities = data.draw(unit_gambles())
     wealth = data.draw(st.floats(10.0, 10_000.0, allow_nan=False))
 
-    kelly = KellyCriterion(payoff=2.0, loss=1.0, transaction_cost=0.0)
+    kelly = KellyCriterion(payoff=2.0, loss=1.0, transaction_cost_rate=0.0)
     fractional = FractionalKellyCriterion(
-        payoff=2.0, loss=1.0, transaction_cost=0.0, fraction=fraction
+        payoff=2.0, loss=1.0, transaction_cost_rate=0.0, fraction=fraction
     )
     tolerance = 1e-4
 
@@ -636,9 +640,9 @@ def test_drawdown_adjusted_kelly_entry_price_scales_kelly_price(drawdown, data):
     wealth = data.draw(st.floats(10.0, 10_000.0, allow_nan=False))
     factor = min(1.0, drawdown / 0.5)
 
-    kelly = KellyCriterion(payoff=2.0, loss=1.0, transaction_cost=0.0)
+    kelly = KellyCriterion(payoff=2.0, loss=1.0, transaction_cost_rate=0.0)
     adjusted = DrawdownAdjustedKelly(
-        payoff=2.0, loss=1.0, transaction_cost=0.0, max_acceptable_drawdown=drawdown
+        payoff=2.0, loss=1.0, transaction_cost_rate=0.0, max_transaction_loss=drawdown
     )
     tolerance = 1e-4
 
@@ -660,7 +664,7 @@ SIMULATOR_CONFIGS = st.fixed_dictionaries(
     {
         "payoff": st.floats(0.5, 3.0, allow_nan=False),
         "loss": st.floats(0.5, 2.0, allow_nan=False),
-        "transaction_costs": st.floats(0.0, 0.05, allow_nan=False),
+        "fee_per_bet": st.floats(0.0, 0.05, allow_nan=False),
         "trials": st.integers(1, 8),
         "seed": st.integers(0, 2**31),
     }
@@ -671,7 +675,7 @@ SIMULATOR_CONFIGS = st.fixed_dictionaries(
 def test_repeated_simulator_is_deterministic_over_arbitrary_seeds(config, probability):
     def run():
         simulator = RepeatedBinarySimulator(probability=probability, **config)
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
         simulator.evaluate_strategy(
             FixedFractionStrategy(
                 payoff=config["payoff"], loss=config["loss"], fraction=0.02
@@ -687,7 +691,7 @@ def test_repeated_simulator_is_deterministic_over_arbitrary_seeds(config, probab
 def test_random_simulator_is_deterministic_over_arbitrary_seeds(config, stdev):
     def run():
         simulator = RandomBinarySimulator(stdev=stdev, **config)
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
         simulator.evaluate_strategy(
             FixedFractionStrategy(
                 payoff=config["payoff"], loss=config["loss"], fraction=0.02
@@ -703,7 +707,7 @@ def test_random_simulator_is_deterministic_over_arbitrary_seeds(config, stdev):
 def test_uncertain_simulator_is_deterministic_over_arbitrary_seeds(config, stdev):
     def run():
         simulator = RandomUncertainBinarySimulator(stdev=stdev, **config)
-        bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
         simulator.evaluate_strategy(
             FixedFractionStrategy(
                 payoff=config["payoff"], loss=config["loss"], fraction=0.02
@@ -728,7 +732,7 @@ class OverbettingStrategy:
 @given(config=SIMULATOR_CONFIGS, probability=probabilities)
 def test_invalid_stake_fraction_never_mutates_bankroll(config, probability):
     simulator = RepeatedBinarySimulator(probability=probability, **config)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
 
     with pytest.raises(ValueError, match=r"^Strategy stake fraction must be"):
         simulator.evaluate_strategy(OverbettingStrategy(), bankroll)
@@ -741,7 +745,7 @@ def test_invalid_stake_fraction_never_mutates_bankroll(config, probability):
 def test_settlement_never_leaves_funds_negative(config, probability):
     """Every settled run keeps funds >= 0 and records every trial."""
     simulator = RepeatedBinarySimulator(probability=probability, **config)
-    bankroll = BankRoll(initial_funds=1000.0, max_draw_down=None)
+    bankroll = BankRoll(initial_funds=1000.0, max_transaction_loss=None)
 
     with contextlib.suppress(RuinError):
         simulator.evaluate_strategy(
@@ -761,7 +765,7 @@ def test_settlement_never_leaves_funds_negative(config, probability):
 )
 def test_odds_mismatch_rejects_concrete_strategy(payoff, delta):
     """A concrete strategy must never be settled at odds it did not size for."""
-    strategy = KellyCriterion(payoff=payoff, loss=1.0, transaction_cost=0.0)
+    strategy = KellyCriterion(payoff=payoff, loss=1.0, transaction_cost_rate=0.0)
 
     with pytest.raises(ValueError, match=r"^Strategy payoff \("):
         _validate_strategy_odds(strategy, payoff + delta, 1.0)

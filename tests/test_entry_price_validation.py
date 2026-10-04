@@ -260,7 +260,7 @@ def test_invalid_call_does_not_mutate_cppi_state(kwargs):
         initial_bankroll=1000.0,
         payoff=1.0,
         loss=1.0,
-        transaction_cost=0.01,
+        transaction_cost_rate=0.01,
     )
     before = _cppi_state(strategy)
 

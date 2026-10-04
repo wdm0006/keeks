@@ -1,13 +1,13 @@
 """Constructor validation of the economic controls shared by every strategy.
 
 ``BaseStrategy.__init__`` used to check only signs, and IEEE NaN makes every
-comparison false, so ``payoff=nan``, ``loss=nan`` or ``transaction_cost=nan``
+comparison false, so ``payoff=nan``, ``loss=nan`` or ``transaction_cost_rate=nan``
 reached the sizing formulas of all nine shipped strategies; positive infinity
 passed for ``payoff`` and ``loss`` too. Those configurations now fail fast with
 ``ValueError``, matching the simulator constructors.
 
 The accepted ranges are unchanged: ``payoff > 0``, ``loss >= 0``,
-``transaction_cost >= 0``, and ``loss + transaction_cost > 0``.
+``transaction_cost_rate >= 0``, and ``loss + transaction_cost_rate > 0``.
 """
 
 import math
@@ -30,31 +30,31 @@ from keeks.binary_strategies import (
 # One valid kwargs set per strategy exported from keeks.binary_strategies.__all__,
 # the strategy-side analogue of the simulator suite's BASE_KWARGS.
 BASE_KWARGS = {
-    KellyCriterion: {"payoff": 1.0, "loss": 1.0, "transaction_cost": 0.01},
+    KellyCriterion: {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.01},
     FractionalKellyCriterion: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.01,
+        "transaction_cost_rate": 0.01,
         "fraction": 0.5,
     },
     DrawdownAdjustedKelly: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.01,
-        "max_acceptable_drawdown": 0.2,
+        "transaction_cost_rate": 0.01,
+        "max_transaction_loss": 0.2,
     },
     OptimalF: {
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.01,
+        "transaction_cost_rate": 0.01,
         "win_rate": 0.6,
     },
-    NaiveStrategy: {"payoff": 1.0, "loss": 1.0, "transaction_cost": 0.01},
+    NaiveStrategy: {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.01},
     FixedFractionStrategy: {
         "fraction": 0.1,
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.01,
+        "transaction_cost_rate": 0.01,
     },
     CPPIStrategy: {
         "floor_fraction": 0.5,
@@ -62,15 +62,15 @@ BASE_KWARGS = {
         "initial_bankroll": 1000.0,
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.01,
+        "transaction_cost_rate": 0.01,
     },
     DynamicBankrollManagement: {
         "base_fraction": 0.1,
         "payoff": 1.0,
         "loss": 1.0,
-        "transaction_cost": 0.01,
+        "transaction_cost_rate": 0.01,
     },
-    MertonShare: {"payoff": 1.0, "loss": 1.0, "transaction_cost": 0.01},
+    MertonShare: {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.01},
 }
 
 STRATEGIES = list(BASE_KWARGS)
@@ -89,11 +89,15 @@ def build(strategy_cls, **overrides):
 
 def test_base_kwargs_cover_every_exported_strategy():
     """Guard: a newly exported strategy must be added to these cases."""
-    assert {cls.__name__ for cls in STRATEGIES} == set(binary_strategies.__all__)
+    # BaseStrategy is exported (like every generation's ABC) but is abstract,
+    # so it takes no configuration case of its own.
+    assert {cls.__name__ for cls in STRATEGIES} == set(binary_strategies.__all__) - {
+        "BaseStrategy"
+    }
 
 
 @pytest.mark.parametrize("strategy_cls", STRATEGIES)
-@pytest.mark.parametrize("field", ["payoff", "loss", "transaction_cost"])
+@pytest.mark.parametrize("field", ["payoff", "loss", "transaction_cost_rate"])
 @pytest.mark.parametrize("value", NON_FINITE)
 def test_non_finite_economics_rejected(strategy_cls, field, value):
     """NaN and both infinities are rejected for every shared economic control."""
@@ -109,7 +113,7 @@ def test_non_finite_economics_rejected(strategy_cls, field, value):
     [
         ("payoff", INVALID_PAYOFF),
         ("loss", INVALID_LOSS),
-        ("transaction_cost", INVALID_TRANSACTION_COST),
+        ("transaction_cost_rate", INVALID_TRANSACTION_COST),
     ],
 )
 def test_shared_economics_rejected(strategy_cls, field, invalid_values):
@@ -123,35 +127,35 @@ def test_shared_economics_rejected(strategy_cls, field, invalid_values):
 
 @pytest.mark.parametrize("strategy_cls", STRATEGIES)
 def test_zero_total_cost_still_rejected(strategy_cls):
-    """``loss + transaction_cost`` must remain strictly positive."""
+    """``loss + transaction_cost_rate`` must remain strictly positive."""
     with pytest.raises(
         ValueError,
-        match=r"^Total cost \(loss \+ transaction_cost\) must be greater than 0$",
+        match=r"^Total cost \(loss \+ transaction_cost_rate\) must be greater than 0$",
     ):
-        build(strategy_cls, loss=0.0, transaction_cost=0.0)
+        build(strategy_cls, loss=0.0, transaction_cost_rate=0.0)
 
 
 @pytest.mark.parametrize("strategy_cls", STRATEGIES)
 def test_boundary_economics_accepted(strategy_cls):
     """A zero loss and a zero fee stay valid as long as their sum is positive."""
-    zero_loss = build(strategy_cls, loss=0.0, transaction_cost=0.01)
+    zero_loss = build(strategy_cls, loss=0.0, transaction_cost_rate=0.01)
     assert zero_loss.loss == 0.0
-    assert zero_loss.transaction_cost == 0.01
+    assert zero_loss.transaction_cost_rate == 0.01
 
-    zero_cost = build(strategy_cls, loss=1.0, transaction_cost=0.0)
+    zero_cost = build(strategy_cls, loss=1.0, transaction_cost_rate=0.0)
     assert zero_cost.loss == 1.0
-    assert zero_cost.transaction_cost == 0.0
+    assert zero_cost.transaction_cost_rate == 0.0
 
 
 @pytest.mark.parametrize("strategy_cls", STRATEGIES)
 def test_accepted_economics_stored_as_floats(strategy_cls):
     """Integer inputs are coerced, matching the simulator validation convention."""
-    strategy = build(strategy_cls, payoff=2, loss=1, transaction_cost=0)
+    strategy = build(strategy_cls, payoff=2, loss=1, transaction_cost_rate=0)
 
     assert isinstance(strategy.payoff, float)
     assert isinstance(strategy.loss, float)
-    assert isinstance(strategy.transaction_cost, float)
-    assert (strategy.payoff, strategy.loss, strategy.transaction_cost) == (
+    assert isinstance(strategy.transaction_cost_rate, float)
+    assert (strategy.payoff, strategy.loss, strategy.transaction_cost_rate) == (
         2.0,
         1.0,
         0.0,

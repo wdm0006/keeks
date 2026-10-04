@@ -2,7 +2,10 @@
 
 Runs every strategy exported from ``keeks.binary_strategies`` through
 ``RepeatedBinarySimulator`` over a fixed scenario matrix and writes the growth,
-drawdown and early-stop metrics to ``benchmarks/output/``.
+drawdown and early-stop metrics to ``benchmarks/output/``. It then races the
+portfolio-allocation families through ``AllocationSimulator`` on a synthetic
+six-asset factor market and writes their growth comparison with the
+``keeks.allocation`` plots helpers.
 
 Reproduce with::
 
@@ -25,8 +28,8 @@ Design notes that the numbers depend on:
   the estimate-noise axis instead perturbs the probability handed to
   ``strategy.evaluate`` while the simulator settles against the true probability.
 * **Cost units differ by design of the library.** Strategies treat
-  ``transaction_cost`` as a per-unit fractional cost; simulators subtract
-  ``transaction_costs`` as a flat fee per settled bet. The same scalar is passed to
+  ``transaction_cost_rate`` as a per-unit fractional cost; simulators subtract
+  ``fee_per_bet`` as a flat fee per settled bet. The same scalar is passed to
   both, and the realised fee is measured and reported so the asymmetry is visible
   rather than assumed away.
 """
@@ -41,8 +44,20 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
+from keeks import (  # noqa: E402
+    AllocationSimulator,
+    ExponentialGradient,
+    FixedWeights,
+    GlobalMinimumVariance,
+    HierarchicalRiskParity,
+    MeanVariance,
+    RiskBudgeting,
+    bankroll_paths,
+    scenario_model,
+)
 from keeks.bankroll import BankRoll  # noqa: E402
 from keeks.binary_strategies import (  # noqa: E402
     CPPIStrategy,
@@ -80,7 +95,7 @@ class Scenario:
     probability: float
     cost: float
     estimate_stdev: float
-    max_draw_down: float | None
+    max_transaction_loss: float | None
     payoff: float = 1.0
     loss: float = 1.0
 
@@ -88,11 +103,11 @@ class Scenario:
 BASE = Scenario(
     key="base",
     axis="base",
-    label="Base: 55% edge, even money, no cost, no estimate error, max_draw_down=0.3",
+    label="Base: 55% edge, even money, no cost, no estimate error, max_transaction_loss=0.3",
     probability=0.55,
     cost=0.0,
     estimate_stdev=0.0,
-    max_draw_down=0.3,
+    max_transaction_loss=0.3,
 )
 
 
@@ -122,19 +137,19 @@ SCENARIOS = [
         "drawdown-08",
         "drawdown limit",
         "Drawdown limit: 8% of funds per settlement",
-        max_draw_down=0.08,
+        max_transaction_loss=0.08,
     ),
     _variant(
         "drawdown-03",
         "drawdown limit",
         "Drawdown limit: 3% of funds per settlement",
-        max_draw_down=0.03,
+        max_transaction_loss=0.03,
     ),
     _variant(
         "drawdown-off",
         "drawdown limit",
-        "Drawdown limit: disabled (max_draw_down=None)",
-        max_draw_down=None,
+        "Drawdown limit: disabled (max_transaction_loss=None)",
+        max_transaction_loss=None,
     ),
 ]
 
@@ -143,29 +158,29 @@ SCENARIOS = [
 # evaluate() calls, so each path needs its own object.
 STRATEGY_FACTORIES = {
     "Kelly": lambda s: KellyCriterion(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "Half Kelly": lambda s: FractionalKellyCriterion(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost, fraction=0.5
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost, fraction=0.5
     ),
     "Drawdown-adjusted Kelly": lambda s: DrawdownAdjustedKelly(
         payoff=s.payoff,
         loss=s.loss,
-        transaction_cost=s.cost,
-        max_acceptable_drawdown=0.2,
+        transaction_cost_rate=s.cost,
+        max_transaction_loss=0.2,
     ),
     "Optimal f": lambda s: OptimalF(
         payoff=s.payoff,
         loss=s.loss,
-        transaction_cost=s.cost,
+        transaction_cost_rate=s.cost,
         win_rate=s.probability,
         max_risk_fraction=0.2,
     ),
     "Naive": lambda s: NaiveStrategy(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "Fixed fraction 2%": lambda s: FixedFractionStrategy(
-        fraction=0.02, payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        fraction=0.02, payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "CPPI": lambda s: CPPIStrategy(
         floor_fraction=0.8,
@@ -173,13 +188,13 @@ STRATEGY_FACTORIES = {
         initial_bankroll=INITIAL_FUNDS,
         payoff=s.payoff,
         loss=s.loss,
-        transaction_cost=s.cost,
+        transaction_cost_rate=s.cost,
     ),
     "Dynamic": lambda s: DynamicBankrollManagement(
-        base_fraction=0.05, payoff=s.payoff, loss=s.loss, transaction_cost=s.cost
+        base_fraction=0.05, payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost
     ),
     "Merton share": lambda s: MertonShare(
-        payoff=s.payoff, loss=s.loss, transaction_cost=s.cost, risk_aversion=2.0
+        payoff=s.payoff, loss=s.loss, transaction_cost_rate=s.cost, risk_aversion=2.0
     ),
 }
 
@@ -192,16 +207,18 @@ class _StoppedBankRoll(BankRoll):
     stop from a bankruptcy stop instead of inferring both from a short history.
     """
 
-    def __init__(self, initial_funds, max_draw_down):
-        super().__init__(initial_funds=initial_funds, max_draw_down=max_draw_down)
+    def __init__(self, initial_funds, max_transaction_loss):
+        super().__init__(
+            initial_funds=initial_funds, max_transaction_loss=max_transaction_loss
+        )
         self.stop_reason = ""
 
-    def withdraw(self, amt):
+    def withdraw(self, amount):
         try:
-            super().withdraw(amt)
+            super().withdraw(amount)
         except RuinError:
             self.stop_reason = (
-                "bankruptcy" if self.total_funds - amt < 0 else "drawdown-limit"
+                "bankruptcy" if self.total_funds - amount < 0 else "drawdown-limit"
             )
             raise
 
@@ -277,7 +294,7 @@ def run_path(scenario, strategy_name, path_index):
     else:
         beliefs = [scenario.probability] * TRIALS
 
-    bankroll = _StoppedBankRoll(INITIAL_FUNDS, scenario.max_draw_down)
+    bankroll = _StoppedBankRoll(INITIAL_FUNDS, scenario.max_transaction_loss)
     strategy = STRATEGY_FACTORIES[strategy_name](scenario)
     clock = _Clock()
     counters = {"bets": 0, "staked": 0.0, "first": 0.0}
@@ -301,7 +318,7 @@ def run_path(scenario, strategy_name, path_index):
     simulator = RepeatedBinarySimulator(
         payoff=scenario.payoff,
         loss=scenario.loss,
-        transaction_costs=scenario.cost,
+        fee_per_bet=scenario.cost,
         probability=scenario.probability,
         trials=TRIALS,
     )
@@ -346,9 +363,9 @@ def summarise(scenario, strategy_name, results):
         "probability": scenario.probability,
         "cost_input": scenario.cost,
         "estimate_stdev": scenario.estimate_stdev,
-        "max_draw_down": "none"
-        if scenario.max_draw_down is None
-        else scenario.max_draw_down,
+        "max_transaction_loss": "none"
+        if scenario.max_transaction_loss is None
+        else scenario.max_transaction_loss,
         "strategy": strategy_name,
         "paths": len(results),
         "median_first_bet_fraction": round(
@@ -534,11 +551,95 @@ def chart_early_stops(frame, path):
         f"{PATHS} paths, {TRIALS} bets, seed {SEED}",
         fontsize=11,
     )
-    ax.legend(title="max_draw_down", ncol=4, loc="upper center", framealpha=1.0)
+    ax.legend(title="max_transaction_loss", ncol=4, loc="upper center", framealpha=1.0)
     ax.grid(axis="y", linestyle="--", alpha=0.4)
     fig.tight_layout()
     fig.savefig(path, dpi=200)
     plt.close(fig)
+
+
+def build_allocation_market(observations=500, assets=6):
+    """A deterministic six-asset market with one common risk factor.
+
+    Returns share a factor with asset-specific loadings plus idiosyncratic
+    noise, so the covariance the risk-based allocators read is structured
+    rather than diagonal, and every draw comes from one seeded generator.
+    """
+    rng = np.random.default_rng(SEED)
+    loadings = np.linspace(0.6, 1.4, assets)
+    means = np.linspace(0.0002, 0.0006, assets)
+    factor = rng.normal(0.0004, 0.008, size=observations)
+    idiosyncratic = rng.normal(0.0, 0.01, size=(observations, assets))
+    # (T, 1) * (1, N): each asset loads the common factor by its own beta.
+    returns = means[None, :] + loadings[None, :] * factor[:, None] + idiosyncratic
+    return scenario_model(returns)
+
+
+def run_allocation_comparison(model, trials=1_000):
+    """Race the allocation families through ``AllocationSimulator``.
+
+    Common random numbers: every allocator sees its own simulator seeded
+    with the same seed, so trial *t* draws the same scenario row for all
+    of them and the growth comparison is matched. scipy-gated allocators
+    are skipped with a note when the optional extra is absent.
+    """
+    mean, covariance = model.moments()
+    option_count = covariance.shape[0]
+    allocators = {
+        "Equal weight": FixedWeights([1.0 / option_count] * option_count),
+        "RiskBudgeting (ERC)": RiskBudgeting(covariance),
+        "HierarchicalRiskParity": HierarchicalRiskParity(covariance),
+        "ExponentialGradient": ExponentialGradient(option_count, learning_rate=0.05),
+    }
+    try:
+        allocators["Global min variance"] = GlobalMinimumVariance(covariance)
+        allocators["MeanVariance (lambda=1)"] = MeanVariance(
+            mean, covariance, risk_aversion=1.0
+        )
+    except ImportError as error:
+        print(f"skipping the scipy-gated allocators: {error}")
+    histories = {}
+    for name, allocation in allocators.items():
+        bankroll = BankRoll(initial_funds=1_000.0, max_transaction_loss=None)
+        simulator = AllocationSimulator(model, trials=trials, seed=SEED)
+        simulator.evaluate_strategy(allocation, bankroll)
+        histories[name] = [float(value) for value in bankroll.history]
+    return histories
+
+
+def allocation_metrics(histories):
+    """Growth, volatility, and drawdown per allocator, as a frame."""
+    records = []
+    for name, history in histories.items():
+        values = np.asarray(history, dtype=float)
+        previous = values[:-1]
+        returns = np.divide(
+            values[1:] - previous,
+            previous,
+            out=np.zeros_like(values[1:]),
+            where=previous > 0,
+        )
+        records.append(
+            {
+                "strategy": name,
+                "final": values[-1],
+                "growth": values[-1] / values[0],
+                "vol/period": (float(returns.std(ddof=1)) if returns.size > 1 else 0.0),
+                "max dd": float(np.max(1.0 - values / np.maximum.accumulate(values))),
+            }
+        )
+    return pd.DataFrame(records).set_index("strategy")
+
+
+def chart_allocation_growth(histories, path, trials):
+    """Growth-path comparison, via the allocation plots helper."""
+    axes = bankroll_paths(histories)
+    axes.set_title(
+        "Allocation strategies through AllocationSimulator\n"
+        f"six-asset factor market, {trials} periods, seed {SEED}",
+        fontsize=11,
+    )
+    axes.figure.savefig(path, dpi=200)
 
 
 def main():
@@ -554,6 +655,31 @@ def main():
     chart_growth_vs_drawdown(frame, OUTPUT_DIR / "growth_vs_drawdown.png")
     chart_early_stops(frame, OUTPUT_DIR / "early_stops_by_drawdown_limit.png")
     print(f"wrote {csv_path} and 3 charts to {OUTPUT_DIR}")
+
+    # Allocation-layer comparison: same benchmark discipline (fresh state,
+    # common random numbers, one seeded generator) applied to the
+    # portfolio allocators, with the growth chart drawn by the plots
+    # helpers the layer ships.
+    allocation_model = build_allocation_market()
+    allocation_histories = run_allocation_comparison(allocation_model)
+    allocation_frame = allocation_metrics(allocation_histories)
+    print(
+        "\n=== Allocation comparison (AllocationSimulator, common random numbers) ==="
+    )
+    print(
+        allocation_frame.to_string(
+            float_format=lambda value: f"{value:,.4f}",
+        )
+    )
+    chart_allocation_growth(
+        allocation_histories,
+        OUTPUT_DIR / "allocation_growth_comparison.png",
+        trials=1_000,
+    )
+    print(
+        f"wrote {OUTPUT_DIR / 'allocation_growth_comparison.png'} "
+        "(allocation comparison chart)"
+    )
 
 
 if __name__ == "__main__":

@@ -59,8 +59,8 @@ class RecordingStrategy(FixedFractionStrategy):
         super().__init__(0.5, 1.0, 1.0, 0.0, min_probability=0.0)
         self.payloads = []
 
-    def record_result(self, won, return_pct=None):
-        self.payloads.append((won, return_pct))
+    def record_settlement(self, won, realized_returns=None):
+        self.payloads.append((won, realized_returns))
 
 
 class HookCounter(FixedFractionStrategy):
@@ -143,7 +143,9 @@ class TestOddsMismatchMessage:
             match=r"its own odds while the simulator settles with the "
             r"simulator's, so the two must agree\.$",
         ):
-            simulator.evaluate_strategy(strategy, BankRoll(100.0, max_draw_down=None))
+            simulator.evaluate_strategy(
+                strategy, BankRoll(100.0, max_transaction_loss=None)
+            )
 
 
 class TestUpdateBankrollHook:
@@ -215,7 +217,7 @@ class TestBankRollContracts:
     def test_withdraw_rejects_non_numeric_amounts_by_name(self):
         bankroll = BankRoll(100.0)
         with pytest.raises(
-            ValueError, match=r"^amt must be a finite, nonnegative number$"
+            ValueError, match=r"^amount must be a finite, nonnegative number$"
         ):
             bankroll.withdraw("x")
 
@@ -223,7 +225,11 @@ class TestBankRollContracts:
         bankroll = BankRoll(100.0)
         with pytest.raises(
             Exception,
-            match=r"^Insufficient funds for withdrawal \(would cause bankruptcy\)$",
+            match=(
+                r"^Refused withdrawal of 1000\.00: current funds are 100\.00 "
+                r"and the removal would cause bankruptcy "
+                r"\(configured max_transaction_loss: None\)$"
+            ),
         ):
             bankroll.withdraw(1000.0)
 
@@ -232,38 +238,26 @@ class TestBankRollContracts:
         # bettable cap (0.9) is one float ulp ABOVE the true bank: betting the
         # full bettable amount trips the bankruptcy guard with dust left over.
         bankroll = BankRoll(initial_funds=0.6)
-        bankroll.add_funds(0.3)
+        bankroll.deposit(0.3)
         with pytest.raises(
-            Exception, match=r"^Insufficient funds for bet \(would cause bankruptcy\)$"
+            match=(
+                r"^Refused bet of 0\.90: current funds are 0\.90 and the "
+                r"removal would cause bankruptcy \(configured max_transaction_loss: None\)$"
+            )
         ):
             bankroll.bet(0.9)
 
-    def test_add_funds_rejects_non_numeric_amounts_by_name(self):
+    def test_deposit_rejects_non_numeric_amounts_by_name(self):
         bankroll = BankRoll(100.0)
         with pytest.raises(
             ValueError, match=r"^amount must be a finite, nonnegative number$"
         ):
-            bankroll.add_funds("x")
-
-    def test_remove_funds_rejects_non_numeric_amounts_by_name(self):
-        bankroll = BankRoll(100.0)
-        with pytest.raises(
-            ValueError, match=r"^amount must be a finite, nonnegative number$"
-        ):
-            bankroll.remove_funds("x")
-
-    def test_remove_funds_reports_insufficient_funds(self):
-        bankroll = BankRoll(100.0)
-        with pytest.raises(
-            Exception,
-            match=r"^Insufficient funds for removal \(would cause bankruptcy\)$",
-        ):
-            bankroll.remove_funds(1000.0)
+            bankroll.deposit("x")
 
     def test_plot_history_draws_history_against_the_trial_index(self, tmp_path):
-        bankroll = BankRoll(100.0, max_draw_down=None)
-        bankroll.add_funds(10.0)
-        bankroll.remove_funds(20.0)
+        bankroll = BankRoll(100.0, max_transaction_loss=None)
+        bankroll.deposit(10.0)
+        bankroll.withdraw(20.0)
         fname = tmp_path / "history.png"
 
         bankroll.plot_history(fname=str(fname))
@@ -294,7 +288,7 @@ class TestSimulatorSettlementContracts:
     def test_funds_exactly_one_keeps_simulating(self, simulator_factory):
         # The bankruptcy stop is total_funds <= 0, so a bankroll starting at
         # exactly 1.0 must settle its first trial and append history.
-        bankroll = BankRoll(initial_funds=1.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=1.0, max_transaction_loss=None)
         strategy = FixedFractionStrategy(0.5, 2.0, 1.0, 0.0, min_probability=0.0)
         simulator_factory().evaluate_strategy(strategy, bankroll)
         assert len(bankroll.history) > 1
@@ -311,13 +305,13 @@ class TestSimulatorSettlementContracts:
         ids=["repeated", "random", "uncertain"],
     )
     def test_break_even_settlement_records_positive_zero(self, simulator_factory):
-        # payoff * bet == transaction_costs makes the winning settlement
+        # payoff * bet == fee_per_bet makes the winning settlement
         # amount exactly 0.0; break-even wins settle through the deposit arm
         # and record a nonnegative signed zero as the win return.
         strategy = RecordingStrategy()
-        bankroll = BankRoll(initial_funds=10.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=10.0, max_transaction_loss=None)
         simulator_factory().evaluate_strategy(strategy, bankroll)
-        wins = [pct for won, pct in strategy.payloads if won is True]
+        wins = [returns[0] for won, returns in strategy.payloads if won == (True,)]
         assert wins, strategy.payloads
         assert math.copysign(1.0, wins[0]) == 1.0
 
@@ -333,7 +327,7 @@ class TestSimulatorSettlementContracts:
     )
     def test_default_trials_run_exactly_one_thousand_times(self, simulator_factory):
         strategy = HookCounter()
-        bankroll = BankRoll(initial_funds=100.0, max_draw_down=None)
+        bankroll = BankRoll(initial_funds=100.0, max_transaction_loss=None)
         simulator_factory().evaluate_strategy(strategy, bankroll)
         assert strategy.calls == 1000
 
@@ -408,20 +402,20 @@ class TestStrategyBoundaryAndDefaultPins:
 
     def test_dynamic_volatility_cache_is_a_float_not_a_sentinel_string(self):
         strategy = DynamicBankrollManagement(0.1, 2.0, 1.0, 0.0)
-        strategy.record_result(True, 0.1)
-        strategy.record_result(False, -0.2)
+        strategy.record_settlement((True,), (0.1,))
+        strategy.record_settlement((False,), (-0.2,))
         assert strategy.get_volatility_factor() == pytest.approx(0.97)
 
     def test_dynamic_streak_treats_zero_results_as_neither_win_nor_loss(self):
         strategy = DynamicBankrollManagement(0.1, 2.0, 1.0, 0.0)
         for _ in range(3):
-            strategy.record_result(True, 0.0)
+            strategy.record_settlement((True,), (0.0,))
         assert strategy.get_streak_factor() == pytest.approx(1.15)
 
     def test_dynamic_streak_with_zero_and_loss_has_no_wins(self):
         strategy = DynamicBankrollManagement(0.1, 2.0, 1.0, 0.0)
-        strategy.record_result(True, 0.0)
-        strategy.record_result(False, -0.5)
+        strategy.record_settlement((True,), (0.0,))
+        strategy.record_settlement((False,), (-0.5,))
         assert strategy.get_streak_factor() == pytest.approx(0.9)
 
     def test_dynamic_drawdown_uses_peak_of_one(self):
@@ -453,8 +447,8 @@ class TestStrategyBoundaryAndDefaultPins:
         assert abs(result - LOG_INDIFFERENCE_PRICE) < 0.011
 
     def test_drawdown_adjusted_kelly_stores_the_requested_tolerance(self):
-        strategy = DrawdownAdjustedKelly(2.0, 1.0, 0.0, max_acceptable_drawdown=0.25)
-        assert strategy.max_acceptable_drawdown == pytest.approx(0.25)
+        strategy = DrawdownAdjustedKelly(2.0, 1.0, 0.0, max_transaction_loss=0.25)
+        assert strategy.max_transaction_loss == pytest.approx(0.25)
 
     def test_merton_default_risk_aversion_is_two(self):
         assert MertonShare(2.0, 1.0, 0.0).risk_aversion == 2.0
@@ -470,7 +464,7 @@ class TestStrategyBoundaryAndDefaultPins:
         assert strategy.evaluate(0.5, 100.0) == pytest.approx(0.1111111111111111)
 
     def test_base_strategy_default_transaction_cost_is_zero(self):
-        assert EntryPriceStub(2.0, 1.0).transaction_cost == 0.0
+        assert EntryPriceStub(2.0, 1.0).transaction_cost_rate == 0.0
 
     def test_base_strategy_entry_price_message_is_pinned_in_full(self):
         expected = (
