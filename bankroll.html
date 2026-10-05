@@ -190,6 +190,124 @@ simulators re-report it as a <code class="docutils literal notranslate"><span cl
 </dd></dl>
 
 </section>
+<section id="summarizing-a-run">
+<h2>Summarizing a run<a class="headerlink" href="#summarizing-a-run" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">evaluate_strategy</span></code> mutates the bankroll and returns nothing, so
+<a class="reference internal" href="#keeks.metrics.summarize_history" title="keeks.metrics.summarize_history"><code class="xref py py-func docutils literal notranslate"><span class="pre">keeks.metrics.summarize_history()</span></code></a> reduces <code class="docutils literal notranslate"><span class="pre">bankroll.history</span></code> to the
+numbers that distinguish strategies: bets recorded, total return, geometric
+growth per bet, maximum drawdown against the running peak, and whether the run
+ended ruined. Values that cannot be defined (growth with no recorded bets or
+nonpositive end funds, return from a zero start) are <code class="docutils literal notranslate"><span class="pre">None</span></code> rather than
+<code class="docutils literal notranslate"><span class="pre">0.0</span></code>; an empty, non-finite or negative history raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">summarize_history</span>
+
+<span class="n">summary</span> <span class="o">=</span> <span class="n">summarize_history</span><span class="p">(</span><span class="n">bankroll</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">max_drawdown</span><span class="p">,</span> <span class="n">summary</span><span class="o">.</span><span class="n">geometric_growth_per_period</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="keeks.metrics.summarize_history">
+<span class="sig-prename descclassname"><span class="pre">keeks.metrics.</span></span><span class="sig-name descname"><span class="pre">summarize_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#keeks.metrics.HistorySummary" title="keeks.metrics.HistorySummary"><span class="pre">HistorySummary</span></a></span></span><a class="reference internal" href="_modules/keeks/metrics.html#summarize_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.metrics.summarize_history" title="Link to this definition">¶</a></dt>
+<dd><p>Summarize a <code class="xref py py-attr docutils literal notranslate"><span class="pre">BankRoll.history</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>history</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Bankroll values in time order, starting with the initial funds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Frozen dataclass of drawdown, growth and ruin statistics. Values
+that cannot be defined are <code class="docutils literal notranslate"><span class="pre">None</span></code> rather than <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#keeks.metrics.HistorySummary" title="keeks.metrics.HistorySummary">HistorySummary</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the history is empty, or holds a non-finite or negative value.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span> <span class="o">=</span> <span class="n">summarize_history</span><span class="p">([</span><span class="mf">1000.0</span><span class="p">,</span> <span class="mf">1250.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span><span class="o">.</span><span class="n">bets</span><span class="p">,</span> <span class="n">summary</span><span class="o">.</span><span class="n">total_return</span><span class="p">,</span> <span class="n">summary</span><span class="o">.</span><span class="n">max_drawdown</span>
+<span class="go">(2, 0.0, 0.2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.metrics.HistorySummary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.metrics.</span></span><span class="sig-name descname"><span class="pre">HistorySummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometric_growth_per_period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_drawdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ruined</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/metrics.html#HistorySummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.metrics.HistorySummary" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>End-of-run statistics for a bankroll history.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.metrics.HistorySummary.bets">
+<span class="sig-name descname"><span class="pre">bets</span></span><a class="headerlink" href="#keeks.metrics.HistorySummary.bets" title="Link to this definition">¶</a></dt>
+<dd><p>Periods recorded after the starting entry (<code class="docutils literal notranslate"><span class="pre">len(history)</span> <span class="pre">-</span> <span class="pre">1</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">start,</span> <span class="pre">end</span></span></dt>
+<dd><p>The first and last history entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.metrics.HistorySummary.total_return">
+<span class="sig-name descname"><span class="pre">total_return</span></span><a class="headerlink" href="#keeks.metrics.HistorySummary.total_return" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">end</span> <span class="pre">/</span> <span class="pre">start</span> <span class="pre">-</span> <span class="pre">1</span></code>; <code class="docutils literal notranslate"><span class="pre">None</span></code> when <code class="docutils literal notranslate"><span class="pre">start</span></code> is not positive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.metrics.HistorySummary.geometric_growth_per_period">
+<span class="sig-name descname"><span class="pre">geometric_growth_per_period</span></span><a class="headerlink" href="#keeks.metrics.HistorySummary.geometric_growth_per_period" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(end</span> <span class="pre">/</span> <span class="pre">start)</span> <span class="pre">**</span> <span class="pre">(1</span> <span class="pre">/</span> <span class="pre">bets)</span> <span class="pre">-</span> <span class="pre">1</span></code>; <code class="docutils literal notranslate"><span class="pre">None</span></code> when undefined (no
+recorded periods, or a nonpositive <code class="docutils literal notranslate"><span class="pre">start</span></code> or <code class="docutils literal notranslate"><span class="pre">end</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.metrics.HistorySummary.max_drawdown">
+<span class="sig-name descname"><span class="pre">max_drawdown</span></span><a class="headerlink" href="#keeks.metrics.HistorySummary.max_drawdown" title="Link to this definition">¶</a></dt>
+<dd><p>Largest peak-to-trough fractional loss, in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, measured
+against the running peak; <code class="docutils literal notranslate"><span class="pre">None</span></code> when no entry is ever positive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)">float</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.metrics.HistorySummary.ruined">
+<span class="sig-name descname"><span class="pre">ruined</span></span><a class="headerlink" href="#keeks.metrics.HistorySummary.ruined" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the final funds are at or below zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -221,6 +339,7 @@ simulators re-report it as a <code class="docutils literal notranslate"><span cl
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Bankroll</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summarizing-a-run">Summarizing a run</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>

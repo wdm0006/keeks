@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.metrics &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/wabi.css?v=3eeb95f0" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e0ab7682" />
+    <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.metrics - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.metrics">
+<meta property="og:description" content="keeks.metrics - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/metrics.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.metrics">
+<meta name="twitter:description" content="keeks.metrics - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/metrics.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.metrics</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.metrics</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+
+
+<div class="viewcode-block" id="HistorySummary">
+<a class="viewcode-back" href="../../bankroll.html#keeks.metrics.HistorySummary">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HistorySummary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    End-of-run statistics for a bankroll history.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bets : int</span>
+<span class="sd">        Periods recorded after the starting entry (``len(history) - 1``).</span>
+<span class="sd">    start, end : float</span>
+<span class="sd">        The first and last history entries.</span>
+<span class="sd">    total_return : float or None</span>
+<span class="sd">        ``end / start - 1``; ``None`` when ``start`` is not positive.</span>
+<span class="sd">    geometric_growth_per_period : float or None</span>
+<span class="sd">        ``(end / start) ** (1 / bets) - 1``; ``None`` when undefined (no</span>
+<span class="sd">        recorded periods, or a nonpositive ``start`` or ``end``).</span>
+<span class="sd">    max_drawdown : float or None</span>
+<span class="sd">        Largest peak-to-trough fractional loss, in ``[0, 1]``, measured</span>
+<span class="sd">        against the running peak; ``None`` when no entry is ever positive.</span>
+<span class="sd">    ruined : bool</span>
+<span class="sd">        Whether the final funds are at or below zero.</span>
+<span class="sd">    """</span>
+
+    <span class="n">bets</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">start</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">end</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">total_return</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">geometric_growth_per_period</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">max_drawdown</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">ruined</span><span class="p">:</span> <span class="nb">bool</span></div>
+
+
+
+<div class="viewcode-block" id="summarize_history">
+<a class="viewcode-back" href="../../bankroll.html#keeks.metrics.summarize_history">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">summarize_history</span><span class="p">(</span><span class="n">history</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">HistorySummary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Summarize a :attr:`BankRoll.history &lt;keeks.bankroll.BankRoll.history&gt;`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    history : sequence of float</span>
+<span class="sd">        Bankroll values in time order, starting with the initial funds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    HistorySummary</span>
+<span class="sd">        Frozen dataclass of drawdown, growth and ruin statistics. Values</span>
+<span class="sd">        that cannot be defined are ``None`` rather than ``0.0``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the history is empty, or holds a non-finite or negative value.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; summary = summarize_history([1000.0, 1250.0, 1000.0])</span>
+<span class="sd">    &gt;&gt;&gt; summary.bets, summary.total_return, summary.max_drawdown</span>
+<span class="sd">    (2, 0.0, 0.2)</span>
+<span class="sd">    """</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">history</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"history must contain at least one entry"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"history must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"history must contain only nonnegative values"</span><span class="p">)</span>
+
+    <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">bets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">total_return</span> <span class="o">=</span> <span class="n">end</span> <span class="o">/</span> <span class="n">start</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">growth</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">bets</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">growth</span> <span class="o">=</span> <span class="p">(</span><span class="n">end</span> <span class="o">/</span> <span class="n">start</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">bets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">peak</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">max_drawdown</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+        <span class="n">peak</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">peak</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">peak</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">drawdown</span> <span class="o">=</span> <span class="p">(</span><span class="n">peak</span> <span class="o">-</span> <span class="n">value</span><span class="p">)</span> <span class="o">/</span> <span class="n">peak</span>
+            <span class="k">if</span> <span class="n">max_drawdown</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">drawdown</span> <span class="o">&gt;</span> <span class="n">max_drawdown</span><span class="p">:</span>
+                <span class="n">max_drawdown</span> <span class="o">=</span> <span class="n">drawdown</span>
+
+    <span class="k">return</span> <span class="n">HistorySummary</span><span class="p">(</span>
+        <span class="n">bets</span><span class="o">=</span><span class="n">bets</span><span class="p">,</span>
+        <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+        <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+        <span class="n">total_return</span><span class="o">=</span><span class="n">total_return</span><span class="p">,</span>
+        <span class="n">geometric_growth_per_period</span><span class="o">=</span><span class="n">growth</span><span class="p">,</span>
+        <span class="n">max_drawdown</span><span class="o">=</span><span class="n">max_drawdown</span><span class="p">,</span>
+        <span class="n">ruined</span><span class="o">=</span><span class="n">end</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multi_outcome.html">Multi-Outcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>
