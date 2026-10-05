@@ -83,6 +83,7 @@ from keeks.binary_strategies import (
 )
 from keeks.binary_strategies.base import BaseStrategy
 from keeks.checks import check_allocation_strategy, check_model, check_strategy
+from keeks.metrics import HistorySummary, summarize_history
 from keeks.multi_outcome import (
     BaseMultiOutcomeStrategy,
     MultiOutcomeKellyCriterion,
@@ -133,6 +134,7 @@ __all__ = [
     "GlobalMinimumVariance",
     "HierarchicalRiskParity",
     "HistoricalBinarySimulator",
+    "HistorySummary",
     "JointReturnModel",
     "KellyCriterion",
     "MarginalModel",
@@ -175,5 +177,6 @@ __all__ = [
     "scenario_model",
     "scenarios_to_moments",
     "shrink_covariance",
+    "summarize_history",
     "weight_evolution",
 ]
