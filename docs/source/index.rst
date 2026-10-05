@@ -118,6 +118,17 @@ References
    Visualization <allocation_plots>
 
 .. toctree::
+   :caption: Examples
+   :maxdepth: 1
+
+   Allocation over ETF returns <examples/allocation_etfs>
+   1X2 betting with multi-outcome Kelly <examples/multi_outcome_1x2>
+   The St. Petersburg paradox <examples/st_petersburg_paradox>
+   Strategies on a marginal edge <examples/strategy_comparison>
+   Strategy lab notebook <examples/strategy_lab>
+
+
+.. toctree::
    :caption: Contributing
    :maxdepth: 1
 
