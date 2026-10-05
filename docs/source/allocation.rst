@@ -30,7 +30,7 @@ solvers (``MeanVariance``, ``GlobalMinimumVariance``, ``MaximumSharpe``,
 ``MaximumDiversification``) and ``MeanCVaR`` point at the extra when it is
 absent; everything else is numpy-only. For visualization see
 :doc:`allocation_plots` — matplotlib helpers for every object this API
-returns — and ``examples/allocation_etfs.py`` for the worked real-data
+returns — and :doc:`examples/allocation_etfs` for the worked real-data
 example, which runs a six-ETF book through both input-model helpers and the
 simulator offline from a committed fixture.
 
