@@ -6,27 +6,11 @@
 Welcome to Keeks
 ================
 
-Keeks is a specialized Python library for optimal bankroll allocation and betting strategies, with a focus on the Kelly Criterion and its variants.
+Keeks is a Python library for bet sizing and bankroll simulation, with a portfolio-allocation layer for sizing many options together.
 
-What is Keeks?
---------------
+**Size a single bet.** Given your estimated win probability, payoff, loss, and transaction cost, Keeks' strategies — the Kelly Criterion and eight variants — return the fraction of your bankroll to stake, and simulators replay that same rule over repeated trials to show the bankroll path it produces.
 
-Keeks provides tools for implementing and testing various betting and investment strategies. It includes:
-
-- **Bankroll management**: Track and manage your funds with built-in protection against excessive losses
-- **Betting strategies**: Implement mathematically optimal strategies like the Kelly Criterion
-- **Simulation**: Test your strategies under different conditions before risking real money
-
-Whether you're a sports bettor, a financial trader, or a researcher in decision theory, Keeks provides the tools to make more informed decisions about capital allocation.
-
-Why Use Keeks?
---------------
-
-- **Mathematically sound**: Based on proven mathematical principles like the Kelly Criterion
-- **Risk management**: Built-in protection against ruin with configurable drawdown limits
-- **Simulation-driven**: Test strategies in various scenarios before applying them with real money
-- **Flexible**: Supports different types of betting scenarios and probability distributions
-- **Educational**: Learn about optimal betting strategies through practical implementation
+**Size a portfolio.** For portfolios of options described by return distributions rather than single bets, the :doc:`allocation <allocation>` layer builds one joint-return model from what you have and sizes the portfolio at once, returning one long-only weight per option.
 
 **Disclaimer**: This library is for educational purposes only. It is not intended to provide investment, legal, or tax advice. Always be responsible and consult with a professional before applying these strategies to real-world betting or investment scenarios. The authors and contributors of this library are not liable for any financial losses or damages that may result from the use of this software.
 
@@ -54,9 +38,9 @@ Quick Example
 
    # Create a simulator with a fixed probability
    simulator = RepeatedBinarySimulator(
-       payoff=1.0, 
-       loss=1.0, 
-       fee_per_bet=0.01, 
+       payoff=1.0,
+       loss=1.0,
+       fee_per_bet=0.01,
        probability=0.55,  # 55% chance of winning
        trials=1000
    )
@@ -70,7 +54,7 @@ Quick Example
 Available Strategies
 --------------------
 
-Keeks implements various bankroll allocation strategies:
+Keeks implements nine betting strategies:
 
 - **Kelly Criterion**: The mathematically optimal strategy for maximizing the logarithm of wealth
 - **Fractional Kelly**: A more conservative version of Kelly that reduces volatility
@@ -79,21 +63,10 @@ Keeks implements various bankroll allocation strategies:
 - **Fixed Fraction**: Simple strategy that bets a constant percentage of the bankroll
 - **CPPI (Constant Proportion Portfolio Insurance)**: Strategy that protects a floor value while allowing upside exposure
 - **Dynamic Bankroll Management**: Adaptive strategy based on recent performance
+- **MertonShare**: A CRRA risk-aversion rule adapted to binary outcomes
 - **Naive Strategy**: A simple strategy that bets the full amount when expected value is positive
-- **Portfolio Allocation**: Size portfolios across distribution-valued options - mean-variance, risk budgeting, HRP, mean-CVaR, and online methods over one configurable joint-return input model (see :doc:`allocation`)
 
-Each strategy offers different tradeoffs between risk and reward, allowing you to select the approach that best matches your investment goals and risk tolerance.
-
-Applications
-------------
-
-Keeks can be applied to various domains:
-
-- **Sports Betting**: Optimize your bet sizing based on your edge
-- **Financial Trading**: Apply Kelly principles to portfolio management
-- **Gambling**: Understand the mathematics behind optimal betting
-- **Research**: Study the behavior of different betting strategies
-- **Education**: Learn about probability, statistics, and risk management
+For portfolios of distribution-valued options, the :doc:`allocation <allocation>` layer provides mean-variance, risk budgeting, HRP, mean-CVaR, and online methods over one configurable joint-return input model.
 
 Development
 -----------
@@ -112,33 +85,40 @@ References
 - `A New Interpretation of Information Rate <http://www.herrold.com/brokerage/kelly.pdf>`_ - The original Kelly Criterion paper
 - `Fortune's Formula <https://www.amazon.com/Fortunes-Formula-Scientific-Betting-Casinos/dp/0809045990>`_ - The untold story of the scientific betting system that beat the casinos and Wall Street
 
----
-
-
-Contents
---------
-
 .. toctree::
+   :caption: Getting Started
    :maxdepth: 2
-   :caption: Contents:
 
    getting_started
-   kelly-criterion-python
-   fractional-kelly-vs-kelly
-   keeks-vs-betting-math-kit
-   strategy_benchmark
-   binary_strategies
-   simulators
-   multi_outcome
-   allocation
-   allocation_plots
-   bankroll
-   utils
-   checks
 
-Indices and tables
-==================
+.. toctree::
+   :caption: Learn
+   :maxdepth: 1
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Kelly Criterion in Python <kelly-criterion-python>
+   Full Kelly vs Fractional Kelly <fractional-kelly-vs-kelly>
+   Keeks vs betting-math-kit <keeks-vs-betting-math-kit>
+   Strategy Benchmark <strategy_benchmark>
+
+.. toctree::
+   :caption: Core Reference
+   :maxdepth: 2
+
+   Binary Strategies <binary_strategies>
+   Simulators <simulators>
+   Multi-Outcome <multi_outcome>
+   Bankroll <bankroll>
+   Utilities <utils>
+
+.. toctree::
+   :caption: Portfolio Allocation
+   :maxdepth: 2
+
+   Allocation <allocation>
+   Visualization <allocation_plots>
+
+.. toctree::
+   :caption: Contributing
+   :maxdepth: 1
+
+   Contract Checks <checks>
