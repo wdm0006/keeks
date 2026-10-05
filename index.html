@@ -17,7 +17,7 @@
     
     <title>Welcome to Keeks &#8212; Keeks</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
-    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=c49ddd0e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=3eeb95f0" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
     <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
@@ -172,28 +172,10 @@
             
   <section id="welcome-to-keeks">
 <h1>Welcome to Keeks<a class="headerlink" href="#welcome-to-keeks" title="Link to this heading">¶</a></h1>
-<p>Keeks is a specialized Python library for optimal bankroll allocation and betting strategies, with a focus on the Kelly Criterion and its variants.</p>
-<section id="what-is-keeks">
-<h2>What is Keeks?<a class="headerlink" href="#what-is-keeks" title="Link to this heading">¶</a></h2>
-<p>Keeks provides tools for implementing and testing various betting and investment strategies. It includes:</p>
-<ul class="simple">
-<li><p><strong>Bankroll management</strong>: Track and manage your funds with built-in protection against excessive losses</p></li>
-<li><p><strong>Betting strategies</strong>: Implement mathematically optimal strategies like the Kelly Criterion</p></li>
-<li><p><strong>Simulation</strong>: Test your strategies under different conditions before risking real money</p></li>
-</ul>
-<p>Whether you’re a sports bettor, a financial trader, or a researcher in decision theory, Keeks provides the tools to make more informed decisions about capital allocation.</p>
-</section>
-<section id="why-use-keeks">
-<h2>Why Use Keeks?<a class="headerlink" href="#why-use-keeks" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><strong>Mathematically sound</strong>: Based on proven mathematical principles like the Kelly Criterion</p></li>
-<li><p><strong>Risk management</strong>: Built-in protection against ruin with configurable drawdown limits</p></li>
-<li><p><strong>Simulation-driven</strong>: Test strategies in various scenarios before applying them with real money</p></li>
-<li><p><strong>Flexible</strong>: Supports different types of betting scenarios and probability distributions</p></li>
-<li><p><strong>Educational</strong>: Learn about optimal betting strategies through practical implementation</p></li>
-</ul>
+<p>Keeks is a Python library for bet sizing and bankroll simulation, with a portfolio-allocation layer for sizing many options together.</p>
+<p><strong>Size a single bet.</strong> Given your estimated win probability, payoff, loss, and transaction cost, Keeks’ strategies — the Kelly Criterion and eight variants — return the fraction of your bankroll to stake, and simulators replay that same rule over repeated trials to show the bankroll path it produces.</p>
+<p><strong>Size a portfolio.</strong> For portfolios of options described by return distributions rather than single bets, the <a class="reference internal" href="allocation.html"><span class="doc">allocation</span></a> layer builds one joint-return model from what you have and sizes the portfolio at once, returning one long-only weight per option.</p>
 <p><strong>Disclaimer</strong>: This library is for educational purposes only. It is not intended to provide investment, legal, or tax advice. Always be responsible and consult with a professional before applying these strategies to real-world betting or investment scenarios. The authors and contributors of this library are not liable for any financial losses or damages that may result from the use of this software.</p>
-</section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>keeks
@@ -231,7 +213,7 @@
 </section>
 <section id="available-strategies">
 <h2>Available Strategies<a class="headerlink" href="#available-strategies" title="Link to this heading">¶</a></h2>
-<p>Keeks implements various bankroll allocation strategies:</p>
+<p>Keeks implements nine betting strategies:</p>
 <ul class="simple">
 <li><p><strong>Kelly Criterion</strong>: The mathematically optimal strategy for maximizing the logarithm of wealth</p></li>
 <li><p><strong>Fractional Kelly</strong>: A more conservative version of Kelly that reduces volatility</p></li>
@@ -240,21 +222,10 @@
 <li><p><strong>Fixed Fraction</strong>: Simple strategy that bets a constant percentage of the bankroll</p></li>
 <li><p><strong>CPPI (Constant Proportion Portfolio Insurance)</strong>: Strategy that protects a floor value while allowing upside exposure</p></li>
 <li><p><strong>Dynamic Bankroll Management</strong>: Adaptive strategy based on recent performance</p></li>
+<li><p><strong>MertonShare</strong>: A CRRA risk-aversion rule adapted to binary outcomes</p></li>
 <li><p><strong>Naive Strategy</strong>: A simple strategy that bets the full amount when expected value is positive</p></li>
-<li><p><strong>Portfolio Allocation</strong>: Size portfolios across distribution-valued options - mean-variance, risk budgeting, HRP, mean-CVaR, and online methods over one configurable joint-return input model (see <a class="reference internal" href="allocation.html"><span class="doc">Portfolio Allocation</span></a>)</p></li>
 </ul>
-<p>Each strategy offers different tradeoffs between risk and reward, allowing you to select the approach that best matches your investment goals and risk tolerance.</p>
-</section>
-<section id="applications">
-<h2>Applications<a class="headerlink" href="#applications" title="Link to this heading">¶</a></h2>
-<p>Keeks can be applied to various domains:</p>
-<ul class="simple">
-<li><p><strong>Sports Betting</strong>: Optimize your bet sizing based on your edge</p></li>
-<li><p><strong>Financial Trading</strong>: Apply Kelly principles to portfolio management</p></li>
-<li><p><strong>Gambling</strong>: Understand the mathematics behind optimal betting</p></li>
-<li><p><strong>Research</strong>: Study the behavior of different betting strategies</p></li>
-<li><p><strong>Education</strong>: Learn about probability, statistics, and risk management</p></li>
-</ul>
+<p>For portfolios of distribution-valued options, the <a class="reference internal" href="allocation.html"><span class="doc">allocation</span></a> layer provides mean-variance, risk budgeting, HRP, mean-CVaR, and online methods over one configurable joint-return input model.</p>
 </section>
 <section id="development">
 <h2>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h2>
@@ -271,67 +242,31 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li><p><a class="reference external" href="http://www.herrold.com/brokerage/kelly.pdf">A New Interpretation of Information Rate</a> - The original Kelly Criterion paper</p></li>
 <li><p><a class="reference external" href="https://www.amazon.com/Fortunes-Formula-Scientific-Betting-Casinos/dp/0809045990">Fortune’s Formula</a> - The untold story of the scientific betting system that beat the casinos and Wall Street</p></li>
 </ul>
-<p>—</p>
-</section>
-<section id="contents">
-<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started.html#using-different-strategies">Using Different Strategies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started.html#using-different-simulators">Using Different Simulators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#next-sizing-a-portfolio">Next: Sizing a Portfolio</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#quick-answer">Quick answer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#install-keeks">Install Keeks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#run-the-smallest-complete-example">Run the smallest complete example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#read-the-result">Read the result</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#how-keeks-handles-payoff-loss-and-cost">How Keeks handles payoff, loss, and cost</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#why-the-result-can-be-zero-or-capped">Why the result can be zero or capped</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#try-fractional-kelly">Try fractional Kelly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#different-problem-price-a-one-time-gamble">Different problem: price a one-time gamble</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#limits-and-disclaimer">Limits and disclaimer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kelly-criterion-python.html#next-steps">Next steps</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#quick-answer">Quick answer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#full-kelly-versus-fractional-kelly">Full Kelly versus fractional Kelly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#python-comparison-with-identical-inputs">Python comparison with identical inputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#half-kelly-and-quarter-kelly">Half Kelly and quarter Kelly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#what-keeks-does-and-does-not-decide">What Keeks does and does not decide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#how-to-compare-strategies-in-a-simulation">How to compare strategies in a simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#repeated-sizing-is-not-one-time-pricing">Repeated sizing is not one-time pricing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fractional-kelly-vs-kelly.html#next-step">Next step</a></li>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_benchmark.html">Strategy Benchmark</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="keeks-vs-betting-math-kit.html#the-short-version">The short version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keeks-vs-betting-math-kit.html#side-by-side">Side-by-side</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keeks-vs-betting-math-kit.html#choose-betting-math-kit-when">Choose betting-math-kit when</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keeks-vs-betting-math-kit.html#choose-keeks-when">Choose Keeks when</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keeks-vs-betting-math-kit.html#what-neither-one-does">What neither one does</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keeks-vs-betting-math-kit.html#use-both-conceptual">Use both (conceptual)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="keeks-vs-betting-math-kit.html#sources-for-betting-math-kit-statements">Sources for betting-math-kit statements</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="strategy_benchmark.html">Nine-Strategy Risk Benchmark</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#reproducing-it">Reproducing it</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#method">Method</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#base-scenario">Base scenario</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#three-strategies-are-the-same-rule-here">Three strategies are the same rule here</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#what-the-cost-input-actually-does">What the cost input actually does</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#max-transaction-loss-is-a-per-settlement-cap-not-a-risk-budget"><code class="docutils literal notranslate"><span class="pre">max_transaction_loss</span></code> is a per-settlement cap, not a risk budget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#how-each-axis-moves-the-result">How each axis moves the result</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#seed-stability">Seed stability</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#choosing-a-strategy">Choosing a strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strategy_benchmark.html#limitations">Limitations</a></li>
-</ul>
-</li>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="binary_strategies.html#base-strategy">Base Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="binary_strategies.html#naive-strategy">Naive Strategy</a></li>
@@ -351,29 +286,12 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="simulators.html#random-uncertain-binary-simulator">Random Uncertain Binary Simulator</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="multi_outcome.html#the-strategy-contract">The Strategy Contract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_outcome.html#multi-outcome-kelly-criterion">Multi-Outcome Kelly Criterion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_outcome.html#repeated-multi-outcome-simulator">Repeated Multi-Outcome Simulator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_outcome.html#portfolio-simulator">Portfolio Simulator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_outcome.html#seeding-and-reproducibility">Seeding and Reproducibility</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#the-strategy-contract">The Strategy Contract</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#joint-return-input-models">Joint-Return Input Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#moment-based-methods">Moment-Based Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#scenario-based-methods">Scenario-Based Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#hierarchical-risk-parity">Hierarchical Risk Parity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#estimators">Estimators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#online-allocation">Online Allocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation.html#simulator">Simulator</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#bankroll-growth-and-drawdown">Bankroll growth and drawdown</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#weights-and-risk">Weights and risk</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#structure-and-tails">Structure and tails</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a><ul>
@@ -388,23 +306,37 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li class="toctree-l2"><a class="reference internal" href="utils.html#exceptions">Exceptions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="checks.html#keeks.checks.check_allocation_strategy"><code class="docutils literal notranslate"><span class="pre">check_allocation_strategy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="checks.html#keeks.checks.check_model"><code class="docutils literal notranslate"><span class="pre">check_model()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="checks.html#keeks.checks.check_strategy"><code class="docutils literal notranslate"><span class="pre">check_strategy()</span></code></a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Allocation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#the-strategy-contract">The Strategy Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#joint-return-input-models">Joint-Return Input Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#moment-based-methods">Moment-Based Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#scenario-based-methods">Scenario-Based Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#hierarchical-risk-parity">Hierarchical Risk Parity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#estimators">Estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#online-allocation">Online Allocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation.html#simulator">Simulator</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#bankroll-growth-and-drawdown">Bankroll growth and drawdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#weights-and-risk">Weights and risk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allocation_plots.html#structure-and-tails">Structure and tails</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</section>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
+</div>
+</section>
 </section>
 
 
@@ -414,21 +346,36 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-<h3><a href="#">Table of Contents</a></h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="kelly-criterion-python.html">Kelly Criterion in Python: Calculate a Bankroll Fraction with Keeks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly in Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit: Which Python Betting Library Fits Your Job?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="strategy_benchmark.html">Nine-Strategy Risk Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="binary_strategies.html">Binary Strategies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulators.html">Simulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome Strategies and Simulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="allocation.html">Portfolio Allocation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Allocation Visualization Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bankroll.html">Bankroll</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="checks.html">Contract Checks</a></li>
 </ul>
 
