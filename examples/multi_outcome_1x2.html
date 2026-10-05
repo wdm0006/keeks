@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>1X2 betting with multi-outcome Kelly &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/wabi.css?v=3eeb95f0" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=e0ab7682" />
+    <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The St. Petersburg paradox" href="st_petersburg_paradox.html" />
+    <link rel="prev" title="Allocation over ETF returns" href="allocation_etfs.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="1X2 betting with multi-outcome Kelly - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="1X2 betting with multi-outcome Kelly">
+<meta property="og:description" content="1X2 betting with multi-outcome Kelly - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/examples/multi_outcome_1x2.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="1X2 betting with multi-outcome Kelly">
+<meta name="twitter:description" content="1X2 betting with multi-outcome Kelly - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/examples/multi_outcome_1x2.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../index.html">Docs</a>
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>1X2 betting with multi-outcome Kelly</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="x2-betting-with-multi-outcome-kelly">
+<h1>1X2 betting with multi-outcome Kelly<a class="headerlink" href="#x2-betting-with-multi-outcome-kelly" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">examples/multi_outcome_1x2.py</span></code> bets the three legs of one mutually
+exclusive football market — a 1X2 book — with the same fixed prices every
+match: a home win at probability 0.42 and decimal odds 3.2 (edge +0.344),
+a draw at probability 0.27 and odds 3.4 (edge −0.082), and an away win at
+probability 0.28 and odds 2.4 (edge −0.328). The quoted probabilities sum
+to 0.97, so the remaining 3% of the mass is a void round: no leg settles
+and every stake is refunded.</p>
+<p>Three strategies are compared over 30 seeded simulations of 250 matches
+each, from a $1,000 bankroll:</p>
+<ul class="simple">
+<li><p><strong>Multi-outcome Kelly</strong> — the log-growth-optimal stake per leg. It backs
+the home leg most, hedges a little on the draw’s rich odds, and declines
+the negative-edge away leg entirely.</p></li>
+<li><p><strong>Flat 5% (all legs)</strong> — stakes 5% of the bankroll on every leg. Two of
+the three legs are negative-edge, so most of this stake works against
+the bettor; the home edge still carries the portfolio.</p></li>
+<li><p><strong>Favorite-only 10%</strong> — stakes 10% on the most probable leg only.
+Positive expectation, but a cruder allocation than Kelly’s.</p></li>
+</ul>
+<p>The script also demonstrates the reproducibility contract as public
+behaviour: the same seeded simulator run twice replays the identical
+bankroll history, and the script asserts it.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These are simulated results from a model, not a forecast and not
+betting advice. The market is a made-up book with fixed prices and
+probabilities you cannot get from a real bookmaker, and the void-round
+convention is the simulator’s, not a settlement rule any exchange
+offers. Keeks is an educational library; treat every number below as a
+property of the model, not a prediction about money.</p>
+</div>
+<section id="what-the-spread-says">
+<h2>What the spread says<a class="headerlink" href="#what-the-spread-says" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/multi_outcome_1x2.png"><img alt="Boxplot of final bankrolls on a symmetric-log dollar axis for the three strategies over 30 seeded simulations of 250 matches. Multi-outcome Kelly has a median near 6,000,000 dollars with a box from roughly 300,000 to 100,000,000 dollars, a low whisker near 5,000 dollars, and high outliers reaching about 10,000,000,000 dollars. Flat 5% sits in a tight box near 1,300 dollars. Favorite-only 10% has a median near 600,000 dollars with a box from roughly 200,000 to 3,500,000 dollars and outliers near 10,000,000." src="../_images/multi_outcome_1x2.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Final bankrolls over 30 seeded simulations of 250 matches. The vertical
+axis is symmetric-log because Kelly’s compounding spans many orders of
+magnitude.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The log-optimal split is worth orders of magnitude more than flat staking
+here, and the boxplot makes the mechanism visible rather than just the
+outcome. Kelly’s opening stake vector puts most of the stake on the one
+leg with a positive edge, takes a small hedge on the draw, and refuses the
+away leg outright — so its bankroll compounds on the home edge alone.
+Flat 5% spreads two thirds of its exposure onto negative-edge legs and
+ends near where it started. Favorite-only 10% sits between: it never bets
+a negative-edge leg, but it over-concentrates in a single outcome, which
+widens the box.</p>
+</section>
+<section id="reproducing-it">
+<h2>Reproducing it<a class="headerlink" href="#reproducing-it" title="Link to this heading">¶</a></h2>
+<p>One command, from a checkout of the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/multi_outcome_1x2.py
+</pre></div>
+</div>
+<p>It prints Kelly’s opening stake vector, the seeded-replay check, and a
+final-bankroll distribution table (mean, median, min, max per strategy
+with void-round and early-stop counts), then writes the chart and
+<code class="docutils literal notranslate"><span class="pre">examples/output/multi_outcome_1x2.csv</span></code>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multi_outcome.html">Multi-Outcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="allocation_etfs.html">Allocation over ETF returns</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1X2 betting with multi-outcome Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="st_petersburg_paradox.html">The St. Petersburg paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_comparison.html">Strategies on a marginal edge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_lab.html">Strategy lab notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

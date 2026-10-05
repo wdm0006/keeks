@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>The St. Petersburg paradox &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/wabi.css?v=3eeb95f0" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=e0ab7682" />
+    <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Thirteen strategies on a marginal edge" href="strategy_comparison.html" />
+    <link rel="prev" title="1X2 betting with multi-outcome Kelly" href="multi_outcome_1x2.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="The St. Petersburg paradox - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="The St. Petersburg paradox">
+<meta property="og:description" content="The St. Petersburg paradox - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/examples/st_petersburg_paradox.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The St. Petersburg paradox">
+<meta name="twitter:description" content="The St. Petersburg paradox - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/examples/st_petersburg_paradox.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../index.html">Docs</a>
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>The St. Petersburg paradox</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="the-st-petersburg-paradox">
+<h1>The St. Petersburg paradox<a class="headerlink" href="#the-st-petersburg-paradox" title="Link to this heading">¶</a></h1>
+<p>Flip a fair coin until it lands tails and you are paid $2<sup>n</sup>, where
+<em>n</em> is the number of flips. Each branch of the game contributes
+(1/2<sup>n</sup>) × 2<sup>n</sup> = $1 to the expectation, so the expected
+payout is infinite — and yet no rational person pays much to play. That
+gap between infinite expectation and finite willingness-to-pay is the St.
+Petersburg paradox, and it is the cleanest demonstration of why a growth
+criterion, not an expectation, is what sizes a bet.</p>
+<p><code class="docutils literal notranslate"><span class="pre">examples/st_petersburg_paradox.py</span></code> turns the paradox into a pricing
+question for keeks’ strategies: what is the maximum entry price each of
+the nine shipped strategies would pay to play one round, at bankrolls of
+$1, $10, $100 and $1,000? Each strategy answers through
+<code class="docutils literal notranslate"><span class="pre">calculate_max_entry_price</span></code> over the game’s outcome distribution, capped
+at 1,000 flips (the practical limit of float64), where the capped game’s
+expected value is $1,000 — each flip contributing exactly $1 of it.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These are simulated results from a model, not a forecast and not
+investment advice. The game is a mathematical ideal — a fair coin, an
+unlimited counterparty, and a payout schedule no real venue honours —
+and the entry prices are what each rule would bid inside its own
+assumptions. Keeks is an educational library; treat every number below
+as a property of the model, not a prediction about money.</p>
+</div>
+<section id="what-the-spread-says">
+<h2>What the spread says<a class="headerlink" href="#what-the-spread-says" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/st_petersburg_paradox.png"><img alt="Grouped bar chart on a logarithmic dollar axis of maximum entry price for nine strategies at bankrolls of 1, 10, 100 and 1,000 dollars, with utility-based and rule-based strategies in distinguishable blue, orange, green, red and purple families. Every strategy bids more as wealth grows. The Naive rule is the tallest bar at the 100 and 1,000 dollar bankrolls — near 50 and 460 dollars — while at the 1,000 dollar bankroll Dynamic bids about 100, Kelly and Optimal F about 10 to 11, the two Merton shares about 8 to 9, and Half Kelly and Drawdown Kelly about 4 to 5. An annotation notes that Naive pays expected value capped at 50% of wealth." src="../_images/st_petersburg_paradox.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Maximum entry price by strategy and wealth level. Higher bars mean the
+rule would pay more for one round of a game with infinite expected
+value.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The utility-based rules — Kelly, its fractional and drawdown-adjusted
+variants, Optimal F, and the Merton shares at risk aversion 2 and 5 —
+price the game conservatively and scale gently with wealth: log and
+power utility refuse to pay much for lottery-like tails, whatever the
+expectation says. The rule-based strategies bid mechanically, and at a
+$1,000 bankroll they are the aggressive bidders: Dynamic 10% bids about
+$100, Fixed 5% bids a wealth fraction, and Naive pays the capped expected
+value — 50% of wealth, about $460, the tallest bar on the chart. Four
+orders of magnitude separate the most and least willing bidders, all
+facing the same infinite-EV game.</p>
+<p>That inversion — the “naive” rule outbidding Kelly for a positive-EV
+game — is the paradox made practical: an expectation-only rule cannot see
+that the payout is concentrated in a branch you will essentially never
+see, while a growth criterion prices the bet you actually experience.</p>
+</section>
+<section id="reproducing-it">
+<h2>Reproducing it<a class="headerlink" href="#reproducing-it" title="Link to this heading">¶</a></h2>
+<p>One command, from a checkout of the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/st_petersburg_paradox.py
+</pre></div>
+</div>
+<p>It prints the maximum entry price for each of the nine strategies at each
+wealth level — in dollars and as a percentage of bankroll — and writes the
+chart plus <code class="docutils literal notranslate"><span class="pre">examples/output/st_petersburg_paradox.csv</span></code> with both views
+of every cell.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multi_outcome.html">Multi-Outcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="allocation_etfs.html">Allocation over ETF returns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_outcome_1x2.html">1X2 betting with multi-outcome Kelly</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The St. Petersburg paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_comparison.html">Strategies on a marginal edge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_lab.html">Strategy lab notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

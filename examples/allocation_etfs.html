@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>Allocation over ETF returns &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/wabi.css?v=3eeb95f0" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=e0ab7682" />
+    <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1X2 betting with multi-outcome Kelly" href="multi_outcome_1x2.html" />
+    <link rel="prev" title="Allocation Visualization Helpers" href="../allocation_plots.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="Allocation over ETF returns - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Allocation over ETF returns">
+<meta property="og:description" content="Allocation over ETF returns - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/examples/allocation_etfs.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Allocation over ETF returns">
+<meta name="twitter:description" content="Allocation over ETF returns - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/examples/allocation_etfs.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../index.html">Docs</a>
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>Allocation over ETF returns</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="allocation-over-etf-returns">
+<h1>Allocation over ETF returns<a class="headerlink" href="#allocation-over-etf-returns" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">examples/allocation_etfs.py</span></code> runs keeks’ allocation layer over a real
+six-ETF book — SPY, QQQ, IWM, TLT, GLD and VNQ, spanning US large-cap and
+small-cap equities, growth, long treasuries, gold and real estate — and
+asks the question the single-bet pages cannot: what do the allocators
+actually disagree about, when they all size the same portfolio?</p>
+<p>Two joint-return models are built from the same committed daily simple
+returns (<code class="docutils literal notranslate"><span class="pre">examples/data/etf_returns.csv</span></code>, window 2022-10-03 to
+2025-10-01): the empirical bootstrap via
+<a class="reference internal" href="../allocation.html#keeks.allocation.models.scenario_model" title="keeks.allocation.models.scenario_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">keeks.allocation.models.scenario_model()</span></code></a>, and per-option Student-t
+marginals fitted by maximum likelihood via
+<a class="reference internal" href="../allocation.html#keeks.allocation.models.fit_marginals_model" title="keeks.allocation.models.fit_marginals_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">keeks.allocation.models.fit_marginals_model()</span></code></a> (a scipy-gated extra).
+Each model is then replayed for 1,000 periods through the
+<a class="reference internal" href="../allocation.html#keeks.allocation.simulators.AllocationSimulator" title="keeks.allocation.simulators.AllocationSimulator"><code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.simulators.AllocationSimulator</span></code></a> with seven books
+side by side: five allocators — <code class="docutils literal notranslate"><span class="pre">MeanVariance</span></code> at λ = 1, <code class="docutils literal notranslate"><span class="pre">RiskBudgeting</span></code>
+(ERC), <code class="docutils literal notranslate"><span class="pre">HierarchicalRiskParity</span></code>, <code class="docutils literal notranslate"><span class="pre">MeanCVaR</span></code> at α = 5% and the online
+<code class="docutils literal notranslate"><span class="pre">ExponentialGradient</span></code> — against two benchmarks, equal weight and global
+minimum variance. Every allocator inside a pass meets the same seeded
+realizations (common random numbers, seed 20260803), so the comparison is
+the allocators’ and not the draw luck’s.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These are simulated results from a model, not a forecast and not
+investment advice. The replay resamples one three-year window of history
+and charges no fees — neither of which holds in a real book. Keeks is an
+educational library; treat every number below as a property of the
+model, not a prediction about money.</p>
+</div>
+<section id="growth-paths">
+<h2>Growth paths<a class="headerlink" href="#growth-paths" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/allocation_etf_growth_paths.png"><img alt="Line chart on a logarithmic dollar axis of bankroll over 1,000 periods for seven books over the empirical bootstrap model. MeanVariance at lambda=1 climbs furthest, ending near 3,800 dollars. Global minimum variance ends near 2,300, and equal weight, ExponentialGradient and risk budgeting climb together to roughly 2,500. MeanCVaR stays flat at the 1,000 dollar starting line for the whole replay." src="../_images/allocation_etf_growth_paths.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Growth of the seven books under the empirical bootstrap model, seed
+20260803. MeanVariance at λ = 1 leads throughout; MeanCVaR’s flat line
+is its unit-risk-aversion posture holding cash (below).</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The same comparison under fitted fat-tailed marginals keeps the ordering:</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/allocation_etf_growth_paths_student_t.png"><img alt="Line chart on a logarithmic dollar axis of bankroll over 1,000 periods for the same seven books, replayed under per-option Student-t marginals. MeanVariance at lambda=1 again leads, ending near 3,800 dollars; global minimum variance ends near 2,550; the equal-weight, ExponentialGradient and risk-budgeting cluster finishes near 2,350; and MeanCVaR again holds the 1,000 dollar starting line." src="../_images/allocation_etf_growth_paths_student_t.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Growth of the same seven books under Student-t marginals fitted to the
+same window. The Student-t draws carry no scenario rows, so MeanCVaR —
+still bound to the empirical scenarios — reprices nothing here.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="drawdown-and-weights">
+<h2>Drawdown and weights<a class="headerlink" href="#drawdown-and-weights" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="../_images/allocation_etf_drawdown.png"><img alt="Line chart of the fractional drawdown of the MeanVariance at lambda=1 replay over 1,000 periods. Drawdown repeatedly returns to zero, with spikes to about 0.07 near period 100, the maximum of about 0.11 around period 430, a secondary peak of about 0.08 near period 700, and a final spike to about 0.078 at the horizon." src="../_images/allocation_etf_drawdown.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Peak-to-trough drawdown of the leading book, MeanVariance at λ = 1,
+over the empirical-bootstrap replay. The growth story above is bought
+with drawdowns of this size.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="../_images/allocation_etf_weight_evolution.png"><img alt="Stacked area chart of the ExponentialGradient allocator's six weights over 1,000 periods, labelled SPY, QQQ, IWM, TLT, GLD and VNQ. The bands start near one sixth of the book each — roughly 0.17 — and stay almost flat, with only a slight drift in the treasury and real-estate bands." src="../_images/allocation_etf_weight_evolution.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Weight evolution of the online allocator, ExponentialGradient, recorded
+each period during the empirical-bootstrap pass and relabelled with the
+tickers. It starts near equal weight and barely moves.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="meancvar-holds-cash-on-purpose">
+<h2>MeanCVaR holds cash, on purpose<a class="headerlink" href="#meancvar-holds-cash-on-purpose" title="Link to this heading">¶</a></h2>
+<p>The flat line at $1,000 in both growth charts is <code class="docutils literal notranslate"><span class="pre">MeanCVaR</span></code> at its
+shipped unit risk aversion, and it is the example’s most instructive result
+rather than a failed solve. The objective trades expected return against
+the tail’s expected loss one-for-one, and it is positively homogeneous in
+the return scale — so on daily-frequency market data, where expected daily
+return sits far below the tail’s expected loss, the honest optimum is full
+cash. No unit choice changes that; the risk-aversion dial is a documented
+follow-up. The mean-variance family, which squares the same trade-off
+against variance rather than the tail, sizes aggressively on the same
+inputs — which is exactly the contrast the side-by-side replay exists to
+show.</p>
+</section>
+<section id="reproducing-it">
+<h2>Reproducing it<a class="headerlink" href="#reproducing-it" title="Link to this heading">¶</a></h2>
+<p>One command, from a checkout of the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/allocation_etfs.py
+</pre></div>
+</div>
+<p>The default run is fully offline — it loads the committed fixture, whose
+provenance header names the tickers, the date window and the refresh
+command — and prints a comparison table (final funds, growth, per-period
+volatility, maximum drawdown) for each pass before writing the four charts
+above into <code class="docutils literal notranslate"><span class="pre">examples/output/</span></code>. Pass <code class="docutils literal notranslate"><span class="pre">--refresh</span></code> to re-download the
+window from Yahoo Finance via yfinance (a development-only dependency;
+keeks never imports it at runtime) and rewrite the fixture first.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multi_outcome.html">Multi-Outcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Allocation over ETF returns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_outcome_1x2.html">1X2 betting with multi-outcome Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="st_petersburg_paradox.html">The St. Petersburg paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_comparison.html">Strategies on a marginal edge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_lab.html">Strategy lab notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>
