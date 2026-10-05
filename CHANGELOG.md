@@ -1,6 +1,10 @@
 v0.9.0
 ======
 
+**New Features:**
+
+ * `keeks.summarize_history(history)` reduces a `BankRoll.history` to a frozen `HistorySummary` (bets, start, end, total return, geometric growth per bet, max drawdown, ruined); undefined values are `None`, and empty/non-finite/negative input raises `ValueError`
+
 **Breaking changes — naming and contract sweep (one meaning per name), new defaults, and enforced contracts:**
 
  * Strategy sizing parameters renamed: `transaction_cost` → `transaction_cost_rate` everywhere a per-unit fraction of stake is meant (all binary strategies, the multi-outcome surface, and `BinaryBetsModel`), so the fraction and the flat fee no longer share near-identical names
