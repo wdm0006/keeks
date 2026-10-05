@@ -1,6 +1,8 @@
 Getting Started
 ===============
 
+Keeks sizes bets and bankrolls. Given an estimated win probability, payoff, loss, and transaction cost, its strategies return the fraction of your bankroll to stake, and its simulators replay that rule over repeated trials to show the bankroll path it produces. This page walks through installation and a first simulation; for portfolios of distribution-valued options, Keeks also provides an allocation layer that sizes many options together — see `Next: Sizing a Portfolio`_ at the end of this page.
+
 Installation
 ------------
 
@@ -136,3 +138,8 @@ Keeks provides several simulators:
 1. **RepeatedBinarySimulator**: Simulates repeated bets with a fixed probability
 2. **RandomBinarySimulator**: Simulates bets with random probabilities
 3. **RandomUncertainBinarySimulator**: Adds uncertainty to the actual outcome probabilities
+
+Next: Sizing a Portfolio
+------------------------
+
+The strategies and simulators above size one bet at a time. For portfolios of options described by return distributions rather than single bets, the `allocation layer <https://keeks.mcginniscommawill.com/allocation.html>`_ builds one joint-return model from what you have and sizes the portfolio at once, returning one long-only weight per option. For a complete worked example, see `examples/allocation_etfs.py <https://github.com/wdm0006/keeks/blob/master/examples/allocation_etfs.py>`_ in the repository.
