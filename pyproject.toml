@@ -147,9 +147,7 @@ isolated_build = True
 skip_missing_interpreters = True
 
 [testenv]
-deps =
-    pytest
-    pytest-cov
+extras = dev
 commands =
     pytest {posargs:tests} --cov=keeks --cov-report=term-missing
 
