@@ -91,6 +91,7 @@ from keeks.multi_outcome import (
     RepeatedMultiOutcomeSimulator,
 )
 from keeks.simulators import (
+    HistoricalBinarySimulator,
     RandomBinarySimulator,
     RandomUncertainBinarySimulator,
     RepeatedBinarySimulator,
@@ -132,6 +133,7 @@ __all__ = [
     "FractionalKellyCriterion",
     "GlobalMinimumVariance",
     "HierarchicalRiskParity",
+    "HistoricalBinarySimulator",
     "HistorySummary",
     "JointReturnModel",
     "KellyCriterion",

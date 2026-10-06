@@ -1,3 +1,10 @@
+Unreleased
+==========
+
+**New Features:**
+
+ * `HistoricalBinarySimulator` replays recorded probabilities and boolean outcomes through any binary strategy with the same settlement, validation, hooks and `RuinError` handling as `RepeatedBinarySimulator`; it draws no random numbers and takes no `seed`
+
 v0.9.0
 ======
 
