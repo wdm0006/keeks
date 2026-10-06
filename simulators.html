@@ -411,6 +411,86 @@ is depleted (bankruptcy).</p>
 </dd></dl>
 
 </section>
+<section id="historical-binary-simulator">
+<h2>Historical Binary Simulator<a class="headerlink" href="#historical-binary-simulator" title="Link to this heading">¶</a></h2>
+<p>Replays a log of real bets: each trial uses a recorded probability and settles on the
+recorded outcome, so you can ask what a strategy would have done with your own bets.
+It draws no random numbers and takes no <code class="docutils literal notranslate"><span class="pre">seed</span></code>; the number of trials is the length
+of the log. Settlement matches the repeated binary simulator.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">BankRoll</span><span class="p">,</span> <span class="n">HistoricalBinarySimulator</span><span class="p">,</span> <span class="n">KellyCriterion</span>
+
+<span class="n">simulator</span> <span class="o">=</span> <span class="n">HistoricalBinarySimulator</span><span class="p">(</span>
+    <span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">fee_per_bet</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">probabilities</span><span class="o">=</span><span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">,</span> <span class="mf">0.52</span><span class="p">],</span>
+    <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">bankroll</span> <span class="o">=</span> <span class="n">BankRoll</span><span class="p">(</span><span class="n">initial_funds</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">evaluate_strategy</span><span class="p">(</span><span class="n">KellyCriterion</span><span class="p">(</span><span class="n">payoff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">transaction_cost_rate</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">bankroll</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.simulators.historical_binary.HistoricalBinarySimulator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.simulators.historical_binary.</span></span><span class="sig-name descname"><span class="pre">HistoricalBinarySimulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee_per_bet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">probabilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcomes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/simulators/historical_binary.html#HistoricalBinarySimulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.simulators.historical_binary.HistoricalBinarySimulator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Replay a recorded sequence of binary bets through a strategy.</p>
+<p>Each trial uses the recorded probability and settles on the recorded
+outcome, so the run answers “what would this strategy have done with my
+bets?”. Settlement, validation, hooks and early-stop behaviour match
+<a class="reference internal" href="#keeks.simulators.repeated_binary.RepeatedBinarySimulator" title="keeks.simulators.repeated_binary.RepeatedBinarySimulator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RepeatedBinarySimulator</span></code></a>. No
+random numbers are drawn, so there is no <code class="docutils literal notranslate"><span class="pre">seed</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>payoff</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount won per unit bet on a successful outcome.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The amount lost per unit bet on an unsuccessful outcome.</p></li>
+<li><p><strong>fee_per_bet</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The flat fee, in currency, charged once per settled bet.</p></li>
+<li><p><strong>probabilities</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The probability estimate for each recorded bet, each in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>.</p></li>
+<li><p><strong>outcomes</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Whether each recorded bet won: <code class="docutils literal notranslate"><span class="pre">True</span></code>/<code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">1</span></code>/<code class="docutils literal notranslate"><span class="pre">0</span></code>.
+Must be the same length as <code class="docutils literal notranslate"><span class="pre">probabilities</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.simulators.historical_binary.HistoricalBinarySimulator.trials">
+<span class="sig-name descname"><span class="pre">trials</span></span><a class="headerlink" href="#keeks.simulators.historical_binary.HistoricalBinarySimulator.trials" title="Link to this definition">¶</a></dt>
+<dd><p>The number of recorded bets, <code class="docutils literal notranslate"><span class="pre">len(probabilities)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the sequences differ in length, a probability is not finite within
+    <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, an outcome is not boolean-like, or the odds controls are
+    invalid.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="keeks.simulators.historical_binary.HistoricalBinarySimulator.evaluate_strategy">
+<span class="sig-name descname"><span class="pre">evaluate_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="binary_strategies.html#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><span class="pre">BaseStrategy</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bankroll</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BankRoll</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/simulators/historical_binary.html#HistoricalBinarySimulator.evaluate_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.simulators.historical_binary.HistoricalBinarySimulator.evaluate_strategy" title="Link to this definition">¶</a></dt>
+<dd><p>Replay the recorded bets through <code class="docutils literal notranslate"><span class="pre">strategy</span></code>, updating <code class="docutils literal notranslate"><span class="pre">bankroll</span></code> in place.</p>
+<p>The run stops early if the bankroll is depleted or a settlement raises
+<a class="reference internal" href="utils.html#keeks.utils.RuinError" title="keeks.utils.RuinError"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuinError</span></code></a> (reported as a warning).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>strategy</strong> (<a class="reference internal" href="binary_strategies.html#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><em>BaseStrategy</em></a>) – The betting strategy to evaluate.</p></li>
+<li><p><strong>bankroll</strong> (<em>BankRoll</em>) – The bankroll to use for the simulation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the strategy’s <code class="docutils literal notranslate"><span class="pre">payoff</span></code> or <code class="docutils literal notranslate"><span class="pre">loss</span></code> differs from this
+    simulator’s, or it returns an invalid stake fraction.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -442,6 +522,7 @@ is depleted (bankruptcy).</p>
 <li class="toctree-l2"><a class="reference internal" href="#repeated-binary-simulator">Repeated Binary Simulator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#random-binary-simulator">Random Binary Simulator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#random-uncertain-binary-simulator">Random Uncertain Binary Simulator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#historical-binary-simulator">Historical Binary Simulator</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="multi_outcome.html">Multi-Outcome</a></li>

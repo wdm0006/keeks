@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.simulators.historical_binary &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/wabi.css?v=3eeb95f0" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=e0ab7682" />
+    <script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.simulators.historical_binary - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.simulators.historical_binary">
+<meta property="og:description" content="keeks.simulators.historical_binary - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/simulators/historical_binary.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.simulators.historical_binary">
+<meta name="twitter:description" content="keeks.simulators.historical_binary - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/simulators/historical_binary.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.simulators.historical_binary</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.simulators.historical_binary</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RuinError</span><span class="p">,</span>
+    <span class="n">_validate_simulator_controls</span><span class="p">,</span>
+    <span class="n">_validate_simulator_probability</span><span class="p">,</span>
+    <span class="n">_validate_stake_fraction</span><span class="p">,</span>
+    <span class="n">_validate_strategy_odds</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.bankroll</span><span class="w"> </span><span class="kn">import</span> <span class="n">BankRoll</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_outcome</span><span class="p">(</span><span class="n">outcome</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span> <span class="ow">and</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Outcome at index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> must be a bool or 0/1, got </span><span class="si">{</span><span class="n">outcome</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="HistoricalBinarySimulator">
+<a class="viewcode-back" href="../../../simulators.html#keeks.simulators.historical_binary.HistoricalBinarySimulator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HistoricalBinarySimulator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Replay a recorded sequence of binary bets through a strategy.</span>
+
+<span class="sd">    Each trial uses the recorded probability and settles on the recorded</span>
+<span class="sd">    outcome, so the run answers "what would this strategy have done with my</span>
+<span class="sd">    bets?". Settlement, validation, hooks and early-stop behaviour match</span>
+<span class="sd">    :class:`~keeks.simulators.repeated_binary.RepeatedBinarySimulator`. No</span>
+<span class="sd">    random numbers are drawn, so there is no ``seed``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    payoff : float</span>
+<span class="sd">        The amount won per unit bet on a successful outcome.</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        The amount lost per unit bet on an unsuccessful outcome.</span>
+<span class="sd">    fee_per_bet : float</span>
+<span class="sd">        The flat fee, in currency, charged once per settled bet.</span>
+<span class="sd">    probabilities : sequence of float</span>
+<span class="sd">        The probability estimate for each recorded bet, each in ``[0, 1]``.</span>
+<span class="sd">    outcomes : sequence of bool or int</span>
+<span class="sd">        Whether each recorded bet won: ``True``/``False`` or ``1``/``0``.</span>
+<span class="sd">        Must be the same length as ``probabilities``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    trials : int</span>
+<span class="sd">        The number of recorded bets, ``len(probabilities)``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the sequences differ in length, a probability is not finite within</span>
+<span class="sd">        ``[0, 1]``, an outcome is not boolean-like, or the odds controls are</span>
+<span class="sd">        invalid.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">payoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">fee_per_bet</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Validate the odds controls and the recorded bets."""</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"probabilities"</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">),</span> <span class="p">(</span><span class="s2">"outcomes"</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="s2">"__len__"</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> must be a sequence"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">"Probabilities and outcomes must have the same length, got "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trials</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">_validate_simulator_controls</span><span class="p">(</span><span class="n">payoff</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">fee_per_bet</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">_validate_simulator_probability</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Probability at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_validate_outcome</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outcomes</span><span class="p">))</span>
+
+<div class="viewcode-block" id="HistoricalBinarySimulator.evaluate_strategy">
+<a class="viewcode-back" href="../../../simulators.html#keeks.simulators.historical_binary.HistoricalBinarySimulator.evaluate_strategy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="n">BaseStrategy</span><span class="p">,</span> <span class="n">bankroll</span><span class="p">:</span> <span class="s2">"BankRoll"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Replay the recorded bets through ``strategy``, updating ``bankroll`` in place.</span>
+
+<span class="sd">        The run stops early if the bankroll is depleted or a settlement raises</span>
+<span class="sd">        :class:`~keeks.utils.RuinError` (reported as a warning).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        strategy : BaseStrategy</span>
+<span class="sd">            The betting strategy to evaluate.</span>
+<span class="sd">        bankroll : BankRoll</span>
+<span class="sd">            The bankroll to use for the simulation.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the strategy's ``payoff`` or ``loss`` differs from this</span>
+<span class="sd">            simulator's, or it returns an invalid stake fraction.</span>
+<span class="sd">        """</span>
+        <span class="n">_validate_strategy_odds</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
+
+        <span class="n">update_bankroll</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"update_bankroll"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">update_bankroll</span><span class="p">):</span>
+            <span class="n">update_bankroll</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">record_settlement</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="s2">"record_settlement"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">record_settlement</span><span class="p">):</span>
+            <span class="n">record_settlement</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">probability</span><span class="p">,</span> <span class="n">won</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">total_funds</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">total_funds</span>
+            <span class="k">if</span> <span class="n">total_funds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">update_bankroll</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">update_bankroll</span><span class="p">(</span><span class="n">total_funds</span><span class="p">)</span>
+
+            <span class="n">proportion</span> <span class="o">=</span> <span class="n">_validate_stake_fraction</span><span class="p">(</span>
+                <span class="n">strategy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">probability</span><span class="p">,</span> <span class="n">total_funds</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">proportion</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">bet_amount</span> <span class="o">=</span> <span class="n">bankroll</span><span class="o">.</span><span class="n">bettable_funds</span> <span class="o">*</span> <span class="n">proportion</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">won</span><span class="p">:</span>
+                        <span class="n">amount</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payoff</span> <span class="o">*</span> <span class="n">bet_amount</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span>
+                        <span class="k">if</span> <span class="n">amount</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">bankroll</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">amount</span><span class="p">))</span>
+                        <span class="n">realized_return</span> <span class="o">=</span> <span class="n">amount</span> <span class="o">/</span> <span class="n">total_funds</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">amount</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">*</span> <span class="n">bet_amount</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fee_per_bet</span>
+                        <span class="n">bankroll</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+                        <span class="n">realized_return</span> <span class="o">=</span> <span class="o">-</span><span class="n">amount</span> <span class="o">/</span> <span class="n">total_funds</span>
+                <span class="k">except</span> <span class="n">RuinError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Simulation stopped early: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+                <span class="k">if</span> <span class="n">record_settlement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">record_settlement</span><span class="p">((</span><span class="n">won</span><span class="p">,),</span> <span class="p">(</span><span class="n">realized_return</span><span class="p">,))</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multi_outcome.html">Multi-Outcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/allocation_etfs.html">Allocation over ETF returns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/multi_outcome_1x2.html">1X2 betting with multi-outcome Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/st_petersburg_paradox.html">The St. Petersburg paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/strategy_comparison.html">Strategies on a marginal edge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/strategy_lab.html">Strategy lab notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>
