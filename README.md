@@ -147,7 +147,7 @@ Portfolios of distribution-valued options simulate through the same bankroll mac
 - API references: [strategies](https://keeks.mcginniscommawill.com/binary_strategies.html), [bankroll](https://keeks.mcginniscommawill.com/bankroll.html), [simulators](https://keeks.mcginniscommawill.com/simulators.html)
 - [Contract checks](https://keeks.mcginniscommawill.com/checks.html) — runnable harnesses for extending the library
 - [Nine-strategy risk benchmark](https://keeks.mcginniscommawill.com/strategy_benchmark.html) — what each shipped strategy actually produces under identical, seeded assumptions; regenerate every number with `uv run python benchmarks/strategy_benchmark.py`
-- Examples: [`examples/strategy_comparison.py`](examples/strategy_comparison.py) (all nine strategies, headless), [`examples/st_petersburg_paradox.py`](examples/st_petersburg_paradox.py) (repeated sizing is not one-time pricing), and [`examples/allocation_etfs.py`](examples/allocation_etfs.py) (a six-ETF portfolio)
+- Examples: [`examples/strategy_comparison.py`](examples/strategy_comparison.py) (all nine strategies, headless), [`examples/st_petersburg_paradox.py`](examples/st_petersburg_paradox.py) (repeated sizing is not one-time pricing), [`examples/allocation_etfs.py`](examples/allocation_etfs.py) (a six-ETF portfolio), and [`examples/replay_bet_log.py`](examples/replay_bet_log.py) (compare sizing rules on a recorded CSV bet log)
 
 ## Good to know
 
