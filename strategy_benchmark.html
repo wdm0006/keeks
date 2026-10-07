@@ -228,8 +228,8 @@ is a property of the library rather than of this benchmark — see
 <p><strong>Estimate error.</strong> Keeks ships an uncertain simulator, but it centres its
 probability draws on 0.5 and therefore cannot express an edge. To vary estimate
 quality against a real edge, the benchmark instead perturbs the probability handed
-to <code class="docutils literal notranslate"><span class="pre">strategy.evaluate</span></code> — the strategy sizes its bet on <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">+</span> <span class="pre">σ·Z</span></code>, clipped to
-<code class="docutils literal notranslate"><span class="pre">[0.01,</span> <span class="pre">0.99]</span></code>, while the simulator settles the outcome against the true <code class="docutils literal notranslate"><span class="pre">p</span></code>.
+to <code class="docutils literal notranslate"><span class="pre">strategy.evaluate</span></code> — the strategy sizes its bet on <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">+</span> <span class="pre">bias</span> <span class="pre">+</span> <span class="pre">σ·Z</span></code>, clipped to
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, while the simulator settles the outcome against the true <code class="docutils literal notranslate"><span class="pre">p</span></code>.
 The standard normal shocks <code class="docutils literal notranslate"><span class="pre">Z</span></code> are drawn per path and shared across scenarios,
 so the <code class="docutils literal notranslate"><span class="pre">σ</span> <span class="pre">=</span> <span class="pre">0.06</span></code> run is the <code class="docutils literal notranslate"><span class="pre">σ</span> <span class="pre">=</span> <span class="pre">0.03</span></code> run with the same shocks scaled up.</p>
 <p><strong>Metrics.</strong> Terminal bankroll is reported as a median with 5th, 25th, 75th and
@@ -419,7 +419,8 @@ strategies whose results were identical.</span><a class="headerlink" href="#id2"
 <section id="three-strategies-are-the-same-rule-here">
 <h2>Three strategies are the same rule here<a class="headerlink" href="#three-strategies-are-the-same-rule-here" title="Link to this heading">¶</a></h2>
 <p>Kelly, Optimal f and Naive return identical numbers in the base scenario, and in
-every scenario where the cost input is zero. That is not a bug in the benchmark;
+the zero-cost edge and drawdown-limit scenarios. Estimate noise and bias
+can separate Optimal f from the other two. That is not a bug in the benchmark;
 it falls out of the formulas whenever <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">1</span></code>, the ordinary binary bet where
 you stake your money and lose it all if you are wrong:</p>
 <ul class="simple">
@@ -812,6 +813,110 @@ absorbs the noise; Merton share stops on 22% of paths.</p>
 <p><strong>Cost.</strong> Nothing stops, and every strategy that responds to the parameter simply
 bets less. See the previous section for why the effect is one-sided.</p>
 </section>
+<section id="systematic-overconfidence-and-underconfidence">
+<h2>Systematic overconfidence and underconfidence<a class="headerlink" href="#systematic-overconfidence-and-underconfidence" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">estimate</span> <span class="pre">bias</span></code> axis holds the true win probability at 0.55 and passes
+0.58 (<code class="docutils literal notranslate"><span class="pre">bias+03</span></code>), 0.60 (<code class="docutils literal notranslate"><span class="pre">bias+05</span></code>), or 0.52 (<code class="docutils literal notranslate"><span class="pre">bias-03</span></code>) to <code class="docutils literal notranslate"><span class="pre">evaluate</span></code>
+on every trial, with <code class="docutils literal notranslate"><span class="pre">estimate_stdev</span> <span class="pre">=</span> <span class="pre">0</span></code>. Settlement still uses 0.55.
+These results use master seed <code class="docutils literal notranslate"><span class="pre">20260803</span></code>, the same 200 paired paths and 500
+trials per path as the base case, starting at $1,000 with a 0.3 transaction-loss
+cap. They describe this seeded sample, not a forecast or a seed-stability study.</p>
+<p>The figures below are copied from <code class="docutils literal notranslate"><span class="pre">benchmarks/output/strategy_benchmark.csv</span></code>.
+Terminal values are dollars; early stops are percentages of the 200 paths.</p>
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">Terminal bankroll under constant estimate bias</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 12.0%" />
+<col style="width: 17.0%" />
+<col style="width: 17.0%" />
+<col style="width: 20.0%" />
+<col style="width: 14.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Strategy</p></th>
+<th class="head"><p>Scenario</p></th>
+<th class="head"><p>Median</p></th>
+<th class="head"><p>p5</p></th>
+<th class="head"><p>p95</p></th>
+<th class="head"><p>Early stops (%)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Kelly</p></td>
+<td><p>base</p></td>
+<td><p>12233.60</p></td>
+<td><p>493.34</p></td>
+<td><p>676949.74</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kelly</p></td>
+<td><p>bias+03</p></td>
+<td><p>4884.18</p></td>
+<td><p>27.91</p></td>
+<td><p>3107135.47</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p>Kelly</p></td>
+<td><p>bias+05</p></td>
+<td><p>933.49</p></td>
+<td><p>1.41</p></td>
+<td><p>3103950.53</p></td>
+<td><p>0.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kelly</p></td>
+<td><p>bias-03</p></td>
+<td><p>4956.75</p></td>
+<td><p>1377.22</p></td>
+<td><p>24571.84</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p>Half Kelly</p></td>
+<td><p>base</p></td>
+<td><p>6529.34</p></td>
+<td><p>1316.49</p></td>
+<td><p>48326.14</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Half Kelly</p></td>
+<td><p>bias+03</p></td>
+<td><p>11061.02</p></td>
+<td><p>850.39</p></td>
+<td><p>273219.96</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-even"><td><p>Half Kelly</p></td>
+<td><p>bias+05</p></td>
+<td><p>12233.60</p></td>
+<td><p>493.34</p></td>
+<td><p>676949.74</p></td>
+<td><p>0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Half Kelly</p></td>
+<td><p>bias-03</p></td>
+<td><p>2459.89</p></td>
+<td><p>1296.97</p></td>
+<td><p>5475.15</p></td>
+<td><p>0.0</p></td>
+</tr>
+</tbody>
+</table>
+<p>Positive bias lowers full Kelly’s median while widening its terminal range;
+at +5 points its median ends below the starting bankroll. Half Kelly’s median
+increases because the inflated estimate moves its stake closer to full Kelly’s
+stake on the true probability, but its lower tail worsens. Underconfidence
+reduces both strategies’ medians in this sample. A higher median alone is not
+evidence of greater robustness.</p>
+<p>Naive matches Kelly on all three bias rows. Optimal f and Fixed fraction 2%
+retain their base results: Optimal f sizes from its configured true <code class="docutils literal notranslate"><span class="pre">win_rate</span></code>
+and uses the passed probability only as a gate; the fixed fraction stays at 2%.
+Thus Optimal f’s apparent immunity here does not measure a biased configured
+<code class="docutils literal notranslate"><span class="pre">win_rate</span></code>. CPPI, Dynamic, Merton share and Drawdown-adjusted Kelly respond
+differently; their full percentile and drawdown results are in the CSV.
+All bias rows have zero early stops except Kelly and Naive at +5 points
+(0.5% each). Unlike zero-mean noise, a constant bias distorts every trial’s
+estimate in the same direction.</p>
+</section>
 <section id="seed-stability">
 <h2>Seed stability<a class="headerlink" href="#seed-stability" title="Link to this heading">¶</a></h2>
 <p>Each cell is a median over 200 seeded paths, so it is an estimate with sampling
@@ -860,9 +965,9 @@ floor and multiplier, Optimal f’s <code class="docutils literal notranslate"><
 optimal.</p></li>
 <li><p>500 bets and a $1,000 bankroll. Both interact with the flat transaction fee and
 with <code class="docutils literal notranslate"><span class="pre">BankRoll</span></code>’s two-decimal rounding.</p></li>
-<li><p>Estimate error is modelled as independent zero-mean noise on a correct
-probability. A persistent bias — believing you have an edge you do not — is a
-different and more dangerous failure, and is not measured here.</p></li>
+<li><p>Estimate error is modelled as independent zero-mean Gaussian noise or a
+constant probability bias. Time-varying bias, correlated errors and joint
+bias-plus-noise scenarios are not included in the published matrix.</p></li>
 <li><p>The library’s cost model is a single normalized scalar. It does not represent
 spreads, slippage, market impact, per-venue commissions, correlated positions
 or rebalancing.</p></li>

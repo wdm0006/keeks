@@ -67,8 +67,8 @@ is a property of the library rather than of this benchmark — see
 **Estimate error.** Keeks ships an uncertain simulator, but it centres its
 probability draws on 0.5 and therefore cannot express an edge. To vary estimate
 quality against a real edge, the benchmark instead perturbs the probability handed
-to ``strategy.evaluate`` — the strategy sizes its bet on ``p + σ·Z``, clipped to
-``[0.01, 0.99]``, while the simulator settles the outcome against the true ``p``.
+to ``strategy.evaluate`` — the strategy sizes its bet on ``p + bias + σ·Z``, clipped to
+``[0, 1]``, while the simulator settles the outcome against the true ``p``.
 The standard normal shocks ``Z`` are drawn per path and shared across scenarios,
 so the ``σ = 0.06`` run is the ``σ = 0.03`` run with the same shocks scaled up.
 
@@ -158,7 +158,8 @@ Three strategies are the same rule here
 ---------------------------------------
 
 Kelly, Optimal f and Naive return identical numbers in the base scenario, and in
-every scenario where the cost input is zero. That is not a bug in the benchmark;
+the zero-cost edge and drawdown-limit scenarios. Estimate noise and bias
+can separate Optimal f from the other two. That is not a bug in the benchmark;
 it falls out of the formulas whenever ``loss = 1``, the ordinary binary bet where
 you stake your money and lose it all if you are wrong:
 
@@ -304,6 +305,49 @@ absorbs the noise; Merton share stops on 22% of paths.
 **Cost.** Nothing stops, and every strategy that responds to the parameter simply
 bets less. See the previous section for why the effect is one-sided.
 
+Systematic overconfidence and underconfidence
+---------------------------------------------
+
+The ``estimate bias`` axis holds the true win probability at 0.55 and passes
+0.58 (``bias+03``), 0.60 (``bias+05``), or 0.52 (``bias-03``) to ``evaluate``
+on every trial, with ``estimate_stdev = 0``. Settlement still uses 0.55.
+These results use master seed ``20260803``, the same 200 paired paths and 500
+trials per path as the base case, starting at $1,000 with a 0.3 transaction-loss
+cap. They describe this seeded sample, not a forecast or a seed-stability study.
+
+The figures below are copied from ``benchmarks/output/strategy_benchmark.csv``.
+Terminal values are dollars; early stops are percentages of the 200 paths.
+
+.. csv-table:: Terminal bankroll under constant estimate bias
+   :header: "Strategy", "Scenario", "Median", "p5", "p95", "Early stops (%)"
+   :widths: 20, 12, 17, 17, 20, 14
+
+   "Kelly", "base", 12233.60, 493.34, 676949.74, 0.0
+   "Kelly", "bias+03", 4884.18, 27.91, 3107135.47, 0.0
+   "Kelly", "bias+05", 933.49, 1.41, 3103950.53, 0.5
+   "Kelly", "bias-03", 4956.75, 1377.22, 24571.84, 0.0
+   "Half Kelly", "base", 6529.34, 1316.49, 48326.14, 0.0
+   "Half Kelly", "bias+03", 11061.02, 850.39, 273219.96, 0.0
+   "Half Kelly", "bias+05", 12233.60, 493.34, 676949.74, 0.0
+   "Half Kelly", "bias-03", 2459.89, 1296.97, 5475.15, 0.0
+
+Positive bias lowers full Kelly's median while widening its terminal range;
+at +5 points its median ends below the starting bankroll. Half Kelly's median
+increases because the inflated estimate moves its stake closer to full Kelly's
+stake on the true probability, but its lower tail worsens. Underconfidence
+reduces both strategies' medians in this sample. A higher median alone is not
+evidence of greater robustness.
+
+Naive matches Kelly on all three bias rows. Optimal f and Fixed fraction 2%
+retain their base results: Optimal f sizes from its configured true ``win_rate``
+and uses the passed probability only as a gate; the fixed fraction stays at 2%.
+Thus Optimal f's apparent immunity here does not measure a biased configured
+``win_rate``. CPPI, Dynamic, Merton share and Drawdown-adjusted Kelly respond
+differently; their full percentile and drawdown results are in the CSV.
+All bias rows have zero early stops except Kelly and Naive at +5 points
+(0.5% each). Unlike zero-mean noise, a constant bias distorts every trial's
+estimate in the same direction.
+
 Seed stability
 --------------
 
@@ -355,9 +399,9 @@ Limitations
   optimal.
 * 500 bets and a $1,000 bankroll. Both interact with the flat transaction fee and
   with ``BankRoll``'s two-decimal rounding.
-* Estimate error is modelled as independent zero-mean noise on a correct
-  probability. A persistent bias — believing you have an edge you do not — is a
-  different and more dangerous failure, and is not measured here.
+* Estimate error is modelled as independent zero-mean Gaussian noise or a
+  constant probability bias. Time-varying bias, correlated errors and joint
+  bias-plus-noise scenarios are not included in the published matrix.
 * The library's cost model is a single normalized scalar. It does not represent
   spreads, slippage, market impact, per-venue commissions, correlated positions
   or rebalancing.
