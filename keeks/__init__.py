@@ -86,6 +86,7 @@ from keeks.checks import check_allocation_strategy, check_model, check_strategy
 from keeks.metrics import HistorySummary, summarize_history
 from keeks.multi_outcome import (
     BaseMultiOutcomeStrategy,
+    HistoricalMultiOutcomeSimulator,
     MultiOutcomeKellyCriterion,
     PortfolioSimulator,
     RepeatedMultiOutcomeSimulator,
@@ -144,6 +145,7 @@ __all__ = [
     "MeanVariance",
     "MertonShare",
     "ModelInputMixin",
+    "HistoricalMultiOutcomeSimulator",
     "MultiOutcomeKellyCriterion",
     "NaiveStrategy",
     "OnlineNewtonStep",
