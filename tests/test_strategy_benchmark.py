@@ -142,3 +142,95 @@ def test_the_default_cap_does_not_stop_the_base_scenario(short_run):
     summary = short_run.summarise(short_run.BASE, "Kelly", results)
     assert summary["early_stop_rate"] == 0.0
     assert summary["median_trials_started"] == short_run.TRIALS
+
+
+@pytest.mark.parametrize(
+    "probability,bias,stdev",
+    [
+        (0.55, 0.03, 0.0),
+        (0.55, 0.05, 0.0),
+        (0.55, -0.03, 0.0),
+        (0.99, 0.05, 0.0),
+        (0.01, -0.03, 0.0),
+        (0.55, 0.03, 0.06),
+        (0.55, 2.0, 0.06),
+        (0.55, -2.0, 0.06),
+    ],
+)
+def test_bias_and_noise_reach_strategy_with_clamped_probability(
+    short_run, monkeypatch, probability, bias, stdev
+):
+    scenario = short_run._variant(
+        "test-bias",
+        "test",
+        "test",
+        probability=probability,
+        estimate_bias=bias,
+        estimate_stdev=stdev,
+    )
+    seen = []
+
+    def record(_self, probability, _current_bankroll):
+        seen.append(probability)
+        return 0.0
+
+    monkeypatch.setattr(BENCHMARK.KellyCriterion, "evaluate", record)
+    short_run.run_path(scenario, "Kelly", 3)
+    rng = random.Random(f"shocks|{short_run.SEED}|3")
+    expected = [
+        min(
+            1.0,
+            max(0.0, probability + bias + (stdev * rng.gauss(0, 1) if stdev else 0.0)),
+        )
+        for _ in range(short_run.TRIALS)
+    ]
+    assert seen == expected
+
+
+def test_bias_does_not_change_settlement_probability(short_run, monkeypatch):
+    def fixed_stake(_self, _probability, _current_bankroll):
+        return 0.02
+
+    monkeypatch.setattr(BENCHMARK.KellyCriterion, "evaluate", fixed_stake)
+    biased = short_run._variant("test-bias", "test", "test", estimate_bias=0.4)
+    assert short_run.run_path(biased, "Kelly", 3) == short_run.run_path(
+        short_run.BASE, "Kelly", 3
+    )
+
+
+def test_bias_scenarios_and_csv_column(short_run):
+    scenarios = [s for s in short_run.SCENARIOS if s.axis == "estimate bias"]
+    assert {s.key: s.estimate_bias for s in scenarios} == {
+        "bias+03": 0.03,
+        "bias+05": 0.05,
+        "bias-03": -0.03,
+    }
+    for scenario in scenarios:
+        result = short_run.run_path(scenario, "Kelly", 0)
+        assert (
+            short_run.summarise(scenario, "Kelly", [result])["estimate_bias"]
+            == scenario.estimate_bias
+        )
+
+
+def test_documented_bias_figures_match_committed_csv():
+    import csv
+
+    root = BENCHMARK_PATH.parents[1]
+    with (root / "benchmarks/output/strategy_benchmark.csv").open() as source:
+        rows = {(r["strategy"], r["scenario"]): r for r in csv.DictReader(source)}
+    docs = (root / "docs/source/strategy_benchmark.rst").read_text()
+    section = docs.split(
+        ".. csv-table:: Terminal bankroll under constant estimate bias"
+    )[1]
+    table = [line.strip() for line in section.splitlines() if line.startswith('   "')]
+    assert len(table) == 8
+    for name, scenario, median, p5, p95, early in csv.reader(
+        table, skipinitialspace=True
+    ):
+        row = rows[name, scenario]
+        assert [float(median), float(p5), float(p95)] == [
+            float(row[key])
+            for key in ("median_terminal", "p5_terminal", "p95_terminal")
+        ]
+        assert float(early) == 100 * float(row["early_stop_rate"])

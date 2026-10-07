@@ -25,7 +25,7 @@ Design notes that the numbers depend on:
   shift every later outcome.
 * **Estimate error is applied at the strategy boundary.** The shipped uncertain
   simulator centres its probability draws on 0.5, which cannot express an edge, so
-  the estimate-noise axis instead perturbs the probability handed to
+  the estimate-noise and estimate-bias axes instead perturb the probability handed to
   ``strategy.evaluate`` while the simulator settles against the true probability.
 * **Cost units differ by design of the library.** Strategies treat
   ``transaction_cost_rate`` as a per-unit fractional cost; simulators subtract
@@ -98,6 +98,7 @@ class Scenario:
     max_transaction_loss: float | None
     payoff: float = 1.0
     loss: float = 1.0
+    estimate_bias: float = 0.0
 
 
 BASE = Scenario(
@@ -132,6 +133,24 @@ SCENARIOS = [
         "estimate error",
         "Estimate error: probability known to +/- 0.06 (1 sd)",
         estimate_stdev=0.06,
+    ),
+    _variant(
+        "bias+03",
+        "estimate bias",
+        "Estimate bias: +3 percentage points",
+        estimate_bias=0.03,
+    ),
+    _variant(
+        "bias+05",
+        "estimate bias",
+        "Estimate bias: +5 percentage points",
+        estimate_bias=0.05,
+    ),
+    _variant(
+        "bias-03",
+        "estimate bias",
+        "Estimate bias: -3 percentage points",
+        estimate_bias=-0.03,
     ),
     _variant(
         "drawdown-08",
@@ -282,17 +301,20 @@ def run_path(scenario, strategy_name, path_index):
         shock_rng = random.Random(f"shocks|{SEED}|{path_index}")
         beliefs = [
             min(
-                0.99,
+                1.0,
                 max(
-                    0.01,
+                    0.0,
                     scenario.probability
+                    + scenario.estimate_bias
                     + scenario.estimate_stdev * shock_rng.gauss(0, 1),
                 ),
             )
             for _ in range(TRIALS)
         ]
     else:
-        beliefs = [scenario.probability] * TRIALS
+        beliefs = [
+            min(1.0, max(0.0, scenario.probability + scenario.estimate_bias))
+        ] * TRIALS
 
     bankroll = _StoppedBankRoll(INITIAL_FUNDS, scenario.max_transaction_loss)
     strategy = STRATEGY_FACTORIES[strategy_name](scenario)
@@ -363,6 +385,7 @@ def summarise(scenario, strategy_name, results):
         "probability": scenario.probability,
         "cost_input": scenario.cost,
         "estimate_stdev": scenario.estimate_stdev,
+        "estimate_bias": scenario.estimate_bias,
         "max_transaction_loss": "none"
         if scenario.max_transaction_loss is None
         else scenario.max_transaction_loss,
