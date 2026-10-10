@@ -17,7 +17,7 @@
     
     <title>Contract Checks &#8212; Keeks</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=30d13653" />
-    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=3eeb95f0" />
+    <link rel="stylesheet" type="text/css" href="_static/css/wabi.css?v=9adde7c3" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e0ab7682" />
     <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
@@ -198,7 +198,7 @@ check’s ABC - and passes silently when everything holds.</p>
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="keeks.checks.check_allocation_strategy">
-<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_allocation_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="allocation.html#keeks.allocation.base.BaseAllocationStrategy" title="keeks.allocation.base.BaseAllocationStrategy"><span class="pre">BaseAllocationStrategy</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_allocation_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_allocation_strategy" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_allocation_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="allocation.html#keeks.allocation.base.BaseAllocationStrategy" title="keeks.allocation.base.BaseAllocationStrategy"><span class="pre">BaseAllocationStrategy</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_allocation_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_allocation_strategy" title="Link to this definition">¶</a></dt>
 <dd><p>Verify an allocator against the documented weight contract.</p>
 <p>Runs the contract probes: <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> at a positive bankroll returns a
 valid long-only weight vector (one finite weight per option, each within
@@ -212,9 +212,9 @@ every bankroll.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is not a
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is not a
     <code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.BaseAllocationStrategy</span></code> subclass.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
 </ul>
 </dd>
 </dl>
@@ -233,7 +233,7 @@ every bankroll.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="keeks.checks.check_model">
-<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><span class="pre">JointReturnModel</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_model" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><span class="pre">JointReturnModel</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_model" title="Link to this definition">¶</a></dt>
 <dd><p>Verify a joint-return model against the documented sampling contract.</p>
 <p>Runs the contract probes: <code class="docutils literal notranslate"><span class="pre">sample(n_samples,</span> <span class="pre">rng)</span></code> returns a finite
 <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">N)</span></code> matrix of joint simple returns with <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">&gt;=</span> <span class="pre">1</span></code>; the
@@ -248,9 +248,9 @@ model without closed-form moments.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">model</span></code> is not a <a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.models.JointReturnModel</span></code></a>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">model</span></code> is not a <a class="reference internal" href="allocation.html#keeks.allocation.models.JointReturnModel" title="keeks.allocation.models.JointReturnModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.allocation.models.JointReturnModel</span></code></a>
     subclass.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
 </ul>
 </dd>
 </dl>
@@ -275,7 +275,7 @@ model without closed-form moments.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="keeks.checks.check_strategy">
-<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="binary_strategies.html#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><span class="pre">BaseStrategy</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_strategy" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">keeks.checks.</span></span><span class="sig-name descname"><span class="pre">check_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="binary_strategies.html#keeks.binary_strategies.base.BaseStrategy" title="keeks.binary_strategies.base.BaseStrategy"><span class="pre">BaseStrategy</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/keeks/checks.html#check_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.checks.check_strategy" title="Link to this definition">¶</a></dt>
 <dd><p>Verify a binary strategy against the documented <code class="docutils literal notranslate"><span class="pre">BaseStrategy</span></code> contract.</p>
 <p>Runs the contract probes: <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> returns a single finite bankroll
 fraction within <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> across a probability grid; a nonpositive
@@ -290,9 +290,9 @@ the shapes the simulators resolve <code class="docutils literal notranslate"><sp
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is not a <code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.binary_strategies.BaseStrategy</span></code>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#TypeError" title="(in Python v3.15)"><strong>TypeError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">strategy</span></code> is not a <code class="xref py py-class docutils literal notranslate"><span class="pre">keeks.binary_strategies.BaseStrategy</span></code>
     subclass.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If any probe violates the contract.</p></li>
 </ul>
 </dd>
 </dl>
@@ -356,6 +356,7 @@ the shapes the simulators resolve <code class="docutils literal notranslate"><sp
 <li class="toctree-l1"><a class="reference internal" href="examples/multi_outcome_1x2.html">1X2 betting with multi-outcome Kelly</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/st_petersburg_paradox.html">The St. Petersburg paradox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/strategy_comparison.html">Strategies on a marginal edge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/replay_bet_log.html">Replay a recorded bet log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/strategy_lab.html">Strategy lab notebook</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
