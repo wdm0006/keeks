@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.calibration &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/wabi.css?v=9adde7c3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e0ab7682" />
+    <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.calibration - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.calibration">
+<meta property="og:description" content="keeks.calibration - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/calibration.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.calibration">
+<meta name="twitter:description" content="keeks.calibration - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/calibration.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.calibration</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.calibration</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">keeks.simulators.historical_binary</span><span class="w"> </span><span class="kn">import</span> <span class="n">_validate_outcome</span>
+
+<span class="n">LOG_LOSS_CLIP</span> <span class="o">=</span> <span class="mf">1e-12</span>
+
+
+<div class="viewcode-block" id="CalibrationBin">
+<a class="viewcode-back" href="../../utils.html#keeks.calibration.CalibrationBin">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CalibrationBin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    One non-empty equal-width probability bin.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lower, upper : float</span>
+<span class="sd">        Bin edges. Bins include their lower edge; only the last bin also</span>
+<span class="sd">        includes ``1.0``.</span>
+<span class="sd">    count : int</span>
+<span class="sd">        Observations in the bin.</span>
+<span class="sd">    mean_predicted : float</span>
+<span class="sd">        Mean stated probability in the bin.</span>
+<span class="sd">    observed_frequency : float</span>
+<span class="sd">        Fraction of the bin's outcomes that were wins.</span>
+<span class="sd">    """</span>
+
+    <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">mean_predicted</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">observed_frequency</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<div class="viewcode-block" id="CalibrationReport">
+<a class="viewcode-back" href="../../utils.html#keeks.calibration.CalibrationReport">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CalibrationReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Calibration diagnostics for recorded probabilities and outcomes.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int</span>
+<span class="sd">        Number of observations.</span>
+<span class="sd">    brier_score : float</span>
+<span class="sd">        Mean squared error between probability and outcome.</span>
+<span class="sd">    log_loss : float</span>
+<span class="sd">        Mean negative log-likelihood, with probabilities clipped to</span>
+<span class="sd">        ``[1e-12, 1 - 1e-12]``.</span>
+<span class="sd">    min_clipped, max_clipped : bool</span>
+<span class="sd">        Whether any probability fell below / above the clip bounds, so the</span>
+<span class="sd">        log loss reflects the bound rather than the stated value.</span>
+<span class="sd">    base_rate : float</span>
+<span class="sd">        Fraction of outcomes that were wins.</span>
+<span class="sd">    bins : tuple of CalibrationBin</span>
+<span class="sd">        Non-empty bins in ascending order; empty bins are omitted.</span>
+<span class="sd">    """</span>
+
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">brier_score</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">log_loss</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">min_clipped</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">max_clipped</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">base_rate</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">bins</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CalibrationBin</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="calibration_report">
+<a class="viewcode-back" href="../../utils.html#keeks.calibration.calibration_report">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calibration_report</span><span class="p">(</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalibrationReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Check whether recorded win probabilities were calibrated.</span>
+
+<span class="sd">    Strategies size from a stated probability, so a miscalibrated one is the</span>
+<span class="sd">    main way Kelly-family sizing loses money. This is an educational</span>
+<span class="sd">    diagnostic of past data, not advice: a good score on a short record does</span>
+<span class="sd">    not show the probabilities will stay calibrated.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    probabilities : sequence of float</span>
+<span class="sd">        Stated win probability of each event, each finite and in ``[0, 1]``.</span>
+<span class="sd">    outcomes : sequence of bool or int</span>
+<span class="sd">        Whether each event won: ``bool`` or ``0``/``1`` only (floats such as</span>
+<span class="sd">        ``1.0`` are rejected), same length as ``probabilities``.</span>
+<span class="sd">    n_bins : int, default 10</span>
+<span class="sd">        Number of equal-width bins over ``[0, 1]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    CalibrationReport</span>
+<span class="sd">        Frozen dataclass of Brier score, log loss, base rate and per-bin</span>
+<span class="sd">        stated-versus-observed frequencies.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If an input is invalid, the lengths differ, there are no</span>
+<span class="sd">        observations, or ``n_bins`` is not a positive integer.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; report = calibration_report([0.2, 0.2, 0.8, 0.8], [0, 1, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; report.n, round(report.brier_score, 6), report.base_rate</span>
+<span class="sd">    (4, 0.19, 0.75)</span>
+<span class="sd">    &gt;&gt;&gt; [(b.lower, b.count, b.observed_frequency) for b in report.bins]</span>
+<span class="sd">    [(0.2, 2, 0.5), (0.8, 2, 1.0)]</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_bins</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span> <span class="ow">or</span> <span class="n">n_bins</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"n_bins must be a positive integer, got </span><span class="si">{</span><span class="n">n_bins</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">n_bins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_bins</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">stated</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be a finite sequence"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">stated</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be one-dimensional"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">stated</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must contain only finite values"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">stated</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">stated</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Probabilities must be between 0 and 1"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stated</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"Probabilities and outcomes must have the same length, got "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stated</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stated</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one observation is required"</span><span class="p">)</span>
+    <span class="n">won</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">_validate_outcome</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+    <span class="p">)</span>
+
+    <span class="n">clipped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">stated</span><span class="p">,</span> <span class="n">LOG_LOSS_CLIP</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">LOG_LOSS_CLIP</span><span class="p">)</span>
+    <span class="n">log_loss</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">won</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">clipped</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">won</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="o">-</span><span class="n">clipped</span><span class="p">)))</span>
+    <span class="n">bin_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">stated</span> <span class="o">*</span> <span class="n">n_bins</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span> <span class="n">n_bins</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">CalibrationBin</span><span class="p">(</span>
+            <span class="n">lower</span><span class="o">=</span><span class="n">k</span> <span class="o">/</span> <span class="n">n_bins</span><span class="p">,</span>
+            <span class="n">upper</span><span class="o">=</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_bins</span><span class="p">,</span>
+            <span class="n">count</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()),</span>
+            <span class="n">mean_predicted</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">stated</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+            <span class="n">observed_frequency</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">won</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_bins</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mask</span> <span class="o">:=</span> <span class="n">bin_index</span> <span class="o">==</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">CalibrationReport</span><span class="p">(</span>
+        <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">stated</span><span class="p">),</span>
+        <span class="n">brier_score</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">stated</span> <span class="o">-</span> <span class="n">won</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)),</span>
+        <span class="n">log_loss</span><span class="o">=</span><span class="n">log_loss</span><span class="p">,</span>
+        <span class="n">min_clipped</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">stated</span> <span class="o">&lt;</span> <span class="n">LOG_LOSS_CLIP</span><span class="p">)),</span>
+        <span class="n">max_clipped</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">stated</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">LOG_LOSS_CLIP</span><span class="p">)),</span>
+        <span class="n">base_rate</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">won</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"CalibrationBin"</span><span class="p">,</span> <span class="s2">"CalibrationReport"</span><span class="p">,</span> <span class="s2">"calibration_report"</span><span class="p">]</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multi_outcome.html">Multi-Outcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/allocation_etfs.html">Allocation over ETF returns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/multi_outcome_1x2.html">1X2 betting with multi-outcome Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/st_petersburg_paradox.html">The St. Petersburg paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/strategy_comparison.html">Strategies on a marginal edge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/replay_bet_log.html">Replay a recorded bet log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/strategy_lab.html">Strategy lab notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>

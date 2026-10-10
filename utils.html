@@ -346,6 +346,191 @@ simulators re-report it as a <code class="docutils literal notranslate"><span cl
 </dd></dl>
 
 </section>
+<section id="checking-stated-probabilities">
+<h2>Checking stated probabilities<a class="headerlink" href="#checking-stated-probabilities" title="Link to this heading">¶</a></h2>
+<p>Every strategy sizes from a stated probability, so before replaying a recorded
+log it is worth asking whether those probabilities were calibrated.
+<a class="reference internal" href="#keeks.calibration.calibration_report" title="keeks.calibration.calibration_report"><code class="xref py py-func docutils literal notranslate"><span class="pre">keeks.calibration.calibration_report()</span></code></a> scores them with the Brier score
+and log loss and compares stated and observed frequencies in equal-width bins
+(empty bins are omitted). It is an educational diagnostic, not advice. Inputs
+are validated first: probabilities must be finite in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, outcomes must
+be <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">0</span></code>/<code class="docutils literal notranslate"><span class="pre">1</span></code> (not <code class="docutils literal notranslate"><span class="pre">1.0</span></code>), and at least one observation is
+required.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">calibration_report</span>
+
+<span class="n">report</span> <span class="o">=</span> <span class="n">calibration_report</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">brier_score</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>  <span class="c1"># 0.19</span>
+<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">bins</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">mean_predicted</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">observed_frequency</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="keeks.calibration.calibration_report">
+<span class="sig-prename descclassname"><span class="pre">keeks.calibration.</span></span><span class="sig-name descname"><span class="pre">calibration_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probabilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcomes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#keeks.calibration.CalibrationReport" title="keeks.calibration.CalibrationReport"><span class="pre">CalibrationReport</span></a></span></span><a class="reference internal" href="_modules/keeks/calibration.html#calibration_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.calibration.calibration_report" title="Link to this definition">¶</a></dt>
+<dd><p>Check whether recorded win probabilities were calibrated.</p>
+<p>Strategies size from a stated probability, so a miscalibrated one is the
+main way Kelly-family sizing loses money. This is an educational
+diagnostic of past data, not advice: a good score on a short record does
+not show the probabilities will stay calibrated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>probabilities</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Stated win probability of each event, each finite and in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>.</p></li>
+<li><p><strong>outcomes</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a>) – Whether each event won: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">0</span></code>/<code class="docutils literal notranslate"><span class="pre">1</span></code> only (floats such as
+<code class="docutils literal notranslate"><span class="pre">1.0</span></code> are rejected), same length as <code class="docutils literal notranslate"><span class="pre">probabilities</span></code>.</p></li>
+<li><p><strong>n_bins</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>default 10</em>) – Number of equal-width bins over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Frozen dataclass of Brier score, log loss, base rate and per-bin
+stated-versus-observed frequencies.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#keeks.calibration.CalibrationReport" title="keeks.calibration.CalibrationReport">CalibrationReport</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If an input is invalid, the lengths differ, there are no
+    observations, or <code class="docutils literal notranslate"><span class="pre">n_bins</span></code> is not a positive integer.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">calibration_report</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">brier_score</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">report</span><span class="o">.</span><span class="n">base_rate</span>
+<span class="go">(4, 0.19, 0.75)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[(</span><span class="n">b</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">observed_frequency</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">bins</span><span class="p">]</span>
+<span class="go">[(0.2, 2, 0.5), (0.8, 2, 1.0)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationReport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.calibration.</span></span><span class="sig-name descname"><span class="pre">CalibrationReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">brier_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_clipped</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_clipped</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#keeks.calibration.CalibrationBin" title="keeks.calibration.CalibrationBin"><span class="pre">CalibrationBin</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/calibration.html#CalibrationReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.calibration.CalibrationReport" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Calibration diagnostics for recorded probabilities and outcomes.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationReport.n">
+<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#keeks.calibration.CalibrationReport.n" title="Link to this definition">¶</a></dt>
+<dd><p>Number of observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationReport.brier_score">
+<span class="sig-name descname"><span class="pre">brier_score</span></span><a class="headerlink" href="#keeks.calibration.CalibrationReport.brier_score" title="Link to this definition">¶</a></dt>
+<dd><p>Mean squared error between probability and outcome.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationReport.log_loss">
+<span class="sig-name descname"><span class="pre">log_loss</span></span><a class="headerlink" href="#keeks.calibration.CalibrationReport.log_loss" title="Link to this definition">¶</a></dt>
+<dd><p>Mean negative log-likelihood, with probabilities clipped to
+<code class="docutils literal notranslate"><span class="pre">[1e-12,</span> <span class="pre">1</span> <span class="pre">-</span> <span class="pre">1e-12]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">min_clipped,</span> <span class="pre">max_clipped</span></span></dt>
+<dd><p>Whether any probability fell below / above the clip bounds, so the
+log loss reflects the bound rather than the stated value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationReport.base_rate">
+<span class="sig-name descname"><span class="pre">base_rate</span></span><a class="headerlink" href="#keeks.calibration.CalibrationReport.base_rate" title="Link to this definition">¶</a></dt>
+<dd><p>Fraction of outcomes that were wins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationReport.bins">
+<span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#keeks.calibration.CalibrationReport.bins" title="Link to this definition">¶</a></dt>
+<dd><p>Non-empty bins in ascending order; empty bins are omitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)">tuple</a> of <a class="reference internal" href="#keeks.calibration.CalibrationBin" title="keeks.calibration.CalibrationBin">CalibrationBin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationBin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keeks.calibration.</span></span><span class="sig-name descname"><span class="pre">CalibrationBin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_predicted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keeks/calibration.html#CalibrationBin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.calibration.CalibrationBin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One non-empty equal-width probability bin.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">lower,</span> <span class="pre">upper</span></span></dt>
+<dd><p>Bin edges. Bins include their lower edge; only the last bin also
+includes <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationBin.count">
+<span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#keeks.calibration.CalibrationBin.count" title="Link to this definition">¶</a></dt>
+<dd><p>Observations in the bin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationBin.mean_predicted">
+<span class="sig-name descname"><span class="pre">mean_predicted</span></span><a class="headerlink" href="#keeks.calibration.CalibrationBin.mean_predicted" title="Link to this definition">¶</a></dt>
+<dd><p>Mean stated probability in the bin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keeks.calibration.CalibrationBin.observed_frequency">
+<span class="sig-name descname"><span class="pre">observed_frequency</span></span><a class="headerlink" href="#keeks.calibration.CalibrationBin.observed_frequency" title="Link to this definition">¶</a></dt>
+<dd><p>Fraction of the bin’s outcomes that were wins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -382,6 +567,7 @@ simulators re-report it as a <code class="docutils literal notranslate"><span cl
 <li class="toctree-l2"><a class="reference internal" href="#keeks.utils.find_indifference_price"><code class="docutils literal notranslate"><span class="pre">find_indifference_price()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keeks.utils.validate_probabilities"><code class="docutils literal notranslate"><span class="pre">validate_probabilities()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checking-stated-probabilities">Checking stated probabilities</a></li>
 </ul>
 </li>
 </ul>
