@@ -82,6 +82,11 @@ from keeks.binary_strategies import (
     OptimalF,
 )
 from keeks.binary_strategies.base import BaseStrategy
+from keeks.calibration import (
+    CalibrationBin,
+    CalibrationReport,
+    calibration_report,
+)
 from keeks.checks import check_allocation_strategy, check_model, check_strategy
 from keeks.metrics import HistorySummary, summarize_history
 from keeks.multi_outcome import (
@@ -120,6 +125,8 @@ __all__ = [
     "BaseMultiOutcomeStrategy",
     "BaseStrategy",
     "BinaryBetsModel",
+    "CalibrationBin",
+    "CalibrationReport",
     "check_allocation_strategy",
     "check_model",
     "check_strategy",
@@ -163,6 +170,7 @@ __all__ = [
     "bankroll_paths",
     "binary_bets_model",
     "black_litterman_mean",
+    "calibration_report",
     "correlation_heatmap",
     "crra_utility",
     "dendrogram",
