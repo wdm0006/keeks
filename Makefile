@@ -100,6 +100,7 @@ test-all:
 examples:
 	uv run python examples/strategy_comparison.py
 	uv run python examples/allocation_etfs.py
+	uv run python examples/replay_bet_log.py
 
 # Regenerate the published strategy benchmark (CSV + charts)
 benchmark:

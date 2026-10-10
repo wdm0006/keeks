@@ -125,6 +125,7 @@ References
    1X2 betting with multi-outcome Kelly <examples/multi_outcome_1x2>
    The St. Petersburg paradox <examples/st_petersburg_paradox>
    Strategies on a marginal edge <examples/strategy_comparison>
+   Replay a recorded bet log <examples/replay_bet_log>
    Strategy lab notebook <examples/strategy_lab>
 
 
