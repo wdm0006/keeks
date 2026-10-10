@@ -43,6 +43,17 @@ Repeated Multi-Outcome Simulator
     :undoc-members:
     :show-inheritance:
 
+Historical Multi-Outcome Simulator
+----------------------------------
+
+Replay chronological estimates and recorded winning leg indices with
+``HistoricalMultiOutcomeSimulator``. Use ``None`` for a void or push round;
+no random draws or seed are involved. The fixed decimal odds and settlement
+rules match the repeated simulator, while estimates can change each trial.
+
+.. autoclass:: keeks.multi_outcome.simulators.HistoricalMultiOutcomeSimulator
+    :members:
+
 Portfolio Simulator
 -------------------
 
@@ -54,7 +65,7 @@ Portfolio Simulator
 Seeding and Reproducibility
 ---------------------------
 
-Both simulators treat seeding as public, testable behavior — the same
+The two random simulators treat seeding as public, testable behavior — the same
 contract the binary simulators introduced in v0.6.0, generalized to
 per-stream spawned children:
 
