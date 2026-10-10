@@ -15,12 +15,14 @@ trial in one net batch.
 from keeks.multi_outcome.base import BaseMultiOutcomeStrategy
 from keeks.multi_outcome.kelly import MultiOutcomeKellyCriterion
 from keeks.multi_outcome.simulators import (
+    HistoricalMultiOutcomeSimulator,
     PortfolioSimulator,
     RepeatedMultiOutcomeSimulator,
 )
 
 __all__ = [
     "BaseMultiOutcomeStrategy",
+    "HistoricalMultiOutcomeSimulator",
     "MultiOutcomeKellyCriterion",
     "PortfolioSimulator",
     "RepeatedMultiOutcomeSimulator",

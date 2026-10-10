@@ -6,6 +6,8 @@ use and a ``record_settlement`` hook that reports each batch's full result.
 :class:`RepeatedMultiOutcomeSimulator` bets the mutually exclusive legs of
 one market per trial: one categorical draw realizes exactly one leg (the
 probability mass below one is a void or push on which no leg settles).
+:class:`HistoricalMultiOutcomeSimulator` replays recorded estimates and realized
+legs through the same market settlement flow without random draws.
 :class:`PortfolioSimulator` places M independent binary bets per trial:
 every staked bet settles on its own draw and the batch nets into one
 bankroll transaction.
@@ -107,6 +109,19 @@ def _validate_strategy_odds(strategy, payoffs, loss):
             "while the simulator settles with the simulator's, so the two "
             "must agree."
         )
+
+
+def _set_market_controls(simulator, payoffs, loss, fee_per_bet):
+    """Validate and store the common market settlement controls."""
+    simulator.payoffs: tuple[float, ...] = _validate_payoffs(payoffs)
+    loss = _require_finite(loss, "Loss")
+    if loss < 0:
+        raise ValueError("Loss must be non-negative")
+    fee_per_bet = _require_finite(fee_per_bet, "Fee per bet")
+    if fee_per_bet < 0:
+        raise ValueError("Fee per bet must be non-negative")
+    simulator.loss: float = loss
+    simulator.fee_per_bet: float = fee_per_bet
 
 
 class RepeatedMultiOutcomeSimulator:
@@ -233,15 +248,7 @@ class RepeatedMultiOutcomeSimulator:
         trials: int = 1000,
         seed: int | None = None,
     ) -> None:
-        self.payoffs: tuple[float, ...] = _validate_payoffs(payoffs)
-        loss = _require_finite(loss, "Loss")
-        if loss < 0:
-            raise ValueError("Loss must be non-negative")
-        fee_per_bet = _require_finite(fee_per_bet, "Fee per bet")
-        if fee_per_bet < 0:
-            raise ValueError("Fee per bet must be non-negative")
-        self.loss: float = loss
-        self.fee_per_bet: float = fee_per_bet
+        _set_market_controls(self, payoffs, loss, fee_per_bet)
 
         self.probabilities: np.ndarray = validate_probabilities(probabilities)
         if len(self.payoffs) != len(self.probabilities):
@@ -304,96 +311,206 @@ class RepeatedMultiOutcomeSimulator:
             stakes against different odds than the ones the simulator settles
             at, or if the strategy returns an invalid stake vector.
         """
-        _validate_strategy_odds(strategy, self.payoffs, self.loss)
+        _evaluate_market(
+            self, strategy, bankroll, lambda _: self.probabilities, self._draw_outcome
+        )
 
-        # Resolve state-dependent hooks once: neither the strategy's hook set
-        # nor the bankroll value changes between the reads within one trial.
-        update_bankroll = getattr(strategy, "update_bankroll", None)
-        if not callable(update_bankroll):
-            update_bankroll = None
-        record_settlement = getattr(strategy, "record_settlement", None)
-        if not callable(record_settlement):
-            record_settlement = None
+    def _draw_outcome(self, _trial):
+        outcome = (
+            self._outcome_rng.random()
+            if self._outcome_rng is not None
+            else np.random.random()
+        )
+        realized = int(np.searchsorted(self._cumulative, outcome, side="right"))
+        return realized if realized < len(self.probabilities) else None
 
-        for _ in range(self.trials):
-            # Stop if bankrupt
-            total_funds = bankroll.total_funds
-            if total_funds <= 0:
-                break
 
-            if update_bankroll is not None:
-                update_bankroll(total_funds)
+def _evaluate_market(simulator, strategy, bankroll, probability_at, outcome_at):
+    """Run market trials with shared validation, hooks and settlement."""
+    _validate_strategy_odds(strategy, simulator.payoffs, simulator.loss)
 
-            # Get the proportion to bet on each leg
-            fractions = _validate_stake_fractions(
-                strategy.evaluate(self.probabilities, total_funds),
-                leg_count=len(self.probabilities),
-            )
+    # Resolve state-dependent hooks once: neither the strategy's hook set
+    # nor the bankroll value changes between the reads within one trial.
+    update_bankroll = getattr(strategy, "update_bankroll", None)
+    if not callable(update_bankroll):
+        update_bankroll = None
+    record_settlement = getattr(strategy, "record_settlement", None)
+    if not callable(record_settlement):
+        record_settlement = None
 
-            # Only process the market if the strategy staked something (avoid
-            # charging costs on no-bet)
-            if not any(fractions):
-                continue
+    for trial in range(simulator.trials):
+        # Stop if bankrupt
+        total_funds = bankroll.total_funds
+        if total_funds <= 0:
+            break
 
-            outcome = (
-                self._outcome_rng.random()
-                if self._outcome_rng is not None
-                else np.random.random()
-            )
-            realized = int(np.searchsorted(self._cumulative, outcome, side="right"))
-            realized_leg = realized if realized < len(self.probabilities) else None
+        if update_bankroll is not None:
+            update_bankroll(total_funds)
 
-            returns = [0.0] * len(fractions)
+        probabilities = probability_at(trial)
+        fractions = _validate_stake_fractions(
+            strategy.evaluate(probabilities, total_funds),
+            leg_count=len(probabilities),
+        )
 
-            if realized_leg is None:
-                # Void or push: the market refunds every stake, so no leg
-                # settles and no fee is charged.
-                if record_settlement is not None:
-                    record_settlement(tuple([None] * len(returns)), tuple(returns))
-                continue
+        # Only process the market if the strategy staked something (avoid
+        # charging costs on no-bet)
+        if not any(fractions):
+            continue
 
-            # Stakes come from the bankroll as it stood when the trial began;
-            # settlements within the batch never resize later legs.
-            bettable_funds = bankroll.bettable_funds
-            bankroll_before = total_funds
-            batch_ruined = False
-            for leg, fraction in enumerate(fractions):
-                if fraction <= 0:
-                    continue
-                stake = bettable_funds * fraction
-                try:
-                    if leg == realized_leg:
-                        amount = ((self.payoffs[leg] - 1) * stake) - self.fee_per_bet
-                        if amount >= 0:
-                            bankroll.deposit(amount)
-                        else:
-                            bankroll.withdraw(abs(amount))
-                        returns[leg] = amount / bankroll_before
-                    else:
-                        amount = (self.loss * stake) + self.fee_per_bet
-                        bankroll.withdraw(amount)
-                        returns[leg] = -amount / bankroll_before
-                except RuinError as exc:
-                    # Settlement exceeded a bankroll safeguard: that leg's
-                    # settlement leaves the bankroll unchanged. Finish the
-                    # rest of the batch, then stop - never truncate mid-batch.
-                    # Warn loudly: the message names the attempted amount,
-                    # the configured limit, and current funds.
-                    warnings.warn(
-                        f"Settlement refused; the simulation stops after "
-                        f"this batch: {exc}",
-                        stacklevel=2,
-                    )
-                    batch_ruined = True
+        realized_leg = outcome_at(trial)
 
+        returns = [0.0] * len(fractions)
+
+        if realized_leg is None:
+            # Void or push: the market refunds every stake, so no leg
+            # settles and no fee is charged.
             if record_settlement is not None:
-                # One outcome flag per leg: the market draw realizes every
-                # leg at once - the realized leg wins, the others lose it.
-                won = [leg == realized_leg for leg in range(len(fractions))]
-                record_settlement(tuple(won), tuple(returns))
+                record_settlement(tuple([None] * len(returns)), tuple(returns))
+            continue
 
-            if batch_ruined:
-                break
+        # Stakes come from the bankroll as it stood when the trial began;
+        # settlements within the batch never resize later legs.
+        bettable_funds = bankroll.bettable_funds
+        bankroll_before = total_funds
+        batch_ruined = False
+        for leg, fraction in enumerate(fractions):
+            if fraction <= 0:
+                continue
+            stake = bettable_funds * fraction
+            try:
+                if leg == realized_leg:
+                    amount = (
+                        (simulator.payoffs[leg] - 1) * stake
+                    ) - simulator.fee_per_bet
+                    if amount >= 0:
+                        bankroll.deposit(amount)
+                    else:
+                        bankroll.withdraw(abs(amount))
+                    returns[leg] = amount / bankroll_before
+                else:
+                    amount = (simulator.loss * stake) + simulator.fee_per_bet
+                    bankroll.withdraw(amount)
+                    returns[leg] = -amount / bankroll_before
+            except RuinError as exc:
+                # Settlement exceeded a bankroll safeguard: that leg's
+                # settlement leaves the bankroll unchanged. Finish the
+                # rest of the batch, then stop - never truncate mid-batch.
+                # Warn loudly: the message names the attempted amount,
+                # the configured limit, and current funds.
+                warnings.warn(
+                    f"Settlement refused; the simulation stops after this batch: {exc}",
+                    stacklevel=3,
+                )
+                batch_ruined = True
+
+        if record_settlement is not None:
+            # One outcome flag per leg: the market draw realizes every
+            # leg at once - the realized leg wins, the others lose it.
+            won = [leg == realized_leg for leg in range(len(fractions))]
+            record_settlement(tuple(won), tuple(returns))
+
+        if batch_ruined:
+            break
+
+
+class HistoricalMultiOutcomeSimulator:
+    """
+    Replay recorded mutually exclusive markets without random draws or a seed.
+
+    Settlement, stake validation, hooks and early stopping follow
+    :class:`RepeatedMultiOutcomeSimulator`, including completing a batch after
+    a bankroll safeguard refuses a leg's settlement. Recorded rows advance even
+    when the strategy declines all legs. A void charges no fees and reports
+    ``None`` for every leg to ``record_settlement``.
+
+    Parameters
+    ----------
+    payoffs : sequence of float
+        Fixed decimal odds per leg, finite and greater than zero.
+    loss : float
+        Finite nonnegative multiplier applied to losing stakes.
+    fee_per_bet : float
+        Flat currency fee per settled, staked leg. This differs from a strategy's
+        per-unit fractional ``transaction_cost_rate`` used for sizing.
+    probabilities : sequence of probability vectors
+        One estimate vector per recorded market, in chronological order. Each
+        row must pass :func:`keeks.utils.validate_probabilities` and have one
+        entry per payoff. Missing probability mass represents a possible void.
+    outcomes : sequence of int or None
+        Recorded winning leg indices (zero-based), or ``None`` for a void/push.
+        Booleans and floats are rejected. Must match the number of rows.
+
+    Attributes
+    ----------
+    trials : int
+        Number of recorded markets, ``len(outcomes)``.
+
+    Raises
+    ------
+    ValueError
+        If settlement controls, probability rows or outcome indices are invalid,
+        or the recorded sequences differ in length. Validation precedes all bets.
+    """
+
+    def __init__(
+        self,
+        payoffs: Sequence[float],
+        loss: float,
+        fee_per_bet: float,
+        probabilities: Sequence[np.typing.ArrayLike],
+        outcomes: Sequence[int | None],
+    ) -> None:
+        _set_market_controls(self, payoffs, loss, fee_per_bet)
+        for name, values in (("probabilities", probabilities), ("outcomes", outcomes)):
+            if isinstance(values, str | bytes) or not hasattr(values, "__len__"):
+                raise ValueError(f"{name.capitalize()} must be a sequence")
+        if len(probabilities) != len(outcomes):
+            raise ValueError("Probabilities and outcomes must have the same length")
+        rows = []
+        for row in probabilities:
+            validated = validate_probabilities(row)
+            if len(validated) != len(self.payoffs):
+                raise ValueError("Each probability row must have one entry per payoff")
+            rows.append(validated.copy())
+        recorded = []
+        for i, outcome in enumerate(outcomes):
+            if outcome is not None:
+                if isinstance(outcome, bool | np.bool_):
+                    raise ValueError(
+                        f"Outcome at index {i} must be an integer leg or None"
+                    )
+                try:
+                    outcome = operator.index(outcome)
+                except TypeError as exc:
+                    raise ValueError(
+                        f"Outcome at index {i} must be an integer leg or None"
+                    ) from exc
+                if not 0 <= outcome < len(self.payoffs):
+                    raise ValueError(
+                        f"Outcome at index {i} is outside the payoff vector"
+                    )
+            recorded.append(outcome)
+        self.probabilities = tuple(rows)
+        self.outcomes = tuple(recorded)
+        self.trials = len(self.outcomes)
+
+    def evaluate_strategy(
+        self, strategy: BaseMultiOutcomeStrategy, bankroll: "BankRoll"
+    ) -> None:
+        """
+        Replay the log, updating the bankroll in place.
+
+        Raises ``ValueError`` for strategy odds mismatches or invalid stake
+        vectors, just like :class:`RepeatedMultiOutcomeSimulator`.
+        """
+        _evaluate_market(
+            self,
+            strategy,
+            bankroll,
+            self.probabilities.__getitem__,
+            self.outcomes.__getitem__,
+        )
 
 
 def _validate_bets(bets):
