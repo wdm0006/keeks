@@ -234,3 +234,27 @@ def test_documented_bias_figures_match_committed_csv():
             for key in ("median_terminal", "p5_terminal", "p95_terminal")
         ]
         assert float(early) == 100 * float(row["early_stop_rate"])
+
+
+def test_undefined_drawdown_keeps_zero_for_bankrupt_path(short_run, monkeypatch):
+    original_summary = short_run.summarize_history
+    seen = []
+
+    def summarize(history):
+        summary = original_summary(history)
+        seen.append(summary)
+        return summary
+
+    def bankrupt(_self, _strategy, bankroll):
+        bankroll.history[:] = [0.0, 0.0]
+        bankroll._bank = 0.0
+
+    monkeypatch.setattr(short_run, "summarize_history", summarize)
+    monkeypatch.setattr(
+        short_run.RepeatedBinarySimulator, "evaluate_strategy", bankrupt
+    )
+    result = short_run.run_path(short_run.BASE, "Kelly", 0)
+    assert len(seen) == 1
+    assert seen[0].max_drawdown is None
+    assert result.stop_reason == "bankruptcy"
+    assert result.max_drawdown == 0.0

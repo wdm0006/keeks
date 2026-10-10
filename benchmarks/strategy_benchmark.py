@@ -57,6 +57,7 @@ from keeks import (  # noqa: E402
     RiskBudgeting,
     bankroll_paths,
     scenario_model,
+    summarize_history,
 )
 from keeks.bankroll import BankRoll  # noqa: E402
 from keeks.binary_strategies import (  # noqa: E402
@@ -277,16 +278,6 @@ class PathResult:
     first_bet_fraction: float
 
 
-def _max_drawdown(history):
-    peak = history[0]
-    worst = 0.0
-    for value in history:
-        peak = max(peak, value)
-        if peak > 0:
-            worst = max(worst, (peak - value) / peak)
-    return worst
-
-
 def run_path(scenario, strategy_name, path_index):
     """Run one strategy over one seeded path and return its metrics."""
     # random.Random seeds a string deterministically (SHA-512 of the bytes), unlike
@@ -357,11 +348,12 @@ def run_path(scenario, strategy_name, path_index):
     stop_reason = bankroll.stop_reason
     if not stop_reason and trials_started < TRIALS:
         stop_reason = "bankruptcy"
+    max_drawdown = summarize_history(bankroll.history).max_drawdown
     return PathResult(
         terminal=terminal,
         trials_started=trials_started,
         bets_placed=counters["bets"],
-        max_drawdown=_max_drawdown(bankroll.history),
+        max_drawdown=0.0 if max_drawdown is None else max_drawdown,
         growth_rate=math.log(max(terminal, WEALTH_FLOOR) / INITIAL_FUNDS) / TRIALS,
         stop_reason=stop_reason,
         fees_paid=counters["bets"] * scenario.cost,
