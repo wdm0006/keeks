@@ -88,6 +88,7 @@ from keeks.calibration import (
     calibration_report,
 )
 from keeks.checks import check_allocation_strategy, check_model, check_strategy
+from keeks.comparison import StrategyComparison, compare_strategies
 from keeks.metrics import HistorySummary, summarize_history
 from keeks.multi_outcome import (
     BaseMultiOutcomeStrategy,
@@ -127,6 +128,7 @@ __all__ = [
     "BinaryBetsModel",
     "CalibrationBin",
     "CalibrationReport",
+    "StrategyComparison",
     "check_allocation_strategy",
     "check_model",
     "check_strategy",
@@ -171,6 +173,7 @@ __all__ = [
     "binary_bets_model",
     "black_litterman_mean",
     "calibration_report",
+    "compare_strategies",
     "correlation_heatmap",
     "crra_utility",
     "dendrogram",

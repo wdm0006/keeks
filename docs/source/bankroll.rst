@@ -35,3 +35,37 @@ nonpositive end funds, return from a zero start) are ``None`` rather than
 
 .. autoclass:: keeks.metrics.HistorySummary
     :no-members:
+
+Comparing strategies on a recorded log
+--------------------------------------
+
+:func:`keeks.comparison.compare_strategies` replays one recorded log through
+several strategies, each from a fresh strategy and a fresh bankroll, and
+returns one :class:`~keeks.comparison.StrategyComparison` per strategy (name
+plus its ``HistorySummary``), ranked by ``sort_by`` with undefined (``None``)
+values last.
+
+.. code-block:: python
+
+    from keeks import FixedFractionStrategy, KellyCriterion, compare_strategies
+
+    odds = {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.0}
+    rows = compare_strategies(
+        {
+            "Kelly": lambda: KellyCriterion(**odds),
+            "Fixed 5%": lambda: FixedFractionStrategy(**odds, fraction=0.05),
+        },
+        probabilities,
+        outcomes,
+        payoff=1.0,
+        loss=1.0,
+        fee_per_bet=0.0,
+        initial_funds=1000.0,
+    )
+    for row in rows:
+        print(row.name, row.summary.max_drawdown)
+
+.. autofunction:: keeks.comparison.compare_strategies
+
+.. autoclass:: keeks.comparison.StrategyComparison
+    :no-members:
