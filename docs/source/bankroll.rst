@@ -69,3 +69,43 @@ values last.
 
 .. autoclass:: keeks.comparison.StrategyComparison
     :no-members:
+
+How sure is the ranking?
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+A single replay is one draw. :func:`keeks.comparison.bootstrap_comparison`
+resamples the log's bets (``block_size`` > 1 resamples moving blocks), replays
+every strategy on the same resample so differences are paired, and returns a
+:class:`~keeks.comparison.BootstrapRow` per strategy: the full-log ``point``
+value, percentile ``lower``/``upper`` bounds, and ``rank_counts`` (how often it
+ranked first, second, ...). ``seed`` is required and uses a private generator.
+Resamples where the metric is undefined are excluded from the bounds and
+counted in ``undefined``.
+
+.. code-block:: pycon
+
+    >>> from keeks import FixedFractionStrategy, bootstrap_comparison
+    >>> odds = {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.0}
+    >>> rows = bootstrap_comparison(
+    ...     {
+    ...         "Fixed 1%": lambda: FixedFractionStrategy(**odds, fraction=0.01),
+    ...         "Fixed 10%": lambda: FixedFractionStrategy(**odds, fraction=0.1),
+    ...     },
+    ...     [0.7] * 8,
+    ...     [1] * 8,
+    ...     payoff=1.0, loss=1.0, fee_per_bet=0.0, initial_funds=100.0,
+    ...     n_resamples=20, seed=1,
+    ... )
+    >>> [(row.name, round(row.point, 3), row.rank_counts) for row in rows]
+    [('Fixed 1%', 0.01, (0, 20)), ('Fixed 10%', 0.1, (20, 0))]
+
+.. note::
+
+   The intervals reflect sampling of the recorded log only. They say nothing
+   about model error, a changed edge, or a different future. Runtime is
+   ``n_resamples`` times one :func:`~keeks.comparison.compare_strategies` call.
+
+.. autofunction:: keeks.comparison.bootstrap_comparison
+
+.. autoclass:: keeks.comparison.BootstrapRow
+    :no-members:
