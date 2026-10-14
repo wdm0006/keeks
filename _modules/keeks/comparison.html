@@ -174,8 +174,12 @@
           <div class="body" role="main">
             
   <h1>Source code for keeks.comparison</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.bankroll</span><span class="w"> </span><span class="kn">import</span> <span class="n">BankRoll</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.binary_strategies.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStrategy</span>
@@ -310,6 +314,194 @@
     <span class="n">undefined</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span> <span class="k">if</span> <span class="n">value</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
     <span class="n">defined</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="n">sort_by</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ASCENDING</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">defined</span> <span class="o">+</span> <span class="n">undefined</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="BootstrapRow">
+<a class="viewcode-back" href="../../bankroll.html#keeks.comparison.BootstrapRow">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BootstrapRow</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    One strategy's bootstrap result for the ``sort_by`` metric.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The key the strategy was supplied under.</span>
+<span class="sd">    point : float or None</span>
+<span class="sd">        The metric on the full log (``None`` if undefined there).</span>
+<span class="sd">    lower, upper : float or None</span>
+<span class="sd">        Percentile bounds over the resamples where the metric was defined</span>
+<span class="sd">        (``None`` if it was never defined).</span>
+<span class="sd">    undefined : int</span>
+<span class="sd">        Resamples where the metric was undefined; excluded from the bounds.</span>
+<span class="sd">    rank_counts : tuple of int</span>
+<span class="sd">        ``rank_counts[k]`` is how many resamples ranked the strategy ``k``-th</span>
+<span class="sd">        (zero-based, best first).</span>
+<span class="sd">    """</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">point</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">lower</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">upper</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">undefined</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">rank_counts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimum</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be an integer &gt;= </span><span class="si">{</span><span class="n">minimum</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be an integer &gt;= </span><span class="si">{</span><span class="n">minimum</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be an integer &gt;= </span><span class="si">{</span><span class="n">minimum</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<div class="viewcode-block" id="bootstrap_comparison">
+<a class="viewcode-back" href="../../bankroll.html#keeks.comparison.bootstrap_comparison">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">bootstrap_comparison</span><span class="p">(</span>
+    <span class="n">strategies</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">BaseStrategy</span><span class="p">]],</span>
+    <span class="n">probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">payoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">fee_per_bet</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">initial_funds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">percent_bettable</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">max_transaction_loss</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">n_resamples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="n">block_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+    <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"geometric_growth_per_period"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BootstrapRow</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Put percentile intervals and rank counts on a strategy comparison.</span>
+
+<span class="sd">    The log's bets are resampled with replacement (or in moving blocks of</span>
+<span class="sd">    ``block_size``), kept in chronological order, and every strategy is</span>
+<span class="sd">    replayed on the *same* resample via :func:`compare_strategies`, so</span>
+<span class="sd">    differences between strategies are paired. Intervals reflect sampling of</span>
+<span class="sd">    the recorded log only, not model error or a different future. Runtime is</span>
+<span class="sd">    ``n_resamples`` times the cost of one :func:`compare_strategies` call.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    strategies, probabilities, outcomes, payoff, loss, fee_per_bet, \</span>
+<span class="sd">initial_funds, percent_bettable, max_transaction_loss, sort_by</span>
+<span class="sd">        As for :func:`compare_strategies`.</span>
+<span class="sd">    n_resamples : int, default=200</span>
+<span class="sd">        Number of bootstrap resamples (at least 1).</span>
+<span class="sd">    block_size : int, default=1</span>
+<span class="sd">        Length of the moving blocks; 1 resamples single bets. Must not exceed</span>
+<span class="sd">        the log length.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        Required nonnegative integer seeding a private</span>
+<span class="sd">        ``numpy.random.Generator``; the global RNG is never used.</span>
+<span class="sd">    confidence : float, default=0.9</span>
+<span class="sd">        Central interval mass, strictly between 0 and 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple of BootstrapRow</span>
+<span class="sd">        One row per strategy in the mapping's order.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``n_resamples``, ``block_size``, ``confidence`` or ``seed`` is</span>
+<span class="sd">        invalid, or the log or strategies are; checked before any replay.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from keeks import FixedFractionStrategy</span>
+<span class="sd">    &gt;&gt;&gt; odds = {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.0}</span>
+<span class="sd">    &gt;&gt;&gt; rows = bootstrap_comparison(</span>
+<span class="sd">    ...     {</span>
+<span class="sd">    ...         "none": lambda: FixedFractionStrategy(**odds, fraction=0.0),</span>
+<span class="sd">    ...         "10%": lambda: FixedFractionStrategy(**odds, fraction=0.1),</span>
+<span class="sd">    ...     },</span>
+<span class="sd">    ...     [0.7] * 8,</span>
+<span class="sd">    ...     [1] * 8,</span>
+<span class="sd">    ...     payoff=1.0, loss=1.0, fee_per_bet=0.0, initial_funds=100.0,</span>
+<span class="sd">    ...     n_resamples=20, seed=1,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; [(row.name, row.rank_counts) for row in rows]</span>
+<span class="sd">    [('none', (0, 20)), ('10%', (20, 0))]</span>
+<span class="sd">    """</span>
+    <span class="n">n_resamples</span> <span class="o">=</span> <span class="n">_require_int</span><span class="p">(</span><span class="n">n_resamples</span><span class="p">,</span> <span class="s2">"n_resamples"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">block_size</span> <span class="o">=</span> <span class="n">_require_int</span><span class="p">(</span><span class="n">block_size</span><span class="p">,</span> <span class="s2">"block_size"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"seed is required"</span><span class="p">)</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="n">_require_int</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="s2">"seed"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">confidence</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">confidence</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"confidence must be strictly between 0 and 1"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">confidence</span><span class="p">)</span> <span class="ow">and</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">confidence</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"confidence must be strictly between 0 and 1"</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">block_size</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"block_size must not exceed the number of bets"</span><span class="p">)</span>
+
+    <span class="n">run</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"payoff"</span><span class="p">:</span> <span class="n">payoff</span><span class="p">,</span>
+        <span class="s2">"loss"</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span>
+        <span class="s2">"fee_per_bet"</span><span class="p">:</span> <span class="n">fee_per_bet</span><span class="p">,</span>
+        <span class="s2">"initial_funds"</span><span class="p">:</span> <span class="n">initial_funds</span><span class="p">,</span>
+        <span class="s2">"percent_bettable"</span><span class="p">:</span> <span class="n">percent_bettable</span><span class="p">,</span>
+        <span class="s2">"max_transaction_loss"</span><span class="p">:</span> <span class="n">max_transaction_loss</span><span class="p">,</span>
+        <span class="s2">"sort_by"</span><span class="p">:</span> <span class="n">sort_by</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">full</span> <span class="o">=</span> <span class="n">compare_strategies</span><span class="p">(</span><span class="n">strategies</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="o">**</span><span class="n">run</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">strategies</span><span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">{</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">summary</span><span class="p">,</span> <span class="n">sort_by</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">full</span><span class="p">}</span>
+
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">n_blocks</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">n</span> <span class="o">//</span> <span class="n">block_size</span><span class="p">)</span>
+    <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_resamples</span><span class="p">):</span>
+        <span class="n">starts</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">block_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_blocks</span><span class="p">)</span>
+        <span class="n">picked</span> <span class="o">=</span> <span class="p">(</span><span class="n">starts</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">block_size</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[:</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">picked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">picked</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">compare_strategies</span><span class="p">(</span>
+            <span class="n">strategies</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">probabilities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">picked</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">outcomes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">picked</span><span class="p">],</span>
+            <span class="o">**</span><span class="n">run</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">ranks</span><span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="n">rank</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">summary</span><span class="p">,</span> <span class="n">sort_by</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="n">tail</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">confidence</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="mf">100.0</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">seen</span><span class="p">,</span> <span class="p">[</span><span class="n">tail</span><span class="p">,</span> <span class="mi">100</span> <span class="o">-</span> <span class="n">tail</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="n">upper</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">BootstrapRow</span><span class="p">(</span>
+                <span class="n">name</span><span class="p">,</span>
+                <span class="kc">None</span> <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">point</span><span class="p">),</span>
+                <span class="n">lower</span><span class="p">,</span>
+                <span class="n">upper</span><span class="p">,</span>
+                <span class="n">n_resamples</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">seen</span><span class="p">),</span>
+                <span class="nb">tuple</span><span class="p">(</span><span class="n">ranks</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 </pre></div>
 
