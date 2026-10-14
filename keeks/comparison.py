@@ -1,5 +1,9 @@
+import math
+import operator
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, fields
+
+import numpy as np
 
 from keeks.bankroll import BankRoll
 from keeks.binary_strategies.base import BaseStrategy
@@ -129,3 +133,185 @@ def compare_strategies(
     undefined = [row for row in rows if value(row) is None]
     defined.sort(key=value, reverse=sort_by not in _ASCENDING)
     return tuple(defined + undefined)
+
+
+@dataclass(frozen=True)
+class BootstrapRow:
+    """
+    One strategy's bootstrap result for the ``sort_by`` metric.
+
+    Attributes
+    ----------
+    name : str
+        The key the strategy was supplied under.
+    point : float or None
+        The metric on the full log (``None`` if undefined there).
+    lower, upper : float or None
+        Percentile bounds over the resamples where the metric was defined
+        (``None`` if it was never defined).
+    undefined : int
+        Resamples where the metric was undefined; excluded from the bounds.
+    rank_counts : tuple of int
+        ``rank_counts[k]`` is how many resamples ranked the strategy ``k``-th
+        (zero-based, best first).
+    """
+
+    name: str
+    point: float | None
+    lower: float | None
+    upper: float | None
+    undefined: int
+    rank_counts: tuple[int, ...]
+
+
+def _require_int(value, name, minimum):
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be an integer >= {minimum}")
+    try:
+        value = operator.index(value)
+    except TypeError as exc:
+        raise ValueError(f"{name} must be an integer >= {minimum}") from exc
+    if value < minimum:
+        raise ValueError(f"{name} must be an integer >= {minimum}")
+    return value
+
+
+def bootstrap_comparison(
+    strategies: Mapping[str, Callable[[], BaseStrategy]],
+    probabilities: Sequence[float],
+    outcomes: Sequence[bool | int],
+    *,
+    payoff: float,
+    loss: float,
+    fee_per_bet: float,
+    initial_funds: float,
+    percent_bettable: float = 1.0,
+    max_transaction_loss: float | None = None,
+    n_resamples: int = 200,
+    block_size: int = 1,
+    seed: int | None = None,
+    confidence: float = 0.9,
+    sort_by: str = "geometric_growth_per_period",
+) -> tuple[BootstrapRow, ...]:
+    """
+    Put percentile intervals and rank counts on a strategy comparison.
+
+    The log's bets are resampled with replacement (or in moving blocks of
+    ``block_size``), kept in chronological order, and every strategy is
+    replayed on the *same* resample via :func:`compare_strategies`, so
+    differences between strategies are paired. Intervals reflect sampling of
+    the recorded log only, not model error or a different future. Runtime is
+    ``n_resamples`` times the cost of one :func:`compare_strategies` call.
+
+    Parameters
+    ----------
+    strategies, probabilities, outcomes, payoff, loss, fee_per_bet, \
+initial_funds, percent_bettable, max_transaction_loss, sort_by
+        As for :func:`compare_strategies`.
+    n_resamples : int, default=200
+        Number of bootstrap resamples (at least 1).
+    block_size : int, default=1
+        Length of the moving blocks; 1 resamples single bets. Must not exceed
+        the log length.
+    seed : int
+        Required nonnegative integer seeding a private
+        ``numpy.random.Generator``; the global RNG is never used.
+    confidence : float, default=0.9
+        Central interval mass, strictly between 0 and 1.
+
+    Returns
+    -------
+    tuple of BootstrapRow
+        One row per strategy in the mapping's order.
+
+    Raises
+    ------
+    ValueError
+        If ``n_resamples``, ``block_size``, ``confidence`` or ``seed`` is
+        invalid, or the log or strategies are; checked before any replay.
+
+    Examples
+    --------
+    >>> from keeks import FixedFractionStrategy
+    >>> odds = {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.0}
+    >>> rows = bootstrap_comparison(
+    ...     {
+    ...         "none": lambda: FixedFractionStrategy(**odds, fraction=0.0),
+    ...         "10%": lambda: FixedFractionStrategy(**odds, fraction=0.1),
+    ...     },
+    ...     [0.7] * 8,
+    ...     [1] * 8,
+    ...     payoff=1.0, loss=1.0, fee_per_bet=0.0, initial_funds=100.0,
+    ...     n_resamples=20, seed=1,
+    ... )
+    >>> [(row.name, row.rank_counts) for row in rows]
+    [('none', (0, 20)), ('10%', (20, 0))]
+    """
+    n_resamples = _require_int(n_resamples, "n_resamples", 1)
+    block_size = _require_int(block_size, "block_size", 1)
+    if seed is None:
+        raise ValueError("seed is required")
+    seed = _require_int(seed, "seed", 0)
+    try:
+        confidence = float(confidence)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("confidence must be strictly between 0 and 1") from exc
+    if not (math.isfinite(confidence) and 0.0 < confidence < 1.0):
+        raise ValueError("confidence must be strictly between 0 and 1")
+    n = len(probabilities)
+    if block_size > n:
+        raise ValueError("block_size must not exceed the number of bets")
+
+    run = {
+        "payoff": payoff,
+        "loss": loss,
+        "fee_per_bet": fee_per_bet,
+        "initial_funds": initial_funds,
+        "percent_bettable": percent_bettable,
+        "max_transaction_loss": max_transaction_loss,
+        "sort_by": sort_by,
+    }
+    full = compare_strategies(strategies, probabilities, outcomes, **run)
+    names = list(strategies)
+    points = {row.name: getattr(row.summary, sort_by) for row in full}
+
+    rng = np.random.default_rng(seed)
+    n_blocks = -(-n // block_size)
+    values: dict[str, list[float]] = {name: [] for name in names}
+    ranks = {name: [0] * len(names) for name in names}
+    for _ in range(n_resamples):
+        starts = rng.integers(0, n - block_size + 1, size=n_blocks)
+        picked = (starts[:, None] + np.arange(block_size)).ravel()[:n]
+        picked = np.sort(picked)
+        rows = compare_strategies(
+            strategies,
+            [probabilities[i] for i in picked],
+            [outcomes[i] for i in picked],
+            **run,
+        )
+        for rank, row in enumerate(rows):
+            ranks[row.name][rank] += 1
+            value = getattr(row.summary, sort_by)
+            if value is not None:
+                values[row.name].append(float(value))
+
+    tail = (1.0 - confidence) / 2.0 * 100.0
+    result = []
+    for name in names:
+        seen = values[name]
+        if seen:
+            lower, upper = (float(v) for v in np.percentile(seen, [tail, 100 - tail]))
+        else:
+            lower = upper = None
+        point = points[name]
+        result.append(
+            BootstrapRow(
+                name,
+                None if point is None else float(point),
+                lower,
+                upper,
+                n_resamples - len(seen),
+                tuple(ranks[name]),
+            )
+        )
+    return tuple(result)
