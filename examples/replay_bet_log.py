@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import json
 from dataclasses import asdict
 from pathlib import Path
 
@@ -16,12 +17,41 @@ from keeks import (
     FractionalKellyCriterion,
     HistoricalBinarySimulator,
     KellyCriterion,
+    bootstrap_comparison,
+    calibration_report,
+    compare_strategies,
     summarize_history,
 )
 
 DATA_PATH = Path(__file__).resolve().parent / "data" / "synthetic_bet_log.csv"
 OUTPUT_DIR = Path(__file__).resolve().parent / "output"
 INITIAL_BANKROLL = 1000.0
+ECONOMICS = {
+    "payoff": 1.0,
+    "loss": 1.0,
+    "fee_per_bet": 0.0,
+    "initial_funds": INITIAL_BANKROLL,
+    "percent_bettable": 1.0,
+    "max_transaction_loss": None,
+}
+TRANSACTION_COST_RATE = 0.0
+SORT_BY = "geometric_growth_per_period"
+BOOTSTRAP = {"seed": 153, "n_resamples": 200, "block_size": 1, "confidence": 0.9}
+N_BINS = 10
+
+
+def strategy_factories():
+    """Build fresh policies with the same odds and per-unit costs for every replay."""
+    odds = {
+        "payoff": ECONOMICS["payoff"],
+        "loss": ECONOMICS["loss"],
+        "transaction_cost_rate": TRANSACTION_COST_RATE,
+    }
+    return {
+        "Kelly": lambda: KellyCriterion(**odds),
+        "Half Kelly": lambda: FractionalKellyCriterion(**odds, fraction=0.5),
+        "Fixed 5%": lambda: FixedFractionStrategy(**odds, fraction=0.05),
+    }
 
 
 def load_bet_log(csv_path=DATA_PATH):
@@ -37,24 +67,27 @@ def load_bet_log(csv_path=DATA_PATH):
 def replay_bet_log(csv_path=DATA_PATH):
     """Compare fresh strategies on the same recorded, even-money bets."""
     probabilities, outcomes = load_bet_log(csv_path)
+    return replay_rows(probabilities, outcomes, strategy_factories())
+
+
+def replay_rows(probabilities, outcomes, factories):
+    """Replay already loaded rows for the legacy CSV and settled-bet paths."""
     simulator = HistoricalBinarySimulator(
-        payoff=1.0,
-        loss=1.0,
-        fee_per_bet=0.0,
+        payoff=ECONOMICS["payoff"],
+        loss=ECONOMICS["loss"],
+        fee_per_bet=ECONOMICS["fee_per_bet"],
         probabilities=probabilities,
         outcomes=outcomes,
     )
-    odds = {"payoff": 1.0, "loss": 1.0, "transaction_cost_rate": 0.0}
-    strategies = {
-        "Kelly": KellyCriterion(**odds),
-        "Half Kelly": FractionalKellyCriterion(**odds, fraction=0.5),
-        "Fixed 5%": FixedFractionStrategy(**odds, fraction=0.05),
-    }
     results = []
     histories = {}
-    for name, strategy in strategies.items():
-        bankroll = BankRoll(INITIAL_BANKROLL)
-        simulator.evaluate_strategy(strategy, bankroll)
+    for name, factory in factories.items():
+        bankroll = BankRoll(
+            ECONOMICS["initial_funds"],
+            ECONOMICS["percent_bettable"],
+            ECONOMICS["max_transaction_loss"],
+        )
+        simulator.evaluate_strategy(factory(), bankroll)
         results.append(
             {
                 "strategy": name,
@@ -67,10 +100,45 @@ def replay_bet_log(csv_path=DATA_PATH):
 
 
 def main(csv_path=DATA_PATH, output_dir=OUTPUT_DIR):
-    """Write the summary CSV and one headless bankroll-path chart."""
-    results, histories = replay_bet_log(csv_path)
+    """Write CSV, JSON diagnostics and one headless bankroll-path chart."""
+    probabilities, outcomes = load_bet_log(csv_path)
+    factories = strategy_factories()
+    results, histories = replay_rows(probabilities, outcomes, factories)
+    report = {
+        "settings": {
+            "input_rows": len(probabilities),
+            **ECONOMICS,
+            "transaction_cost_rate": TRANSACTION_COST_RATE,
+            "sort_by": SORT_BY,
+            "n_bins": N_BINS,
+            **BOOTSTRAP,
+        },
+        "calibration": asdict(
+            calibration_report(probabilities, outcomes, n_bins=N_BINS)
+        ),
+        "rankings": [
+            asdict(row)
+            for row in compare_strategies(
+                factories, probabilities, outcomes, **ECONOMICS, sort_by=SORT_BY
+            )
+        ],
+        "uncertainty": [
+            asdict(row)
+            for row in bootstrap_comparison(
+                factories,
+                probabilities,
+                outcomes,
+                **ECONOMICS,
+                sort_by=SORT_BY,
+                **BOOTSTRAP,
+            )
+        ],
+    }
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "replay_bet_log.json").write_text(
+        json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
     with (output_dir / "replay_bet_log.csv").open(
         "w", newline="", encoding="utf-8"
     ) as destination:

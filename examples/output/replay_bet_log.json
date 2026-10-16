@@ -1,0 +1,118 @@
+{
+  "settings": {
+    "input_rows": 60,
+    "payoff": 1.0,
+    "loss": 1.0,
+    "fee_per_bet": 0.0,
+    "initial_funds": 1000.0,
+    "percent_bettable": 1.0,
+    "max_transaction_loss": null,
+    "transaction_cost_rate": 0.0,
+    "sort_by": "geometric_growth_per_period",
+    "n_bins": 10,
+    "seed": 153,
+    "n_resamples": 200,
+    "block_size": 1,
+    "confidence": 0.9
+  },
+  "calibration": {
+    "n": 60,
+    "brier_score": 0.2540433333333334,
+    "log_loss": 0.7013590349474131,
+    "min_clipped": false,
+    "max_clipped": false,
+    "base_rate": 0.5,
+    "bins": [
+      {
+        "lower": 0.5,
+        "upper": 0.6,
+        "count": 38,
+        "mean_predicted": 0.551578947368421,
+        "observed_frequency": 0.47368421052631576
+      },
+      {
+        "lower": 0.6,
+        "upper": 0.7,
+        "count": 22,
+        "mean_predicted": 0.5999999999999999,
+        "observed_frequency": 0.5454545454545454
+      }
+    ]
+  },
+  "rankings": [
+    {
+      "name": "Half Kelly",
+      "summary": {
+        "bets": 60,
+        "start": 1000.0,
+        "end": 930.98,
+        "total_return": -0.06901999999999997,
+        "geometric_growth_per_period": -0.0011912479703595213,
+        "max_drawdown": 0.48380001132866346,
+        "ruined": false
+      }
+    },
+    {
+      "name": "Fixed 5%",
+      "summary": {
+        "bets": 60,
+        "start": 1000.0,
+        "end": 927.65,
+        "total_return": -0.07235000000000003,
+        "geometric_growth_per_period": -0.001250896517715594,
+        "max_drawdown": 0.42332380952380955,
+        "ruined": false
+      }
+    },
+    {
+      "name": "Kelly",
+      "summary": {
+        "bets": 60,
+        "start": 1000.0,
+        "end": 610.96,
+        "total_return": -0.38903999999999994,
+        "geometric_growth_per_period": -0.008178436261167654,
+        "max_drawdown": 0.7805768701804972,
+        "ruined": false
+      }
+    }
+  ],
+  "uncertainty": [
+    {
+      "name": "Kelly",
+      "point": -0.008178436261167654,
+      "lower": -0.03908755463700679,
+      "upper": 0.023864813953560094,
+      "undefined": 0,
+      "rank_counts": [
+        54,
+        9,
+        137
+      ]
+    },
+    {
+      "name": "Half Kelly",
+      "point": -0.0011912479703595213,
+      "lower": -0.016863358550532337,
+      "upper": 0.014428080614908374,
+      "undefined": 0,
+      "rank_counts": [
+        52,
+        145,
+        3
+      ]
+    },
+    {
+      "name": "Fixed 5%",
+      "point": -0.001250896517715594,
+      "lower": -0.012844814123821657,
+      "upper": 0.008795265893894788,
+      "undefined": 0,
+      "rank_counts": [
+        94,
+        46,
+        60
+      ]
+    }
+  ]
+}
