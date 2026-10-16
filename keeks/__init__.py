@@ -70,6 +70,7 @@ from keeks.allocation.base import (
     EIGENVALUE_FLOOR,
 )
 from keeks.bankroll import BankRoll
+from keeks.bet_log import load_bet_log
 from keeks.binary_strategies import (
     CPPIStrategy,
     DrawdownAdjustedKelly,
@@ -190,6 +191,7 @@ __all__ = [
     "expected_utility",
     "find_indifference_price",
     "fit_marginals_model",
+    "load_bet_log",
     "marginals_model",
     "validate_probabilities",
     "risk_contributions",
