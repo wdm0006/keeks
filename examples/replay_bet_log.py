@@ -20,6 +20,7 @@ from keeks import (
     bootstrap_comparison,
     calibration_report,
     compare_strategies,
+    load_bet_log,
     summarize_history,
 )
 
@@ -52,16 +53,6 @@ def strategy_factories():
         "Half Kelly": lambda: FractionalKellyCriterion(**odds, fraction=0.5),
         "Fixed 5%": lambda: FixedFractionStrategy(**odds, fraction=0.05),
     }
-
-
-def load_bet_log(csv_path=DATA_PATH):
-    """Load chronological probability estimates and integer 0/1 outcomes."""
-    with Path(csv_path).open(newline="", encoding="utf-8") as source:
-        rows = list(csv.DictReader(source))
-    return (
-        [float(row["probability"]) for row in rows],
-        [int(row["outcome"]) for row in rows],
-    )
 
 
 def replay_bet_log(csv_path=DATA_PATH):
