@@ -285,16 +285,47 @@ These are summaries of one path, not averages over repeated simulations.</p>
 make<span class="w"> </span>examples
 </pre></div>
 </div>
-<p>The script writes <code class="docutils literal notranslate"><span class="pre">examples/output/replay_bet_log.csv</span></code> and
+<p>The script writes <code class="docutils literal notranslate"><span class="pre">examples/output/replay_bet_log.json</span></code>,
+<code class="docutils literal notranslate"><span class="pre">examples/output/replay_bet_log.csv</span></code> and
 <code class="docutils literal notranslate"><span class="pre">examples/output/replay_bet_log.png</span></code> using a headless matplotlib backend.
 Rerunning with the same input produces byte-identical CSV.
 To compare your own chronological CSV with the same odds assumptions:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>examples/replay_bet_log.py<span class="w"> </span>/path/to/my_bets.csv
 </pre></div>
 </div>
-<p>This overwrites the two example outputs; keep your personal log and generated
+<p>This overwrites the three example outputs; keep your personal log and generated
 results out of version control. The complete loading, replay and summary code
 is in <a class="reference external" href="https://github.com/wdm0006/keeks/blob/master/examples/replay_bet_log.py">replay_bet_log.py</a>.</p>
+</section>
+<section id="machine-readable-diagnostics">
+<h2>Machine-readable diagnostics<a class="headerlink" href="#machine-readable-diagnostics" title="Link to this heading">¶</a></h2>
+<p>Download the <a class="reference download internal" download="" href="../_downloads/ba94739058cf75f843200eec3e40c837/replay_bet_log.json"><code class="xref download docutils literal notranslate"><span class="pre">synthetic</span> <span class="pre">JSON</span> <span class="pre">report</span></code></a>.
+It records calibration scores and non-empty equal-width bins from
+<a class="reference internal" href="../utils.html#keeks.calibration.calibration_report" title="keeks.calibration.calibration_report"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration_report()</span></code></a>, named point summaries in best-first
+order from <a class="reference internal" href="../bankroll.html#keeks.comparison.compare_strategies" title="keeks.comparison.compare_strategies"><code class="xref py py-func docutils literal notranslate"><span class="pre">compare_strategies()</span></code></a>, and uncertainty from
+<a class="reference internal" href="../bankroll.html#keeks.comparison.bootstrap_comparison" title="keeks.comparison.bootstrap_comparison"><code class="xref py py-func docutils literal notranslate"><span class="pre">bootstrap_comparison()</span></code></a>. All consume the same loaded
+chronological rows and fresh strategy factories with the economics above.
+CSV rows and plotted paths retain their original strategy order.</p>
+<p>Fixed defaults are 10 calibration bins, sorting by
+<code class="docutils literal notranslate"><span class="pre">geometric_growth_per_period</span></code>, seed 153, 200 resamples, block size 1 and
+confidence 0.9 (central 90% percentile intervals). The modest resample count
+keeps this local example quick. The JSON records these settings, input row
+count, initial funds, bettable fraction, loss cap, odds and both fee units.
+The same input and seed reproduce identical report values. To select a different
+output directory from Python, call <code class="docutils literal notranslate"><span class="pre">main(output_dir=...)</span></code> in the example module.</p>
+<p>Bootstrap resamples share rows across policies and sort sampled indices back
+into chronological order. Block size 1 samples individual input rows; it does
+not preserve serial dependence. Intervals describe sampling uncertainty in this
+record only: they exclude probability-model error and future regime change.
+They apply to growth per settled bet, whose denominator can differ across
+policies, rather than per input row or calendar period.</p>
+<p>Undefined metrics and bounds are JSON <code class="docutils literal notranslate"><span class="pre">null</span></code>. Each uncertainty row counts
+undefined resamples explicitly; these are excluded from its percentile bounds.
+<code class="docutils literal notranslate"><span class="pre">rank_counts[k]</span></code> counts position <code class="docutils literal notranslate"><span class="pre">k</span></code> (zero-based, best first), including
+undefined results ranked last. Ties retain factory order, so rank counts are
+not probabilities of strict superiority. Neither overlapping intervals nor
+rank counts prove a profitable policy. Calibration scores on this short log
+also do not establish future calibration.</p>
 </section>
 </section>
 

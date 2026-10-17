@@ -76,7 +76,8 @@ From a repository checkout with development dependencies installed:
    # Or run the examples group:
    make examples
 
-The script writes ``examples/output/replay_bet_log.csv`` and
+The script writes ``examples/output/replay_bet_log.json``,
+``examples/output/replay_bet_log.csv`` and
 ``examples/output/replay_bet_log.png`` using a headless matplotlib backend.
 Rerunning with the same input produces byte-identical CSV.
 To compare your own chronological CSV with the same odds assumptions:
@@ -85,6 +86,40 @@ To compare your own chronological CSV with the same odds assumptions:
 
    uv run python examples/replay_bet_log.py /path/to/my_bets.csv
 
-This overwrites the two example outputs; keep your personal log and generated
+This overwrites the three example outputs; keep your personal log and generated
 results out of version control. The complete loading, replay and summary code
 is in `replay_bet_log.py <https://github.com/wdm0006/keeks/blob/master/examples/replay_bet_log.py>`_.
+
+Machine-readable diagnostics
+----------------------------
+
+Download the :download:`synthetic JSON report <../../../examples/output/replay_bet_log.json>`.
+It records calibration scores and non-empty equal-width bins from
+:func:`~keeks.calibration.calibration_report`, named point summaries in best-first
+order from :func:`~keeks.comparison.compare_strategies`, and uncertainty from
+:func:`~keeks.comparison.bootstrap_comparison`. All consume the same loaded
+chronological rows and fresh strategy factories with the economics above.
+CSV rows and plotted paths retain their original strategy order.
+
+Fixed defaults are 10 calibration bins, sorting by
+``geometric_growth_per_period``, seed 153, 200 resamples, block size 1 and
+confidence 0.9 (central 90% percentile intervals). The modest resample count
+keeps this local example quick. The JSON records these settings, input row
+count, initial funds, bettable fraction, loss cap, odds and both fee units.
+The same input and seed reproduce identical report values. To select a different
+output directory from Python, call ``main(output_dir=...)`` in the example module.
+
+Bootstrap resamples share rows across policies and sort sampled indices back
+into chronological order. Block size 1 samples individual input rows; it does
+not preserve serial dependence. Intervals describe sampling uncertainty in this
+record only: they exclude probability-model error and future regime change.
+They apply to growth per settled bet, whose denominator can differ across
+policies, rather than per input row or calendar period.
+
+Undefined metrics and bounds are JSON ``null``. Each uncertainty row counts
+undefined resamples explicitly; these are excluded from its percentile bounds.
+``rank_counts[k]`` counts position ``k`` (zero-based, best first), including
+undefined results ranked last. Ties retain factory order, so rank counts are
+not probabilities of strict superiority. Neither overlapping intervals nor
+rank counts prove a profitable policy. Calibration scores on this short log
+also do not establish future calibration.
