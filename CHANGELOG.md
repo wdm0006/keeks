@@ -5,6 +5,7 @@ v0.9.0
 
  * Replay recorded binary bets and exclusive multi-outcome markets with `HistoricalBinarySimulator` and `HistoricalMultiOutcomeSimulator`, without random draws
  * Summarize bankroll histories with `summarize_history` and immutable `HistorySummary` records, including growth, drawdown and ruin; undefined metrics remain `None`
+ * Load a recorded bet log from CSV with `load_bet_log`, which validates rows and reports errors by row number, ready for the historical simulators and `compare_strategies`
  * Check probability estimates with `calibration_report`, including reliability bins, Brier score and clipped log loss
  * Rank fresh binary policies on one recorded log with `compare_strategies`; use `bootstrap_comparison` for paired percentile intervals and rank counts with an explicit seed, optional moving blocks and chronological replay
  * A recorded-log example exports calibration, rankings and uncertainty together as CSV, PNG and JSON; the strategy lab and benchmark share history summaries, and the benchmark includes systematic estimate bias
