@@ -4,9 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "keeks"
-# Version is dynamic: hatchling reads it from version.py (also the source
-# the Sphinx build imports), so the version is declared exactly once.
-dynamic = ["version"]
+version = "0.9.0"
 description = "Python bet sizing and bankroll simulation for repeated binary outcomes"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -75,9 +73,6 @@ dev = [
     # keeks runtime — the test suite pins that import guard.
     "yfinance",
 ]
-
-[tool.hatch.version]
-path = "version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["keeks"]
