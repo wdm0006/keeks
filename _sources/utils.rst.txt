@@ -45,3 +45,22 @@ required.
 
 .. autoclass:: keeks.calibration.CalibrationBin
     :no-members:
+
+Loading a recorded bet log
+--------------------------
+
+:func:`keeks.bet_log.load_bet_log` reads a CSV with a header row and returns
+the parallel ``(probabilities, outcomes)`` lists that ``calibration_report``,
+``HistoricalBinarySimulator`` and ``compare_strategies`` take. Rows keep their
+file order. Probabilities must be finite and in ``[0, 1]``; outcomes may be
+``0``, ``1``, ``true`` or ``false`` (case-insensitive). Errors are
+``ValueError``\ s naming the column and the 1-based data row.
+
+.. code-block:: python
+
+    from keeks import calibration_report, load_bet_log
+
+    probabilities, outcomes = load_bet_log("my_bets.csv")
+    report = calibration_report(probabilities, outcomes)
+
+.. autofunction:: keeks.bet_log.load_bet_log

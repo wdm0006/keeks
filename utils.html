@@ -531,6 +531,57 @@ includes <code class="docutils literal notranslate"><span class="pre">1.0</span>
 </dd></dl>
 
 </section>
+<section id="loading-a-recorded-bet-log">
+<h2>Loading a recorded bet log<a class="headerlink" href="#loading-a-recorded-bet-log" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="#keeks.bet_log.load_bet_log" title="keeks.bet_log.load_bet_log"><code class="xref py py-func docutils literal notranslate"><span class="pre">keeks.bet_log.load_bet_log()</span></code></a> reads a CSV with a header row and returns
+the parallel <code class="docutils literal notranslate"><span class="pre">(probabilities,</span> <span class="pre">outcomes)</span></code> lists that <code class="docutils literal notranslate"><span class="pre">calibration_report</span></code>,
+<code class="docutils literal notranslate"><span class="pre">HistoricalBinarySimulator</span></code> and <code class="docutils literal notranslate"><span class="pre">compare_strategies</span></code> take. Rows keep their
+file order. Probabilities must be finite and in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>; outcomes may be
+<code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code> (case-insensitive). Errors are
+<code class="docutils literal notranslate"><span class="pre">ValueError</span></code>s naming the column and the 1-based data row.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keeks</span><span class="w"> </span><span class="kn">import</span> <span class="n">calibration_report</span><span class="p">,</span> <span class="n">load_bet_log</span>
+
+<span class="n">probabilities</span><span class="p">,</span> <span class="n">outcomes</span> <span class="o">=</span> <span class="n">load_bet_log</span><span class="p">(</span><span class="s2">"my_bets.csv"</span><span class="p">)</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">calibration_report</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="keeks.bet_log.load_bet_log">
+<span class="sig-prename descclassname"><span class="pre">keeks.bet_log.</span></span><span class="sig-name descname"><span class="pre">load_bet_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><span class="pre">PathLike</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'probability'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outcome_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'outcome'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/keeks/bet_log.html#load_bet_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#keeks.bet_log.load_bet_log" title="Link to this definition">¶</a></dt>
+<dd><p>Read chronological probabilities and 0/1 outcomes from a CSV file.</p>
+<p>Row order is preserved. Probabilities must be finite and in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>;
+outcomes may be <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code> (case-insensitive).
+Any problem raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> naming the file column and the 1-based
+data row (the header is not counted).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.15)"><em>os.PathLike</em></a>) – CSV file with a header row.</p></li>
+<li><p><strong>probability_column</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Header names of the two columns to read.</p></li>
+<li><p><strong>outcome_column</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a>) – Header names of the two columns to read.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(probabilities,</span> <span class="pre">outcomes)</span></code>, ready for <code class="docutils literal notranslate"><span class="pre">calibration_report</span></code>,
+<code class="docutils literal notranslate"><span class="pre">HistoricalBinarySimulator</span></code> or <code class="docutils literal notranslate"><span class="pre">compare_strategies</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a>], <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a>]]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">folder</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">log</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"log.csv"</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">"probability,outcome</span><span class="se">\n</span><span class="s2">0.6,1</span><span class="se">\n</span><span class="s2">0.4,false</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">load_bet_log</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+<span class="go">([0.6, 0.4], [1, 0])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -568,6 +619,7 @@ includes <code class="docutils literal notranslate"><span class="pre">1.0</span>
 <li class="toctree-l2"><a class="reference internal" href="#keeks.utils.validate_probabilities"><code class="docutils literal notranslate"><span class="pre">validate_probabilities()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#checking-stated-probabilities">Checking stated probabilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-a-recorded-bet-log">Loading a recorded bet log</a></li>
 </ul>
 </li>
 </ul>

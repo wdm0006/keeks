@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z43R9PWW0B"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z43R9PWW0B');
+    </script>
+    
+    <title>keeks.bet_log &#8212; Keeks</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=30d13653" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/wabi.css?v=9adde7c3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=e0ab7682" />
+    <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
+
+
+<meta name="description" content="keeks.bet_log - keeks documentation">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="keeks.bet_log">
+<meta property="og:description" content="keeks.bet_log - keeks documentation">
+<meta property="og:type" content="website">
+
+<meta property="og:url" content="https://keeks.mcginniscommawill.com/_modules/keeks/bet_log.html">
+
+
+<meta property="og:site_name" content="keeks">
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="keeks.bet_log">
+<meta name="twitter:description" content="keeks.bet_log - keeks documentation">
+
+<meta name="twitter:site" content="@willmcginniser">
+
+
+
+
+
+<link rel="canonical" href="https://keeks.mcginniscommawill.com/_modules/keeks/bet_log.html">
+
+
+ 
+
+  </head><body>
+<header class="header">
+  <div class="header__inner">
+    
+    <a href="https://mcginniscommawill.com" class="header__logo">
+      McGinnis, Will
+    </a>
+
+    
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    
+    <nav class="nav" role="navigation">
+      
+      
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/guides/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Guides
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/topics/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Topics
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/posts/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Blog
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/about/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            About
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/coffee/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            Free Coffee
+          </a>
+        
+          
+          
+          
+          <a href="https://mcginniscommawill.com/oss/" class="nav__link"
+             target="_blank" rel="noopener noreferrer">
+            OSS
+          </a>
+        
+      
+
+      
+      
+      <a href="../../index.html" class="nav__link nav__link--active">
+        Docs
+      </a>
+      
+    </nav>
+  </div>
+</header>
+
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <div class="breadcrumbs__inner">
+    
+    <a href="https://mcginniscommawill.com">Home</a>
+    <span class="breadcrumbs__separator">/</span>
+    
+    <a href="../../index.html">Docs</a>
+    
+      
+      <span class="breadcrumbs__separator">/</span>
+      <a href="../index.html">Module code</a>
+      
+    
+    
+    <span class="breadcrumbs__separator">/</span>
+    <span>keeks.bet_log</span>
+    
+  </div>
+</nav>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for keeks.bet_log</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Load a recorded bet log from CSV."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">_OUTCOMES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"0"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="load_bet_log">
+<a class="viewcode-back" href="../../utils.html#keeks.bet_log.load_bet_log">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_bet_log</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">probability_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"probability"</span><span class="p">,</span>
+    <span class="n">outcome_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"outcome"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Read chronological probabilities and 0/1 outcomes from a CSV file.</span>
+
+<span class="sd">    Row order is preserved. Probabilities must be finite and in ``[0, 1]``;</span>
+<span class="sd">    outcomes may be ``0``, ``1``, ``true`` or ``false`` (case-insensitive).</span>
+<span class="sd">    Any problem raises ``ValueError`` naming the file column and the 1-based</span>
+<span class="sd">    data row (the header is not counted).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str or os.PathLike</span>
+<span class="sd">        CSV file with a header row.</span>
+<span class="sd">    probability_column, outcome_column : str</span>
+<span class="sd">        Header names of the two columns to read.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[list[float], list[int]]</span>
+<span class="sd">        ``(probabilities, outcomes)``, ready for ``calibration_report``,</span>
+<span class="sd">        ``HistoricalBinarySimulator`` or ``compare_strategies``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import tempfile</span>
+<span class="sd">    &gt;&gt;&gt; from pathlib import Path</span>
+<span class="sd">    &gt;&gt;&gt; with tempfile.TemporaryDirectory() as folder:</span>
+<span class="sd">    ...     log = Path(folder) / "log.csv"</span>
+<span class="sd">    ...     _ = log.write_text("probability,outcome\\n0.6,1\\n0.4,false\\n")</span>
+<span class="sd">    ...     load_bet_log(log)</span>
+<span class="sd">    ([0.6, 0.4], [1, 0])</span>
+<span class="sd">    """</span>
+    <span class="n">probabilities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">source</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="p">(</span><span class="n">probability_column</span><span class="p">,</span> <span class="n">outcome_column</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">fieldnames</span> <span class="ow">or</span> <span class="p">[]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: column </span><span class="si">{</span><span class="n">column</span><span class="si">!r}</span><span class="s2"> not found; "</span>
+                    <span class="sa">f</span><span class="s2">"available columns: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">fieldnames</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="p">[])</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">row_number</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">probabilities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_parse_probability</span><span class="p">(</span>
+                    <span class="n">row</span><span class="p">[</span><span class="n">probability_column</span><span class="p">],</span> <span class="n">probability_column</span><span class="p">,</span> <span class="n">row_number</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_parse_outcome</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">outcome_column</span><span class="p">],</span> <span class="n">outcome_column</span><span class="p">,</span> <span class="n">row_number</span><span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">outcomes</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_probability</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">row_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">(</span><span class="n">raw</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">where</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"column </span><span class="si">{</span><span class="n">column</span><span class="si">!r}</span><span class="s2">, row </span><span class="si">{</span><span class="n">row_number</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2">: probability is empty"</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2">: probability </span><span class="si">{</span><span class="n">text</span><span class="si">!r}</span><span class="s2"> is not a number"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2">: probability </span><span class="si">{</span><span class="n">text</span><span class="si">!r}</span><span class="s2"> must be finite in [0, 1]"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_outcome</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">row_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">(</span><span class="n">raw</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_OUTCOMES</span><span class="p">[</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"column </span><span class="si">{</span><span class="n">column</span><span class="si">!r}</span><span class="s2">, row </span><span class="si">{</span><span class="n">row_number</span><span class="si">}</span><span class="s2">: outcome </span><span class="si">{</span><span class="n">text</span><span class="si">!r}</span><span class="s2"> must be "</span>
+            <span class="s2">"0, 1, true or false"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+
+
+<h3 class="sr-only">Table of Contents</h3>
+
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Learn</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../kelly-criterion-python.html">Kelly Criterion in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fractional-kelly-vs-kelly.html">Full Kelly vs Fractional Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../keeks-vs-betting-math-kit.html">Keeks vs betting-math-kit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../strategy_benchmark.html">Strategy Benchmark</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../binary_strategies.html">Binary Strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulators.html">Simulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multi_outcome.html">Multi-Outcome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bankroll.html">Bankroll</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Portfolio Allocation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation.html">Allocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../allocation_plots.html">Visualization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/allocation_etfs.html">Allocation over ETF returns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/multi_outcome_1x2.html">1X2 betting with multi-outcome Kelly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/st_petersburg_paradox.html">The St. Petersburg paradox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/strategy_comparison.html">Strategies on a marginal edge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/replay_bet_log.html">Replay a recorded bet log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/strategy_lab.html">Strategy lab notebook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../checks.html">Contract Checks</a></li>
+</ul>
+
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="footer__inner">
+    
+    
+    <div class="footer__links">
+      
+        <a href="https://github.com/wdm0006" class="footer__link" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      
+        <a href="https://www.linkedin.com/in/wmcginnis/" class="footer__link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      
+        <a href="https://x.com/willmcginniser" class="footer__link" target="_blank" rel="noopener noreferrer">
+          Twitter
+        </a>
+      
+    </div>
+    
+
+    
+    <p class="footer__copy">
+      
+        &copy; 2020, Will McGinnis
+      
+    </p>
+  </div>
+</footer>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.nav');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function() {
+        nav.classList.toggle('is-open');
+        const isOpen = nav.classList.contains('is-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  });
+</script>
+
+  </body>
+</html>
