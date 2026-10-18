@@ -67,6 +67,10 @@ values last.
 
 .. autofunction:: keeks.comparison.compare_strategies
 
+For mutually exclusive markets (such as 1X2), see
+:func:`keeks.comparison.compare_multi_outcome_strategies` in the
+:doc:`multi-outcome guide <multi_outcome>`.
+
 .. autoclass:: keeks.comparison.StrategyComparison
     :no-members:
 

@@ -8,6 +8,7 @@ v0.9.0
  * Load a recorded bet log from CSV with `load_bet_log`, which validates rows and reports errors by row number, ready for the historical simulators and `compare_strategies`
  * Check probability estimates with `calibration_report`, including reliability bins, Brier score and clipped log loss
  * Rank fresh binary policies on one recorded log with `compare_strategies`; use `bootstrap_comparison` for paired percentile intervals and rank counts with an explicit seed, optional moving blocks and chronological replay
+ * Rank strategies on recorded multi-outcome markets with `compare_multi_outcome_strategies`, which replays decimal-odds `payoffs`, zero-based winning legs and voids (`None`) through `HistoricalMultiOutcomeSimulator` and ranks `summarize_history` results like `compare_strategies`
  * A recorded-log example exports calibration, rankings and uncertainty together as CSV, PNG and JSON; the strategy lab and benchmark share history summaries, and the benchmark includes systematic estimate bias
 
 **Critical Bug Fixes:**

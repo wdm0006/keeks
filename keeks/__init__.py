@@ -93,6 +93,7 @@ from keeks.comparison import (
     BootstrapRow,
     StrategyComparison,
     bootstrap_comparison,
+    compare_multi_outcome_strategies,
     compare_strategies,
 )
 from keeks.metrics import HistorySummary, summarize_history
@@ -181,6 +182,7 @@ __all__ = [
     "black_litterman_mean",
     "bootstrap_comparison",
     "calibration_report",
+    "compare_multi_outcome_strategies",
     "compare_strategies",
     "correlation_heatmap",
     "crra_utility",
