@@ -8,6 +8,8 @@ import numpy as np
 from keeks.bankroll import BankRoll
 from keeks.binary_strategies.base import BaseStrategy
 from keeks.metrics import HistorySummary, summarize_history
+from keeks.multi_outcome.base import BaseMultiOutcomeStrategy
+from keeks.multi_outcome.simulators import HistoricalMultiOutcomeSimulator
 from keeks.simulators.historical_binary import HistoricalBinarySimulator
 
 # Metrics where a smaller value is better; every other sort key ranks larger first.
@@ -30,6 +32,30 @@ class StrategyComparison:
 
     name: str
     summary: HistorySummary
+
+
+def _validate_comparison_args(strategies, sort_by):
+    if not isinstance(strategies, Mapping) or not strategies:
+        raise ValueError("strategies must be a non-empty mapping")
+    for name, factory in strategies.items():
+        if not isinstance(name, str):
+            raise ValueError(f"Strategy names must be strings, got {name!r}")
+        if not callable(factory):
+            raise ValueError(f"Strategy {name!r} must be a zero-argument factory")
+    if sort_by not in _SORT_KEYS:
+        raise ValueError(
+            f"sort_by must be one of {sorted(_SORT_KEYS)}, got {sort_by!r}"
+        )
+
+
+def _rank(rows, sort_by):
+    def value(row: StrategyComparison) -> float | None:
+        return getattr(row.summary, sort_by)
+
+    defined = [row for row in rows if value(row) is not None]
+    undefined = [row for row in rows if value(row) is None]
+    defined.sort(key=value, reverse=sort_by not in _ASCENDING)
+    return tuple(defined + undefined)
 
 
 def compare_strategies(
@@ -100,17 +126,7 @@ def compare_strategies(
     >>> [(row.name, round(row.summary.end, 2)) for row in rows]
     [('20%', 115.2), ('5%', 104.74)]
     """
-    if not isinstance(strategies, Mapping) or not strategies:
-        raise ValueError("strategies must be a non-empty mapping")
-    for name, factory in strategies.items():
-        if not isinstance(name, str):
-            raise ValueError(f"Strategy names must be strings, got {name!r}")
-        if not callable(factory):
-            raise ValueError(f"Strategy {name!r} must be a zero-argument factory")
-    if sort_by not in _SORT_KEYS:
-        raise ValueError(
-            f"sort_by must be one of {sorted(_SORT_KEYS)}, got {sort_by!r}"
-        )
+    _validate_comparison_args(strategies, sort_by)
 
     def fresh_bankroll() -> BankRoll:
         return BankRoll(initial_funds, percent_bettable, max_transaction_loss)
@@ -126,13 +142,90 @@ def compare_strategies(
         simulator.evaluate_strategy(factory(), bankroll)
         rows.append(StrategyComparison(name, summarize_history(bankroll.history)))
 
-    def value(row: StrategyComparison) -> float | None:
-        return getattr(row.summary, sort_by)
+    return _rank(rows, sort_by)
 
-    defined = [row for row in rows if value(row) is not None]
-    undefined = [row for row in rows if value(row) is None]
-    defined.sort(key=value, reverse=sort_by not in _ASCENDING)
-    return tuple(defined + undefined)
+
+def compare_multi_outcome_strategies(
+    strategies: Mapping[str, Callable[[], BaseMultiOutcomeStrategy]],
+    probabilities: Sequence[Sequence[float]],
+    outcomes: Sequence[int | None],
+    *,
+    payoffs: Sequence[float],
+    loss: float,
+    fee_per_bet: float,
+    initial_funds: float,
+    percent_bettable: float = 1.0,
+    max_transaction_loss: float | None = None,
+    sort_by: str = "geometric_growth_per_period",
+) -> tuple[StrategyComparison, ...]:
+    """
+    Replay a recorded mutually exclusive market log through several strategies.
+
+    The multi-outcome counterpart of :func:`compare_strategies`: each factory
+    is called once to build a fresh vector strategy, which runs against a fresh
+    :class:`~keeks.bankroll.BankRoll` via
+    :class:`~keeks.multi_outcome.simulators.HistoricalMultiOutcomeSimulator`.
+    Rows are ranked as in :func:`compare_strategies`. A strategy whose
+    ``payoffs`` or ``loss`` differ from the ones given here raises the
+    simulator's ``ValueError`` unchanged. Odds are fixed decimal odds per leg
+    and the fee is flat per settled, staked leg. A void charges no fee. This is
+    an educational look at past data, not advice.
+
+    Each input row is one market, but ``HistorySummary.bets`` counts settled
+    transactions: a void, or a market the strategy declined, adds none, and a
+    market staking two legs adds two.
+
+    Parameters
+    ----------
+    strategies : mapping of str to callable
+        Strategy name to a zero-argument factory returning a fresh strategy.
+        Must be non-empty.
+    probabilities : sequence of probability vectors
+        One estimate vector per recorded market, one entry per payoff.
+    outcomes : sequence of int or None
+        Zero-based winning leg per market, or ``None`` for a void.
+    payoffs, loss, fee_per_bet
+        The fixed decimal odds, loss multiplier and flat fee passed to the
+        simulator.
+    initial_funds, percent_bettable, max_transaction_loss, sort_by
+        As for :func:`compare_strategies`.
+
+    Returns
+    -------
+    tuple of StrategyComparison
+        One row per strategy, best first.
+
+    Raises
+    ------
+    ValueError
+        If the arguments or recorded log are invalid; checked before any
+        factory runs.
+
+    Examples
+    --------
+    >>> from keeks import MultiOutcomeKellyCriterion
+    >>> rows = compare_multi_outcome_strategies(
+    ...     {"Kelly": lambda: MultiOutcomeKellyCriterion((3.2, 3.4, 2.4), 1.0)},
+    ...     [[0.42, 0.27, 0.28], [0.42, 0.27, 0.28]],
+    ...     [0, None],
+    ...     payoffs=(3.2, 3.4, 2.4), loss=1.0, fee_per_bet=0.0,
+    ...     initial_funds=100.0,
+    ... )
+    >>> [(row.name, row.summary.bets) for row in rows]
+    [('Kelly', 2)]
+    """
+    _validate_comparison_args(strategies, sort_by)
+    BankRoll(initial_funds, percent_bettable, max_transaction_loss)
+    simulator = HistoricalMultiOutcomeSimulator(
+        payoffs, loss, fee_per_bet, probabilities, outcomes
+    )
+
+    rows = []
+    for name, factory in strategies.items():
+        bankroll = BankRoll(initial_funds, percent_bettable, max_transaction_loss)
+        simulator.evaluate_strategy(factory(), bankroll)
+        rows.append(StrategyComparison(name, summarize_history(bankroll.history)))
+    return _rank(rows, sort_by)
 
 
 @dataclass(frozen=True)

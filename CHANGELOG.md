@@ -3,6 +3,8 @@ Unreleased
 
 **New Features:**
 
+ * `compare_multi_outcome_strategies` replays a recorded mutually exclusive market log (decimal-odds `payoffs`, zero-based winning legs, `None` for voids) through several fresh vector strategies via `HistoricalMultiOutcomeSimulator` and ranks the `summarize_history` results exactly like `compare_strategies`
+
  * `HistoricalMultiOutcomeSimulator` replays recorded probability vectors and winning leg indices (including voids), sharing settlement, validation and hooks with `RepeatedMultiOutcomeSimulator`, without random draws or a seed
 
  * `HistoricalBinarySimulator` replays recorded probabilities and boolean outcomes through any binary strategy with the same settlement, validation, hooks and `RuinError` handling as `RepeatedBinarySimulator`; it draws no random numbers and takes no `seed`

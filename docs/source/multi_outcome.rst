@@ -54,6 +54,47 @@ rules match the repeated simulator, while estimates can change each trial.
 .. autoclass:: keeks.multi_outcome.simulators.HistoricalMultiOutcomeSimulator
     :members:
 
+Comparing Sizing Policies on a Recorded Log
+-------------------------------------------
+
+:func:`keeks.comparison.compare_multi_outcome_strategies` replays one recorded
+market log through several policies, each on a fresh bankroll, and ranks them
+like :func:`~keeks.comparison.compare_strategies`. Pass name-to-factory
+mappings (each factory must return a fresh vector strategy), the probability
+rows, and the winning leg per market (``None`` for a void). The decimal-odds
+``payoffs``, ``loss`` and flat ``fee_per_bet`` are fixed for the whole log and
+every strategy must be built with the same ``payoffs`` and ``loss``.
+
+Rows of the log are markets, but ``summary.bets`` counts settled transactions:
+a void or a declined market adds none, and a market staking two legs adds two.
+A void charges no fee.
+
+.. code-block:: pycon
+
+    >>> from keeks import MultiOutcomeKellyCriterion, compare_multi_outcome_strategies
+    >>> class CappedKelly(MultiOutcomeKellyCriterion):
+    ...     """Kelly stakes scaled down to a fixed share."""
+    ...     def __init__(self, payoffs, loss, scale):
+    ...         super().__init__(payoffs, loss)
+    ...         self.scale = scale
+    ...     def evaluate(self, probabilities, current_bankroll):
+    ...         stakes = super().evaluate(probabilities, current_bankroll)
+    ...         return tuple(self.scale * stake for stake in stakes)
+    >>> odds = (3.2, 3.4, 2.4)
+    >>> rows = compare_multi_outcome_strategies(
+    ...     {
+    ...         "Full Kelly": lambda: MultiOutcomeKellyCriterion(odds, 1.0),
+    ...         "Quarter Kelly": lambda: CappedKelly(odds, 1.0, 0.25),
+    ...     },
+    ...     [[0.42, 0.27, 0.28]] * 4,
+    ...     [0, 2, None, 1],
+    ...     payoffs=odds, loss=1.0, fee_per_bet=0.0, initial_funds=1000.0,
+    ... )
+    >>> [(row.name, round(row.summary.end, 2), row.summary.bets) for row in rows]
+    [('Quarter Kelly', 1009.71, 6), ('Full Kelly', 962.21, 6)]
+
+.. autofunction:: keeks.comparison.compare_multi_outcome_strategies
+
 Portfolio Simulator
 -------------------
 
