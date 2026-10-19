@@ -1,7 +1,7 @@
 """Pin the package root's public surface: __version__ and documented re-exports.
 
-version.py is the single version source (the Sphinx build imports it and
-hatchling's dynamic versioning consumes it), so the runtime __version__ must
+pyproject.toml declares the package version and version.py mirrors it for Sphinx,
+so the runtime __version__ must
 match it exactly. The re-export set is the documented public API: the classes
 autodoc'd across docs/source/*.rst plus the names the README and CLAUDE.md
 reference, so a rename that documentation does not follow fails here.

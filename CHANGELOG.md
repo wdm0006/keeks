@@ -1,22 +1,26 @@
-Unreleased
-==========
-
-**New Features:**
-
- * `compare_multi_outcome_strategies` replays a recorded mutually exclusive market log (decimal-odds `payoffs`, zero-based winning legs, `None` for voids) through several fresh vector strategies via `HistoricalMultiOutcomeSimulator` and ranks the `summarize_history` results exactly like `compare_strategies`
-
- * `HistoricalMultiOutcomeSimulator` replays recorded probability vectors and winning leg indices (including voids), sharing settlement, validation and hooks with `RepeatedMultiOutcomeSimulator`, without random draws or a seed
-
- * `HistoricalBinarySimulator` replays recorded probabilities and boolean outcomes through any binary strategy with the same settlement, validation, hooks and `RuinError` handling as `RepeatedBinarySimulator`; it draws no random numbers and takes no `seed`
-
 v0.9.0
 ======
 
 **New Features:**
 
- * `keeks.summarize_history(history)` reduces a `BankRoll.history` to a frozen `HistorySummary` (bets, start, end, total return, geometric growth per bet, max drawdown, ruined); undefined values are `None`, and empty/non-finite/negative input raises `ValueError`
+ * Replay recorded binary bets and exclusive multi-outcome markets with `HistoricalBinarySimulator` and `HistoricalMultiOutcomeSimulator`, without random draws
+ * Summarize bankroll histories with `summarize_history` and immutable `HistorySummary` records, including growth, drawdown and ruin; undefined metrics remain `None`
+ * Load a recorded bet log from CSV with `load_bet_log`, which validates rows and reports errors by row number, ready for the historical simulators and `compare_strategies`
+ * Check probability estimates with `calibration_report`, including reliability bins, Brier score and clipped log loss
+ * Rank fresh binary policies on one recorded log with `compare_strategies`; use `bootstrap_comparison` for paired percentile intervals and rank counts with an explicit seed, optional moving blocks and chronological replay
+ * Rank strategies on recorded multi-outcome markets with `compare_multi_outcome_strategies`, which replays decimal-odds `payoffs`, zero-based winning legs and voids (`None`) through `HistoricalMultiOutcomeSimulator` and ranks `summarize_history` results like `compare_strategies`
+ * A recorded-log example exports calibration, rankings and uncertainty together as CSV, PNG and JSON; the strategy lab and benchmark share history summaries, and the benchmark includes systematic estimate bias
 
-**Breaking changes — naming and contract sweep (one meaning per name), new defaults, and enforced contracts:**
+**Critical Bug Fixes:**
+
+ * Multi-outcome winning legs now credit net profit `(payoff - 1) * stake`, excluding the returned stake from profit; the allocation binary-bets model uses the same decimal-odds convention
+ * Seeded portfolio streams stay attached to each bet when heterogeneous bets are inserted, removed or reordered
+ * Multi-outcome simulators reject mismatched payoff/probability vector lengths before settlement can change the bankroll
+
+**Breaking changes — migration required:**
+
+ * Before upgrading from 0.8.0, rename the keywords and methods below and update custom settlement hooks. Pass `min_probability=0.5` and `max_transaction_loss=0.3` explicitly to retain the former Kelly gate and bankroll removal cap. Multi-outcome profit accounting is corrected, so replay results can change.
+
 
  * Strategy sizing parameters renamed: `transaction_cost` → `transaction_cost_rate` everywhere a per-unit fraction of stake is meant (all binary strategies, the multi-outcome surface, and `BinaryBetsModel`), so the fraction and the flat fee no longer share near-identical names
  * Simulator and settlement fees renamed: `transaction_costs` → `fee_per_bet` everywhere a flat per-bet/per-period bankroll amount is meant (all six simulators), and `BinaryBetsModel`'s fraction parameter renamed to `transaction_cost_rate`
