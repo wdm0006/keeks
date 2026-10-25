@@ -13,7 +13,7 @@ from keeks.multi_outcome.simulators import HistoricalMultiOutcomeSimulator
 from keeks.simulators.historical_binary import HistoricalBinarySimulator
 
 # Metrics where a smaller value is better; every other sort key ranks larger first.
-_ASCENDING = frozenset({"max_drawdown"})
+_ASCENDING = frozenset({"max_drawdown", "ruined"})
 _SORT_KEYS = frozenset(f.name for f in fields(HistorySummary)) - {"bets", "start"}
 
 

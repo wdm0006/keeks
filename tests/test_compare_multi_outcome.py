@@ -220,3 +220,18 @@ def test_docs_example_runs():
     result = doctest.testfile(str(path), module_relative=False, verbose=False)
     assert result.attempted > 0
     assert result.failed == 0
+
+
+def test_sort_by_ruined_ranks_survivors_first_and_keeps_factory_order_on_ties():
+    run = {**RUN, "fee_per_bet": 0.0}
+    factories = {
+        "ruin": lambda: Fixed((1.0, 0.0, 0.0)),
+        "safe": lambda: Fixed((0.1, 0.0, 0.0)),
+        "ruin2": lambda: Fixed((1.0, 0.0, 0.0)),
+        "safe2": lambda: Fixed((0.0, 0.0, 0.1)),
+    }
+    rows = compare_multi_outcome_strategies(
+        factories, [[0.4, 0.3, 0.3]], [1], sort_by="ruined", **run
+    )
+    assert [r.name for r in rows] == ["safe", "safe2", "ruin", "ruin2"]
+    assert [r.summary.ruined for r in rows] == [False, False, True, True]

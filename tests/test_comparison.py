@@ -325,3 +325,17 @@ def test_docs_example_runs():
     result = doctest.testfile(str(path), module_relative=False, verbose=False)
     assert result.attempted > 0
     assert result.failed == 0
+
+
+def test_sort_by_ruined_ranks_survivors_first_and_keeps_factory_order_on_ties():
+    ruin = lambda: FixedFractionStrategy(**ODDS, fraction=1.0)  # noqa: E731
+    probs, outcomes = [0.9, 0.9, 0.9], [0, 0, 1]
+    factories = {
+        "ruin": ruin,
+        "a": FACTORIES["5%"],
+        "ruin2": ruin,
+        "b": FACTORIES["30%"],
+    }
+    rows = compare_strategies(factories, probs, outcomes, sort_by="ruined", **RUN)
+    assert [r.name for r in rows] == ["a", "b", "ruin", "ruin2"]
+    assert [r.summary.ruined for r in rows] == [False, False, True, True]
