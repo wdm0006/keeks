@@ -189,7 +189,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">keeks.simulators.historical_binary</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoricalBinarySimulator</span>
 
 <span class="c1"># Metrics where a smaller value is better; every other sort key ranks larger first.</span>
-<span class="n">_ASCENDING</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">"max_drawdown"</span><span class="p">})</span>
+<span class="n">_ASCENDING</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">"max_drawdown"</span><span class="p">,</span> <span class="s2">"ruined"</span><span class="p">})</span>
 <span class="n">_SORT_KEYS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">HistorySummary</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="s2">"bets"</span><span class="p">,</span> <span class="s2">"start"</span><span class="p">}</span>
 
 
