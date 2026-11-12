@@ -1,3 +1,8 @@
+v0.9.1
+======
+
+ * `compare_strategies` and `compare_multi_outcome_strategies` with `sort_by="ruined"` now rank surviving policies ahead of ruined ones, as documented; previously ruined policies were listed first
+
 v0.9.0
 ======
 
